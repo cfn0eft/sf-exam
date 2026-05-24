@@ -74,20 +74,21 @@
   <button class="mode-btn btn-vocab" onclick="goTo('vocab')">
     <span class="bi">🔤</span><span class="bs"><span>用語帳</span><span class="bsub">フラッシュカードで用語を暗記（準備中）</span></span>
   </button>
-  <div class="sec-label">絞り込み（学習モードに適用）</div>
+  <div class="sec-label">絞り込み</div>
   <div class="filter-bar">
-    <label class="chip" id="chip-shuf"><input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 シャッフル</label>
     <label class="chip" id="chip-wrong"><input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span></label>
-    <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし</label>
+    <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span></label>
     <label class="chip" id="chip-bm"><input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク</label>
-    <label class="chip" id="chip-multi"><input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">☑ 複数選択のみ</label>
-    <label class="chip" id="chip-cshuf"><input type="checkbox" id="f-cshuf" checked onchange="toggleCshuf()" style="display:none">🔢 選択肢シャッフル</label>
+    <label class="chip" id="chip-multi"><input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ</label>
   </div>
-  <select class="fsel" id="dom-filter" onchange="applyFilters()">
-    <option value="">すべての分野</option>
-  </select>
-  <div class="sec-label">分野別の習熟度</div>
-  <div class="card" id="dom-home"></div>
+  <div class="filter-bar">
+    <label class="chip on" id="chip-shuf"><input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順</label>
+    <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCshuf()">🔀 選択肢順</button>
+  </div>
+  <select class="fsel" id="f-kw" onchange="applyFilters()"><option value="">🏷️ キーワードで絞り込み（全て）</option></select>
+  <div id="f-count" style="font-size:12px;color:var(--text-sub);margin-bottom:14px"></div>
+  <div class="sec-label">データ</div>
+  <button class="btn bg" style="width:100%;margin-top:8px" onclick="resetAll()">🗑️ 進捗データをリセット</button>
 </div>
 
 <!-- ===== STUDY ===== -->
@@ -147,12 +148,11 @@
 
 <!-- ===== STATS ===== -->
 <div class="page" id="pg-stats">
-  <div class="card"><div class="sec-label" style="margin-top:0">分野別の正答率</div><div id="st-dom"></div></div>
+  <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div class="sec-label" style="margin-top:0">分野別の習熟度</div><button class="dom-focus-btn" onclick="startWeak()">弱点を出題</button></div><div id="st-dom"></div></div>
   <div class="card"><div class="sec-label" style="margin-top:0">学習カレンダー</div><div class="hm-wrap"><div class="hm-grid" id="heatmap"></div></div><div class="hm-legend" id="hm-sub"></div></div>
   <div class="card"><div class="sec-label" style="margin-top:0">今週のレポート</div><div id="weekly"></div></div>
   <div class="card"><div class="sec-label" style="margin-top:0">実績バッジ</div><div class="badge-grid" id="badges"></div></div>
   <div class="card"><div class="sec-label" style="margin-top:0">模試の履歴</div><div id="exam-hist" style="font-size:13px;line-height:1.9"></div></div>
-  <div class="card"><button class="btn bd" onclick="resetAll()">進捗をリセット</button></div>
 </div>
 
 <!-- ===== TEXTBOOK (準備中) ===== -->
@@ -210,7 +210,7 @@ function norm(o){o=o||{};o.bm=o.bm||[];o.hist=o.hist||{};o.streak=o.streak||0;o.
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 window.__getStore=function(){return store;};
 window.__setStore=function(o){if(!o||typeof o!=='object')return;store=norm(o);try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){}};
-window.__refreshUI=function(){try{homeStats();}catch(e){}try{renderDomHome();}catch(e){}try{renderStats();}catch(e){}};
+window.__refreshUI=function(){try{homeStats();}catch(e){}try{applyFilters();}catch(e){}try{renderStats();}catch(e){}};
 
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function cshufOn(){return localStorage.getItem('sfqab_cshuf')!=='0';}
@@ -246,11 +246,13 @@ fetch('data/questions.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
 
 function boot(){
   if(localStorage.getItem('dark')==='1')applyDark(true);
-  // 分野フィルタの選択肢
-  const sel=document.getElementById('dom-filter');
-  DOMAIN_DEFS.forEach(d=>{const o=document.createElement('option');o.value=d.code;o.textContent=d.emoji+' '+d.name;sel.appendChild(o);});
-  homeStats();renderDomHome();applyFilters();
+  buildKwFilter();
+  document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());
+  homeStats();applyFilters();
 }
+function buildKwFilter(){const sel=document.getElementById('f-kw');const set={};
+  allQ.forEach(q=>(q.keywords||[]).forEach(k=>{set[k]=(set[k]||0)+1;}));
+  Object.keys(set).sort((a,b)=>set[b]-set[a]).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent='🏷️ '+k+'（'+set[k]+'）';sel.appendChild(o);});}
 
 /* ---- nav ---- */
 function goTo(name){
@@ -261,7 +263,7 @@ function goTo(name){
   const nb=document.getElementById('nb-'+name);if(nb)nb.classList.add('active');
   const isHome=name==='home';
   document.getElementById('btn-back').style.display=isHome?'none':'flex';
-  if(isHome){homeStats();renderDomHome();applyFilters();}
+  if(isHome){homeStats();applyFilters();}
   if(name==='stats')renderStats();
   window.scrollTo(0,0);
 }
@@ -289,21 +291,24 @@ function homeStats(){
   document.getElementById('st-streak').textContent=store.streak||0;
   const sc=document.getElementById('srs-count');if(sc){const n=srsDueList().length;sc.textContent=n?'（'+n+'）':'';}
   const wc=document.getElementById('wrong-count');if(wc){const n=allQ.filter(q=>isWrong(q.id)).length;wc.textContent=n?'('+n+')':'';}
+  const lcc=document.getElementById('lc-count');if(lcc){const n=allQ.filter(q=>{const h=store.hist[q.id];return h&&h.lc===1;}).length;lcc.textContent=n?'('+n+')':'';}
   renderPlan();
 }
 
 /* ---- フィルター ---- */
-function toggleCshuf(){localStorage.setItem('sfqab_cshuf',document.getElementById('f-cshuf').checked?'1':'0');syncChips();}
-function syncChips(){[['chip-shuf','f-shuf'],['chip-wrong','f-wrong'],['chip-lc','f-lc'],['chip-bm','f-bm'],['chip-multi','f-multi'],['chip-cshuf','f-cshuf']].forEach(([c,f])=>{
-  const on=document.getElementById(f).checked;const chip=document.getElementById(c);chip.classList.toggle(f==='f-bm'?'bm-on':'on',on);});}
+function toggleCshuf(){localStorage.setItem('sfqab_cshuf',cshufOn()?'0':'1');document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());}
+function syncChips(){[['chip-shuf','f-shuf'],['chip-wrong','f-wrong'],['chip-lc','f-lc'],['chip-bm','f-bm'],['chip-multi','f-multi']].forEach(([c,f])=>{
+  const on=document.getElementById(f).checked;document.getElementById(c).classList.toggle(f==='f-bm'?'bm-on':'on',on);});
+  document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());}
 function applyFilters(){
   let a=allQ.slice();
   if(document.getElementById('f-bm').checked)a=a.filter(q=>store.bm.includes(q.id));
   if(document.getElementById('f-wrong').checked)a=a.filter(q=>isWrong(q.id));
   if(document.getElementById('f-lc').checked)a=a.filter(q=>{const h=store.hist[q.id];return h&&h.lc===1;});
   if(document.getElementById('f-multi').checked)a=a.filter(q=>q.multi);
-  const dom=document.getElementById('dom-filter').value;if(dom)a=a.filter(q=>q.domain===dom);
+  const kw=document.getElementById('f-kw').value;if(kw)a=a.filter(q=>(q.keywords||[]).includes(kw));
   filtQ=a;syncChips();
+  const fc=document.getElementById('f-count');if(fc)fc.textContent='対象: '+filtQ.length+' 問';
 }
 
 /* ---- 学習モード ---- */
@@ -424,9 +429,6 @@ function domainStats(){const agg={};DOMAIN_DEFS.forEach(d=>agg[d.code]={c:0,w:0,
 function weakestDomain(){const s=domainStats().filter(x=>x.done>0);if(!s.length)return DOMAIN_DEFS[0].code;s.sort((a,b)=>a.pct-b.pct);return s[0].code;}
 function domRowHtml(x,showCount){const d=domainDef(x.code);
   return '<div class="dom-row"><span class="dom-emoji">'+d.emoji+'</span><span class="dom-name">'+d.name+'<span class="dn-sub"> ・ 出題比率'+d.weight+'%</span></span><span class="dom-bw"><span class="dom-bf" style="width:'+x.pct+'%;background:'+barColor(x.pct)+'"></span></span><span class="dom-pct">'+(showCount?x.c+'/'+x.t:x.pct+'%')+'</span></div>';}
-function renderDomHome(){const s=domainStats();let h=s.map(x=>domRowHtml(x,false)).join('');
-  h+='<div style="margin-top:10px"><button class="dom-focus-btn" onclick="startWeak()"'+(answered()?'':' disabled')+'>弱点分野を出題</button></div>';
-  document.getElementById('dom-home').innerHTML=h;}
 
 /* ---- 統計 ---- */
 function renderStats(){renderDomStats();renderHeatmap();renderWeekly();renderBadges();renderExamHist();}
@@ -488,7 +490,7 @@ function savePlan(){const ed=document.getElementById('exam-date-in').value;const
   store.examDate=ed||'';store.goal=isNaN(gl)?0:gl;save();document.getElementById('plan-edit').classList.remove('on');renderPlan();toast('保存しました');}
 function clearPlan(){store.examDate='';store.goal=0;save();document.getElementById('plan-edit').classList.remove('on');renderPlan();}
 
-function resetAll(){if(!confirm('進捗をすべて消去しますか？'))return;store=norm({});save();homeStats();renderDomHome();renderStats();toast('リセットしました');}
+function resetAll(){if(!confirm('進捗をすべて消去しますか？'))return;store=norm({});save();homeStats();applyFilters();renderStats();toast('リセットしました');}
 
 /* ---- キーボード ---- */
 document.addEventListener('keydown',e=>{
