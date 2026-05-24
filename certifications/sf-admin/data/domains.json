@@ -1,0 +1,33 @@
+{
+  "_note": "ADM-201 公式7分野への自動分類（heuristic・編集可）。code は固定、name/weight/emoji は変更可。map は 問題ID→分野code。本体 index.html には同じ内容が QDOMAIN/DOMAIN_DEFS としてインライン埋め込みされているため、ここを編集したら本体側も合わせて更新してください。",
+  "domains": [
+    { "code": "cfg",     "name": "設定と管理",          "weight": 20, "emoji": "⚙️" },
+    { "code": "obj",     "name": "オブジェクトとアプリ", "weight": 20, "emoji": "🧩" },
+    { "code": "auto",    "name": "自動化",              "weight": 16, "emoji": "⚡" },
+    { "code": "data",    "name": "データと分析",        "weight": 14, "emoji": "📊" },
+    { "code": "sales",   "name": "セールス/マーケ",      "weight": 12, "emoji": "💼" },
+    { "code": "service", "name": "サービス/サポート",    "weight": 11, "emoji": "🎧" },
+    { "code": "prod",    "name": "生産性/コラボ",        "weight": 7,  "emoji": "🤝" }
+  ],
+  "map": {
+    "1":"prod","2":"sales","3":"cfg","4":"cfg","5":"prod","6":"sales","7":"service","8":"sales","9":"sales","10":"obj",
+    "11":"service","12":"cfg","13":"service","14":"sales","15":"sales","16":"cfg","17":"obj","18":"cfg","19":"prod","20":"service",
+    "21":"service","22":"obj","23":"obj","24":"sales","25":"service","26":"service","27":"prod","28":"data","29":"obj","30":"data",
+    "31":"obj","32":"prod","33":"sales","34":"cfg","35":"auto","36":"service","37":"obj","38":"prod","39":"obj","40":"auto",
+    "41":"auto","42":"data","43":"data","44":"service","45":"cfg","46":"cfg","47":"obj","48":"auto","49":"auto","50":"obj",
+    "51":"cfg","52":"obj","53":"service","54":"sales","55":"auto","56":"cfg","57":"cfg","58":"obj","59":"auto","60":"auto",
+    "61":"auto","62":"data","63":"service","64":"auto","65":"prod","66":"cfg","67":"obj","68":"cfg","69":"data","70":"sales",
+    "71":"auto","72":"sales","73":"service","75":"service","76":"obj","77":"obj","78":"obj","79":"service","80":"data","81":"obj",
+    "82":"service","83":"auto","84":"obj","85":"auto","86":"cfg","87":"cfg","88":"service","89":"obj","90":"cfg","91":"auto",
+    "92":"service","93":"cfg","94":"auto","95":"auto","96":"obj","97":"cfg","98":"sales","99":"sales","100":"cfg","101":"cfg",
+    "102":"obj","103":"sales","104":"data","105":"auto","106":"sales","107":"data","108":"obj","109":"cfg","110":"sales","111":"service",
+    "112":"obj","113":"cfg","114":"auto","115":"service","116":"obj","117":"auto","118":"obj","119":"auto","120":"obj","121":"data",
+    "122":"obj","123":"data","124":"sales","125":"obj","126":"cfg","127":"obj","128":"auto","129":"obj","130":"cfg","131":"obj",
+    "132":"auto","133":"obj","134":"obj","135":"obj","136":"auto","137":"auto","138":"obj","139":"prod","140":"obj","141":"cfg",
+    "142":"obj","143":"obj","144":"cfg","145":"sales","146":"auto","147":"service","148":"obj","149":"obj","150":"obj","151":"data",
+    "152":"cfg","153":"service","154":"service","155":"sales","156":"auto","157":"data","158":"sales","159":"obj","160":"auto","161":"obj",
+    "162":"sales","163":"service","164":"sales","165":"obj","166":"data","167":"service","168":"service","169":"data","170":"service","171":"service",
+    "172":"sales","173":"auto","174":"data","175":"sales","176":"auto","177":"cfg","178":"cfg","179":"obj","180":"service","181":"auto",
+    "182":"service","183":"cfg","184":"data","185":"cfg","186":"auto","187":"service","188":"cfg","189":"sales","190":"cfg","191":"auto"
+  }
+}
