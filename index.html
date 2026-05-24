@@ -1,28 +1,145 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SF資格 学習アプリ</title>
-  <script>
-    // ルートURLにアクセスされたら、端末に応じて自動転送する
-    // （スマホ → モバイル版 / PC → quiz.html）。どちらも内容は同じです。
-    (function () {
-      try {
-        var isMobile = /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent)
-          || (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
-        location.replace(isMobile ? 'mobile/index.html' : 'quiz.html');
-      } catch (e) {
-        location.replace('quiz.html');
-      }
-    })();
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>資格学習アプリ — ホーム</title>
+<style>
+:root{
+  --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --text-sub:#475569;
+  --border:#e2e8f0; --accent:#2563eb; --accent-hover:#1d4ed8;
+  --muted:#f1f5f9; --muted-text:#94a3b8;
+  --shadow:0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+  --shadow-hover:0 10px 25px -5px rgba(15,23,42,.12), 0 4px 10px -2px rgba(15,23,42,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --text-sub:#94a3b8;
+    --border:#334155; --accent:#3b82f6; --accent-hover:#60a5fa;
+    --muted:#1e293b; --muted-text:#64748b;
+    --shadow:0 1px 3px rgba(0,0,0,.3);
+    --shadow-hover:0 10px 25px -5px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.container{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+.hero{text-align:center;padding:24px 0 40px}
+.hero h1{margin:0 0 8px;font-size:32px;font-weight:800;letter-spacing:-.02em}
+.hero p{margin:0;color:var(--text-sub);font-size:15px}
+.sec-label{font-size:12px;font-weight:700;color:var(--text-sub);
+  text-transform:uppercase;letter-spacing:.08em;margin:8px 0 16px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{display:flex;flex-direction:column;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;padding:22px 20px;
+  text-decoration:none;color:inherit;box-shadow:var(--shadow);
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  min-height:200px;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--accent)}
+.card.coming{background:var(--muted);cursor:default;color:var(--muted-text)}
+.card.coming:hover{transform:none;box-shadow:var(--shadow);border-color:var(--border)}
+.card-icon{font-size:32px;margin-bottom:12px;line-height:1}
+.card-title{font-size:17px;font-weight:700;margin:0 0 6px;line-height:1.35}
+.card-desc{font-size:13px;color:var(--text-sub);line-height:1.55;margin:0 0 14px;flex:1}
+.card.coming .card-desc{color:var(--muted-text)}
+.card-meta{display:flex;gap:14px;font-size:12px;color:var(--text-sub);font-weight:600;flex-wrap:wrap}
+.card-meta span::before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;
+  background:var(--accent);margin-right:6px;vertical-align:middle}
+.coming-badge{position:absolute;top:14px;right:14px;background:var(--muted-text);
+  color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;
+  text-transform:uppercase;letter-spacing:.04em}
+.footer{text-align:center;color:var(--text-sub);font-size:12px;margin-top:48px}
+.footer a{color:var(--accent);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+@media (max-width:480px){
+  .container{padding:20px 16px 48px}
+  .hero{padding:12px 0 28px}
+  .hero h1{font-size:24px}
+  .hero p{font-size:13px}
+  .grid{grid-template-columns:1fr;gap:12px}
+  .card{min-height:0;padding:18px 16px}
+}
+</style>
 </head>
 <body>
-  <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;text-align:center;margin-top:48px;color:#475569">
-    読み込み中…<br>
-    自動で移動しない場合は
-    <a href="quiz.html">PC版を開く</a> ／ <a href="mobile/index.html">モバイル版を開く</a>
+<div class="container">
+
+  <header class="hero">
+    <h1>資格学習アプリ</h1>
+    <p>学習したい資格を選択してください</p>
+  </header>
+
+  <div class="sec-label">利用可能な資格</div>
+  <div class="grid">
+
+    <a class="card" href="certifications/sf-admin/index.html">
+      <div class="card-icon">☁️</div>
+      <h2 class="card-title">Salesforce 認定<br>プラットフォームアドミニストレーター</h2>
+      <p class="card-desc">2025年12月15日改訂対応。Agentforce含む全8ドメイン。</p>
+      <div class="card-meta">
+        <span>190問</span>
+        <span>75用語</span>
+        <span>合格65%</span>
+      </div>
+    </a>
+
+    <div class="card coming">
+      <span class="coming-badge">追加予定</span>
+      <div class="card-icon">🛠️</div>
+      <h2 class="card-title">資格枠（未設定）</h2>
+      <p class="card-desc">次に追加する資格の枠です。準備中。</p>
+      <div class="card-meta"><span>Coming Soon</span></div>
+    </div>
+
+    <div class="card coming">
+      <span class="coming-badge">追加予定</span>
+      <div class="card-icon">🛠️</div>
+      <h2 class="card-title">資格枠（未設定）</h2>
+      <p class="card-desc">次に追加する資格の枠です。準備中。</p>
+      <div class="card-meta"><span>Coming Soon</span></div>
+    </div>
+
+    <div class="card coming">
+      <span class="coming-badge">追加予定</span>
+      <div class="card-icon">🛠️</div>
+      <h2 class="card-title">資格枠（未設定）</h2>
+      <p class="card-desc">次に追加する資格の枠です。準備中。</p>
+      <div class="card-meta"><span>Coming Soon</span></div>
+    </div>
+
+  </div>
+
+  <p class="footer">
+    新しい資格を追加するには <code>certifications/</code> 配下に資格ディレクトリを作成し、このページのカードを追加してください。
   </p>
+
+</div>
+
+<!-- ============================================================
+     クラウド同期：ログイン・ゲートウェイ＋アカウント管理
+     このLPは進捗ストアを持たない gateway ロール。
+     未ログインだとログイン画面で覆われ、資格カードを選べない。
+     ログインすると右上にアカウントバッジ（ログアウト／👑管理者）が出る。
+     ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
+     ============================================================ -->
+<script>
+  // cloud-sync のオーバーレイ/バッジをOSのダーク設定に追従させる
+  // （LP本体の配色は @media(prefers-color-scheme) で別途対応済み）
+  (function () {
+    var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    function apply() { document.body.classList.toggle('dark', !!(mq && mq.matches)); }
+    apply();
+    if (mq && mq.addEventListener) mq.addEventListener('change', apply);
+  })();
+  window.SFQ_PAGE_ROLE = 'gateway';
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cloud-sync.js"></script>
+
 </body>
 </html>

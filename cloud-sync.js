@@ -19,6 +19,13 @@
   var COLLECTION = window.SFQ_COLLECTION || 'progress';
   var MIGRATE_FLAG = 'sfq_migrated_v1';
 
+  // ページの役割:
+  //  'gateway' … ホーム(LP)。進捗ストアを持たず、ログイン必須＋アカウント管理のみ。
+  //  'client'  … 各資格(クイズ)ページ。進捗を同期。未ログイン時は強制せずLPへ誘導する。
+  // 明示指定が無ければ、ストアアダプタの有無で自動判定する。
+  var ROLE = 'gateway';
+  var HOME_URL = 'index.html';
+
   function sanitizeId(s) { return (s || '').trim().toLowerCase().replace(/[^a-z0-9._\-]/g, ''); }
   var ADMIN_IDS = (window.SFQ_ADMIN_IDS || []).map(sanitizeId);
 
@@ -95,13 +102,8 @@
   }
 
   /* ---------------- DOM 構築 ---------------- */
-  function buildUI() {
-    injectStyle();
-
-    elOverlay = document.createElement('div');
-    elOverlay.id = 'sfqc-overlay';
-    elOverlay.innerHTML =
-      '<div class="sfqc-card">' +
+  function loginCardHTML() {
+    return '<div class="sfqc-card">' +
         '<p class="sfqc-title">📚 学習アカウント</p>' +
         '<p class="sfqc-sub">ログインすると進捗がクラウドに保存され、<br>どの端末でも同じ続きから学習できます。</p>' +
         '<input id="sfqc-id" class="sfqc-field" type="text" autocomplete="username" placeholder="ID（半角英数字）" />' +
@@ -113,6 +115,24 @@
         '<div id="sfqc-msg" class="sfqc-msg"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
       '</div>';
+  }
+  // client（クイズ）ページ用: ログインせずに開いた時の誘導カード
+  function guideCardHTML() {
+    return '<div class="sfqc-card">' +
+        '<p class="sfqc-title">🔑 ログインが必要です</p>' +
+        '<p class="sfqc-sub">進捗を保存・同期するにはログインが必要です。<br>ホーム画面からログインしてください。</p>' +
+        '<div class="sfqc-row">' +
+          '<button id="sfqc-gohome" class="sfqc-btn sfqc-btn-primary">ホームへ移動してログイン</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function buildUI() {
+    injectStyle();
+
+    elOverlay = document.createElement('div');
+    elOverlay.id = 'sfqc-overlay';
+    elOverlay.innerHTML = (ROLE === 'client') ? guideCardHTML() : loginCardHTML();
     document.body.appendChild(elOverlay);
 
     elBadge = document.createElement('div');
@@ -138,18 +158,27 @@
       '</div>';
     document.body.appendChild(elAdmin);
 
-    elMsg = document.getElementById('sfqc-msg');
-    elId = document.getElementById('sfqc-id');
-    elPw = document.getElementById('sfqc-pw');
-    elLogin = document.getElementById('sfqc-login');
-    elSignup = document.getElementById('sfqc-signup');
     elStatus = document.getElementById('sfqc-status');
     elAdminBtn = document.getElementById('sfqc-admin-btn');
 
-    elLogin.addEventListener('click', doLogin);
-    elSignup.addEventListener('click', doSignup);
-    elPw.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
-    elId.addEventListener('keydown', function (e) { if (e.key === 'Enter') elPw.focus(); });
+    if (ROLE === 'client') {
+      // 誘導カード: ホームへ移動するだけ
+      var go = document.getElementById('sfqc-gohome');
+      if (go) go.addEventListener('click', function () { location.href = HOME_URL; });
+    } else {
+      // ログインフォーム
+      elMsg = document.getElementById('sfqc-msg');
+      elId = document.getElementById('sfqc-id');
+      elPw = document.getElementById('sfqc-pw');
+      elLogin = document.getElementById('sfqc-login');
+      elSignup = document.getElementById('sfqc-signup');
+      elLogin.addEventListener('click', doLogin);
+      elSignup.addEventListener('click', doSignup);
+      elPw.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+      elId.addEventListener('keydown', function (e) { if (e.key === 'Enter') elPw.focus(); });
+    }
+
+    // バッジ・管理者パネルは両モード共通
     document.getElementById('sfqc-logout').addEventListener('click', doLogout);
     elAdminBtn.addEventListener('click', openAdmin);
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
@@ -249,9 +278,19 @@
     currentEmail = user.email || '';
     currentName = currentEmail.split('@')[0];
     isAdmin = ADMIN_IDS.indexOf(sanitizeId(currentName)) >= 0;
-    setBadge(currentName); setStatus('読込中…'); showAdminBtn(isAdmin);
+    setBadge(currentName); showAdminBtn(isAdmin);
     busy(false);
 
+    // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
+    // 認証とアカウント管理（管理者ビュー）のみ。進捗の読込/移行は各クイズページ側に任せる。
+    if (!window.__setStore) {
+      setStatus('');
+      setMsg(''); if (elPw) elPw.value = '';
+      hideOverlay();
+      return;
+    }
+
+    setStatus('読込中…');
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
       if (doc.exists && doc.data() && doc.data().store) {
         window.__setStore(doc.data().store);
@@ -271,7 +310,7 @@
         db.collection(COLLECTION).doc(user.uid).set(docPayload(seed)).catch(function () {});
         setStatus('同期済み');
       }
-      setMsg(''); elPw.value = ''; hideOverlay();
+      setMsg(''); if (elPw) elPw.value = ''; hideOverlay();
     }).catch(function () {
       hideOverlay(); setStatus('オフライン'); toastSafe('オフライン: ローカルの進捗を表示中');
     });
@@ -422,17 +461,22 @@
 
   /* ---------------- 初期化 ---------------- */
   function init() {
-    buildUI();
-    showOverlay();
+    // 役割の決定: 明示指定（SFQ_PAGE_ROLE）を優先。無ければストアアダプタ有無で自動判定。
+    ROLE = window.SFQ_PAGE_ROLE || (window.__setStore ? 'client' : 'gateway');
+    HOME_URL = window.SFQ_HOME_URL || 'index.html';
 
+    buildUI();
+
+    // Firebase 未設定/未読込のときは、サイト全体をロックしない（特に gateway）。
+    // ログインできない状態で必須ゲートにすると締め出しになるため、同期なしで通す。
     if (!configOk()) {
-      setMsg('Firebaseの設定がまだ完了していません。「Firebaseセットアップ手順.md」をご確認ください。', 'err');
-      busy(true);
+      hideOverlay();
+      try { console.warn('[cloud-sync] Firebaseの設定が未完了です。「Firebaseセットアップ手順.md」を参照してください。'); } catch (e) {}
       return;
     }
     if (!window.firebase || !firebase.initializeApp) {
-      setMsg('Firebase SDK を読み込めませんでした。ネット接続を確認して再読み込みしてください。', 'err');
-      busy(true);
+      hideOverlay();
+      try { console.warn('[cloud-sync] Firebase SDK を読み込めませんでした。ネット接続を確認してください。'); } catch (e) {}
       return;
     }
     try {
@@ -440,10 +484,14 @@
       auth = firebase.auth();
       db = firebase.firestore();
     } catch (e) {
-      setMsg('Firebaseの初期化に失敗しました。設定内容をご確認ください。', 'err');
-      busy(true);
+      hideOverlay();
+      try { console.warn('[cloud-sync] Firebaseの初期化に失敗しました。', e); } catch (e2) {}
       return;
     }
+
+    // gateway は認証復元中もログイン画面で覆う（必須ゲート）。
+    // client は復元前にオーバーレイを出さない（ログイン済みで遷移してきた時のチラつき防止）。
+    if (ROLE !== 'client') showOverlay();
 
     auth.onAuthStateChanged(function (user) {
       if (user) {
@@ -451,7 +499,7 @@
       } else {
         currentUser = null; isAdmin = false;
         setBadge(''); setStatus(''); showAdminBtn(false); closeAdmin();
-        showOverlay();
+        showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
       }
     });
   }
