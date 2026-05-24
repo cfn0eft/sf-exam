@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0176d3">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
 <style>
 :root{
@@ -97,6 +102,21 @@ body{
 .btn-review{background:var(--success);color:#fff}
 .btn-textbook{background:var(--purple);color:#fff}
 .btn-vocab{background:var(--teal);color:#fff}
+.btn-srs{background:#6366f1;color:#fff}
+#srs-count{font-weight:700}
+.hm-wrap{overflow-x:auto;padding-bottom:4px}
+.hm-grid{display:flex;gap:3px;min-width:max-content}
+.hm-col{display:flex;flex-direction:column;gap:3px}
+.hm-cell{width:13px;height:13px;border-radius:3px;background:var(--border)}
+.hm-future{visibility:hidden}
+.hm-l0{background:var(--border)}
+.hm-l1{background:#9be9a8}
+.hm-l2{background:#40c463}
+.hm-l3{background:#30a14e}
+.hm-l4{background:#216e39}
+.hm-legend{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-sub);margin-top:8px}
+.hm-legend .hm-cell{width:11px;height:11px}
+[data-theme="dark"] .hm-l0{background:#1f2937}
 /* FILTER */
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .chip{
@@ -534,6 +554,9 @@ body{
   <button class="mode-btn btn-review" onclick="startReview()">
     <span class="bi">🔁</span><span class="bs"><span>復習モード</span><span class="bsub">間違えた問題・★のみ出題</span></span>
   </button>
+  <button class="mode-btn btn-srs" onclick="startSRS()">
+    <span class="bi">🧠</span><span class="bs"><span>SRS 復習<span id="srs-count"></span></span><span class="bsub">忘れる前に出題する間隔反復</span></span>
+  </button>
   <div class="sec-label">教材を読む</div>
   <button class="mode-btn btn-textbook" onclick="goTo('textbook')">
     <span class="bi">📚</span><span class="bs"><span>教科書</span><span class="bsub">学習ガイド・設定画面マップ</span></span>
@@ -778,6 +801,11 @@ body{
     <div class="stat-card"><div class="stat-num" id="st2-streak">0</div><div class="stat-label">連続正解</div></div>
   </div>
   <div class="card">
+    <div class="sec-label" style="margin-top:0">📅 学習カレンダー</div>
+    <div class="hm-wrap"><div id="heatmap"></div></div>
+    <div class="hm-legend"><span>少</span><span class="hm-cell hm-l1"></span><span class="hm-cell hm-l2"></span><span class="hm-cell hm-l3"></span><span class="hm-cell hm-l4"></span><span>多</span><span id="hm-sub" style="margin-left:auto"></span></div>
+  </div>
+  <div class="card">
     <div class="sec-label" style="margin-top:0">キーワード別 正答率（低い順）</div>
     <div id="st-kw"></div>
   </div>
@@ -819,12 +847,12 @@ let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
 // --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
-  return{bm:[],hist:{},streak:0,vm:{},tbm:{}};
+  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{}};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 // --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
-window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(store.streak==null)store.streak=0; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
+window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function recH(id,ok){
@@ -832,6 +860,8 @@ function recH(id,ok){
   if(ok){store.hist[id].c++;store.streak=(store.streak||0)+1;}
   else{store.hist[id].w++;store.streak=0;}
   store.hist[id].last=ok?'c':'w';
+  srsUpdate(id,ok);
+  bumpDaily();
   save();
 }
 // 直近の解答が不正解か（=復習対象）。正解すると自動で外れる。
@@ -928,6 +958,7 @@ function homeStats(){
   setText('st-acc',tt>0?Math.round(tc/tt*100)+'%':'—');
   const mastered=Object.values(store.vm||{}).filter(v=>v>=2).length;
   setText('st-vocab',mastered);
+  updateSrsBtn();
 }
 
 // --- nav ---
@@ -1628,6 +1659,7 @@ function startReview(){
 
 // ===== STATS =====
 function renderStats(){
+  renderHeatmap();
   const allH=store.hist;let tc=0,tw=0;
   Object.values(allH).forEach(h=>{tc+=h.c;tw+=h.w;});
   const tt=tc+tw;
@@ -1661,7 +1693,84 @@ function renderStats(){
 
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{}};save();homeStats();renderTextbook();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{}};save();homeStats();renderTextbook();toast('🗑️ リセットしました');
+}
+
+// ===== SRS（間隔反復・SM-2簡易版）=====
+function _today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function _addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+// 解答のたびに次回出題日(due)を更新。正解で間隔を伸ばし、不正解で当日に戻す。
+function srsUpdate(id,ok){
+  if(!store.srs)store.srs={};
+  const s=store.srs[id]||{ivl:0,ease:2.5,reps:0};
+  if(ok){
+    s.reps=(s.reps||0)+1;
+    if(s.reps<=1)s.ivl=1;
+    else if(s.reps===2)s.ivl=3;
+    else s.ivl=Math.max(1,Math.round((s.ivl||1)*(s.ease||2.5)));
+    s.ease=Math.min(3.0,(s.ease||2.5)+0.1);
+    s.due=_addDays(s.ivl);
+  }else{
+    s.reps=0;s.ivl=0;
+    s.ease=Math.max(1.3,(s.ease||2.5)-0.2);
+    s.due=_today();           // 当日中に再復習
+  }
+  store.srs[id]=s;
+}
+function srsDue(id){const s=store.srs&&store.srs[id];if(!s)return false;return (s.due||'9999-99-99')<=_today();}
+function srsDueList(){return allQ.filter(q=>srsDue(q.id));}
+function srsDueCount(){return srsDueList().length;}
+function updateSrsBtn(){const el=document.getElementById('srs-count');if(el){const n=srsDueCount();el.textContent=n?(' '+n):'';}}
+// startStudy() を経由せずに任意の問題集合で学習を開始（applyFilters で上書きされないように）
+function beginStudyWith(arr){
+  if(!arr||!arr.length){toast('対象の問題がありません');return;}
+  sQueue=arr;sCur=0;sOk=0;sNg=0;sRevealed=false;fShuf=true;
+  document.getElementById('s-end').style.display='none';
+  document.getElementById('s-card').style.display='block';
+  setText('sess-ok-txt','✓ 0');setText('sess-ng-txt','✗ 0');
+  goTo('study');renderSQ();
+}
+function startSRS(){
+  const due=srsDueList();
+  if(!due.length){toast('🎉 今日の復習はありません');return;}
+  beginStudyWith(shuffle(due));
+}
+
+// ===== 学習カレンダー（ヒートマップ）=====
+function bumpDaily(){if(!store.daily)store.daily={};const t=_today();store.daily[t]=(store.daily[t]||0)+1;}
+function renderHeatmap(){
+  const host=document.getElementById('heatmap');if(!host)return;
+  const daily=store.daily||{};
+  const WEEKS=20;
+  const today=new Date();today.setHours(0,0,0,0);
+  const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  // 起点 = (今日からWEEKS*7-1日前) を含む週の日曜
+  const cur=new Date(today);cur.setDate(cur.getDate()-(WEEKS*7-1));cur.setDate(cur.getDate()-cur.getDay());
+  const cols=[];
+  while(cur.getTime()<=today.getTime()){
+    const col=[];
+    for(let i=0;i<7;i++){
+      const ds=fmt(cur),future=cur.getTime()>today.getTime(),v=daily[ds]||0;
+      col.push({ds,v,future});
+      cur.setDate(cur.getDate()+1);
+    }
+    cols.push(col);
+  }
+  let html='<div class="hm-grid">';
+  cols.forEach(col=>{
+    html+='<div class="hm-col">';
+    col.forEach(c=>{
+      let lvl=0;
+      if(c.v>=10)lvl=4;else if(c.v>=6)lvl=3;else if(c.v>=3)lvl=2;else if(c.v>=1)lvl=1;
+      const cls=c.future?'hm-cell hm-future':'hm-cell hm-l'+lvl;
+      html+='<div class="'+cls+'" title="'+c.ds+'：'+c.v+'問"></div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  host.innerHTML=html;
+  let days=0,ans=0;Object.values(daily).forEach(v=>{if(v>0){days++;ans+=v;}});
+  const sub=document.getElementById('hm-sub');if(sub)sub.textContent=days+'日 / 計'+ans+'問';
 }
 
 </script>
@@ -1672,5 +1781,8 @@ function resetAll(){
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <script src="../../cloud-sync.js"></script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
+</script>
 </body>
 </html>
