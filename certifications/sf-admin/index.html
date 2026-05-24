@@ -543,6 +543,9 @@ body{
   </button>
   <div class="sec-label">絞り込み</div>
   <div class="filter-bar">
+    <label class="chip" id="chip-wrong">
+      <input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span>
+    </label>
     <label class="chip" id="chip-bm">
       <input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク
     </label>
@@ -809,7 +812,7 @@ let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false;
 // exam
 let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false;
 // filters
-let fBm=false,fShuf=true,fMulti=false,fKw='';
+let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
 // vocab
 let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
 
@@ -828,8 +831,12 @@ function recH(id,ok){
   if(!store.hist[id])store.hist[id]={c:0,w:0};
   if(ok){store.hist[id].c++;store.streak=(store.streak||0)+1;}
   else{store.hist[id].w++;store.streak=0;}
+  store.hist[id].last=ok?'c':'w';
   save();
 }
+// 直近の解答が不正解か（=復習対象）。正解すると自動で外れる。
+// last 未記録の旧データは w>0 をフォールバック判定。
+function isWrong(id){const h=store.hist[id];if(!h)return false;if(h.last)return h.last==='w';return h.w>0;}
 function isBm(id){return store.bm.includes(id);}
 function togBm(id){const i=store.bm.indexOf(id);if(i>=0)store.bm.splice(i,1);else store.bm.push(id);save();}
 function getVM(k){return store.vm[k]||0;}
@@ -889,20 +896,26 @@ function buildKwFilter(){
 }
 
 function applyFilters(){
+  fWrong=document.getElementById('f-wrong').checked;
   fBm=document.getElementById('f-bm').checked;
   fShuf=document.getElementById('f-shuf').checked;
   fMulti=document.getElementById('f-multi').checked;
   fKw=document.getElementById('f-kw').value;
+  document.getElementById('chip-wrong').classList.toggle('on',fWrong);
   document.getElementById('chip-bm').classList.toggle('on',fBm);
   document.getElementById('chip-bm').classList.toggle('bm-on',fBm);
   document.getElementById('chip-shuf').classList.toggle('on',fShuf);
   document.getElementById('chip-multi').classList.toggle('on',fMulti);
   filtQ=allQ.filter(q=>{
+    if(fWrong&&!isWrong(q.id))return false;
     if(fBm&&!isBm(q.id))return false;
     if(fMulti&&q.answers.length<2)return false;
     if(fKw&&!(q.keywords||[]).includes(fKw))return false;
     return true;
   });
+  const wc=allQ.filter(q=>isWrong(q.id)).length;
+  const wcEl=document.getElementById('wrong-count');
+  if(wcEl)wcEl.textContent=wc?' '+wc:'';
   const el=document.getElementById('f-count');
   if(el)el.textContent='対象: '+filtQ.length+' 問';
 }
@@ -1608,7 +1621,7 @@ function toggleExamWrong(){
 
 // ===== REVIEW =====
 function startReview(){
-  const bad=allQ.filter(q=>{const h=getH(q.id);return h.w>0||isBm(q.id);});
+  const bad=allQ.filter(q=>isWrong(q.id)||isBm(q.id));
   if(!bad.length){toast('復習する問題がありません');return;}
   filtQ=shuffle(bad);fShuf=true;startStudy();
 }
