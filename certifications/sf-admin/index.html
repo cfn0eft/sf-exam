@@ -317,14 +317,6 @@ body{
 }
 .md a{color:var(--primary);text-decoration:none}
 .md a:hover{text-decoration:underline}
-/* IMPORT */
-.import-area{
-  border:2px dashed var(--border);border-radius:var(--radius);
-  padding:20px;text-align:center;cursor:pointer;transition:border-color .15s;
-  margin-bottom:10px;
-}
-.import-area:hover{border-color:var(--primary)}
-.import-area input{display:none}
 /* TOAST */
 .toast{
   position:fixed;top:68px;left:50%;transform:translateX(-50%) translateY(-8px);
@@ -565,13 +557,7 @@ body{
     <option value="">🏷️ キーワードで絞り込み（全て）</option>
   </select>
   <div id="f-count" style="font-size:12px;color:var(--text-sub);margin-bottom:14px"></div>
-  <div class="sec-label">他の資格 / データ</div>
-  <label class="import-area" for="f-file">
-    <input type="file" id="f-file" accept=".json" onchange="onFileImport(this)">
-    <div style="font-size:28px;margin-bottom:6px">📂</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:3px">他の資格の問題を読み込む</div>
-    <div style="font-size:11px;color:var(--text-sub)">questions.json をドロップまたはタップして選択</div>
-  </label>
+  <div class="sec-label">データ</div>
   <button class="btn bg" style="width:100%;margin-top:8px" onclick="resetAll()">🗑️ 進捗データをリセット</button>
 </div>
 
@@ -854,12 +840,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   buildKwFilter();applyFilters();homeStats();
   renderTextbook();renderNavMap();renderChapNav();
   if(localStorage.getItem('dark')==='1')applyDark(true);
-  document.addEventListener('dragover',e=>e.preventDefault());
-  document.addEventListener('drop',e=>{
-    e.preventDefault();
-    const f=e.dataTransfer.files[0];
-    if(f&&f.name.endsWith('.json'))readJSON(f);
-  });
   document.addEventListener('keydown',handleKey);
 });
 
@@ -1666,23 +1646,6 @@ function renderStats(){
   });
 }
 
-// ===== IMPORT =====
-function onFileImport(input){if(input.files[0])readJSON(input.files[0]);}
-function readJSON(file){
-  const r=new FileReader();
-  r.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(!Array.isArray(data)||!data[0].question)throw new Error('形式エラー');
-      allQ=data;filtQ=[...data];
-      setText('cert-name',file.name.replace('.json',''));
-      setText('cert-sub',data.length+'問');
-      buildKwFilter();applyFilters();homeStats();
-      toast('✅ '+data.length+'問を読み込みました');
-    }catch(err){toast('❌ 読み込み失敗: '+err.message);}
-  };
-  r.readAsText(file);
-}
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
   store={bm:[],hist:{},streak:0,vm:{},tbm:{}};save();homeStats();renderTextbook();toast('🗑️ リセットしました');
