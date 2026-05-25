@@ -17,7 +17,11 @@
   var CFG = window.SFQ_FIREBASE_CONFIG || null;
   var LOGIN_DOMAIN = window.SFQ_LOGIN_DOMAIN || 'sfquiz.local';
   var COLLECTION = window.SFQ_COLLECTION || 'progress';
-  var MIGRATE_FLAG = 'sfq_migrated_v1';
+  // 資格ごとの名前空間キー。各クイズページの CERT_CONFIG.slug を使う（gateway/LP では 'default'）。
+  // これにより 1 ユーザーの doc 内を資格別に分け、資格どうしの上書き・全消えを防ぐ。
+  var CERT_KEY = (window.CERT_CONFIG && window.CERT_CONFIG.slug) || window.SFQ_CERT_KEY || 'default';
+  // ローカル→クラウド初回移行フラグも資格別に持つ（共有フラグだと2つ目以降の資格が移行されない）。
+  var MIGRATE_FLAG = 'sfq_migrated_' + CERT_KEY;
 
   // ページの役割:
   //  'gateway' … ホーム(LP)。進捗ストアを持たず、ログイン必須＋アカウント管理のみ。
@@ -273,6 +277,21 @@
   /* ---------------- ログイン後の同期 ---------------- */
   function docPayload(store) { return { store: store, name: currentName, email: currentEmail, updated: Date.now() }; }
 
+  // 資格ごとにドキュメント内を名前空間化して保存する（stores[CERT_KEY]）。
+  // FieldPath で stores.<CERT_KEY> のみを丸ごと置換するので、(1) 他資格のサブストアは保持され、
+  // (2) リセット（空ストア書込）時に古い履歴キーが残らない（deep-merge を避ける）。
+  function saveCertStore(uid, st) {
+    var ref = db.collection(COLLECTION).doc(uid);
+    var FP = firebase.firestore.FieldPath;
+    return ref.update(new FP('stores', CERT_KEY), st, 'name', currentName, 'email', currentEmail, 'updated', Date.now())
+      .catch(function () {
+        // doc がまだ無い場合は作成（merge:true、stores はこの資格のみ）
+        var obj = { stores: {}, name: currentName, email: currentEmail, updated: Date.now() };
+        obj.stores[CERT_KEY] = st;
+        return ref.set(obj, { merge: true });
+      });
+  }
+
   function onLogin(user) {
     currentUser = user;
     currentEmail = user.email || '';
@@ -292,11 +311,15 @@
 
     setStatus('読込中…');
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
-      if (doc.exists && doc.data() && doc.data().store) {
-        window.__setStore(doc.data().store);
+      var data = (doc.exists && doc.data()) || {};
+      var certStore = data.stores && data.stores[CERT_KEY];
+      if (certStore) {
+        // この資格のクラウド進捗を採用（資格別に分離されている）
+        window.__setStore(certStore);
         if (window.__refreshUI) window.__refreshUI();
         setStatus('同期済み');
       } else {
+        // この資格の進捗が未登録 → ローカル進捗を1回だけ移行（資格別フラグ）。無ければ空で開始。
         var seed = emptyStore();
         try {
           if (!localStorage.getItem(MIGRATE_FLAG) && window.__getStore) {
@@ -307,7 +330,7 @@
         try { localStorage.setItem(MIGRATE_FLAG, '1'); } catch (e) {}
         window.__setStore(seed);
         if (window.__refreshUI) window.__refreshUI();
-        db.collection(COLLECTION).doc(user.uid).set(docPayload(seed)).catch(function () {});
+        saveCertStore(user.uid, seed).catch(function () {});
         setStatus('同期済み');
       }
       setMsg(''); if (elPw) elPw.value = ''; hideOverlay();
@@ -324,7 +347,7 @@
     saveTimer = setTimeout(function () {
       var st = window.__getStore ? window.__getStore() : null;
       if (!st) return;
-      db.collection(COLLECTION).doc(currentUser.uid).set(docPayload(st))
+      saveCertStore(currentUser.uid, st)
         .then(function () { setStatus('保存済み'); })
         .catch(function () { setStatus('オフライン'); });
     }, 800);
@@ -350,9 +373,19 @@
       adminRows = [];
       snap.forEach(function (d) {
         var data = d.data() || {};
-        var store = data.store || emptyStore();
         var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
-        adminRows.push({ uid: d.id, name: nm, updated: data.updated || 0, store: store, stats: statsOf(store) });
+        var stores = data.stores;
+        if (stores && typeof stores === 'object' && Object.keys(stores).length) {
+          Object.keys(stores).forEach(function (ck) {
+            var store = stores[ck] || emptyStore();
+            adminRows.push({ uid: d.id, cert: ck, name: nm, updated: data.updated || 0, store: store, stats: statsOf(store) });
+          });
+        } else if (data.store) {
+          // 旧スキーマ（資格未分離）の doc
+          adminRows.push({ uid: d.id, cert: '(旧)', name: nm, updated: data.updated || 0, store: data.store, stats: statsOf(data.store) });
+        } else {
+          adminRows.push({ uid: d.id, cert: '—', name: nm, updated: data.updated || 0, store: emptyStore(), stats: statsOf(emptyStore()) });
+        }
       });
       adminRows.sort(function (a, b) { return b.updated - a.updated; });
       renderAdmin();
@@ -377,7 +410,7 @@
       html +=
         '<div class="sfqc-acc">' +
           '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(r.name) + '</span>' +
+            '<span class="sfqc-acc-name">👤 ' + esc(r.name) + ' <span style="font-weight:600;color:#2563eb;font-size:12px">[' + esc(r.cert) + ']</span></span>' +
             '<span class="sfqc-acc-stats">' +
               '<span>回答した問題 <b>' + s.answered + '</b></span>' +
               '<span>正答率 <b>' + s.rate + '%</b></span>' +
@@ -389,8 +422,8 @@
             '</span>' +
             '<span class="sfqc-acc-actions">' +
               '<button class="sfqc-act-detail" data-i="' + i + '">詳細</button>' +
-              '<button class="sfqc-act-reset" data-uid="' + esc(r.uid) + '" data-name="' + esc(r.name) + '">リセット</button>' +
-              '<button class="sfqc-act-del" data-uid="' + esc(r.uid) + '" data-name="' + esc(r.name) + '">削除</button>' +
+              '<button class="sfqc-act-reset" data-uid="' + esc(r.uid) + '" data-cert="' + esc(r.cert) + '" data-name="' + esc(r.name) + '">リセット</button>' +
+              '<button class="sfqc-act-del" data-uid="' + esc(r.uid) + '" data-cert="' + esc(r.cert) + '" data-name="' + esc(r.name) + '">削除</button>' +
             '</span>' +
           '</div>' +
           '<div class="sfqc-detail" id="sfqc-det-' + i + '"></div>' +
@@ -399,8 +432,8 @@
     body.innerHTML = html;
 
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) { b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); }); });
-    body.querySelectorAll('.sfqc-act-reset').forEach(function (b) { b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-name')); }); });
-    body.querySelectorAll('.sfqc-act-del').forEach(function (b) { b.addEventListener('click', function () { deleteAccount(b.getAttribute('data-uid'), b.getAttribute('data-name')); }); });
+    body.querySelectorAll('.sfqc-act-reset').forEach(function (b) { b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); }); });
+    body.querySelectorAll('.sfqc-act-del').forEach(function (b) { b.addEventListener('click', function () { deleteAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); }); });
   }
 
   function toggleDetail(i) {
@@ -426,29 +459,38 @@
     box.classList.add('show');
   }
 
-  function resetAccount(uid, name) {
+  function resetAccount(uid, cert, name) {
     if (!isAdmin || !db) return;
-    if (!confirm('「' + name + '」の進捗をすべてリセットします。よろしいですか？')) return;
-    db.collection(COLLECTION).doc(uid).set({ store: emptyStore(), name: name, updated: Date.now() }, { merge: true })
-      .then(function () { toastSafe('「' + name + '」をリセットしました'); loadAdmin(); })
-      .catch(function (e) { alert('リセットに失敗しました: ' + (e && e.message)); });
+    if (!confirm('「' + name + '」［' + cert + '］の進捗をリセットします。よろしいですか？')) return;
+    var ref = db.collection(COLLECTION).doc(uid);
+    var FP = firebase.firestore.FieldPath;
+    var p = (cert === '(旧)' || cert === '—')
+      ? ref.update('store', emptyStore(), 'updated', Date.now())
+      : ref.update(new FP('stores', cert), emptyStore(), 'updated', Date.now());
+    p.then(function () { toastSafe('「' + name + '」［' + cert + '］をリセットしました'); loadAdmin(); })
+     .catch(function (e) { alert('リセットに失敗しました: ' + (e && e.message)); });
   }
 
-  function deleteAccount(uid, name) {
+  function deleteAccount(uid, cert, name) {
     if (!isAdmin || !db) return;
-    if (!confirm('「' + name + '」の進捗データを削除します。\n（ログインアカウント自体はFirebaseコンソールから削除します）\nよろしいですか？')) return;
-    db.collection(COLLECTION).doc(uid).delete()
-      .then(function () { toastSafe('「' + name + '」を削除しました'); loadAdmin(); })
-      .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
+    if (!confirm('「' + name + '」［' + cert + '］の進捗データを削除します。\n（この資格のデータのみ削除。ログインアカウント自体はFirebaseコンソールから削除します）\nよろしいですか？')) return;
+    var ref = db.collection(COLLECTION).doc(uid);
+    var FP = firebase.firestore.FieldPath;
+    var FV = firebase.firestore.FieldValue;
+    var p = (cert === '(旧)' || cert === '—')
+      ? ref.update('store', FV.delete(), 'updated', Date.now())
+      : ref.update(new FP('stores', cert), FV.delete(), 'updated', Date.now());
+    p.then(function () { toastSafe('「' + name + '」［' + cert + '］を削除しました'); loadAdmin(); })
+     .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
   }
 
   function exportCsv() {
     if (!adminRows.length) { alert('書き出すデータがありません。'); return; }
-    var head = ['ID', '最終更新', '回答した問題数', '総回答回数', '正解数', '不正解数', '正答率(%)', '連続正解', 'ブックマーク数', '単語学習数'];
+    var head = ['ID', '資格', '最終更新', '回答した問題数', '総回答回数', '正解数', '不正解数', '正答率(%)', '連続正解', 'ブックマーク数', '単語学習数'];
     var lines = [head.join(',')];
     adminRows.forEach(function (r) {
       var s = r.stats;
-      var row = [r.name, fmtDate(r.updated), s.answered, s.attempts, s.correct, s.wrong, s.rate, s.streak, s.bookmarks, s.vocab];
+      var row = [r.name, r.cert, fmtDate(r.updated), s.answered, s.attempts, s.correct, s.wrong, s.rate, s.streak, s.bookmarks, s.vocab];
       lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
     });
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
