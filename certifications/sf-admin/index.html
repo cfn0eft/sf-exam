@@ -661,6 +661,9 @@ body{
   </button>
   <div class="sec-label">絞り込み</div>
   <div class="filter-bar">
+    <label class="chip" id="chip-new">
+      <input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span>
+    </label>
     <label class="chip" id="chip-wrong">
       <input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span>
     </label>
@@ -1011,6 +1014,8 @@ function recH(id,ok,low){
 // 直近の解答が不正解か（=復習対象）。正解すると自動で外れる。
 // last 未記録の旧データは w>0 をフォールバック判定。
 function isWrong(id){const h=store.hist[id];if(!h)return false;if(h.last)return h.last==='w';return h.w>0;}
+// 未回答＝解答履歴が無い（正誤いずれもまだ記録されていない）問題。
+function isUnseen(id){const h=store.hist[id];return !h||(h.c+h.w)===0;}
 // 要復習＝間違えた問題、または「自信なし」で正解した問題（まぐれ）。
 function needsReview(id){const h=store.hist[id];if(!h)return false;if(isWrong(id))return true;return h.last==='c'&&h.lc===1;}
 function isLowConfCorrect(id){const h=store.hist[id];return !!(h&&h.last==='c'&&h.lc===1);}
@@ -1081,6 +1086,8 @@ function applyFilters(){
   fMulti=document.getElementById('f-multi').checked;
   fKw=document.getElementById('f-kw').value;
   const fLc=document.getElementById('f-lc').checked;
+  const fNew=document.getElementById('f-new').checked;
+  document.getElementById('chip-new').classList.toggle('on',fNew);
   document.getElementById('chip-wrong').classList.toggle('on',fWrong);
   document.getElementById('chip-lc').classList.toggle('on',fLc);
   document.getElementById('chip-bm').classList.toggle('on',fBm);
@@ -1089,6 +1096,7 @@ function applyFilters(){
   document.getElementById('chip-multi').classList.toggle('on',fMulti);
   syncCShufChip();
   filtQ=allQ.filter(q=>{
+    if(fNew&&!isUnseen(q.id))return false;
     if(fWrong&&!isWrong(q.id))return false;
     if(fLc&&!isLowConfCorrect(q.id))return false;
     if(fBm&&!isBm(q.id))return false;
@@ -1096,6 +1104,9 @@ function applyFilters(){
     if(fKw&&!(q.keywords||[]).includes(fKw))return false;
     return true;
   });
+  const nc=allQ.filter(q=>isUnseen(q.id)).length;
+  const ncEl=document.getElementById('new-count');
+  if(ncEl)ncEl.textContent=nc?' '+nc:'';
   const wc=allQ.filter(q=>isWrong(q.id)).length;
   const wcEl=document.getElementById('wrong-count');
   if(wcEl)wcEl.textContent=wc?' '+wc:'';

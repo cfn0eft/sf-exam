@@ -76,6 +76,7 @@
   </button>
   <div class="sec-label">絞り込み</div>
   <div class="filter-bar">
+    <label class="chip" id="chip-new"><input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span></label>
     <label class="chip" id="chip-wrong"><input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span></label>
     <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span></label>
     <label class="chip" id="chip-bm"><input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク</label>
@@ -215,6 +216,7 @@ window.__refreshUI=function(){try{homeStats();}catch(e){}try{applyFilters();}cat
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function cshufOn(){return localStorage.getItem('sfqab_cshuf')!=='0';}
 function isWrong(id){const h=store.hist[id];return h?h.last==='w':false;}
+function isUnseen(id){const h=store.hist[id];return !h||!(h.c||h.w);}
 function needsReview(id){const h=store.hist[id];return h?(h.last==='w'||(h.last==='c'&&h.lc===1)):false;}
 function answered(){let n=0;allQ.forEach(q=>{const h=store.hist[q.id];if(h&&(h.c||h.w))n++;});return n;}
 
@@ -290,6 +292,7 @@ function homeStats(){
   document.getElementById('st-acc').textContent=ans?Math.round(ok/ans*100)+'%':'—';
   document.getElementById('st-streak').textContent=store.streak||0;
   const sc=document.getElementById('srs-count');if(sc){const n=srsDueList().length;sc.textContent=n?'（'+n+'）':'';}
+  const nwc=document.getElementById('new-count');if(nwc){const n=allQ.filter(q=>isUnseen(q.id)).length;nwc.textContent=n?'('+n+')':'';}
   const wc=document.getElementById('wrong-count');if(wc){const n=allQ.filter(q=>isWrong(q.id)).length;wc.textContent=n?'('+n+')':'';}
   const lcc=document.getElementById('lc-count');if(lcc){const n=allQ.filter(q=>{const h=store.hist[q.id];return h&&h.lc===1;}).length;lcc.textContent=n?'('+n+')':'';}
   renderPlan();
@@ -297,11 +300,12 @@ function homeStats(){
 
 /* ---- フィルター ---- */
 function toggleCshuf(){localStorage.setItem('sfqab_cshuf',cshufOn()?'0':'1');document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());}
-function syncChips(){[['chip-shuf','f-shuf'],['chip-wrong','f-wrong'],['chip-lc','f-lc'],['chip-bm','f-bm'],['chip-multi','f-multi']].forEach(([c,f])=>{
+function syncChips(){[['chip-shuf','f-shuf'],['chip-new','f-new'],['chip-wrong','f-wrong'],['chip-lc','f-lc'],['chip-bm','f-bm'],['chip-multi','f-multi']].forEach(([c,f])=>{
   const on=document.getElementById(f).checked;document.getElementById(c).classList.toggle(f==='f-bm'?'bm-on':'on',on);});
   document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());}
 function applyFilters(){
   let a=allQ.slice();
+  if(document.getElementById('f-new').checked)a=a.filter(q=>isUnseen(q.id));
   if(document.getElementById('f-bm').checked)a=a.filter(q=>store.bm.includes(q.id));
   if(document.getElementById('f-wrong').checked)a=a.filter(q=>isWrong(q.id));
   if(document.getElementById('f-lc').checked)a=a.filter(q=>{const h=store.hist[q.id];return h&&h.lc===1;});
