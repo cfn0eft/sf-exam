@@ -1,23 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#0176d3">
 <link rel="manifest" href="../../manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<title>SF資格 学習アプリ</title>
 <link rel="stylesheet" href="../../quiz.css">
-<title>Platform アプリケーションビルダー — 学習アプリ</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-config.js"></script>
 </head>
+<body>
 <body>
 
 <!-- TOP BAR -->
 <div class="topbar">
   <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
   <a class="topbar-btn" href="../../index.html" title="資格選択へ戻る" style="text-decoration:none">🏠</a>
-  <span class="topbar-title" id="topbar-title">Platform アプリケーションビルダー</span>
+  <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
   <button class="topbar-btn" id="btn-dark" onclick="toggleDark()">🌙</button>
 </div>
 <div class="toast" id="toast"></div>
@@ -25,9 +31,10 @@
 <!-- ===== HOME ===== -->
 <div class="page active" id="pg-home">
   <div class="cert-badge">
-    <h2 id="cert-name">Salesforce 認定 Platform アプリケーションビルダー</h2>
-    <p id="cert-sub">宣言的アプリ構築 ・ 公式5分野 ・ 合格ライン63%</p>
+    <h2 id="cert-name"></h2>
+    <p id="cert-sub"></p>
   </div>
+  <!-- 学習計画：受験日カウントダウン＋デイリー目標 -->
   <div class="plan-card">
     <div class="plan-top">
       <div class="plan-cd" id="plan-cd"><span class="big">受験日 未設定</span><span class="sub">⚙️ から受験日と目標を設定</span></div>
@@ -52,41 +59,55 @@
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-num" id="st-done">0</div><div class="stat-label">解答済み</div></div>
     <div class="stat-card"><div class="stat-num" id="st-acc">—</div><div class="stat-label">正答率</div></div>
-    <div class="stat-card"><div class="stat-num" id="st-streak">0</div><div class="stat-label">連続正解</div></div>
+    <div class="stat-card"><div class="stat-num" id="st-vocab">0</div><div class="stat-label">習得用語</div></div>
   </div>
   <div class="sec-label">問題を解く</div>
   <button class="mode-btn btn-study" onclick="startStudy()">
     <span class="bi">📖</span><span class="bs"><span>学習モード</span><span class="bsub">問題を解いて解説を確認</span></span>
   </button>
   <button class="mode-btn btn-exam" onclick="startExam()">
-    <span class="bi">⏱️</span><span class="bs"><span>試験モード</span><span class="bsub">60問・105分・合格ライン63%</span></span>
+    <span class="bi">⏱️</span><span class="bs"><span>試験モード</span><span class="bsub"></span></span>
   </button>
   <button class="mode-btn btn-review" onclick="startReview()">
-    <span class="bi">🔁</span><span class="bs"><span>復習モード</span><span class="bsub">間違い・自信なしの問題を出題</span></span>
+    <span class="bi">🔁</span><span class="bs"><span>復習モード</span><span class="bsub">間違えた問題・★のみ出題</span></span>
   </button>
   <button class="mode-btn btn-srs" onclick="startSRS()">
     <span class="bi">🧠</span><span class="bs"><span>SRS 復習<span id="srs-count"></span></span><span class="bsub">忘れる前に出題する間隔反復</span></span>
   </button>
   <div class="sec-label">教材を読む</div>
   <button class="mode-btn btn-textbook" onclick="goTo('textbook')">
-    <span class="bi">📚</span><span class="bs"><span>教科書</span><span class="bsub">学習ガイド・設定画面マップ（準備中）</span></span>
+    <span class="bi">📚</span><span class="bs"><span>教科書</span><span class="bsub">学習ガイド・設定画面マップ</span></span>
   </button>
   <button class="mode-btn btn-vocab" onclick="goTo('vocab')">
-    <span class="bi">🔤</span><span class="bs"><span>用語帳</span><span class="bsub">フラッシュカードで用語を暗記（準備中）</span></span>
+    <span class="bi">🔤</span><span class="bs"><span>用語帳</span><span class="bsub">フラッシュカードで用語を暗記</span></span>
   </button>
   <div class="sec-label">絞り込み</div>
   <div class="filter-bar">
-    <label class="chip" id="chip-new"><input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span></label>
-    <label class="chip" id="chip-wrong"><input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span></label>
-    <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span></label>
-    <label class="chip" id="chip-bm"><input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク</label>
-    <label class="chip" id="chip-multi"><input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ</label>
+    <label class="chip" id="chip-new">
+      <input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span>
+    </label>
+    <label class="chip" id="chip-wrong">
+      <input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span>
+    </label>
+    <label class="chip" id="chip-lc">
+      <input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span>
+    </label>
+    <label class="chip" id="chip-bm">
+      <input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク
+    </label>
+    <label class="chip" id="chip-multi">
+      <input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ
+    </label>
   </div>
   <div class="filter-bar">
-    <label class="chip on" id="chip-shuf"><input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順</label>
-    <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCshuf()">🔀 選択肢順</button>
+    <label class="chip on" id="chip-shuf">
+      <input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順
+    </label>
+    <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCShuf()">🔀 選択肢順</button>
   </div>
-  <select class="fsel" id="f-kw" onchange="applyFilters()"><option value="">🏷️ キーワードで絞り込み（全て）</option></select>
+  <select class="fsel" id="f-kw" onchange="applyFilters()">
+    <option value="">🏷️ キーワードで絞り込み（全て）</option>
+  </select>
   <div id="f-count" style="font-size:12px;color:var(--text-sub);margin-bottom:14px"></div>
   <div class="sec-label">データ</div>
   <button class="btn bg" style="width:100%;margin-top:8px" onclick="resetAll()">🗑️ 進捗データをリセット</button>
@@ -94,89 +115,257 @@
 
 <!-- ===== STUDY ===== -->
 <div class="page" id="pg-study">
-  <div class="card" id="s-card">
-    <div class="quiz-top">
-      <span class="qprog" id="s-prog"></span>
-      <button class="bmbtn" id="s-bm" onclick="toggleBm()" title="ブックマーク">☆</button>
-    </div>
-    <div class="pbar"><div class="pfill" id="s-bar" style="width:0%"></div></div>
-    <span class="qbadge" id="s-badge"></span>
-    <div class="qtext" id="s-q"></div>
-    <div class="choices" id="s-choices"></div>
-    <div class="action-row">
-      <button class="btn bp" id="s-act" onclick="studyAct()">解答する</button>
-      <button class="conf-toggle" id="s-conf" onclick="toggleLowConf()">🤔 自信なし</button>
-    </div>
-    <div class="kbd-hint"><kbd>1</kbd>〜<kbd>9</kbd> 選択　<kbd>Enter</kbd> 解答/次へ　<kbd>←</kbd><kbd>→</kbd> 移動　<kbd>0</kbd> 自信なし</div>
-    <div class="exp-box" id="s-exp"></div>
-    <div class="memo-wrap">
-      <div class="memo-label">📝 メモ <span class="memo-saved" id="s-memo-saved">保存しました</span></div>
-      <textarea class="memo-box" id="s-memo" placeholder="この問題のメモ（自動保存）" oninput="onMemo()"></textarea>
-    </div>
-    <div class="action-row" style="margin-top:10px">
-      <button class="btn bg btn-sm" onclick="studyPrev()">← 前</button>
-      <button class="btn bg btn-sm" onclick="studyNext()">次 →</button>
+  <div class="quiz-top">
+    <span class="qprog" id="s-prog">0 / 0</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="sess-ok" id="sess-ok-txt">✓ 0</span>
+      <span style="color:var(--border)">|</span>
+      <span class="sess-ng" id="sess-ng-txt">✗ 0</span>
+      <button class="bmbtn" id="s-bmbtn" onclick="toggleBm()">☆</button>
     </div>
   </div>
-  <div class="card" id="s-empty" style="display:none">対象の問題がありません。ホームの絞り込みを見直してください。</div>
+  <div class="pbar"><div class="pfill" id="s-pfill"></div></div>
+  <div class="card" id="s-card">
+    <div class="qbadge" id="s-badge">Q1</div>
+    <div class="qtext" id="s-qtext"></div>
+    <div class="choices" id="s-choices"></div>
+    <div class="action-row">
+      <button class="btn bp" id="s-check" onclick="checkAnswer()" disabled>解答する</button>
+      <button type="button" class="conf-toggle" id="s-conf" onclick="toggleConf()" title="自信がなければONに。正解でも復習に回ります">🤔 自信なし</button>
+    </div>
+    <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>Enter</kbd> で解答・次へ　/　<kbd>0</kbd> で自信なし切替</div>
+    <div class="exp-box" id="s-exp"></div>
+    <div class="action-row" id="s-next-row" style="margin-top:10px;display:none">
+      <button class="btn bg btn-sm" onclick="nextSQ()">次の問題 →</button>
+    </div>
+    <div class="memo-wrap">
+      <div class="memo-label">📝 メモ <span class="memo-saved" id="memo-saved">✓ 保存</span></div>
+      <textarea class="memo-box" id="s-memo" placeholder="この問題の覚え書き（自動保存・端末間で同期）" oninput="onMemoInput()"></textarea>
+    </div>
+  </div>
+  <div id="s-end" style="display:none">
+    <div class="card result-box">
+      <div style="font-size:44px">🎉</div>
+      <div class="result-label">セッション完了！</div>
+      <div class="result-num" id="s-end-score"></div>
+      <div class="result-sub" id="s-end-sub"></div>
+      <div style="margin-top:18px;display:flex;gap:10px">
+        <button class="btn bp" onclick="startStudy()">もう一度</button>
+        <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ===== EXAM ===== -->
 <div class="page" id="pg-exam">
-  <div class="card" id="e-intro">
-    <div class="sec-label" style="margin-top:0">模擬試験</div>
-    <p style="font-size:14px;line-height:1.8">本番比率（公式5分野のウェイト）で <b id="e-n">60</b> 問を出題します。<br>制限時間 <b>105分</b>、合格ライン <b>63%</b>。</p>
-    <div class="action-row" style="margin-top:14px"><button class="btn bp" onclick="examStart()">試験を開始</button></div>
+  <div class="quiz-top">
+    <span class="qprog" id="e-prog">0 / 60</span>
+    <div class="timer" id="e-timer">⏱ 1:45:00</div>
   </div>
-  <div class="card" id="e-run" style="display:none">
-    <div class="quiz-top">
-      <span class="qprog" id="e-prog"></span>
-      <span class="timer" id="e-timer">105:00</span>
+  <div class="pbar"><div class="pfill" id="e-pfill"></div></div>
+  <div id="e-area">
+    <div class="card">
+      <div class="qbadge" id="e-badge">Q1</div>
+      <div class="qtext" id="e-qtext"></div>
+      <div class="choices" id="e-choices"></div>
+      <div class="action-row" style="margin-top:8px">
+        <button class="btn bg btn-sm" id="e-prev" onclick="eNav(-1)">← 前</button>
+        <button class="btn bp btn-sm" id="e-next" onclick="eNav(1)">次 →</button>
+      </div>
+      <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>←</kbd> <kbd>→</kbd> で問題移動</div>
     </div>
-    <div class="pbar"><div class="pfill" id="e-bar" style="width:0%"></div></div>
-    <span class="qbadge" id="e-badge"></span>
-    <div class="qtext" id="e-q"></div>
-    <div class="choices" id="e-choices"></div>
-    <div class="action-row">
-      <button class="btn bg btn-sm" onclick="examPrev()">← 前</button>
-      <button class="btn bg btn-sm" onclick="examNext()">次 →</button>
-      <button class="btn bp" onclick="examFinish()">採点する</button>
+    <div style="text-align:center;margin-top:14px;padding-bottom:8px">
+      <button class="btn bd" style="width:auto;padding:12px 32px" onclick="finishExam()">採点する</button>
     </div>
-    <div id="e-nav" style="margin-top:12px"></div>
   </div>
-  <div id="e-result" style="display:none"></div>
+  <div id="e-result" style="display:none">
+    <div class="card result-box">
+      <div class="result-num" id="e-pct"></div>
+      <div class="result-label">正答率</div>
+      <div class="pass-pill" id="e-pill"></div>
+      <div class="result-sub" id="e-detail"></div>
+    </div>
+    <div class="card">
+      <div class="sec-label" style="margin-top:0">📊 分野別スコア</div>
+      <div id="e-domains"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="sec-label" style="margin:0">問題ごとの結果</div>
+        <button class="chip" id="e-wrong-toggle" onclick="toggleExamWrong()">❌ 間違いのみ</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px">タップで解説を表示</div>
+      <div id="e-rlist"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <button class="btn bp" onclick="startExam()">もう一度</button>
+      <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TEXTBOOK ===== -->
+<div class="page" id="pg-textbook">
+  <!-- ★ 章まとめモーダル -->
+  <div class="sum-overlay" id="sum-overlay" onclick="closeSummary()"></div>
+  <div class="sum-modal" id="sum-modal">
+    <div class="sum-header">
+      <span id="sum-title">まとめ</span>
+      <button class="sum-close" onclick="closeSummary()">✕</button>
+    </div>
+    <div class="sum-body" id="sum-body"></div>
+  </div>
+
+  <div id="tb-list">
+    <!-- タブ切替 -->
+    <div class="filter-bar" style="margin-bottom:10px">
+      <button class="chip on" id="tt-guide" onclick="switchTbTab('guide')">📚 学習ガイド</button>
+      <button class="chip" id="tt-nav" onclick="switchTbTab('nav')">🗺️ 設定マップ</button>
+    </div>
+
+    <!-- ★ 章ナビゲーションバー -->
+    <div class="ch-nav" id="ch-nav"></div>
+
+    <!-- 検索バー -->
+    <div class="search-wrap">
+      <input class="search-box" id="tb-search" placeholder="🔍 用語・定義を検索..." oninput="tbSearch(this.value)">
+      <button class="search-clear" id="tb-clear" onclick="clearTbSearch()" style="display:none">✕</button>
+    </div>
+    <div class="search-count" id="search-count" style="display:none"></div>
+
+    <!-- ★ 未読フィルター -->
+    <div class="tb-mark-filter" id="tb-mark-filter" style="display:none">
+      <button class="chip on" id="tmf-all" onclick="setMarkFilter('all')">すべて</button>
+      <button class="chip" id="tmf-bm" onclick="setMarkFilter('bm')">🔖 しおり</button>
+      <button class="chip" id="tmf-undone" onclick="setMarkFilter('undone')">未読</button>
+      <button class="chip" id="tmf-done" onclick="setMarkFilter('done')">✓ 読了</button>
+    </div>
+
+    <div id="tb-guide"></div>
+    <div id="tb-nav" style="display:none"></div>
+  </div>
+
+  <!-- 用語詳細ビュー -->
+  <div class="td-view" id="td-view">
+    <div class="td-nav-row">
+      <button class="td-nav-btn" id="td-prev" onclick="navTD(-1)">‹ 前へ</button>
+      <span class="td-nav-pos" id="td-pos"></span>
+      <button class="td-nav-btn" id="td-next" onclick="navTD(1)">次へ ›</button>
+    </div>
+    <div class="td-head">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div>
+          <h2 id="td-title"></h2>
+          <p id="td-en"></p>
+        </div>
+        <button class="td-mark-btn" id="td-mark-btn" onclick="cycleTDMark()">●</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-blk">
+        <h3>📖 定義</h3>
+        <div class="md" id="td-def"></div>
+      </div>
+      <div class="sec-blk" id="td-ep-blk">
+        <h3>⚡ 試験のポイント</h3>
+        <div id="td-ep"></div>
+      </div>
+      <div class="sec-blk" id="td-q-blk">
+        <h3>📝 関連問題</h3>
+        <div id="td-qs"></div>
+      </div>
+    </div>
+    <button class="btn bg" onclick="closeTD()" style="margin-bottom:16px">← 一覧に戻る</button>
+  </div>
+</div>
+
+<!-- ===== VOCAB ===== -->
+<div class="page" id="pg-vocab">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <span class="qprog" id="v-prog">0 / 0</span>
+    <span style="font-size:13px;color:var(--teal);font-weight:700" id="v-mast">★ 0 習得</span>
+  </div>
+  <div class="vbar-wrap"><div class="vbar-fill" id="v-bar"></div></div>
+  <div class="vfil-bar">
+    <button class="chip on" id="vf-all" onclick="setVF('all')">すべて</button>
+    <button class="chip" id="vf-unseen" onclick="setVF('unseen')">未学習</button>
+    <button class="chip" id="vf-hard" onclick="setVF('hard')">苦手</button>
+    <button class="chip" id="vf-mastered" onclick="setVF('mastered')">習得済</button>
+  </div>
+  <div id="v-cards">
+    <div class="card-scene" id="card-scene" onclick="flipCard()">
+      <div class="card-flip" id="card-flip">
+        <div class="cface cfront">
+          <span class="ccat" id="vc-cat"></span>
+          <div class="cterm" id="vc-term"></div>
+          <div class="cen" id="vc-en"></div>
+          <div class="chint">タップして答えを見る 👆</div>
+        </div>
+        <div class="cface cback">
+          <span class="ccat-back" id="vc-cat2"></span>
+          <div class="cdef" id="vc-def"></div>
+          <div class="cpts" id="vc-pts"></div>
+        </div>
+      </div>
+    </div>
+    <div class="vact">
+      <button class="btn bd" onclick="vRate(false)">✗ もう一度</button>
+      <button class="btn bs-" onclick="vRate(true)">✓ 覚えた！</button>
+    </div>
+    <div style="text-align:center;margin-bottom:10px">
+      <button class="btn bg btn-sm" style="width:auto" onclick="vSkip()">スキップ →</button>
+    </div>
+  </div>
+  <div id="v-done" class="vdone" style="display:none">
+    <div style="font-size:52px;margin-bottom:14px">🎓</div>
+    <div class="result-label" id="v-done-label"></div>
+    <div class="result-sub" style="margin:6px 0 20px" id="v-done-sub"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn bt" onclick="vRestart()">もう一度</button>
+      <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+    </div>
+  </div>
 </div>
 
 <!-- ===== STATS ===== -->
 <div class="page" id="pg-stats">
-  <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div class="sec-label" style="margin-top:0">分野別の習熟度</div><button class="dom-focus-btn" onclick="startWeak()">弱点を出題</button></div><div id="st-dom"></div></div>
-  <div class="card"><div class="sec-label" style="margin-top:0">学習カレンダー</div><div class="hm-wrap"><div class="hm-grid" id="heatmap"></div></div><div class="hm-legend" id="hm-sub"></div></div>
-  <div class="card"><div class="sec-label" style="margin-top:0">今週のレポート</div><div id="weekly"></div></div>
-  <div class="card"><div class="sec-label" style="margin-top:0">実績バッジ</div><div class="badge-grid" id="badges"></div></div>
-  <div class="card"><div class="sec-label" style="margin-top:0">模試の履歴</div><div id="exam-hist" style="font-size:13px;line-height:1.9"></div></div>
-</div>
-
-<!-- ===== TEXTBOOK (準備中) ===== -->
-<div class="page" id="pg-textbook">
-  <div class="card" style="text-align:center;padding:36px 20px">
-    <div style="font-size:40px">📚</div>
-    <div style="font-weight:700;margin:10px 0 4px">教科書（学習ガイド・設定画面マップ）</div>
-    <div style="font-size:13px;color:var(--text-sub);line-height:1.7">App Builder 向けの学習ガイドと設定画面マップは準備中です。<br>問題演習・模試・SRSは「ホーム」からご利用いただけます。</div>
-    <div class="action-row" style="margin-top:16px"><button class="btn bp" onclick="goTo('home')">ホームへ</button></div>
+  <div class="stats-grid" style="margin-bottom:14px">
+    <div class="stat-card"><div class="stat-num" id="st2-total">0</div><div class="stat-label">総解答数</div></div>
+    <div class="stat-card"><div class="stat-num" id="st2-acc">—</div><div class="stat-label">正答率</div></div>
+    <div class="stat-card"><div class="stat-num" id="st2-streak">0</div><div class="stat-label">連続正解</div></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">📈 今週のレポート</div>
+    <div id="weekly"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px">
+      <div class="sec-label" style="margin:0">🎯 分野別の習熟度</div>
+      <button class="dom-focus-btn" id="dom-focus-all" onclick="startWeakDomains()">弱点を出題</button>
+    </div>
+    <div id="dom-list"></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">📅 学習カレンダー</div>
+    <div class="hm-wrap"><div id="heatmap"></div></div>
+    <div class="hm-legend"><span>少</span><span class="hm-cell hm-l1"></span><span class="hm-cell hm-l2"></span><span class="hm-cell hm-l3"></span><span class="hm-cell hm-l4"></span><span>多</span><span id="hm-sub" style="margin-left:auto"></span></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">🏅 実績バッジ <span id="badge-count" style="font-weight:400;color:var(--text-sub);text-transform:none;letter-spacing:0"></span></div>
+    <div class="badge-grid" id="badge-grid"></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">キーワード別 正答率（低い順）</div>
+    <div id="st-kw"></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">問題別 解答履歴（正答率低い順）</div>
+    <div id="st-q" style="max-height:420px;overflow-y:auto"></div>
   </div>
 </div>
 
-<!-- ===== VOCAB (準備中) ===== -->
-<div class="page" id="pg-vocab">
-  <div class="card" style="text-align:center;padding:36px 20px">
-    <div style="font-size:40px">🔤</div>
-    <div style="font-weight:700;margin:10px 0 4px">用語帳（フラッシュカード）</div>
-    <div style="font-size:13px;color:var(--text-sub);line-height:1.7">App Builder 重要用語のフラッシュカードは準備中です。</div>
-    <div class="action-row" style="margin-top:16px"><button class="btn bp" onclick="goTo('home')">ホームへ</button></div>
-  </div>
-</div>
-
-<!-- ===== BOTTOM NAV ===== -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nb-home" onclick="goTo('home')"><span class="nav-icon">🏠</span>ホーム</button>
   <button class="nav-btn" id="nb-study" onclick="startStudy()"><span class="nav-icon">📖</span>学習</button>
@@ -184,335 +373,25 @@
   <button class="nav-btn" id="nb-vocab" onclick="goTo('vocab')"><span class="nav-icon">🔤</span>用語帳</button>
   <button class="nav-btn" id="nb-stats" onclick="goTo('stats')"><span class="nav-icon">📊</span>統計</button>
 </nav>
-
+<!-- ===== 資格設定（このファイル固有・ここだけ編集すればよい） ===== -->
 <script>
-/* ===== App Builder クイズエンジン（外部データ方式・admin共有デザイン） ===== */
-const EXAM_N=60,EXAM_MIN=105,PASS=63,SKEY='sfqab_v1';
-const DOMAIN_DEFS=[
-  {code:'fund', name:'Salesforce基礎',        weight:23, emoji:'🧭'},
-  {code:'data', name:'データモデリングと管理', weight:22, emoji:'🗂️'},
-  {code:'logic',name:'ビジネスロジックと自動化',weight:28, emoji:'⚡'},
-  {code:'ui',   name:'ユーザーインターフェース',weight:17, emoji:'🎨'},
-  {code:'deploy',name:'アプリのリリース',      weight:10, emoji:'🚀'}
-];
-const DOMAIN_BY={};DOMAIN_DEFS.forEach(d=>DOMAIN_BY[d.code]=d);
-function domainDef(c){return DOMAIN_BY[c]||DOMAIN_DEFS[0];}
-
-let allQ=[],filtQ=[];
-let store=loadStore();
-let sQueue=[],sCur=0,sSel=[],sRevealed=false,sLowConf=false,sDisp=[];
-let eQ=[],eCur=0,eAns={},eDisp=[],eTimer=null,eSecs=0;
-
-/* ---- storage ---- */
-function loadStore(){try{const r=localStorage.getItem(SKEY);if(r)return norm(JSON.parse(r));}catch(e){}return norm({});}
-function norm(o){o=o||{};o.bm=o.bm||[];o.hist=o.hist||{};o.streak=o.streak||0;o.srs=o.srs||{};
-  o.daily=o.daily||{};o.notes=o.notes||{};o.exams=o.exams||[];o.badges=o.badges||{};
-  o.examDate=o.examDate||'';o.goal=o.goal||0;return o;}
-function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
-window.__getStore=function(){return store;};
-window.__setStore=function(o){if(!o||typeof o!=='object')return;store=norm(o);try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){}};
-window.__refreshUI=function(){try{homeStats();}catch(e){}try{applyFilters();}catch(e){}try{renderStats();}catch(e){}};
-
-function getH(id){return store.hist[id]||{c:0,w:0};}
-function cshufOn(){return localStorage.getItem('sfqab_cshuf')!=='0';}
-function isWrong(id){const h=store.hist[id];return h?h.last==='w':false;}
-function isUnseen(id){const h=store.hist[id];return !h||!(h.c||h.w);}
-function needsReview(id){const h=store.hist[id];return h?(h.last==='w'||(h.last==='c'&&h.lc===1)):false;}
-function answered(){let n=0;allQ.forEach(q=>{const h=store.hist[q.id];if(h&&(h.c||h.w))n++;});return n;}
-
-function recH(id,ok,low){
-  if(!store.hist[id])store.hist[id]={c:0,w:0};
-  if(ok){store.hist[id].c++;store.streak=(store.streak||0)+1;}else{store.hist[id].w++;store.streak=0;}
-  store.hist[id].last=ok?'c':'w';store.hist[id].lc=low?1:0;
-  srsUpdate(id,ok,low);bumpDaily();save();checkBadges();
-}
-function bumpDaily(){const k=today();store.daily[k]=(store.daily[k]||0)+1;}
-function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-
-/* ---- SRS (SM-2 簡易) ---- */
-function srsUpdate(id,ok,low){
-  let s=store.srs[id]||{ivl:0,ease:2.5,reps:0,due:today()};
-  if(ok){s.reps++;s.ease=Math.max(1.3,s.ease+(low?-0.15:0));
-    s.ivl=s.reps<=1?1:s.reps===2?(low?1:3):Math.round(s.ivl*s.ease);if(low&&s.ivl>1)s.ivl=1;
-  }else{s.reps=0;s.ivl=0;s.ease=Math.max(1.3,s.ease-0.2);}
-  const d=new Date();d.setDate(d.getDate()+s.ivl);
-  s.due=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  store.srs[id]=s;
-}
-function srsDueList(){const t=today();return allQ.filter(q=>{const s=store.srs[q.id];return s&&s.due<=t;});}
-
-/* ---- データ読み込み ---- */
-fetch('data/questions.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
-  allQ=d.filter(q=>q&&q.question&&q.choices&&q.answers);filtQ=allQ.slice();boot();
-}).catch(e=>{toast('問題データの読み込みに失敗しました');});
-
-function boot(){
-  if(localStorage.getItem('dark')==='1')applyDark(true);
-  buildKwFilter();
-  document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());
-  homeStats();applyFilters();
-}
-function buildKwFilter(){const sel=document.getElementById('f-kw');const set={};
-  allQ.forEach(q=>(q.keywords||[]).forEach(k=>{set[k]=(set[k]||0)+1;}));
-  Object.keys(set).sort((a,b)=>set[b]-set[a]).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent='🏷️ '+k+'（'+set[k]+'）';sel.appendChild(o);});}
-
-/* ---- nav ---- */
-function goTo(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const page=document.getElementById('pg-'+name);if(!page)return;
-  page.classList.add('active');
-  const nb=document.getElementById('nb-'+name);if(nb)nb.classList.add('active');
-  const isHome=name==='home';
-  document.getElementById('btn-back').style.display=isHome?'none':'flex';
-  if(isHome){homeStats();applyFilters();}
-  if(name==='stats')renderStats();
-  window.scrollTo(0,0);
-}
-function goBack(){if(eTimer){if(!confirm('試験を中断しますか？'))return;clearInterval(eTimer);eTimer=null;}goTo('home');}
-
-/* ---- dark ---- */
-function applyDark(on){document.documentElement.setAttribute('data-theme',on?'dark':'');document.getElementById('btn-dark').textContent=on?'☀️':'🌙';}
-function toggleDark(){const isDark=document.documentElement.getAttribute('data-theme')==='dark';applyDark(!isDark);localStorage.setItem('dark',isDark?'0':'1');}
-
-/* ---- toast ---- */
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
-
-/* ---- util ---- */
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function nl2br(s){return esc(s).replace(/\n/g,'<br>');}
-function arrEq(a,b){if(a.length!==b.length)return false;const x=a.slice().sort(),y=b.slice().sort();return x.every((v,i)=>v===y[i]);}
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function barColor(p){return p>=PASS?'var(--success)':p>=50?'var(--warning)':'var(--danger)';}
-
-/* ---- ホーム統計 ---- */
-function homeStats(){
-  let ans=0,ok=0;allQ.forEach(q=>{const h=store.hist[q.id];if(h&&(h.c||h.w)){ans++;if(h.last==='c')ok++;}});
-  document.getElementById('st-done').textContent=ans;
-  document.getElementById('st-acc').textContent=ans?Math.round(ok/ans*100)+'%':'—';
-  document.getElementById('st-streak').textContent=store.streak||0;
-  const sc=document.getElementById('srs-count');if(sc){const n=srsDueList().length;sc.textContent=n?'（'+n+'）':'';}
-  const nwc=document.getElementById('new-count');if(nwc){const n=allQ.filter(q=>isUnseen(q.id)).length;nwc.textContent=n?'('+n+')':'';}
-  const wc=document.getElementById('wrong-count');if(wc){const n=allQ.filter(q=>isWrong(q.id)).length;wc.textContent=n?'('+n+')':'';}
-  const lcc=document.getElementById('lc-count');if(lcc){const n=allQ.filter(q=>{const h=store.hist[q.id];return h&&h.lc===1;}).length;lcc.textContent=n?'('+n+')':'';}
-  renderPlan();
-}
-
-/* ---- フィルター ---- */
-function toggleCshuf(){localStorage.setItem('sfqab_cshuf',cshufOn()?'0':'1');document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());}
-function syncChips(){[['chip-shuf','f-shuf'],['chip-new','f-new'],['chip-wrong','f-wrong'],['chip-lc','f-lc'],['chip-bm','f-bm'],['chip-multi','f-multi']].forEach(([c,f])=>{
-  const on=document.getElementById(f).checked;document.getElementById(c).classList.toggle(f==='f-bm'?'bm-on':'on',on);});
-  document.getElementById('chip-cshuf').classList.toggle('on',cshufOn());}
-function applyFilters(){
-  let a=allQ.slice();
-  if(document.getElementById('f-new').checked)a=a.filter(q=>isUnseen(q.id));
-  if(document.getElementById('f-bm').checked)a=a.filter(q=>store.bm.includes(q.id));
-  if(document.getElementById('f-wrong').checked)a=a.filter(q=>isWrong(q.id));
-  if(document.getElementById('f-lc').checked)a=a.filter(q=>{const h=store.hist[q.id];return h&&h.lc===1;});
-  if(document.getElementById('f-multi').checked)a=a.filter(q=>q.multi);
-  const kw=document.getElementById('f-kw').value;if(kw)a=a.filter(q=>(q.keywords||[]).includes(kw));
-  filtQ=a;syncChips();
-  const fc=document.getElementById('f-count');if(fc)fc.textContent='対象: '+filtQ.length+' 問';
-}
-
-/* ---- 学習モード ---- */
-function startStudy(){const arr=document.getElementById('f-shuf').checked?shuffle(filtQ):filtQ;beginStudy(arr);}
-function startReview(){beginStudy(allQ.filter(q=>needsReview(q.id)));}
-function startWeak(){const w=weakestDomain();beginStudy(allQ.filter(q=>q.domain===w));}
-function startSRS(){const due=srsDueList();if(!due.length){toast('SRS復習はありません');return;}beginStudy(due);}
-function beginStudy(arr){
-  applyFilters();sQueue=arr.slice();sCur=0;goTo('study');
-  const empty=!sQueue.length;document.getElementById('s-empty').style.display=empty?'':'none';
-  document.getElementById('s-card').style.display=empty?'none':'';
-  if(!empty)renderStudy();
-}
-function curQ(){return sQueue[sCur];}
-function renderStudy(){
-  const q=curQ();if(!q)return;sSel=[];sRevealed=false;sLowConf=false;
-  document.getElementById('s-prog').textContent=(sCur+1)+' / '+sQueue.length;
-  document.getElementById('s-bar').style.width=((sCur+1)/sQueue.length*100)+'%';
-  const d=domainDef(q.domain);const badge=document.getElementById('s-badge');
-  badge.textContent=d.emoji+' '+d.name+(q.multi?'（複数選択）':'');badge.className='qbadge'+(q.multi?' mbadge':'');
-  document.getElementById('s-q').textContent=q.question;
-  const bm=document.getElementById('s-bm');const on=store.bm.includes(q.id);bm.textContent=on?'★':'☆';bm.classList.toggle('on',on);
-  document.getElementById('s-conf').classList.remove('on');
-  sDisp=cshufOn()?shuffle(q.choices):q.choices.slice();
-  const host=document.getElementById('s-choices');host.innerHTML='';
-  sDisp.forEach((c,i)=>{const el=document.createElement('div');el.className='choice';
-    el.innerHTML='<div class="cmark">'+String.fromCharCode(65+i)+'</div><div>'+esc(c)+'</div>';
-    el.onclick=()=>selChoice(i,el);host.appendChild(el);});
-  document.getElementById('s-act').textContent='解答する';document.getElementById('s-act').disabled=false;
-  const ex=document.getElementById('s-exp');ex.className='exp-box';ex.innerHTML='';
-  document.getElementById('s-memo').value=store.notes[q.id]||'';
-}
-function selChoice(i,el){if(sRevealed)return;const q=curQ();
-  if(q.multi){const k=sSel.indexOf(i);if(k>=0){sSel.splice(k,1);el.classList.remove('sel');}else{sSel.push(i);el.classList.add('sel');}}
-  else{sSel=[i];document.querySelectorAll('#s-choices .choice').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
-}
-function studyAct(){if(sRevealed){studyNext();return;}if(!sSel.length){toast('選択肢を選んでください');return;}reveal();}
-function reveal(){
-  const q=curQ();sRevealed=true;
-  const picked=sSel.map(i=>sDisp[i]);const ok=arrEq(picked,q.answers);
-  document.querySelectorAll('#s-choices .choice').forEach((el,i)=>{const txt=sDisp[i];const cm=el.querySelector('.cmark');el.classList.add('done');
-    if(q.answers.includes(txt)){el.classList.add('correct');cm.textContent='✓';}
-    else if(sSel.includes(i)){el.classList.add('wrong');cm.textContent='✕';}});
-  const ex=document.getElementById('s-exp');ex.className='exp-box show '+(ok?'exp-ok':'exp-ng');
-  ex.innerHTML='<div class="exp-head">'+(ok?'⭕ 正解':'❌ 不正解')+'</div>'+nl2br(q.explanation||'')+
-    (q.reference_url?'<br><a class="reflink" href="'+q.reference_url+'" target="_blank" rel="noopener">📖 公式ドキュメント</a>':'');
-  document.getElementById('s-act').textContent='次へ →';
-  recH(q.id,ok,sLowConf);homeStats();
-}
-function studyNext(){if(!sQueue.length)return;if(sCur<sQueue.length-1){sCur++;renderStudy();}else{studyDone();}}
-function studyPrev(){if(sCur>0){sCur--;renderStudy();}}
-function studyDone(){document.getElementById('s-card').innerHTML='<div class="result-box"><div style="font-size:40px">🎉</div><div class="result-label">この出題セットは完了です</div><div class="action-row" style="margin-top:16px"><button class="btn bp" onclick="goTo(\'home\')">ホームへ</button></div></div>';}
-function toggleBm(){const q=curQ();if(!q)return;const i=store.bm.indexOf(q.id);if(i>=0)store.bm.splice(i,1);else store.bm.push(q.id);
-  save();const on=store.bm.includes(q.id);const bm=document.getElementById('s-bm');bm.textContent=on?'★':'☆';bm.classList.toggle('on',on);}
-function toggleLowConf(){sLowConf=!sLowConf;document.getElementById('s-conf').classList.toggle('on',sLowConf);}
-function onMemo(){const q=curQ();if(!q)return;const v=document.getElementById('s-memo').value;
-  clearTimeout(window.__mt);window.__mt=setTimeout(()=>{if(v)store.notes[q.id]=v;else delete store.notes[q.id];save();
-    const sv=document.getElementById('s-memo-saved');sv.classList.add('on');setTimeout(()=>sv.classList.remove('on'),1200);},600);}
-
-/* ---- 試験モード ---- */
-function startExam(){goTo('exam');document.getElementById('e-intro').style.display='';document.getElementById('e-run').style.display='none';document.getElementById('e-result').style.display='none';
-  document.getElementById('e-n').textContent=Math.min(EXAM_N,allQ.length);}
-function pickWeightedExam(n){
-  const byD={};DOMAIN_DEFS.forEach(d=>byD[d.code]=[]);allQ.forEach(q=>{(byD[q.domain]||byD['fund']).push(q);});
-  const totW=DOMAIN_DEFS.reduce((s,d)=>s+d.weight,0);let out=[];
-  DOMAIN_DEFS.forEach(d=>{const cnt=Math.round(n*d.weight/totW);out=out.concat(shuffle(byD[d.code]).slice(0,cnt));});
-  if(out.length<n){const rest=shuffle(allQ.filter(q=>!out.includes(q)));out=out.concat(rest.slice(0,n-out.length));}
-  return shuffle(out).slice(0,Math.min(n,allQ.length));
-}
-function examStart(){eQ=pickWeightedExam(EXAM_N);eCur=0;eAns={};eSecs=EXAM_MIN*60;
-  document.getElementById('e-intro').style.display='none';document.getElementById('e-run').style.display='';document.getElementById('e-result').style.display='none';
-  clearInterval(eTimer);eTimer=setInterval(tick,1000);renderExam();}
-function tick(){eSecs--;const m=Math.floor(eSecs/60),s=eSecs%60;const t=document.getElementById('e-timer');
-  t.textContent=m+':'+String(s).padStart(2,'0');t.classList.toggle('warn',eSecs<=300);if(eSecs<=0){clearInterval(eTimer);examFinish();}}
-function renderExam(){const q=eQ[eCur];if(!q)return;
-  document.getElementById('e-prog').textContent=(eCur+1)+' / '+eQ.length;
-  document.getElementById('e-bar').style.width=((eCur+1)/eQ.length*100)+'%';
-  const d=domainDef(q.domain);const badge=document.getElementById('e-badge');
-  badge.textContent=d.emoji+' '+d.name+(q.multi?'（複数選択）':'');badge.className='qbadge'+(q.multi?' mbadge':'');
-  document.getElementById('e-q').textContent=q.question;
-  if(!eAns[q.id])eAns[q.id]={sel:[],_disp:(cshufOn()?shuffle(q.choices):q.choices.slice())};
-  eDisp=eAns[q.id]._disp;
-  const host=document.getElementById('e-choices');host.innerHTML='';
-  eDisp.forEach((c,i)=>{const el=document.createElement('div');el.className='choice'+(eAns[q.id].sel.includes(i)?' sel':'');
-    el.innerHTML='<div class="cmark">'+String.fromCharCode(65+i)+'</div><div>'+esc(c)+'</div>';
-    el.onclick=()=>{const sel=eAns[q.id].sel;if(q.multi){const k=sel.indexOf(i);if(k>=0)sel.splice(k,1);else sel.push(i);}else{eAns[q.id].sel=[i];}renderExam();};
-    host.appendChild(el);});
-  let nav='';eQ.forEach((qq,i)=>{const done=eAns[qq.id]&&eAns[qq.id].sel.length;
-    nav+='<span onclick="eGo('+i+')" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin:2px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;background:'+(i===eCur?'var(--primary);color:#fff':done?'var(--primary-light);color:var(--primary)':'var(--border);color:var(--text-sub)')+'">'+(i+1)+'</span>';});
-  document.getElementById('e-nav').innerHTML=nav;
-}
-function eGo(i){eCur=i;renderExam();}
-function examPrev(){if(eCur>0){eCur--;renderExam();}}
-function examNext(){if(eCur<eQ.length-1){eCur++;renderExam();}}
-function examFinish(){clearInterval(eTimer);eTimer=null;
-  let ok=0;const byd={};DOMAIN_DEFS.forEach(d=>byd[d.code]={c:0,t:0});
-  eQ.forEach(q=>{const a=eAns[q.id]||{sel:[],_disp:q.choices};const picked=a.sel.map(i=>(a._disp||q.choices)[i]);
-    const correct=arrEq(picked,q.answers);if(correct)ok++;byd[q.domain].t++;if(correct)byd[q.domain].c++;recH(q.id,correct,false);});
-  const pct=Math.round(ok/eQ.length*100),pass=pct>=PASS;
-  store.exams.unshift({d:today(),pct:pct,n:eQ.length,ok:ok});store.exams=store.exams.slice(0,50);save();checkBadges();
-  let dh='';DOMAIN_DEFS.forEach(d=>{const b=byd[d.code];if(!b.t)return;const p=Math.round(b.c/b.t*100);
-    dh+='<div class="edom-row"><span class="dom-emoji">'+d.emoji+'</span><span class="dom-name">'+d.name+'</span><span class="dom-bw"><span class="dom-bf" style="width:'+p+'%;background:'+barColor(p)+'"></span></span><span class="dom-pct">'+b.c+'/'+b.t+'</span></div>';});
-  document.getElementById('e-run').style.display='none';
-  const r=document.getElementById('e-result');r.style.display='';
-  r.innerHTML='<div class="card"><div class="result-box"><div class="result-num">'+pct+'%</div>'+
-    '<div class="result-sub">'+ok+' / '+eQ.length+' 問正解</div>'+
-    '<div class="pass-pill '+(pass?'pass':'fail')+'">'+(pass?'合格ライン到達 🎉':'合格ライン(63%)未満')+'</div></div>'+
-    '<div class="sec-label">分野別スコア</div>'+dh+
-    '<div class="action-row" style="margin-top:14px"><button class="btn bp" onclick="startExam()">もう一度</button><button class="btn bs-" onclick="reviewExam()">間違いを学習</button><button class="btn bg" onclick="goTo(\'home\')">ホーム</button></div></div>';
-  window.scrollTo(0,0);
-}
-function reviewExam(){const wrong=eQ.filter(q=>{const a=eAns[q.id]||{sel:[],_disp:q.choices};const picked=a.sel.map(i=>(a._disp||q.choices)[i]);return !arrEq(picked,q.answers);});beginStudy(wrong.length?wrong:eQ);}
-
-/* ---- 分野 ---- */
-function domainStats(){const agg={};DOMAIN_DEFS.forEach(d=>agg[d.code]={c:0,w:0,t:0});
-  allQ.forEach(q=>{const h=store.hist[q.id];const a=agg[q.domain]||agg['fund'];a.t++;if(h&&h.last==='c')a.c++;else if(h&&h.last==='w')a.w++;});
-  return DOMAIN_DEFS.map(d=>{const a=agg[d.code];const done=a.c+a.w;return{code:d.code,c:a.c,w:a.w,t:a.t,done:done,pct:done?Math.round(a.c/done*100):0};});}
-function weakestDomain(){const s=domainStats().filter(x=>x.done>0);if(!s.length)return DOMAIN_DEFS[0].code;s.sort((a,b)=>a.pct-b.pct);return s[0].code;}
-function domRowHtml(x,showCount){const d=domainDef(x.code);
-  return '<div class="dom-row"><span class="dom-emoji">'+d.emoji+'</span><span class="dom-name">'+d.name+'<span class="dn-sub"> ・ 出題比率'+d.weight+'%</span></span><span class="dom-bw"><span class="dom-bf" style="width:'+x.pct+'%;background:'+barColor(x.pct)+'"></span></span><span class="dom-pct">'+(showCount?x.c+'/'+x.t:x.pct+'%')+'</span></div>';}
-
-/* ---- 統計 ---- */
-function renderStats(){renderDomStats();renderHeatmap();renderWeekly();renderBadges();renderExamHist();}
-function renderDomStats(){document.getElementById('st-dom').innerHTML=domainStats().map(x=>domRowHtml(x,true)).join('');}
-function renderHeatmap(){const host=document.getElementById('heatmap');if(!host)return;const weeks=20;const end=new Date();const dow=end.getDay();
-  let cur=new Date();cur.setDate(cur.getDate()-(weeks*7-1)-dow);const cols=[];
-  for(let w=0;w<=weeks;w++){const col=[];for(let dd=0;dd<7;dd++){
-    const ds=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0')+'-'+String(cur.getDate()).padStart(2,'0');
-    col.push({ds:ds,v:store.daily[ds]||0,future:cur>end});cur.setDate(cur.getDate()+1);}cols.push(col);}
-  let html='';cols.forEach(col=>{html+='<div class="hm-col">';col.forEach(c=>{let lvl=0;if(c.v>=10)lvl=4;else if(c.v>=6)lvl=3;else if(c.v>=3)lvl=2;else if(c.v>=1)lvl=1;
-    html+='<div class="'+(c.future?'hm-cell hm-future':'hm-cell hm-l'+lvl)+'" title="'+c.ds+'：'+c.v+'問"></div>';});html+='</div>';});
-  host.innerHTML=html;let days=0,ans=0;Object.values(store.daily).forEach(v=>{if(v>0){days++;ans+=v;}});
-  document.getElementById('hm-sub').innerHTML='学習 '+days+' 日 ・ 計 '+ans+' 問';}
-function weekKey(d){const x=new Date(d);x.setDate(x.getDate()-x.getDay());return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
-function renderWeekly(){const now=new Date();const tw=weekKey(now),lw=weekKey(new Date(now.getTime()-7*864e5));
-  let twN=0,lwN=0;Object.keys(store.daily).forEach(k=>{const wk=weekKey(new Date(k));if(wk===tw)twN+=store.daily[k];if(wk===lw)lwN+=store.daily[k];});
-  const diff=twN-lwN;const dcls=diff>=0?'wk-up':'wk-down';
-  document.getElementById('weekly').innerHTML='<div class="wk-grid"><div class="wk-cell"><div class="wn">'+twN+'</div><div class="wl">今週の解答</div><div class="wd '+dcls+'">先週比 '+(diff>=0?'+':'')+diff+'</div></div>'+
-    '<div class="wk-cell"><div class="wn">'+(store.streak||0)+'</div><div class="wl">連続正解</div></div></div>'+
-    '<div class="wk-weak">弱点分野: <b>'+domainDef(weakestDomain()).name+'</b> ／ SRS復習予定: '+srsDueList().length+' 問</div>';}
-
-/* ---- バッジ ---- */
-const BADGES=[
-  {id:'first',e:'🌱',n:'はじめの一歩',d:'1問解答',f:()=>answered()>=1},
-  {id:'q50',e:'📗',n:'50問',d:'50問解答',f:()=>answered()>=50},
-  {id:'q150',e:'📚',n:'150問',d:'150問解答',f:()=>answered()>=150},
-  {id:'all',e:'🏆',n:'全問制覇',d:'全問解答',f:()=>allQ.length>0&&answered()>=allQ.length},
-  {id:'streak10',e:'🔥',n:'10連続',d:'10連続正解',f:()=>(store.streak||0)>=10},
-  {id:'streak25',e:'⚡',n:'25連続',d:'25連続正解',f:()=>(store.streak||0)>=25},
-  {id:'pass',e:'🎯',n:'模試合格',d:'模試で63%',f:()=>store.exams.some(e=>e.pct>=PASS)},
-  {id:'pass90',e:'💎',n:'高得点',d:'模試で90%',f:()=>store.exams.some(e=>e.pct>=90)},
-  {id:'week',e:'📅',n:'7日継続',d:'7日学習',f:()=>Object.values(store.daily).filter(v=>v>0).length>=7},
-  {id:'srs',e:'🧠',n:'SRS',d:'SRS30件',f:()=>Object.keys(store.srs).length>=30},
-  {id:'memo',e:'📝',n:'メモ魔',d:'メモ10件',f:()=>Object.keys(store.notes).length>=10}
-];
-function checkBadges(){let ch=false;BADGES.forEach(b=>{if(!store.badges[b.id]&&b.f()){store.badges[b.id]=today();ch=true;toast('🏅 バッジ獲得: '+b.n);}});if(ch)save();}
-function renderBadges(){document.getElementById('badges').innerHTML=BADGES.map(b=>{const got=store.badges[b.id];
-  return '<div class="badge'+(got?' earned':'')+'"><span class="bem">'+b.e+'</span><span class="bti">'+b.n+'</span><span class="bds">'+b.d+'</span></div>';}).join('');}
-function renderExamHist(){const e=store.exams;if(!e.length){document.getElementById('exam-hist').textContent='まだ模試の記録がありません。';return;}
-  document.getElementById('exam-hist').innerHTML=e.slice(0,10).map(x=>x.d+' ・ <b>'+x.pct+'%</b>（'+x.ok+'/'+x.n+'）'+(x.pct>=PASS?' ✅':'')).join('<br>');}
-
-/* ---- 受験プラン ---- */
-function renderPlan(){
-  const cd=document.getElementById('plan-cd');
-  if(store.examDate){const days=Math.ceil((new Date(store.examDate)-new Date())/864e5);
-    cd.innerHTML='<span class="big">'+(days>=0?'あと '+days+' 日':'受験日経過')+'</span><span class="sub">受験予定日 '+store.examDate+'</span>';}
-  else cd.innerHTML='<span class="big">受験日 未設定</span><span class="sub">⚙️ から受験日と目標を設定</span>';
-  const goalEl=document.getElementById('plan-goal');
-  if(store.goal){goalEl.style.display='';const tn=store.daily[today()]||0;
-    document.getElementById('goal-txt').textContent=tn+' / '+store.goal+' 問';
-    document.getElementById('goal-fill').style.width=Math.min(100,store.goal?tn/store.goal*100:0)+'%';
-    document.getElementById('plan-pace').textContent=tn>=store.goal?'今日の目標達成 🎉':'あと '+(store.goal-tn)+' 問';}
-  else goalEl.style.display='none';
-  document.getElementById('exam-date-in').value=store.examDate||'';
-  document.getElementById('goal-in').value=store.goal||'';
-}
-function togglePlanEdit(){document.getElementById('plan-edit').classList.toggle('on');}
-function savePlan(){const ed=document.getElementById('exam-date-in').value;const gl=parseInt(document.getElementById('goal-in').value,10);
-  store.examDate=ed||'';store.goal=isNaN(gl)?0:gl;save();document.getElementById('plan-edit').classList.remove('on');renderPlan();toast('保存しました');}
-function clearPlan(){store.examDate='';store.goal=0;save();document.getElementById('plan-edit').classList.remove('on');renderPlan();}
-
-function resetAll(){if(!confirm('進捗をすべて消去しますか？'))return;store=norm({});save();homeStats();applyFilters();renderStats();toast('リセットしました');}
-
-/* ---- キーボード ---- */
-document.addEventListener('keydown',e=>{
-  if(!document.getElementById('pg-study').classList.contains('active'))return;
-  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;
-  if(e.key>='1'&&e.key<='9'){const i=+e.key-1;const bs=document.querySelectorAll('#s-choices .choice');if(bs[i])bs[i].click();}
-  else if(e.key==='Enter'){e.preventDefault();studyAct();}
-  else if(e.key==='ArrowRight')studyNext();
-  else if(e.key==='ArrowLeft')studyPrev();
-  else if(e.key==='0')toggleLowConf();
-});
-// 起動前にダーク適用（チラつき防止）
-if(localStorage.getItem('dark')==='1')document.documentElement.setAttribute('data-theme','dark');
-</script>
-<script>
+  window.CERT_CONFIG = {
+    "slug": "app-builder",
+    "certName": "Salesforce 認定 Platform アプリケーションビルダー",
+    "shortName": "App Builder",
+    "examCode": "App Builder",
+    "examN": 60,
+    "examMin": 105,
+    "pass": 63,
+    "storageKey": "sfqab_v1",
+    "dataDir": "data/"
+  };
   window.SFQ_PAGE_ROLE = 'client';
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
+<!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
+<script src="../../quiz-engine.js"></script>
+<!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
 <script src="../../cloud-sync.js"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}

@@ -77,50 +77,10 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </header>
 
   <div class="sec-label">利用可能な資格</div>
-  <div class="grid">
-
-    <a class="card" href="certifications/sf-admin/index.html">
-      <div class="card-icon">☁️</div>
-      <h2 class="card-title">Salesforce 認定<br>プラットフォームアドミニストレーター</h2>
-      <p class="card-desc">2025年12月15日改訂対応。Agentforce含む全8ドメイン。</p>
-      <div class="card-meta">
-        <span>190問</span>
-        <span>75用語</span>
-        <span>合格65%</span>
-      </div>
-    </a>
-
-    <a class="card" href="certifications/app-builder/index.html">
-      <div class="card-icon">🧩</div>
-      <h2 class="card-title">Salesforce 認定<br>Platform アプリケーションビルダー</h2>
-      <p class="card-desc">宣言的なアプリ構築・データモデル・自動化・UI・リリース。公式5分野対応。</p>
-      <div class="card-meta">
-        <span>5分野</span>
-        <span>試験60問</span>
-        <span>合格63%</span>
-      </div>
-    </a>
-
-    <div class="card coming">
-      <span class="coming-badge">追加予定</span>
-      <div class="card-icon">🛠️</div>
-      <h2 class="card-title">資格枠（未設定）</h2>
-      <p class="card-desc">次に追加する資格の枠です。準備中。</p>
-      <div class="card-meta"><span>Coming Soon</span></div>
-    </div>
-
-    <div class="card coming">
-      <span class="coming-badge">追加予定</span>
-      <div class="card-icon">🛠️</div>
-      <h2 class="card-title">資格枠（未設定）</h2>
-      <p class="card-desc">次に追加する資格の枠です。準備中。</p>
-      <div class="card-meta"><span>Coming Soon</span></div>
-    </div>
-
-  </div>
+  <div class="grid" id="cert-grid"></div>
 
   <p class="footer">
-    新しい資格を追加するには <code>certifications/</code> 配下に資格ディレクトリを作成し、このページのカードを追加してください。
+    新しい資格を追加するには <code>certifications/&lt;slug&gt;/</code> に <code>index.html</code>（共通エンジンを読み込む薄いシェル）と <code>data/</code>（questions.json・domains.json・vocab.json・navmap.json）を置き、下のスクリプトの <code>CERTS</code> 配列に1件追加するだけです。
   </p>
 
 </div>
@@ -133,6 +93,32 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
 <script>
+  /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） ===== */
+  const CERTS = [
+    { slug:'sf-admin', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
+      desc:'公式7分野（Agentforce含む）。学習・試験・SRS・教科書・用語帳・統計をフル搭載。',
+      meta:['190問','82用語','合格65%'] },
+    { slug:'app-builder', icon:'🧩', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
+      desc:'宣言的なアプリ構築・データモデル・自動化・UI・リリース。公式5分野対応。',
+      meta:['276問','5分野','合格63%'] },
+    { coming:true }, { coming:true }
+  ];
+  (function renderCerts(){
+    var grid = document.getElementById('cert-grid'); if (!grid) return;
+    grid.innerHTML = CERTS.map(function (c) {
+      if (c.coming) return '<div class="card coming"><span class="coming-badge">追加予定</span>'
+        + '<div class="card-icon">🛠️</div><h2 class="card-title">資格枠（未設定）</h2>'
+        + '<p class="card-desc">次に追加する資格の枠です。準備中。</p>'
+        + '<div class="card-meta"><span>Coming Soon</span></div></div>';
+      var meta = (c.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
+      return '<a class="card" href="certifications/' + c.slug + '/index.html">'
+        + '<div class="card-icon">' + (c.icon || '📘') + '</div>'
+        + '<h2 class="card-title">' + c.title + '</h2>'
+        + '<p class="card-desc">' + (c.desc || '') + '</p>'
+        + '<div class="card-meta">' + meta + '</div></a>';
+    }).join('');
+  })();
+
   // cloud-sync のオーバーレイ/バッジをOSのダーク設定に追従させる
   // （LP本体の配色は @media(prefers-color-scheme) で別途対応済み）
   (function () {
