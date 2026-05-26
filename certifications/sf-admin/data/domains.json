@@ -4,44 +4,50 @@
   {
    "code": "cfg",
    "name": "設定と管理",
-   "weight": 20,
+   "weight": 15,
    "emoji": "⚙️"
   },
   {
    "code": "obj",
    "name": "オブジェクトとアプリ",
-   "weight": 20,
+   "weight": 15,
    "emoji": "🧩"
   },
   {
    "code": "auto",
    "name": "自動化",
-   "weight": 16,
+   "weight": 15,
    "emoji": "⚡"
   },
   {
    "code": "data",
    "name": "データと分析",
-   "weight": 14,
+   "weight": 17,
    "emoji": "📊"
   },
   {
    "code": "sales",
    "name": "セールス/マーケ",
-   "weight": 12,
+   "weight": 10,
    "emoji": "💼"
   },
   {
    "code": "service",
    "name": "サービス/サポート",
-   "weight": 11,
+   "weight": 10,
    "emoji": "🎧"
   },
   {
    "code": "prod",
    "name": "生産性/コラボ",
-   "weight": 7,
+   "weight": 10,
    "emoji": "🤝"
+  },
+  {
+   "code": "agf",
+   "name": "Agentforce",
+   "weight": 8,
+   "emoji": "🤖"
   }
  ],
  "map": {
@@ -225,16 +231,16 @@
   "179": "obj",
   "180": "service",
   "181": "auto",
-  "182": "service",
-  "183": "cfg",
-  "184": "data",
-  "185": "cfg",
-  "186": "auto",
-  "187": "service",
-  "188": "cfg",
-  "189": "sales",
-  "190": "cfg",
-  "191": "auto",
+  "182": "agf",
+  "183": "agf",
+  "184": "agf",
+  "185": "agf",
+  "186": "agf",
+  "187": "agf",
+  "188": "agf",
+  "189": "agf",
+  "190": "agf",
+  "191": "agf",
   "192": "auto",
   "193": "auto",
   "194": "auto",
@@ -265,13 +271,13 @@
   "219": "service",
   "220": "prod",
   "221": "prod",
-  "222": "cfg",
-  "223": "cfg",
-  "224": "cfg",
-  "225": "service",
-  "226": "sales",
-  "227": "cfg",
-  "228": "cfg",
-  "229": "cfg"
+  "222": "agf",
+  "223": "agf",
+  "224": "agf",
+  "225": "agf",
+  "226": "agf",
+  "227": "agf",
+  "228": "agf",
+  "229": "agf"
  }
 }
