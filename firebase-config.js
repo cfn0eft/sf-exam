@@ -6,6 +6,23 @@
    PC版・モバイル版どちらもこの1ファイルを読み込むので、編集は1か所だけです。
    ============================================================= */
 
+/* -------------------------------------------------------------
+   【セキュリティに関する注記】（重要）
+   ・下の apiKey は Firebase の「Web 用キー」で、ブラウザに配布される
+     “公開前提”の値です。秘密鍵ではありません。
+     → GitHub のシークレットスキャンが「Google API Key leaked」と
+        警告することがありますが、これは false positive。
+        ローテーションや無効化は不要です（やるとアプリが壊れるだけ）。
+   ・本当のアクセス制御は「Firestore セキュリティルール」で行います。
+     progress/{uid} を「本人＋管理者だけが read/write」に制限すること。
+     詳細は SECURITY.md と「certifications/sf-admin/Firebaseセットアップ手順.md」
+     のステップ5を参照。ここがテストモード(allow if true)だと本当に危険。
+   ・このキーは Google Cloud 側で「HTTP リファラー制限」済み。
+     許可: https://cfn0eft.github.io/*  と  http://localhost/*
+     → 公開ドメインを増やすときは、同じキーの許可リストにも必ず追加すること
+        （追加し忘れるとログイン/同期が 403 で止まる）。
+   ------------------------------------------------------------- */
+
 window.SFQ_FIREBASE_CONFIG = {
   apiKey: "AIzaSyCNMqhh8G6h1IEI1L5Q19G4p-CdMLrNDrA",
   authDomain: "sf-admin-7da9c.firebaseapp.com",
