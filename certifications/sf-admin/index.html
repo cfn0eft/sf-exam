@@ -365,12 +365,23 @@
   </div>
 </div>
 
+<!-- ===== 直前まとめ（CRAM） ===== -->
+<div class="page" id="pg-cram">
+  <div class="cram-head">
+    <h2 class="cram-title">📋 直前まとめ</h2>
+    <p class="cram-sub">本番前の最終チェック用。迷いやすい使い分け・ひっかけを中心に。</p>
+  </div>
+  <div id="cram-body"></div>
+  <button class="btn bg" onclick="goTo('home')" style="width:100%;margin:10px 0 16px">← ホームへ</button>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nb-home" onclick="goTo('home')"><span class="nav-icon">🏠</span>ホーム</button>
   <button class="nav-btn" id="nb-study" onclick="startStudy()"><span class="nav-icon">📖</span>学習</button>
   <button class="nav-btn" id="nb-textbook" onclick="goTo('textbook')"><span class="nav-icon">📚</span>教科書</button>
   <button class="nav-btn" id="nb-vocab" onclick="goTo('vocab')"><span class="nav-icon">🔤</span>用語帳</button>
+  <button class="nav-btn" id="nb-cram" onclick="goTo('cram')"><span class="nav-icon">📋</span>直前</button>
   <button class="nav-btn" id="nb-stats" onclick="goTo('stats')"><span class="nav-icon">📊</span>統計</button>
 </nav>
 <!-- ===== 資格設定（このファイル固有・ここだけ編集すればよい） ===== -->

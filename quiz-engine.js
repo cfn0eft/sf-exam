@@ -6,7 +6,7 @@
  * 機能・配置・UI は全資格共通（sf-admin のフル機能を踏襲）。
  * HTML の inline onclick が依存するためグローバル関数のまま（IIFEで包まない）。
  * ===================================================================== */
-let QDATA=[], CHDATA=[], NAVDATA=[];
+let QDATA=[], CHDATA=[], NAVDATA=[], CRAMDATA=[];
 const CFG=(typeof window!=='undefined'&&window.CERT_CONFIG)||{};
 const EXAM_N=CFG.examN||60, EXAM_MIN=CFG.examMin||105, PASS=CFG.pass||65, SKEY=CFG.storageKey||'sfq_default';
 const DATA_DIR=CFG.dataDir||'data/';
@@ -85,6 +85,7 @@ async function loadCertData(){
   });
   CHDATA=(await gj('vocab.json'))||[];
   NAVDATA=(await gj('navmap.json'))||[];
+  CRAMDATA=(await gj('cram.json'))||[];
   allQ=[...QDATA];filtQ=[...allQ];
 }
 function applyCertText(){
@@ -107,6 +108,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{renderTextbook();}catch(e){}
   try{renderNavMap();}catch(e){}
   try{renderChapNav();}catch(e){}
+  try{renderCram();}catch(e){}
   if(typeof updateSrsBtn==='function')updateSrsBtn();
   if(localStorage.getItem('dark')==='1')applyDark(true);
   document.addEventListener('keydown',handleKey);
@@ -224,6 +226,7 @@ function goTo(name){
   if(isHome){homeStats();applyFilters();}
   if(name==='stats')renderStats();
   if(name==='vocab')initVocab();
+  if(name==='cram')renderCram();
   if(name==='textbook'){
     document.getElementById('td-view').classList.remove('on');
     document.getElementById('tb-list').style.display='';
@@ -521,6 +524,54 @@ function renderNavMap(){
     notes.forEach(n=>html+='<blockquote style="border-left:3px solid var(--warning);background:var(--warning-light);padding:8px 12px;border-radius:0 8px 8px 0;margin:6px 0;font-size:12px">'+mdInline(n.slice(2))+'</blockquote>');
     div.innerHTML=html;el.appendChild(div);
   });
+}
+// ===== CRAM（直前まとめ）=====
+// cram.json は navmap.json と同じく [{title, content}]。content は簡易Markdown
+// （### 小見出し / | テーブル | / - 箇条書き / 1. 番号 / > 引用・注意 / **強調**）。
+function cramMd(text){
+  const lines=String(text||'').split('\n');
+  let out='',listType=null,i=0;
+  const closeList=()=>{ if(listType){out+='</'+listType+'>';listType=null;} };
+  const cellsOf=r=>r.split('|').filter((_,idx,a)=>idx>0&&idx<a.length-1).map(c=>c.trim());
+  const isSep=r=>/^\s*\|?[\s:|-]+\|?\s*$/.test(r)&&r.indexOf('-')>=0;
+  while(i<lines.length){
+    const raw=lines[i], t=raw.trim();
+    // table（ヘッダ行 + 区切り行）
+    if(t.indexOf('|')>=0 && i+1<lines.length && isSep(lines[i+1])){
+      closeList();
+      const th=cellsOf(raw); i+=2;
+      let body='';
+      while(i<lines.length && lines[i].indexOf('|')>=0 && lines[i].trim()!==''){
+        body+='<tr>'+cellsOf(lines[i]).map(c=>'<td>'+mdInline(c)+'</td>').join('')+'</tr>'; i++;
+      }
+      out+='<table class="nm-table"><thead><tr>'+th.map(c=>'<th>'+mdInline(c)+'</th>').join('')+'</tr></thead><tbody>'+body+'</tbody></table>';
+      continue;
+    }
+    if(/^###\s+/.test(t)){ closeList(); out+='<h4 class="cram-h4">'+mdInline(t.replace(/^###\s+/,''))+'</h4>'; i++; continue; }
+    if(/^>\s?/.test(t)){ closeList(); const b=t.replace(/^>\s?/,''); const warn=/⚠️|注意|罠|危険/.test(b); out+='<div class="cram-callout '+(warn?'warn':'tip')+'">'+mdInline(b)+'</div>'; i++; continue; }
+    if(/^[-*]\s+/.test(t)){ if(listType!=='ul'){closeList();out+='<ul class="cram-ul">';listType='ul';} out+='<li>'+mdInline(t.replace(/^[-*]\s+/,''))+'</li>'; i++; continue; }
+    if(/^\d+\.\s+/.test(t)){ if(listType!=='ol'){closeList();out+='<ol class="cram-ol">';listType='ol';} out+='<li>'+mdInline(t.replace(/^\d+\.\s+/,''))+'</li>'; i++; continue; }
+    if(t===''){ closeList(); i++; continue; }
+    closeList(); out+='<p class="cram-p">'+mdInline(t)+'</p>'; i++;
+  }
+  closeList();
+  return out;
+}
+function renderCram(){
+  const el=document.getElementById('cram-body'); if(!el)return;
+  if(!CRAMDATA||!CRAMDATA.length){
+    el.innerHTML='<div class="cram-empty">📋 この資格の「直前まとめ」は準備中です。</div>';
+    return;
+  }
+  let html='';
+  CRAMDATA.forEach(sec=>{
+    if(!sec)return;
+    html+='<div class="nm-sec cram-sec">';
+    if(sec.title)html+='<h3>'+escH(sec.title)+'</h3>';
+    html+=cramMd(sec.content||'');
+    html+='</div>';
+  });
+  el.innerHTML=html;
 }
 function tbSearch(q){
   const query=q.toLowerCase().trim();

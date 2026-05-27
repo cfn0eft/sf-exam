@@ -544,3 +544,17 @@ body{
 .wk-up{color:var(--success)}.wk-down{color:var(--danger)}
 .wk-weak{font-size:12px;color:var(--text-sub);line-height:1.6}
 .wk-weak b{color:var(--danger)}
+/* ===== 直前まとめ（CRAM） ===== */
+.cram-head{margin-bottom:12px}
+.cram-title{font-size:20px;margin:0 0 4px}
+.cram-sub{font-size:12px;color:var(--text-sub);margin:0}
+.cram-sec{margin-bottom:14px}
+.cram-sec h3{font-size:15px;color:var(--primary);border-bottom:2px solid var(--border);padding-bottom:6px;margin:0 0 8px}
+.cram-h4{font-size:13.5px;margin:12px 0 4px;color:var(--text)}
+.cram-p{font-size:13px;line-height:1.7;margin:6px 0}
+.cram-ul,.cram-ol{padding-left:20px;margin:6px 0}
+.cram-ul li,.cram-ol li{font-size:13px;line-height:1.6;margin:3px 0}
+.cram-callout{border-radius:0 8px 8px 0;padding:9px 12px;margin:8px 0;font-size:12.5px;line-height:1.65}
+.cram-callout.tip{border-left:4px solid var(--primary);background:var(--primary-light)}
+.cram-callout.warn{border-left:4px solid var(--warning);background:var(--warning-light)}
+.cram-empty{text-align:center;color:var(--text-sub);font-size:13px;padding:40px 16px}
