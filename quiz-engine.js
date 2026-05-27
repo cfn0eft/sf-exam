@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   if(typeof updateSrsBtn==='function')updateSrsBtn();
   if(localStorage.getItem('dark')==='1')applyDark(true);
   document.addEventListener('keydown',handleKey);
+  try{var _hv=(location.hash||'').replace('#','');if(['cram','textbook','vocab','stats'].indexOf(_hv)>=0)goTo(_hv);}catch(e){}
 });
 
 // --- キーボード操作 ---

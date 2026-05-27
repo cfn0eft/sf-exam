@@ -558,3 +558,4 @@ body{
 .cram-callout.tip{border-left:4px solid var(--primary);background:var(--primary-light)}
 .cram-callout.warn{border-left:4px solid var(--warning);background:var(--warning-light)}
 .cram-empty{text-align:center;color:var(--text-sub);font-size:13px;padding:40px 16px}
+.btn-cram{background:var(--danger);color:#fff}
