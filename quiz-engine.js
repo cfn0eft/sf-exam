@@ -6,7 +6,7 @@
  * 機能・配置・UI は全資格共通（sf-admin のフル機能を踏襲）。
  * HTML の inline onclick が依存するためグローバル関数のまま（IIFEで包まない）。
  * ===================================================================== */
-let QDATA=[], CHDATA=[], NAVDATA=[], CRAMDATA=[];
+let QDATA=[], CHDATA=[], NAVDATA=[], CRAMDATA=[], COMPDATA=[];
 const CFG=(typeof window!=='undefined'&&window.CERT_CONFIG)||{};
 const EXAM_N=CFG.examN||60, EXAM_MIN=CFG.examMin||105, PASS=CFG.pass||65, SKEY=CFG.storageKey||'sfq_default';
 const DATA_DIR=CFG.dataDir||'data/';
@@ -86,6 +86,7 @@ async function loadCertData(){
   CHDATA=(await gj('vocab.json'))||[];
   NAVDATA=(await gj('navmap.json'))||[];
   CRAMDATA=(await gj('cram.json'))||[];
+  COMPDATA=(await gj('compare.json'))||[];
   allQ=[...QDATA];filtQ=[...allQ];
 }
 function applyCertText(){
@@ -296,10 +297,44 @@ function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;
 let tbTab='guide';
 function switchTbTab(t){
   tbTab=t;
-  document.getElementById('tb-guide').style.display=t==='guide'?'':'none';
-  document.getElementById('tb-nav').style.display=t==='nav'?'':'none';
-  document.getElementById('tt-guide').classList.toggle('on',t==='guide');
-  document.getElementById('tt-nav').classList.toggle('on',t==='nav');
+  const ids=['guide','nav','cmp'];
+  ids.forEach(k=>{
+    const pane=document.getElementById('tb-'+k); if(pane)pane.style.display=(t===k?'':'none');
+    const btn=document.getElementById('tt-'+k); if(btn)btn.classList.toggle('on',t===k);
+  });
+  if(t==='cmp'){
+    renderCompare();
+    // 学習ガイド専用UIは比較表タブでは非表示（sf-admin側の挙動は維持）
+    const chNav=document.getElementById('ch-nav'); if(chNav)chNav.style.display='none';
+    const sw=document.querySelector('#pg-textbook .search-wrap'); if(sw)sw.style.display='none';
+    const mf=document.getElementById('tb-mark-filter'); if(mf)mf.style.display='none';
+  } else {
+    const chNav=document.getElementById('ch-nav'); if(chNav)chNav.style.display='';
+    const sw=document.querySelector('#pg-textbook .search-wrap'); if(sw)sw.style.display='';
+    // mark-filter は renderTextbook 内で表示制御しているので、ここでは触らない
+  }
+}
+// ===== COMPARE（比較表ハブ） =====
+function renderCompare(){
+  const el=document.getElementById('tb-cmp'); if(!el)return;
+  if(!COMPDATA||!COMPDATA.length){el.innerHTML='<div class="cram-empty">📊 この資格の比較表は準備中です。</div>';return;}
+  // ドメイン別ジャンプチップを作成
+  const byD={}; COMPDATA.forEach((s,i)=>{const c=s.domain||'';(byD[c]||(byD[c]=[])).push({s,i});});
+  let nav='<div class="filter-bar" style="margin:0 0 12px">';
+  COMPDATA.forEach((s,i)=>{
+    const def=domainDef(s.domain||'');
+    const emo=def.emoji||'•';
+    nav+='<button class="chip" onclick="document.getElementById(\'cmp-sec-'+i+'\').scrollIntoView({behavior:\'smooth\',block:\'start\'})">'+emo+' '+escH(s.title)+'</button>';
+  });
+  nav+='</div>';
+  let html=nav;
+  COMPDATA.forEach((sec,i)=>{
+    if(!sec||!sec.content)return;
+    const def=domainDef(sec.domain||'');
+    const badge=def.name?'<span class="dom-tag" style="font-size:11px;color:var(--text-sub);margin-left:6px">'+def.emoji+' '+escH(def.name)+'</span>':'';
+    html+='<div class="nm-sec cram-sec" id="cmp-sec-'+i+'"><h3 style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+escH(sec.title)+badge+'</h3>'+cramMd(sec.content)+'</div>';
+  });
+  el.innerHTML=html;
 }
 
 // ===== TEXTBOOK MARK =====
@@ -811,25 +846,59 @@ function checkAnswer(){
   exp.innerHTML='<div class="exp-head"><span>'+(isOk?'✅':'❌')+'</span><span>'+(isOk?'正解！':'不正解')+'</span></div>'
     +'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
   if(q.reference_url){exp.innerHTML+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';}
-  // related terms
+  // related terms（vocab に一致した用語）
   const rel=[];
   (q.keywords||[]).forEach(kw=>{
     CHDATA.forEach((ch,ci)=>{ch.terms.forEach((t,ti)=>{
       if((t.jaName&&t.jaName.includes(kw))||(t.title&&t.title.includes(kw))){
-        if(!rel.find(r=>r.key===t.title))rel.push({...t,ci,ti});
+        if(!rel.find(r=>r.key===t.title))rel.push({...t,ci,ti,kw});
       }
     });});
   });
   if(rel.length){
     const rDiv=document.createElement('div');rDiv.style.marginTop='10px';
-    rDiv.innerHTML='<div style="font-size:11px;color:var(--text-sub);font-weight:700;margin-bottom:5px">📚 関連用語</div>';
-    rel.slice(0,3).forEach(t=>{
+    rDiv.innerHTML='<div style="font-size:11px;color:var(--text-sub);font-weight:700;margin-bottom:5px">📚 関連用語（タップで詳細）</div>';
+    rel.slice(0,4).forEach(t=>{
       const c=document.createElement('span');c.className='qchip';
-      c.style.cssText='background:var(--purple-light);color:var(--purple)';
+      c.style.cssText='background:var(--purple-light);color:var(--purple);cursor:pointer';
       c.textContent=t.jaName||t.title;
       c.onclick=()=>showTD(t.ci,t.ti);rDiv.appendChild(c);
     });
     exp.appendChild(rDiv);
+  }
+  // 全キーワード（vocab未収録のものも見える化）
+  const kws=q.keywords||[];
+  if(kws.length){
+    const matched=new Set(rel.map(r=>r.kw));
+    const kDiv=document.createElement('div');kDiv.style.marginTop='10px';
+    kDiv.innerHTML='<div style="font-size:11px;color:var(--text-sub);font-weight:700;margin-bottom:5px">🏷️ キーワード</div>';
+    kws.forEach(kw=>{
+      const c=document.createElement('span');c.className='qchip';
+      if(matched.has(kw)){
+        // 関連用語にあれば、用語詳細にジャンプ
+        c.style.cssText='background:var(--purple-light);color:var(--purple);cursor:pointer';
+        c.title='用語詳細を開く';
+        const hit=rel.find(r=>r.kw===kw);
+        c.onclick=()=>showTD(hit.ci,hit.ti);
+      } else {
+        // 未マッチでも分野統計/絞り込みのトリガーになる
+        c.style.cssText='background:var(--bg-sub,#f3f4f6);color:var(--text-sub);cursor:pointer';
+        c.title='このキーワードで絞り込み';
+        c.onclick=()=>{
+          fKw=kw;
+          const sel=document.getElementById('f-kw'); if(sel){
+            // optionが無ければ作って選択
+            let has=Array.from(sel.options).some(o=>o.value===kw);
+            if(!has){const o=document.createElement('option');o.value=kw;o.textContent='🏷️ '+kw;sel.appendChild(o);}
+            sel.value=kw;
+          }
+          applyFilters(); goTo('home'); toast('🏷️ 「'+kw+'」で絞り込み');
+        };
+      }
+      c.textContent=kw;
+      kDiv.appendChild(c);
+    });
+    exp.appendChild(kDiv);
   }
   document.getElementById('s-check').disabled=true;
   document.getElementById('s-next-row').style.display='flex';
@@ -1076,16 +1145,27 @@ function domainStats(){
 function renderDomainList(){
   const host=document.getElementById('dom-list');if(!host)return;host.innerHTML='';
   const ds=domainStats();
+  // 現プールの分野構成（公式比との乖離を可視化する）
+  const poolCnt={}; allQ.forEach(q=>{const c=domainOf(q.id);poolCnt[c]=(poolCnt[c]||0)+1;});
+  const poolN=allQ.length||1;
   ds.forEach(d=>{
     const def=domainDef(d.code),answered=d.t>0;
     const col=!answered?'var(--border)':d.pct>=80?'var(--success)':d.pct>=60?'var(--warning)':'var(--danger)';
+    const cur=Math.round((poolCnt[d.code]||0)*100/poolN);
+    const gap=cur-def.weight; // +なら過剰、−なら不足
+    const gapTxt=Math.abs(gap)>=5?(gap>0?' <span style="color:var(--warning)">（プール+'+gap+')</span>':' <span style="color:var(--danger)">（プール'+gap+'）</span>'):'';
     const row=document.createElement('div');row.className='dom-row';
     row.innerHTML='<span class="dom-emoji">'+def.emoji+'</span>'
-      +'<span class="dom-name">'+escH(def.name)+'<span class="dn-sub"> ・比率'+def.weight+'%</span></span>'
+      +'<span class="dom-name">'+escH(def.name)+'<span class="dn-sub"> ・公式'+def.weight+'% / 現'+cur+'%'+gapTxt+'</span></span>'
       +'<div class="dom-bw"><div class="dom-bf" style="width:'+(answered?d.pct:0)+'%;background:'+col+'"></div></div>'
       +'<span class="dom-pct" style="color:'+(answered?col:'var(--text-sub)')+'">'+(answered?d.pct+'%':'—')+'</span>';
     host.appendChild(row);
   });
+  // 凡例（公式比 vs 現プール比 の意味を明示）
+  const note=document.createElement('div');
+  note.style.cssText='font-size:11px;color:var(--text-sub);margin-top:6px;line-height:1.5';
+  note.innerHTML='公式 = 試験の出題比率　／　現 = 現在のプールでの分野割合。試験モードは公式比で出題するので、現%が小さい分野ほど同じ問題が反復されやすい。';
+  host.appendChild(note);
   const btn=document.getElementById('dom-focus-all');if(btn)btn.disabled=!ds.some(d=>d.t>0);
 }
 
