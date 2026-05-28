@@ -651,3 +651,24 @@ body{
 }
 .exam-rlist-details[open] > summary::after{transform:rotate(90deg)}
 
+/* 試験画面：前/次ナビと採点ボタンを主役化 */
+.exam-nav-row{display:flex;gap:8px}
+.exam-nav-row .btn{flex:1;padding:14px 18px;font-size:14px;font-weight:700}
+.exam-finish-row{
+  text-align:center;margin:14px 0;padding-bottom:8px;
+  position:sticky;bottom:calc(var(--tab) + 8px);z-index:50;
+}
+.btn-finish{
+  width:100%;padding:16px;font-size:16px;font-weight:700;
+  box-shadow:0 4px 12px rgba(186,5,23,.25);
+}
+[data-theme=dark] .btn-finish{box-shadow:0 4px 12px rgba(229,64,78,.35)}
+
+/* 用語帳：3アクションを1行に */
+.vact-3{display:flex;gap:8px;margin-bottom:12px}
+.vact-3 .btn{flex:1;padding:14px 8px;font-size:14px;font-weight:700}
+.vact-3 .btn-skip{flex:0 0 88px;font-weight:500;font-size:13px}
+@media (max-width:380px){
+  .vact-3 .btn-skip{flex:0 0 70px;padding:14px 4px;font-size:12px}
+}
+

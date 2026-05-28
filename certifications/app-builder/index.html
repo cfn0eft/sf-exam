@@ -184,14 +184,14 @@
       <div class="qbadge" id="e-badge">Q1</div>
       <div class="qtext" id="e-qtext"></div>
       <div class="choices" id="e-choices"></div>
-      <div class="action-row" style="margin-top:8px">
-        <button class="btn bg btn-sm" id="e-prev" onclick="eNav(-1)">← 前</button>
-        <button class="btn bp btn-sm" id="e-next" onclick="eNav(1)">次 →</button>
+      <div class="action-row exam-nav-row" style="margin-top:10px">
+        <button class="btn bg" id="e-prev" onclick="eNav(-1)">← 前へ</button>
+        <button class="btn bp" id="e-next" onclick="eNav(1)">次へ →</button>
       </div>
       <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>←</kbd> <kbd>→</kbd> で問題移動</div>
     </div>
-    <div style="text-align:center;margin-top:14px;padding-bottom:8px">
-      <button class="btn bd" style="width:auto;padding:12px 32px" onclick="finishExam()">採点する</button>
+    <div class="exam-finish-row">
+      <button class="btn bd btn-finish" onclick="finishExam()">📝 採点する</button>
     </div>
   </div>
   <div id="e-result" style="display:none">
@@ -330,12 +330,10 @@
         </div>
       </div>
     </div>
-    <div class="vact">
+    <div class="vact vact-3">
       <button class="btn bd" onclick="vRate(false)">✗ もう一度</button>
+      <button class="btn bg btn-skip" onclick="vSkip()">スキップ</button>
       <button class="btn bs-" onclick="vRate(true)">✓ 覚えた！</button>
-    </div>
-    <div style="text-align:center;margin-bottom:10px">
-      <button class="btn bg btn-sm" style="width:auto" onclick="vSkip()">スキップ →</button>
     </div>
   </div>
   <div id="v-done" class="vdone" style="display:none">

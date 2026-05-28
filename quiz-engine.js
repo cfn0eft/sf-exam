@@ -641,15 +641,41 @@ function renderCram(){
     el.innerHTML='<div class="cram-empty">📋 この資格の「直前まとめ」は準備中です。</div>';
     return;
   }
-  let html='';
-  CRAMDATA.forEach(sec=>{
-    if(!sec)return;
-    html+='<div class="nm-sec cram-sec">';
-    if(sec.title)html+='<h3>'+escH(sec.title)+'</h3>';
-    html+=cramMd(sec.content||'');
-    html+='</div>';
+  el.innerHTML='';
+
+  // ── 章ジャンプチップ（タップで自動展開＋スクロール）──
+  const navWrap=document.createElement('div');
+  navWrap.className='filter-bar';
+  navWrap.style.margin='0 0 12px';
+  CRAMDATA.forEach((sec,i)=>{
+    if(!sec||!sec.title)return;
+    const btn=document.createElement('button');
+    btn.className='chip';
+    btn.textContent=sec.title;
+    btn.addEventListener('click',()=>{
+      const target=document.getElementById('cram-sec-'+i);
+      if(!target)return;
+      target.classList.add('open');
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    navWrap.appendChild(btn);
   });
-  el.innerHTML=html;
+  el.appendChild(navWrap);
+
+  // ── 章ごと折りたたみ ──
+  CRAMDATA.forEach((sec,i)=>{
+    if(!sec)return;
+    const wrap=document.createElement('div');
+    wrap.className='ch-item';wrap.id='cram-sec-'+i;
+    const head=document.createElement('div');head.className='ch-head';
+    head.innerHTML=
+      '<div class="ch-head-left"><span>'+escH(sec.title||'（無題）')+'</span></div>'+
+      '<div class="ch-head-right"><span class="ch-arrow">›</span></div>';
+    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    const bodyEl=document.createElement('div');bodyEl.className='ch-body';
+    bodyEl.innerHTML='<div class="cram-sec" style="margin:0;padding:12px 14px">'+cramMd(sec.content||'')+'</div>';
+    wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
+  });
 }
 function tbSearch(q){
   const query=q.toLowerCase().trim();
