@@ -329,23 +329,45 @@ function switchTbTab(t){
 function renderCompare(){
   const el=document.getElementById('tb-cmp'); if(!el)return;
   if(!COMPDATA||!COMPDATA.length){el.innerHTML='<div class="cram-empty">📊 この資格の比較表は準備中です。</div>';return;}
-  // ドメイン別ジャンプチップを作成
-  const byD={}; COMPDATA.forEach((s,i)=>{const c=s.domain||'';(byD[c]||(byD[c]=[])).push({s,i});});
-  let nav='<div class="filter-bar" style="margin:0 0 12px">';
+  el.innerHTML='';
+
+  // ── ドメイン別ジャンプチップ（章を自動展開してからスクロール）──
+  const navWrap=document.createElement('div');
+  navWrap.className='filter-bar';
+  navWrap.style.margin='0 0 12px';
   COMPDATA.forEach((s,i)=>{
     const def=domainDef(s.domain||'');
     const emo=def.emoji||'•';
-    nav+='<button class="chip" onclick="document.getElementById(\'cmp-sec-'+i+'\').scrollIntoView({behavior:\'smooth\',block:\'start\'})">'+emo+' '+escH(s.title)+'</button>';
+    const btn=document.createElement('button');
+    btn.className='chip';
+    btn.innerHTML=emo+' '+escH(s.title);
+    btn.addEventListener('click',()=>{
+      const target=document.getElementById('cmp-sec-'+i);
+      if(!target)return;
+      target.classList.add('open');
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    navWrap.appendChild(btn);
   });
-  nav+='</div>';
-  let html=nav;
+  el.appendChild(navWrap);
+
+  // ── 章ごと折りたたみで各セクションを並べる ──
   COMPDATA.forEach((sec,i)=>{
     if(!sec||!sec.content)return;
     const def=domainDef(sec.domain||'');
     const badge=def.name?'<span class="dom-tag" style="font-size:11px;color:var(--text-sub);margin-left:6px">'+def.emoji+' '+escH(def.name)+'</span>':'';
-    html+='<div class="nm-sec cram-sec" id="cmp-sec-'+i+'"><h3 style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+escH(sec.title)+badge+'</h3>'+cramMd(sec.content)+'</div>';
+
+    const wrap=document.createElement('div');
+    wrap.className='ch-item';wrap.id='cmp-sec-'+i;
+    const head=document.createElement('div');head.className='ch-head';
+    head.innerHTML=
+      '<div class="ch-head-left"><span>'+escH(sec.title)+'</span>'+badge+'</div>'+
+      '<div class="ch-head-right"><span class="ch-arrow">›</span></div>';
+    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    const bodyEl=document.createElement('div');bodyEl.className='ch-body';
+    bodyEl.innerHTML='<div class="cram-sec" style="margin:0;padding:12px 14px">'+cramMd(sec.content)+'</div>';
+    wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
   });
-  el.innerHTML=html;
 }
 
 // ===== TEXTBOOK MARK =====
@@ -546,14 +568,13 @@ function renderTextbook(){
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function renderNavMap(){
   const el=document.getElementById('tb-nav');el.innerHTML='';
-  NAVDATA.forEach(sec=>{
+  NAVDATA.forEach((sec,si)=>{
     if(!sec.content.trim())return;
-    const div=document.createElement('div');div.className='nm-sec';
-    let html='<h3>'+escH(sec.title)+'</h3>';
-    // Extract path labels (backtick wrapped)
+
+    // ── 本文ビルド（旧ロジックを踏襲）──
+    let body='';
     const paths=sec.content.match(/`\[設定\][^`]+`/g)||[];
-    paths.forEach(p=>html+='<span class="path-code">'+escH(p.replace(/`/g,''))+'</span><br>');
-    // Table parsing
+    paths.forEach(p=>body+='<span class="path-code">'+escH(p.replace(/`/g,''))+'</span><br>');
     const rows=sec.content.split('\n').filter(l=>l.includes('|'));
     let inHead=true,tbl='',hasTbl=false;
     rows.forEach(r=>{
@@ -565,11 +586,21 @@ function renderNavMap(){
       else tbl+='<tr>'+cells.map(c=>'<td>'+mdInline(c.trim())+'</td>').join('')+'</tr>';
     });
     if(hasTbl)tbl+='</tbody></table>';
-    html+=tbl;
-    // Notes (> lines)
+    body+=tbl;
     const notes=sec.content.split('\n').filter(l=>/^> /.test(l));
-    notes.forEach(n=>html+='<blockquote style="border-left:3px solid var(--warning);background:var(--warning-light);padding:8px 12px;border-radius:0 8px 8px 0;margin:6px 0;font-size:12px">'+mdInline(n.slice(2))+'</blockquote>');
-    div.innerHTML=html;el.appendChild(div);
+    notes.forEach(n=>body+='<blockquote style="border-left:3px solid var(--warning);background:var(--warning-light);padding:8px 12px;border-radius:0 8px 8px 0;margin:6px 0;font-size:12px">'+mdInline(n.slice(2))+'</blockquote>');
+
+    // ── 章ごと折りたたみで包む ──
+    const wrap=document.createElement('div');
+    wrap.className='ch-item';wrap.id='nm-sec-'+si;
+    const head=document.createElement('div');head.className='ch-head';
+    head.innerHTML=
+      '<div class="ch-head-left"><span>'+escH(sec.title)+'</span></div>'+
+      '<div class="ch-head-right"><span class="ch-arrow">›</span></div>';
+    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    const bodyEl=document.createElement('div');bodyEl.className='ch-body';
+    bodyEl.innerHTML='<div class="nm-sec" style="margin:0;padding:12px 14px;box-shadow:none;border-radius:0">'+body+'</div>';
+    wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
   });
 }
 // ===== CRAM（直前まとめ）=====
