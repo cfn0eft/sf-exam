@@ -95,6 +95,46 @@
       '.sfqc-detail th{color:#64748b;font-weight:600;position:sticky;top:0;background:#fff}' +
       '.sfqc-detail .num{text-align:right;font-variant-numeric:tabular-nums}' +
       '.sfqc-detail .qx{max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569}' +
+      /* 検索＋並び替えツールバー */
+      '.sfqc-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;position:sticky;top:0;z-index:5}' +
+      '.sfqc-search{flex:1;min-width:200px;padding:8px 12px;font-size:13px;border:1px solid #cbd5e1;border-radius:8px;outline:none;background:#fff;color:#0f172a}' +
+      '.sfqc-search:focus{border-color:#2563eb}' +
+      '.sfqc-sort-label{font-size:11px;color:#64748b;font-weight:700}' +
+      '.sfqc-sort{border:1px solid #cbd5e1;background:#fff;color:#475569;padding:6px 10px;font-size:11.5px;font-weight:700;border-radius:8px;cursor:pointer}' +
+      '.sfqc-sort.on{background:#2563eb;color:#fff;border-color:#2563eb}' +
+      '.sfqc-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:700}' +
+      /* ユーザー集計行：メール表示 */
+      '.sfqc-acc-email{font-weight:500;color:#64748b;font-size:12px;margin-left:8px}' +
+      /* 詳細インナー */
+      '.sfqc-detail-inner{padding:10px 0 4px}' +
+      '.sfqc-meta{font-size:11.5px;color:#64748b;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap}' +
+      '.sfqc-meta code{background:#f1f5f9;border-radius:4px;padding:1px 6px;font-size:11px;color:#334155}' +
+      /* 資格ブロック */
+      '.sfqc-cert{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;margin:0 0 10px;overflow:hidden}' +
+      '.sfqc-cert-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#eef2ff;border-bottom:1px solid #e0e7ff;gap:8px;flex-wrap:wrap}' +
+      '.sfqc-cert-name{font-weight:700;font-size:13px;color:#3730a3}' +
+      '.sfqc-cert-actions{display:flex;gap:6px}' +
+      '.sfqc-cert-actions button{border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}' +
+      /* KVグリッド */
+      '.sfqc-kv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1px;background:#e2e8f0;padding:1px}' +
+      '.sfqc-kv{background:#fff;padding:6px 10px}' +
+      '.sfqc-k{font-size:10.5px;color:#64748b;font-weight:600;line-height:1.4}' +
+      '.sfqc-v{font-size:13px;color:#0f172a;font-weight:700;line-height:1.4}' +
+      /* 問題別履歴の折りたたみ */
+      '.sfqc-qhist{margin-top:6px}' +
+      '.sfqc-qhist > summary{cursor:pointer;font-size:12px;color:#2563eb;font-weight:700;padding:6px 4px}' +
+      '.sfqc-qhist[open] > summary{margin-bottom:4px}' +
+      'body.dark .sfqc-toolbar{background:#0f172a;border-color:#334155}' +
+      'body.dark .sfqc-search{background:#1e293b;color:#e2e8f0;border-color:#334155}' +
+      'body.dark .sfqc-sort{background:#1e293b;color:#cbd5e1;border-color:#334155}' +
+      'body.dark .sfqc-cert{background:#0f172a;border-color:#334155}' +
+      'body.dark .sfqc-cert-head{background:#1e1b4b;border-color:#312e81}' +
+      'body.dark .sfqc-cert-name{color:#a5b4fc}' +
+      'body.dark .sfqc-kv-grid{background:#334155}' +
+      'body.dark .sfqc-kv{background:#1e293b}' +
+      'body.dark .sfqc-k{color:#94a3b8}' +
+      'body.dark .sfqc-v{color:#f1f5f9}' +
+      'body.dark .sfqc-meta code{background:#1e293b;color:#cbd5e1}' +
       '.sfqc-empty{color:#94a3b8;font-size:13px;text-align:center;padding:30px}' +
       'body.dark .sfqc-card{background:#1e293b;color:#e2e8f0}' +
       'body.dark .sfqc-field{background:#0f172a;border-color:#334155;color:#e2e8f0}' +
@@ -237,17 +277,62 @@
   function statsOf(store) {
     store = store || {};
     var hist = store.hist || {}, ids = Object.keys(hist);
-    var c = 0, w = 0;
-    ids.forEach(function (k) { c += (hist[k].c || 0); w += (hist[k].w || 0); });
+    var c = 0, w = 0, answeredIds = 0, lowConf = 0, wrongCur = 0;
+    ids.forEach(function (k) {
+      var h = hist[k] || {};
+      c += (h.c || 0); w += (h.w || 0);
+      if ((h.c || 0) + (h.w || 0) > 0) answeredIds++;
+      if (h.last === 'c' && h.lc === 1) lowConf++;
+      if (h.last === 'w') wrongCur++;
+    });
     var attempts = c + w;
+
+    // SRS：今日が期限の数
+    var today = (function () { var d = new Date(); var p = function (n) { return ('0' + n).slice(-2); };
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); })();
+    var srsAll = store.srs || {}, srsKeys = Object.keys(srsAll), srsDue = 0;
+    srsKeys.forEach(function (k) { var s = srsAll[k]; if (s && (s.due || '9999-99-99') <= today) srsDue++; });
+
+    // 用語帳：習得済(2)と学習中(1)
+    var vm = store.vm || {}, vmMastered = 0, vmLearning = 0;
+    Object.keys(vm).forEach(function (k) { var v = vm[k]; if (v >= 2) vmMastered++; else if (v >= 1) vmLearning++; });
+
+    // 教科書：しおり/読了
+    var tbm = store.tbm || {}, tbmBm = 0, tbmDone = 0;
+    Object.keys(tbm).forEach(function (k) { var v = tbm[k]; if (v === 1) tbmBm++; else if (v === 2) tbmDone++; });
+
+    // メモ
+    var notes = store.notes || {}, notesCount = Object.keys(notes).filter(function (k) { return (notes[k] || '').trim(); }).length;
+
+    // 試験履歴
+    var exams = store.exams || [], examCount = exams.length;
+    var examBest = 0, examPassed = 0, examLastTs = 0;
+    exams.forEach(function (e) {
+      if ((e.pct || 0) > examBest) examBest = e.pct;
+      if (e.ok) examPassed++;
+      if ((e.ts || 0) > examLastTs) examLastTs = e.ts;
+    });
+
+    // 学習日数（daily の non-empty キー数）と最終学習日
+    var daily = store.daily || {}, dailyKeys = Object.keys(daily).filter(function (k) { return (daily[k] || 0) > 0; });
+    var daysActive = dailyKeys.length;
+    var lastStudyDate = dailyKeys.sort().slice(-1)[0] || '';
+
     return {
-      answered: ids.length,
+      answered: answeredIds,
       attempts: attempts,
       correct: c, wrong: w,
       rate: attempts ? Math.round(c / attempts * 100) : 0,
       streak: store.streak || 0,
       bookmarks: (store.bm || []).length,
-      vocab: Object.keys(store.vm || {}).length
+      vocab: vmMastered, vocabLearning: vmLearning, vocabTotal: Object.keys(vm).length,
+      tbmDone: tbmDone, tbmBm: tbmBm,
+      notes: notesCount,
+      srsTotal: srsKeys.length, srsDue: srsDue,
+      lowConf: lowConf, wrongCur: wrongCur,
+      examCount: examCount, examBest: examBest, examPassed: examPassed, examLastTs: examLastTs,
+      examDate: store.examDate || '', goal: store.goal || 0,
+      daysActive: daysActive, lastStudyDate: lastStudyDate
     };
   }
 
@@ -354,12 +439,38 @@
   };
 
   /* ---------------- 管理者ビュー ---------------- */
-  var adminRows = []; // {uid, name, updated, store, stats}
+  var adminRows = [];   // 旧：CSV/詳細互換用に1cert=1行も保持
+  var adminUsers = [];  // 新：uid単位でグルーピング { uid, name, email, updated, certs:[{cert,store,stats}], agg }
+  var adminFilter = ''; // 名前/メール検索
+  var adminSort = 'updated'; // 'updated'|'answered'|'name'
 
   function qTextMap() {
     var map = {};
     try { if (typeof QDATA !== 'undefined' && QDATA.forEach) QDATA.forEach(function (q) { map[q.id] = q.question || ''; }); } catch (e) {}
     return map;
+  }
+
+  function aggregateUser(certs) {
+    var ans = 0, att = 0, c = 0, w = 0, ex = 0, exP = 0, exBest = 0;
+    var notes = 0, srsDue = 0, srsTotal = 0, vocab = 0, bm = 0, days = 0;
+    var lastStudy = '';
+    certs.forEach(function (x) {
+      var s = x.stats;
+      ans += s.answered; att += s.attempts; c += s.correct; w += s.wrong;
+      ex += s.examCount; exP += s.examPassed; if (s.examBest > exBest) exBest = s.examBest;
+      notes += s.notes; srsDue += s.srsDue; srsTotal += s.srsTotal;
+      vocab += s.vocab; bm += s.bookmarks; days += s.daysActive;
+      if (s.lastStudyDate > lastStudy) lastStudy = s.lastStudyDate;
+    });
+    return {
+      certCount: certs.length,
+      answered: ans, attempts: att, correct: c, wrong: w,
+      rate: att ? Math.round(c / att * 100) : 0,
+      examCount: ex, examPassed: exP, examBest: exBest,
+      notes: notes, srsDue: srsDue, srsTotal: srsTotal,
+      vocab: vocab, bookmarks: bm, daysActive: days,
+      lastStudyDate: lastStudy
+    };
   }
 
   function openAdmin() { if (!isAdmin) return; elAdmin.classList.add('show'); loadAdmin(); }
@@ -371,23 +482,37 @@
     body.innerHTML = '<div class="sfqc-empty">読み込み中…</div>';
     db.collection(COLLECTION).get().then(function (snap) {
       adminRows = [];
+      var byUid = {};
       snap.forEach(function (d) {
         var data = d.data() || {};
         var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
+        var email = data.email || '';
+        var entry = byUid[d.id] || (byUid[d.id] = { uid: d.id, name: nm, email: email, updated: data.updated || 0, certs: [] });
         var stores = data.stores;
         if (stores && typeof stores === 'object' && Object.keys(stores).length) {
           Object.keys(stores).forEach(function (ck) {
             var store = stores[ck] || emptyStore();
-            adminRows.push({ uid: d.id, cert: ck, name: nm, updated: data.updated || 0, store: store, stats: statsOf(store) });
+            var st = statsOf(store);
+            entry.certs.push({ cert: ck, store: store, stats: st });
+            adminRows.push({ uid: d.id, cert: ck, name: nm, updated: data.updated || 0, store: store, stats: st });
           });
         } else if (data.store) {
-          // 旧スキーマ（資格未分離）の doc
-          adminRows.push({ uid: d.id, cert: '(旧)', name: nm, updated: data.updated || 0, store: data.store, stats: statsOf(data.store) });
+          var st1 = statsOf(data.store);
+          entry.certs.push({ cert: '(旧)', store: data.store, stats: st1 });
+          adminRows.push({ uid: d.id, cert: '(旧)', name: nm, updated: data.updated || 0, store: data.store, stats: st1 });
         } else {
-          adminRows.push({ uid: d.id, cert: '—', name: nm, updated: data.updated || 0, store: emptyStore(), stats: statsOf(emptyStore()) });
+          var st2 = statsOf(emptyStore());
+          entry.certs.push({ cert: '—', store: emptyStore(), stats: st2 });
+          adminRows.push({ uid: d.id, cert: '—', name: nm, updated: data.updated || 0, store: emptyStore(), stats: st2 });
         }
       });
-      adminRows.sort(function (a, b) { return b.updated - a.updated; });
+      adminUsers = Object.keys(byUid).map(function (k) {
+        var u = byUid[k];
+        u.agg = aggregateUser(u.certs);
+        // 資格内も解答数順で並べる（多い順）
+        u.certs.sort(function (a, b) { return b.stats.attempts - a.stats.attempts; });
+        return u;
+      });
       renderAdmin();
     }).catch(function (e) {
       body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
@@ -401,29 +526,62 @@
     catch (e) { return '—'; }
   }
 
+  function filterSortUsers() {
+    var list = adminUsers.slice();
+    var q = (adminFilter || '').toLowerCase().trim();
+    if (q) list = list.filter(function (u) {
+      return (u.name || '').toLowerCase().indexOf(q) >= 0 ||
+             (u.email || '').toLowerCase().indexOf(q) >= 0 ||
+             (u.uid || '').toLowerCase().indexOf(q) >= 0;
+    });
+    list.sort(function (a, b) {
+      if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
+      if (adminSort === 'name')     return (a.name || '').localeCompare(b.name || '', 'ja');
+      return (b.updated || 0) - (a.updated || 0); // 'updated'
+    });
+    return list;
+  }
+
   function renderAdmin() {
     var body = document.getElementById('sfqc-adm-body');
-    if (!adminRows.length) { body.innerHTML = '<div class="sfqc-empty">アカウントがまだありません。</div>'; return; }
-    var html = '';
-    adminRows.forEach(function (r, i) {
-      var s = r.stats;
+    if (!adminUsers.length) { body.innerHTML = '<div class="sfqc-empty">アカウントがまだありません。</div>'; return; }
+    var list = filterSortUsers();
+
+    var html =
+      '<div class="sfqc-toolbar">' +
+        '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
+        '<span class="sfqc-sort-label">並び順:</span>' +
+        '<button class="sfqc-sort' + (adminSort === 'updated' ? ' on' : '') + '" data-sort="updated">最終更新</button>' +
+        '<button class="sfqc-sort' + (adminSort === 'answered' ? ' on' : '') + '" data-sort="answered">解答数</button>' +
+        '<button class="sfqc-sort' + (adminSort === 'name' ? ' on' : '') + '" data-sort="name">名前</button>' +
+        '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
+      '</div>';
+
+    if (!list.length) {
+      html += '<div class="sfqc-empty">条件に合うアカウントがありません。</div>';
+    }
+
+    list.forEach(function (u, i) {
+      var a = u.agg;
+      var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
+      var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
       html +=
         '<div class="sfqc-acc">' +
           '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(r.name) + ' <span style="font-weight:600;color:#2563eb;font-size:12px">[' + esc(r.cert) + ']</span></span>' +
+            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + '</span>' +
             '<span class="sfqc-acc-stats">' +
-              '<span>回答した問題 <b>' + s.answered + '</b></span>' +
-              '<span>正答率 <b>' + s.rate + '%</b></span>' +
-              '<span>正解 <b>' + s.correct + '</b>／不正解 <b>' + s.wrong + '</b></span>' +
-              '<span>連続正解 <b>' + s.streak + '</b></span>' +
-              '<span>★ブックマーク <b>' + s.bookmarks + '</b></span>' +
-              '<span>単語学習 <b>' + s.vocab + '</b></span>' +
-              '<span>最終更新 ' + fmtDate(r.updated) + '</span>' +
+              '<span>登録資格 <b>' + a.certCount + '</b></span>' +
+              '<span>解答 <b>' + a.answered + '</b>問 / 述べ<b>' + a.attempts + '</b>回</span>' +
+              '<span>正答率 <b>' + a.rate + '%</b></span>' +
+              '<span>試験 <b>' + a.examCount + '</b>回' + passLabel + ' / 最高 <b>' + a.examBest + '%</b></span>' +
+              '<span>学習日数 <b>' + a.daysActive + '</b></span>' +
+              '<span>★<b>' + a.bookmarks + '</b> / 用語<b>' + a.vocab + '</b> / メモ<b>' + a.notes + '</b></span>' +
+              '<span>SRS待ち <b>' + a.srsDue + '</b>/' + a.srsTotal + '</span>' +
+              '<span>最終学習 ' + esc(a.lastStudyDate || '—') + '</span>' +
+              '<span>最終更新 ' + fmtDate(u.updated) + '</span>' +
             '</span>' +
             '<span class="sfqc-acc-actions">' +
-              '<button class="sfqc-act-detail" data-i="' + i + '">詳細</button>' +
-              '<button class="sfqc-act-reset" data-uid="' + esc(r.uid) + '" data-cert="' + esc(r.cert) + '" data-name="' + esc(r.name) + '">リセット</button>' +
-              '<button class="sfqc-act-del" data-uid="' + esc(r.uid) + '" data-cert="' + esc(r.cert) + '" data-name="' + esc(r.name) + '">削除</button>' +
+              '<button class="sfqc-act-detail" data-i="' + i + '">詳細 ▾</button>' +
             '</span>' +
           '</div>' +
           '<div class="sfqc-detail" id="sfqc-det-' + i + '"></div>' +
@@ -431,32 +589,102 @@
     });
     body.innerHTML = html;
 
-    body.querySelectorAll('.sfqc-act-detail').forEach(function (b) { b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); }); });
-    body.querySelectorAll('.sfqc-act-reset').forEach(function (b) { b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); }); });
-    body.querySelectorAll('.sfqc-act-del').forEach(function (b) { b.addEventListener('click', function () { deleteAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); }); });
+    // フィルタ/ソート
+    var qIn = document.getElementById('sfqc-q');
+    if (qIn) {
+      qIn.addEventListener('input', function () { adminFilter = qIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
+    }
+    body.querySelectorAll('.sfqc-sort').forEach(function (b) {
+      b.addEventListener('click', function () { adminSort = b.getAttribute('data-sort'); renderAdmin(); });
+    });
+    body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
+      b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
+    });
+  }
+
+  function certDetailHTML(c, uid, name) {
+    var s = c.stats;
+    var examDateLabel = s.examDate ? esc(s.examDate) : '未設定';
+    var goalLabel = s.goal ? (s.goal + '問/日') : '未設定';
+    var lastExam = s.examLastTs ? fmtDate(s.examLastTs) : '—';
+    return '' +
+      '<div class="sfqc-cert">' +
+        '<div class="sfqc-cert-head">' +
+          '<span class="sfqc-cert-name">📘 ' + esc(c.cert) + '</span>' +
+          '<span class="sfqc-cert-actions">' +
+            '<button class="sfqc-act-reset" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">リセット</button>' +
+            '<button class="sfqc-act-del" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">削除</button>' +
+          '</span>' +
+        '</div>' +
+        '<div class="sfqc-kv-grid">' +
+          kv('解答済み問題', s.answered + ' 問') +
+          kv('総回答回数', s.attempts + ' 回') +
+          kv('正解 / 不正解', s.correct + ' / ' + s.wrong) +
+          kv('正答率', s.rate + ' %') +
+          kv('連続正解', s.streak + ' 問') +
+          kv('現在間違いキュー', s.wrongCur + ' 問') +
+          kv('自信なし正解', s.lowConf + ' 問') +
+          kv('★ ブックマーク', s.bookmarks + ' 問') +
+          kv('試験挑戦', s.examCount + ' 回') +
+          kv('試験 最高', s.examBest + ' %') +
+          kv('試験 合格', s.examPassed + ' 回') +
+          kv('直近試験', lastExam) +
+          kv('SRS 期限到来', s.srsDue + ' / ' + s.srsTotal) +
+          kv('用語 習得', s.vocab + ' (学習中 ' + s.vocabLearning + ' / 総 ' + s.vocabTotal + ')') +
+          kv('教科書 読了', s.tbmDone + ' (しおり ' + s.tbmBm + ')') +
+          kv('メモ', s.notes + ' 件') +
+          kv('学習日数', s.daysActive + ' 日') +
+          kv('最終学習日', s.lastStudyDate || '—') +
+          kv('受験予定日', examDateLabel) +
+          kv('日次目標', goalLabel) +
+        '</div>' +
+      '</div>';
+  }
+
+  function kv(label, val) {
+    return '<div class="sfqc-kv"><div class="sfqc-k">' + esc(label) + '</div><div class="sfqc-v">' + esc(String(val)) + '</div></div>';
   }
 
   function toggleDetail(i) {
     var box = document.getElementById('sfqc-det-' + i);
     if (!box) return;
     if (box.classList.contains('show')) { box.classList.remove('show'); return; }
-    var r = adminRows[i], hist = r.store.hist || {}, qmap = qTextMap();
-    var ids = Object.keys(hist).sort(function (a, b) { return (+a) - (+b); });
-    var rows = ids.map(function (id) {
-      var h = hist[id], t = (h.c || 0) + (h.w || 0), rate = t ? Math.round(h.c / t * 100) : 0;
-      return '<tr><td class="num">Q' + esc(id) + '</td><td class="qx">' + esc((qmap[id] || '').slice(0, 70)) + '</td>' +
-        '<td class="num">' + (h.c || 0) + '</td><td class="num">' + (h.w || 0) + '</td><td class="num">' + rate + '%</td></tr>';
-    }).join('');
-    var bm = (r.store.bm || []);
-    var detail = '';
-    if (ids.length) {
-      detail += '<table><thead><tr><th>問題</th><th>内容</th><th class="num">正解</th><th class="num">不正解</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>';
-    } else {
-      detail += '<div class="sfqc-empty">まだ回答記録がありません。</div>';
+    var list = filterSortUsers();
+    var u = list[i]; if (!u) return;
+
+    var html = '<div class="sfqc-detail-inner">';
+    // 全資格集計
+    html += '<div class="sfqc-meta">' +
+      '<div>UID: <code>' + esc(u.uid) + '</code></div>' +
+      (u.email ? '<div>メール: ' + esc(u.email) + '</div>' : '') +
+      '</div>';
+    // 資格ごと
+    u.certs.forEach(function (c) { html += certDetailHTML(c, u.uid, u.name); });
+    // 問題別履歴（最も多く解いている資格の hist を表示）
+    var primary = u.certs.slice().sort(function (a, b) { return b.stats.attempts - a.stats.attempts; })[0];
+    if (primary && primary.stats.attempts) {
+      var hist = primary.store.hist || {}, qmap = qTextMap();
+      var ids = Object.keys(hist).sort(function (a, b) { return (+a) - (+b); });
+      var rows = ids.map(function (id) {
+        var h = hist[id], t = (h.c || 0) + (h.w || 0), rate = t ? Math.round(h.c / t * 100) : 0;
+        return '<tr><td class="num">Q' + esc(id) + '</td><td class="qx">' + esc((qmap[id] || '').slice(0, 70)) + '</td>' +
+          '<td class="num">' + (h.c || 0) + '</td><td class="num">' + (h.w || 0) + '</td><td class="num">' + rate + '%</td></tr>';
+      }).join('');
+      html += '<details class="sfqc-qhist"><summary>問題別回答履歴（' + esc(primary.cert) + '・' + ids.length + '問）</summary>' +
+        '<table><thead><tr><th>問題</th><th>内容</th><th class="num">正解</th><th class="num">不正解</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '</details>';
     }
-    if (bm.length) detail += '<p style="font-size:12px;color:#475569;margin-top:10px">★ ブックマーク: ' + bm.map(function (x) { return 'Q' + esc(x); }).join(', ') + '</p>';
-    box.innerHTML = detail;
+    html += '</div>';
+
+    box.innerHTML = html;
     box.classList.add('show');
+
+    box.querySelectorAll('.sfqc-act-reset').forEach(function (b) {
+      b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
+    });
+    box.querySelectorAll('.sfqc-act-del').forEach(function (b) {
+      b.addEventListener('click', function () { deleteAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
+    });
   }
 
   function resetAccount(uid, cert, name) {
@@ -486,12 +714,32 @@
 
   function exportCsv() {
     if (!adminRows.length) { alert('書き出すデータがありません。'); return; }
-    var head = ['ID', '資格', '最終更新', '回答した問題数', '総回答回数', '正解数', '不正解数', '正答率(%)', '連続正解', 'ブックマーク数', '単語学習数'];
+    var head = [
+      'ID', 'メール', 'UID', '資格', '最終更新',
+      '解答済み問題', '総回答回数', '正解', '不正解', '正答率(%)', '連続正解',
+      '間違いキュー', '自信なし正解', '★ブックマーク',
+      '試験挑戦', '試験最高(%)', '試験合格', '直近試験',
+      'SRS総数', 'SRS期限到来',
+      '用語習得', '用語学習中', '用語総数',
+      '教科書読了', '教科書しおり', 'メモ数',
+      '学習日数', '最終学習日', '受験予定日', '日次目標'
+    ];
     var lines = [head.join(',')];
-    adminRows.forEach(function (r) {
-      var s = r.stats;
-      var row = [r.name, r.cert, fmtDate(r.updated), s.answered, s.attempts, s.correct, s.wrong, s.rate, s.streak, s.bookmarks, s.vocab];
-      lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+    adminUsers.forEach(function (u) {
+      u.certs.forEach(function (c) {
+        var s = c.stats;
+        var row = [
+          u.name, u.email || '', u.uid, c.cert, fmtDate(u.updated),
+          s.answered, s.attempts, s.correct, s.wrong, s.rate, s.streak,
+          s.wrongCur, s.lowConf, s.bookmarks,
+          s.examCount, s.examBest, s.examPassed, s.examLastTs ? fmtDate(s.examLastTs) : '',
+          s.srsTotal, s.srsDue,
+          s.vocab, s.vocabLearning, s.vocabTotal,
+          s.tbmDone, s.tbmBm, s.notes,
+          s.daysActive, s.lastStudyDate, s.examDate, s.goal
+        ];
+        lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+      });
     });
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
     var url = URL.createObjectURL(blob);
