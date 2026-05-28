@@ -111,7 +111,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
         + '<div class="card-meta"><span>Coming Soon</span></div></div>';
       var meta = (c.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
       return '<a class="card" href="certifications/' + c.slug + '/index.html">'
-        + '<span class="cram-pill" onclick="event.preventDefault();event.stopPropagation();location.href=&#39;certifications/' + c.slug + '/index.html#cram&#39;">📋 直前まとめ</span>'
         + '<div class="card-icon">' + (c.icon || '📘') + '</div>'
         + '<h2 class="card-title">' + c.title + '</h2>'
         + '<p class="card-desc">' + (c.desc || '') + '</p>'

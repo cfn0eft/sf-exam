@@ -510,6 +510,18 @@ body{
 .conf-toggle{flex:none;padding:13px 14px;border-radius:10px;border:2px solid var(--border);background:var(--card);color:var(--text-sub);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
 .conf-toggle.on{border-color:var(--warning);background:var(--warning-light);color:var(--warning)}
 .memo-wrap{margin-top:12px}
+.memo-details{margin-top:12px}
+.memo-details > summary{
+  font-size:11px;color:var(--text-sub);font-weight:700;
+  display:flex;align-items:center;gap:5px;cursor:pointer;
+  padding:6px 4px;list-style:none;user-select:none;
+}
+.memo-details > summary::-webkit-details-marker{display:none}
+.memo-details > summary::before{
+  content:"▸ ";color:var(--purple);font-weight:700;display:inline-block;
+}
+.memo-details[open] > summary::before{content:"▾ "}
+.memo-details[open] > summary{margin-bottom:4px}
 .memo-box{width:100%;min-height:46px;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;line-height:1.6;resize:vertical;background:var(--card);color:var(--text);outline:none;transition:border-color .15s}
 .memo-box:focus{border-color:var(--purple)}
 .memo-label{font-size:11px;color:var(--text-sub);font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:5px}
@@ -623,4 +635,19 @@ body{
   text-decoration:underline;text-underline-offset:2px;
 }
 .reset-link:hover{color:var(--danger)}
+
+/* 試験結果：問題ごとの結果は折りたたみ */
+.exam-rlist-details{display:block;margin:0 0 10px}
+.exam-rlist-details > summary{
+  cursor:pointer;font-size:13px;font-weight:700;color:var(--primary);
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:14px 16px;list-style:none;user-select:none;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.exam-rlist-details > summary::-webkit-details-marker{display:none}
+.exam-rlist-details > summary::after{
+  content:"›";color:var(--text-sub);font-size:18px;
+  transition:transform .2s;display:inline-block;
+}
+.exam-rlist-details[open] > summary::after{transform:rotate(90deg)}
 

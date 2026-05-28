@@ -22,7 +22,7 @@
 <!-- TOP BAR -->
 <div class="topbar">
   <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
-  <a class="topbar-btn" href="../../index.html" title="資格選択へ戻る" style="text-decoration:none">🏠</a>
+  <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
   <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
   <button class="topbar-btn" id="btn-dark" onclick="toggleDark()">🌙</button>
 </div>
@@ -153,10 +153,10 @@
     <div class="action-row" id="s-next-row" style="margin-top:10px;display:none">
       <button class="btn bg btn-sm" onclick="nextSQ()">次の問題 →</button>
     </div>
-    <div class="memo-wrap">
-      <div class="memo-label">📝 メモ <span class="memo-saved" id="memo-saved">✓ 保存</span></div>
+    <details class="memo-details">
+      <summary>📝 メモ <span class="memo-saved" id="memo-saved">✓ 保存</span></summary>
       <textarea class="memo-box" id="s-memo" placeholder="この問題の覚え書き（自動保存・端末間で同期）" oninput="onMemoInput()"></textarea>
-    </div>
+    </details>
   </div>
   <div id="s-end" style="display:none">
     <div class="card result-box">
@@ -205,14 +205,17 @@
       <div class="sec-label" style="margin-top:0">📊 分野別スコア</div>
       <div id="e-domains"></div>
     </div>
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div class="sec-label" style="margin:0">問題ごとの結果</div>
-        <button class="chip" id="e-wrong-toggle" onclick="toggleExamWrong()">❌ 間違いのみ</button>
+    <details class="exam-rlist-details">
+      <summary>問題ごとの結果を見る</summary>
+      <div class="card" style="margin-top:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="sec-label" style="margin:0">問題ごとの結果</div>
+          <button class="chip" id="e-wrong-toggle" onclick="toggleExamWrong()">❌ 間違いのみ</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px">タップで解説を表示</div>
+        <div id="e-rlist"></div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px">タップで解説を表示</div>
-      <div id="e-rlist"></div>
-    </div>
+    </details>
     <div style="display:flex;gap:10px;margin-bottom:16px">
       <button class="btn bp" onclick="startExam()">もう一度</button>
       <button class="btn bg" onclick="goTo('home')">ホームへ</button>
