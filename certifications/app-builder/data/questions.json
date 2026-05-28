@@ -6748,5 +6748,1469 @@
       "件数集計",
       "ノーコード"
     ]
+  },
+  {
+    "id": 277,
+    "url": "claude-generated",
+    "question": "プロファイルと権限セットの違いに関する説明として正しいものを2つ選びなさい。",
+    "choices": [
+      "1ユーザーには1つのプロファイルしか割り当てられない",
+      "ログインIPアドレスの範囲制限は権限セットでのみ設定できる",
+      "権限セットは複数のユーザーに同じ追加権限を割り当てるために使用する",
+      "プロファイルの権限は権限セットで取り消すことができる"
+    ],
+    "answers": [
+      "1ユーザーには1つのプロファイルしか割り当てられない",
+      "権限セットは複数のユーザーに同じ追加権限を割り当てるために使用する"
+    ],
+    "explanation": "□ 1ユーザーには1つのプロファイルしか割り当てられない　これは正解です。プロファイルはユーザーの基本権限を定義し、1ユーザー1プロファイルが原則です。\n\n□ ログインIPアドレスの範囲制限は権限セットでのみ設定できる　これは不正解です。ログインIPアドレス範囲はプロファイル側でのみ設定可能です。\n\n□ 権限セットは複数のユーザーに同じ追加権限を割り当てるために使用する　これは正解です。権限セットは「足し算」の権限で、業務単位で細かく作って必要なユーザーに割り当てます。\n\n□ プロファイルの権限は権限セットで取り消すことができる　これは不正解です。権限セットは加算のみで、プロファイル権限を取り消すことはできません。打ち消しが必要な場合は「ミュート権限セット」を使います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "プロファイル",
+      "権限セット",
+      "ユーザー管理",
+      "権限管理"
+    ]
+  },
+  {
+    "id": 278,
+    "url": "claude-generated",
+    "question": "1人のユーザーに割り当てられるプロファイルの数として正しいものはどれですか。",
+    "choices": [
+      "0個",
+      "1個",
+      "複数個",
+      "ユーザーロールごとに異なる"
+    ],
+    "answers": [
+      "1個"
+    ],
+    "explanation": "□ 0個　これは不正解です。すべてのユーザーは必ず1つのプロファイルを持つ必要があります。\n\n□ 1個　これは正解です。Salesforceでは1ユーザーに1つのプロファイルが原則で、複数のプロファイルは割り当てられません。追加権限は権限セットで提供します。\n\n□ 複数個　これは不正解です。プロファイルは1つのみで、複数の権限セットを組み合わせて柔軟な権限管理を行います。\n\n□ ユーザーロールごとに異なる　これは不正解です。ロールは共有とレポートに使われ、プロファイル数とは関係ありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "プロファイル",
+      "ユーザー管理",
+      "権限管理"
+    ]
+  },
+  {
+    "id": 279,
+    "url": "claude-generated",
+    "question": "権限セットグループ(Permission Set Group)の主な利点はどれですか。",
+    "choices": [
+      "複数の権限セットを職務単位でまとめて1回の操作で割り当てできる",
+      "プロファイルを廃止できる",
+      "ロール階層を不要にできる",
+      "オブジェクトの共有設定を上書きできる"
+    ],
+    "answers": [
+      "複数の権限セットを職務単位でまとめて1回の操作で割り当てできる"
+    ],
+    "explanation": "□ 複数の権限セットを職務単位でまとめて1回の操作で割り当てできる　これは正解です。権限セットグループは複数の権限セットをロール/職務単位で束ねるための仕組みで、メンテナンスが大幅に簡素化されます。\n\n□ プロファイルを廃止できる　これは不正解です。プロファイル自体は引き続き必須です。\n\n□ ロール階層を不要にできる　これは不正解です。権限セットグループは権限管理の話で、共有のためのロール階層とは別物です。\n\n□ オブジェクトの共有設定を上書きできる　これは不正解です。共有設定はOWDや共有ルールで管理し、権限セットグループは関与しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "権限セットグループ",
+      "権限セット",
+      "権限管理"
+    ]
+  },
+  {
+    "id": 280,
+    "url": "claude-generated",
+    "question": "特定のIPアドレスからのみログインを許可したい。どこで設定すべきですか。",
+    "choices": [
+      "権限セット",
+      "プロファイル",
+      "共有ルール",
+      "ロール"
+    ],
+    "answers": [
+      "プロファイル"
+    ],
+    "explanation": "□ 権限セット　これは不正解です。権限セットにはログインIP範囲の設定項目はありません。\n\n□ プロファイル　これは正解です。ログインIPアドレス範囲はプロファイル側でのみ設定可能で、プロファイルに属する全ユーザーに適用されます。\n\n□ 共有ルール　これは不正解です。共有ルールはレコードアクセスの拡張に使うもので、ログイン制限とは異なります。\n\n□ ロール　これは不正解です。ロールはレコード共有の階層で、ログインIP制限の設定機能はありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_epui_login_ip_ranges_edit.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ログインIP",
+      "プロファイル",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 281,
+    "url": "claude-generated",
+    "question": "ミュート権限セット(Muting Permission Set)の主な用途はどれですか。",
+    "choices": [
+      "権限セットグループ内で特定の権限を打ち消す",
+      "ユーザーを無効化する",
+      "プロファイルを上書きする",
+      "オブジェクトを非公開にする"
+    ],
+    "answers": [
+      "権限セットグループ内で特定の権限を打ち消す"
+    ],
+    "explanation": "□ 権限セットグループ内で特定の権限を打ち消す　これは正解です。ミュート権限セットは権限セットグループに追加することで、束ねた権限セット内の一部権限を選択的にOFFにできます。\n\n□ ユーザーを無効化する　これは不正解です。ユーザーの無効化は「無効化」操作で行います。\n\n□ プロファイルを上書きする　これは不正解です。ミュートはあくまで権限セットグループ内の権限抑制で、プロファイルとは別レイヤーです。\n\n□ オブジェクトを非公開にする　これは不正解です。OWDなど別の機能の役割です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ミュート権限セット",
+      "権限セットグループ",
+      "権限管理"
+    ]
+  },
+  {
+    "id": 282,
+    "url": "claude-generated",
+    "question": "組織の共有設定(OWD)で最も制限的な選択肢はどれですか。",
+    "choices": [
+      "非公開",
+      "公開/参照のみ",
+      "公開/参照・更新可能",
+      "公開/フル"
+    ],
+    "answers": [
+      "非公開"
+    ],
+    "explanation": "□ 非公開　これは正解です。OWDの「非公開」は、レコード所有者と上位ロールのユーザーのみがアクセスできる最も制限的な設定です。\n\n□ 公開/参照のみ　これは不正解です。全ユーザーが参照できる中程度のアクセスです。\n\n□ 公開/参照・更新可能　これは不正解です。全ユーザーが参照・更新可能なため、制限は弱めです。\n\n□ 公開/フル　これは不正解です。標準のOWD選択肢ではありません(取引先などで「親レコードと同様に制御」がありますが「フル」はありません)。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "OWD",
+      "共有設定",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 283,
+    "url": "claude-generated",
+    "question": "共有ルールに関する説明として正しいものはどれですか。",
+    "choices": [
+      "OWDがより制限的なオブジェクトに対し、特定の条件でレコードアクセスを拡張する",
+      "個別レコードに対して所有者が手動で共有を付与する",
+      "プロファイル全体のオブジェクト権限を変更する",
+      "ロール階層を上書きする"
+    ],
+    "answers": [
+      "OWDがより制限的なオブジェクトに対し、特定の条件でレコードアクセスを拡張する"
+    ],
+    "explanation": "□ OWDがより制限的なオブジェクトに対し、特定の条件でレコードアクセスを拡張する　これは正解です。共有ルールはOWDで非公開や参照のみに設定されたオブジェクトに対し、公開グループ・ロール・条件ベースでアクセスを拡張する仕組みです。\n\n□ 個別レコードに対して所有者が手動で共有を付与する　これは不正解です。それは手動共有の説明です。\n\n□ プロファイル全体のオブジェクト権限を変更する　これは不正解です。共有ルールはレコードレベルで、オブジェクト権限はプロファイルで管理します。\n\n□ ロール階層を上書きする　これは不正解です。共有ルールはロール階層と並行して動作します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "共有ルール",
+      "OWD",
+      "公開グループ"
+    ]
+  },
+  {
+    "id": 284,
+    "url": "claude-generated",
+    "question": "レコード詳細ページに「共有」ボタンが表示される条件として正しいものを2つ選びなさい。",
+    "choices": [
+      "対象オブジェクトのOWDが「非公開」または「公開/参照のみ」になっている",
+      "ユーザーがそのレコードへの「フルアクセス」を持っている",
+      "対象オブジェクトのOWDが「公開/参照・更新可能」になっている",
+      "ユーザーが「全データの編集」権限を持っている"
+    ],
+    "answers": [
+      "対象オブジェクトのOWDが「非公開」または「公開/参照のみ」になっている",
+      "ユーザーがそのレコードへの「フルアクセス」を持っている"
+    ],
+    "explanation": "□ 対象オブジェクトのOWDが「非公開」または「公開/参照のみ」になっている　これは正解です。手動共有はOWDが緩い(公開/参照・更新可能)場合は意味がないため、制限的なOWDのオブジェクトでのみ表示されます。\n\n□ ユーザーがそのレコードへの「フルアクセス」を持っている　これは正解です。手動共有を実行できるのはレコードのフルアクセス権を持つユーザー(所有者・上位ロール・管理者)です。\n\n□ 対象オブジェクトのOWDが「公開/参照・更新可能」になっている　これは不正解です。OWDが緩い場合、共有を追加する必要がないため共有ボタンは表示されません。\n\n□ ユーザーが「全データの編集」権限を持っている　これは不正解です。それは管理者権限の一種ですが、共有ボタンを表示するための直接条件ではありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "手動共有",
+      "OWD",
+      "レコードアクセス"
+    ]
+  },
+  {
+    "id": 285,
+    "url": "claude-generated",
+    "question": "OWDが「非公開」のオブジェクトでレコードアクセスを拡張する方法として正しいものを2つ選びなさい。",
+    "choices": [
+      "共有ルール",
+      "ロール階層",
+      "プロファイルのオブジェクト権限を「すべて参照」にする",
+      "OWDを「公開/参照のみ」に変更する以外に方法はない"
+    ],
+    "answers": [
+      "共有ルール",
+      "ロール階層"
+    ],
+    "explanation": "□ 共有ルール　これは正解です。公開グループ・ロール・条件ベースでアクセスを拡張できます。\n\n□ ロール階層　これは正解です。上位ロールのユーザーは下位ロールのレコードにアクセスできます(オブジェクトごとに無効化可能)。\n\n□ プロファイルのオブジェクト権限を「すべて参照」にする　これは不正解です。「すべて参照」を有効化するとOWDをバイパスして全レコードが見えるため、レコードレベルセキュリティは事実上無効化されます。本来の用途とは違います(例外的な管理者権限)。\n\n□ OWDを「公開/参照のみ」に変更する以外に方法はない　これは不正解です。共有ルール・ロール階層・手動共有・チームなど複数の手段があります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "OWD",
+      "共有ルール",
+      "ロール階層"
+    ]
+  },
+  {
+    "id": 286,
+    "url": "claude-generated",
+    "question": "取引先チーム(Account Team)と手動共有の主な違いとして正しいものはどれですか。",
+    "choices": [
+      "取引先チームは取引先と関連する商談・ケースへのアクセスを一括で管理できるが、手動共有は1レコードずつ",
+      "取引先チームは無料、手動共有は有料",
+      "手動共有はChatterでしか使えない",
+      "取引先チームはOWDに依存しない"
+    ],
+    "answers": [
+      "取引先チームは取引先と関連する商談・ケースへのアクセスを一括で管理できるが、手動共有は1レコードずつ"
+    ],
+    "explanation": "□ 取引先チームは取引先と関連する商談・ケースへのアクセスを一括で管理できるが、手動共有は1レコードずつ　これは正解です。取引先チームに登録したメンバーは、その取引先に紐づく商談・ケース・取引先責任者にも条件付きでアクセスできるため、効率的に共有を構成できます。\n\n□ 取引先チームは無料、手動共有は有料　これは不正解です。料金体系の違いはありません。\n\n□ 手動共有はChatterでしか使えない　これは不正解です。レコード共有とChatterは別機能です。\n\n□ 取引先チームはOWDに依存しない　これは不正解です。チーム機能もOWDに従って動作します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "取引先チーム",
+      "手動共有",
+      "共有"
+    ]
+  },
+  {
+    "id": 287,
+    "url": "claude-generated",
+    "question": "レコードレベルセキュリティでのアクセス決定順序として正しいものはどれですか。",
+    "choices": [
+      "OWD → ロール階層 → 共有ルール → 手動共有/チーム",
+      "プロファイル → 共有ルール → OWD",
+      "OWD → 手動共有のみ",
+      "ロール階層 → OWD → プロファイル"
+    ],
+    "answers": [
+      "OWD → ロール階層 → 共有ルール → 手動共有/チーム"
+    ],
+    "explanation": "□ OWD → ロール階層 → 共有ルール → 手動共有/チーム　これは正解です。OWDがベースラインを定め、そこからロール階層、共有ルール、手動共有・チームの順でアクセスが拡張されます。\n\n□ プロファイル → 共有ルール → OWD　これは不正解です。プロファイルはオブジェクトレベル権限で、レコードレベルとは別レイヤーです。\n\n□ OWD → 手動共有のみ　これは不正解です。ロール階層・共有ルールも考慮されます。\n\n□ ロール階層 → OWD → プロファイル　これは不正解です。順序が誤っています。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "OWD",
+      "ロール階層",
+      "共有ルール",
+      "共有"
+    ]
+  },
+  {
+    "id": 288,
+    "url": "claude-generated",
+    "question": "ロール階層の主な機能として正しいものはどれですか。",
+    "choices": [
+      "上位ロールのユーザーが下位ロールのユーザーが所有するレコードにアクセスできるようにする",
+      "オブジェクトのフィールドレベルセキュリティを管理する",
+      "ユーザーのプロファイルを継承する",
+      "Apexトリガを起動する"
+    ],
+    "answers": [
+      "上位ロールのユーザーが下位ロールのユーザーが所有するレコードにアクセスできるようにする"
+    ],
+    "explanation": "□ 上位ロールのユーザーが下位ロールのユーザーが所有するレコードにアクセスできるようにする　これは正解です。ロール階層は組織図に対応する形でアクセスを上位に伝播させる仕組みです。\n\n□ オブジェクトのフィールドレベルセキュリティを管理する　これは不正解です。FLSはプロファイルや権限セットで管理します。\n\n□ ユーザーのプロファイルを継承する　これは不正解です。プロファイルは個別に割り当てます。\n\n□ Apexトリガを起動する　これは不正解です。ロール階層は権限・共有の仕組みで、自動化とは無関係です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_controlling_access_using_hierarchies.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ロール階層",
+      "共有",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 289,
+    "url": "claude-generated",
+    "question": "公開グループに含めることができるメンバーを2つ選びなさい。",
+    "choices": [
+      "ロール（およびその下位ロール）",
+      "他の公開グループ",
+      "プロファイル全体",
+      "権限セットグループ"
+    ],
+    "answers": [
+      "ロール（およびその下位ロール）",
+      "他の公開グループ"
+    ],
+    "explanation": "□ ロール（およびその下位ロール）　これは正解です。ロールおよび「ロールおよびその下位」を選択して階層を含めることができます。\n\n□ 他の公開グループ　これは正解です。グループの入れ子化が可能です。\n\n□ プロファイル全体　これは不正解です。プロファイルそのものはグループのメンバーにできません。\n\n□ 権限セットグループ　これは不正解です。権限セットグループは公開グループとは別概念です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.creating_and_editing_groups.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "公開グループ",
+      "ロール",
+      "共有"
+    ]
+  },
+  {
+    "id": 290,
+    "url": "claude-generated",
+    "question": "「ロールおよびその下位」を選択して公開グループを作る目的はどれですか。",
+    "choices": [
+      "上位ロールから下位ロール全員にレコードアクセスを共有するため",
+      "プロファイルを継承するため",
+      "レコードを自動作成するため",
+      "ライセンスを節約するため"
+    ],
+    "answers": [
+      "上位ロールから下位ロール全員にレコードアクセスを共有するため"
+    ],
+    "explanation": "□ 上位ロールから下位ロール全員にレコードアクセスを共有するため　これは正解です。「ロール+下位」を選ぶことで、その階層下にある全ユーザーをグループ化でき、共有ルールや手動共有で一括指定できます。\n\n□ プロファイルを継承するため　これは不正解です。プロファイルとロールは別概念です。\n\n□ レコードを自動作成するため　これは不正解です。グループはレコード作成と無関係です。\n\n□ ライセンスを節約するため　これは不正解です。グループはライセンス課金に影響しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.creating_and_editing_groups.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "公開グループ",
+      "ロール階層",
+      "共有"
+    ]
+  },
+  {
+    "id": 291,
+    "url": "claude-generated",
+    "question": "公開グループとキューの違いとして正しいものはどれですか。",
+    "choices": [
+      "キューはレコードの所有者になれるが、公開グループは所有者になれない",
+      "公開グループはケース専用、キューはリード専用",
+      "キューは権限管理に使い、公開グループはレコード割り当てに使う",
+      "両者は機能的に同じで名称が異なるだけ"
+    ],
+    "answers": [
+      "キューはレコードの所有者になれるが、公開グループは所有者になれない"
+    ],
+    "explanation": "□ キューはレコードの所有者になれるが、公開グループは所有者になれない　これは正解です。キューはレコードを保持できる仕組みで、所有者がキューになる(リード・ケース・カスタムオブジェクト等)。公開グループは共有や宛先指定用の集合体で所有者にはなりません。\n\n□ 公開グループはケース専用、キューはリード専用　これは不正解です。両者は専用の機能ではありません。\n\n□ キューは権限管理に使い、公開グループはレコード割り当てに使う　これは不正解です。役割が逆です。\n\n□ 両者は機能的に同じで名称が異なるだけ　これは不正解です。明確に異なる機能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.creating_and_editing_groups.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "公開グループ",
+      "キュー",
+      "共有"
+    ]
+  },
+  {
+    "id": 292,
+    "url": "claude-generated",
+    "question": "項目レベルセキュリティ(FLS)を構成する場所として正しいものを2つ選びなさい。",
+    "choices": [
+      "プロファイル",
+      "権限セット",
+      "ページレイアウト",
+      "OWD"
+    ],
+    "answers": [
+      "プロファイル",
+      "権限セット"
+    ],
+    "explanation": "□ プロファイル　これは正解です。プロファイルから対象オブジェクトの項目アクセス(参照/編集)を制御できます。\n\n□ 権限セット　これは正解です。権限セットでも同じく項目レベルセキュリティを構成できます。\n\n□ ページレイアウト　これは不正解です。ページレイアウトは画面上の配置を決めるもので、項目レベルのアクセス制御はFLSが行います。\n\n□ OWD　これは不正解です。OWDはレコードレベルの共有設定であり、項目レベルの制御は範囲外です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "項目レベルセキュリティ",
+      "プロファイル",
+      "権限セット"
+    ]
+  },
+  {
+    "id": 293,
+    "url": "claude-generated",
+    "question": "あるユーザーのプロファイルでは項目が「参照のみ」、権限セットでは「編集可能」になっている場合、最終的なアクセスはどうなりますか。",
+    "choices": [
+      "参照のみ",
+      "編集可能",
+      "アクセス不可",
+      "システムエラー"
+    ],
+    "answers": [
+      "編集可能"
+    ],
+    "explanation": "□ 参照のみ　これは不正解です。権限は加算されます。\n\n□ 編集可能　これは正解です。プロファイルと権限セットのFLS設定はOR(より緩い方)で結合されます。権限セットで編集可能になっていれば編集できます。\n\n□ アクセス不可　これは不正解です。プロファイル側で参照可なので、最低でも参照はできます。\n\n□ システムエラー　これは不正解です。矛盾ではなく、最も緩いアクセスが採用されます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "項目レベルセキュリティ",
+      "プロファイル",
+      "権限セット"
+    ]
+  },
+  {
+    "id": 294,
+    "url": "claude-generated",
+    "question": "FLSで「参照不可」にした項目はレポートやリストビューで表示されますか。",
+    "choices": [
+      "表示されない(列・条件にも使えない)",
+      "リストビューには表示されるがレポートには表示されない",
+      "管理者には常に表示される",
+      "ページレイアウトで設定すれば表示される"
+    ],
+    "answers": [
+      "表示されない(列・条件にも使えない)"
+    ],
+    "explanation": "□ 表示されない(列・条件にも使えない)　これは正解です。FLSで参照不可に設定された項目は、レポートやリストビューの列・絞り込み条件としても使えません。\n\n□ リストビューには表示されるがレポートには表示されない　これは不正解です。両方とも非表示になります。\n\n□ 管理者には常に表示される　これは不正解です。管理者でもFLSの制約を受けます(「すべての項目を変更」権限がない限り)。\n\n□ ページレイアウトで設定すれば表示される　これは不正解です。ページレイアウトはFLSをバイパスできません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "項目レベルセキュリティ",
+      "レポート",
+      "リストビュー"
+    ]
+  },
+  {
+    "id": 295,
+    "url": "claude-generated",
+    "question": "ページレイアウトとFLSの違いとして正しいものを2つ選びなさい。",
+    "choices": [
+      "FLSは項目のアクセス(参照/編集)を制御し、ページレイアウトは画面上の配置・必須属性を制御する",
+      "FLSはプロファイル/権限セットで設定し、ページレイアウトはオブジェクトマネージャで設定する",
+      "ページレイアウトのほうがFLSより強力で、FLSを上書きできる",
+      "FLSはレコードタイプごとに変えられるが、ページレイアウトは変えられない"
+    ],
+    "answers": [
+      "FLSは項目のアクセス(参照/編集)を制御し、ページレイアウトは画面上の配置・必須属性を制御する",
+      "FLSはプロファイル/権限セットで設定し、ページレイアウトはオブジェクトマネージャで設定する"
+    ],
+    "explanation": "□ FLSは項目のアクセス(参照/編集)を制御し、ページレイアウトは画面上の配置・必須属性を制御する　これは正解です。役割分担が明確で、FLSはセキュリティ、ページレイアウトはUI/UXを担います。\n\n□ FLSはプロファイル/権限セットで設定し、ページレイアウトはオブジェクトマネージャで設定する　これは正解です。設定場所が異なります。\n\n□ ページレイアウトのほうがFLSより強力で、FLSを上書きできる　これは不正解です。FLSが優先され、ページレイアウトはFLSをバイパスできません。\n\n□ FLSはレコードタイプごとに変えられるが、ページレイアウトは変えられない　これは不正解です。逆です。ページレイアウトはレコードタイプ×プロファイルで割り当てを変えられますが、FLSは項目1つに対して1つの設定です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "項目レベルセキュリティ",
+      "ページレイアウト",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 296,
+    "url": "claude-generated",
+    "question": "ユーザーを「凍結」する目的として最も適切なものはどれですか。",
+    "choices": [
+      "ログインを即座に止めたいが、ライセンスをまだ解放したくない時の一時措置",
+      "ユーザーレコードを完全に削除する",
+      "ユーザーのパスワードを変更する",
+      "ユーザーをロール階層から除外する"
+    ],
+    "answers": [
+      "ログインを即座に止めたいが、ライセンスをまだ解放したくない時の一時措置"
+    ],
+    "explanation": "□ ログインを即座に止めたいが、ライセンスをまだ解放したくない時の一時措置　これは正解です。凍結はログインを即時に止めますが、ライセンスは消費したままです。退職や調査などで一時的に止めるときに使います。\n\n□ ユーザーレコードを完全に削除する　これは不正解です。Salesforceではユーザー削除はできません(履歴保持のため)。\n\n□ ユーザーのパスワードを変更する　これは不正解です。凍結はパスワード変更とは別操作です。\n\n□ ユーザーをロール階層から除外する　これは不正解です。階層からの除外は別途行います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_freeze.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "凍結",
+      "無効化",
+      "ユーザー管理"
+    ]
+  },
+  {
+    "id": 297,
+    "url": "claude-generated",
+    "question": "ユーザーを「無効化」した場合、そのユーザーが所有していたレコードはどうなりますか。",
+    "choices": [
+      "所有者は変わらず残る(レポートにも引き続き表示される)",
+      "自動で管理者に所有者が移る",
+      "削除される",
+      "アーカイブされる"
+    ],
+    "answers": [
+      "所有者は変わらず残る(レポートにも引き続き表示される)"
+    ],
+    "explanation": "□ 所有者は変わらず残る(レポートにも引き続き表示される)　これは正解です。無効化したユーザーが所有していたレコードは残り、所有者として表示され続けます。新しい担当者に移管する場合は所有者変更を別途行う必要があります。\n\n□ 自動で管理者に所有者が移る　これは不正解です。自動移管は行われません。\n\n□ 削除される　これは不正解です。削除されません。\n\n□ アーカイブされる　これは不正解です。アーカイブも自動では行われません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_freeze.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "無効化",
+      "ユーザー管理",
+      "レコード所有"
+    ]
+  },
+  {
+    "id": 298,
+    "url": "claude-generated",
+    "question": "Salesforceでユーザーレコードを完全に削除することはできますか。",
+    "choices": [
+      "できない(無効化が最大の措置)",
+      "できる(削除ボタンが存在する)",
+      "管理者なら削除できる",
+      "30日以内なら削除できる"
+    ],
+    "answers": [
+      "できない(無効化が最大の措置)"
+    ],
+    "explanation": "□ できない(無効化が最大の措置)　これは正解です。ユーザーは履歴(監査ログ、レコード作成者など)を保つために削除できず、最大の措置は無効化です。\n\n□ できる(削除ボタンが存在する)　これは不正解です。削除ボタンは存在しません。\n\n□ 管理者なら削除できる　これは不正解です。管理者でも削除はできません。\n\n□ 30日以内なら削除できる　これは不正解です。期限による削除規定はありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_freeze.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ユーザー削除",
+      "無効化",
+      "ユーザー管理"
+    ]
+  },
+  {
+    "id": 299,
+    "url": "claude-generated",
+    "question": "退職したユーザーのライセンスをすぐに別のユーザーに割り当てたい場合、どの操作を行いますか。",
+    "choices": [
+      "凍結",
+      "無効化",
+      "パスワード変更",
+      "ロールから除外"
+    ],
+    "answers": [
+      "無効化"
+    ],
+    "explanation": "□ 凍結　これは不正解です。凍結ではライセンスは解放されません。\n\n□ 無効化　これは正解です。ユーザーを無効化するとライセンスが解放され、別のユーザーに割り当てできます。\n\n□ パスワード変更　これは不正解です。ライセンスは解放されません。\n\n□ ロールから除外　これは不正解です。ロール変更はライセンスを解放しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_freeze.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "無効化",
+      "ライセンス",
+      "ユーザー管理"
+    ]
+  },
+  {
+    "id": 300,
+    "url": "claude-generated",
+    "question": "プロファイルでログインIPアドレス範囲を設定したユーザーが、範囲外のIPからログインしようとするとどうなりますか。",
+    "choices": [
+      "ログインがブロックされる(エラーメッセージが表示される)",
+      "認証コードでチャレンジされる(2要素認証)",
+      "管理者に通知が飛ぶが、ログインは許可される",
+      "閲覧のみ可能になる"
+    ],
+    "answers": [
+      "ログインがブロックされる(エラーメッセージが表示される)"
+    ],
+    "explanation": "□ ログインがブロックされる(エラーメッセージが表示される)　これは正解です。プロファイルのログインIP範囲を設定すると、範囲外からのログインは完全にブロックされます。\n\n□ 認証コードでチャレンジされる(2要素認証)　これは不正解です。それは「信頼済みIP範囲」(セッションセキュリティ設定)の動きで、プロファイルのIP範囲とは別物です。\n\n□ 管理者に通知が飛ぶが、ログインは許可される　これは不正解です。プロファイル制限はハードブロックです。\n\n□ 閲覧のみ可能になる　これは不正解です。アクセスそのものがブロックされます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_epui_login_ip_ranges_edit.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ログインIP",
+      "プロファイル",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 301,
+    "url": "claude-generated",
+    "question": "ログイン時間(時間帯)の制限はどこで設定できますか。",
+    "choices": [
+      "プロファイル",
+      "権限セット",
+      "ロール",
+      "公開グループ"
+    ],
+    "answers": [
+      "プロファイル"
+    ],
+    "explanation": "□ プロファイル　これは正解です。プロファイル設定の「ログイン時間」セクションで曜日・時間帯のログイン許可を構成します。\n\n□ 権限セット　これは不正解です。権限セットにはログイン時間の項目はありません。\n\n□ ロール　これは不正解です。ロールは共有用で、ログイン制限はありません。\n\n□ 公開グループ　これは不正解です。グループはレコード共有用です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.login_hours.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ログイン時間",
+      "プロファイル",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 302,
+    "url": "claude-generated",
+    "question": "SSO(シングルサインオン)を使用するユーザーに対しても、プロファイルのログインIP範囲は適用されますか。",
+    "choices": [
+      "適用される(IP範囲外からはSSOでもログインできない)",
+      "適用されない(SSOはバイパス)",
+      "管理者のみ適用される",
+      "Profileの種類による"
+    ],
+    "answers": [
+      "適用される(IP範囲外からはSSOでもログインできない)"
+    ],
+    "explanation": "□ 適用される(IP範囲外からはSSOでもログインできない)　これは正解です。プロファイルのログインIPアドレス範囲はSSOを含むすべてのログインに適用されます。\n\n□ 適用されない(SSOはバイパス)　これは不正解です。SSOはIP制限の対象です。\n\n□ 管理者のみ適用される　これは不正解です。全ユーザーが対象です。\n\n□ Profileの種類による　これは不正解です。プロファイルの種類で適用可否は変わりません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_epui_login_ip_ranges_edit.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ログインIP",
+      "SSO",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 303,
+    "url": "claude-generated",
+    "question": "AppExchangeから管理パッケージ(Managed Package)をインストールした場合、コードを編集できますか。",
+    "choices": [
+      "編集できない(コードはロックされている)",
+      "編集できる(自由にカスタマイズ可能)",
+      "管理者なら編集できる",
+      "未管理に変換すれば編集できる"
+    ],
+    "answers": [
+      "編集できない(コードはロックされている)"
+    ],
+    "explanation": "□ 編集できない(コードはロックされている)　これは正解です。管理パッケージはISVが配布するもので、コードや一部メタデータがロックされておりインストール先で編集できません。代わりにアップグレードが可能です。\n\n□ 編集できる(自由にカスタマイズ可能)　これは不正解です。それは未管理パッケージの説明です。\n\n□ 管理者なら編集できる　これは不正解です。管理者でも管理パッケージのロックは外せません。\n\n□ 未管理に変換すれば編集できる　これは不正解です。そのような変換機能はありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lcc_appexchange_packages_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "AppExchange",
+      "管理パッケージ",
+      "リリース"
+    ]
+  },
+  {
+    "id": 304,
+    "url": "claude-generated",
+    "question": "AppExchangeからアプリをインストールするユーザーに必要な権限はどれですか。",
+    "choices": [
+      "AppExchangeパッケージのダウンロード権限",
+      "すべての項目を変更権限",
+      "Apexクラスの作成権限",
+      "サンドボックスへのアクセス権限"
+    ],
+    "answers": [
+      "AppExchangeパッケージのダウンロード権限"
+    ],
+    "explanation": "□ AppExchangeパッケージのダウンロード権限　これは正解です。プロファイルまたは権限セットで「AppExchangeパッケージのダウンロード」(または同等)権限を持っているユーザーがインストールできます。\n\n□ すべての項目を変更権限　これは不正解です。これはFLS関連の管理者権限です。\n\n□ Apexクラスの作成権限　これは不正解です。インストールに直接必要な権限ではありません。\n\n□ サンドボックスへのアクセス権限　これは不正解です。本番組織にも直接インストールできます(推奨はサンドボックスで先に試す)。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lcc_appexchange_packages_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "AppExchange",
+      "インストール",
+      "パッケージ"
+    ]
+  },
+  {
+    "id": 305,
+    "url": "claude-generated",
+    "question": "管理パッケージのアップグレードに関する説明として正しいものはどれですか。",
+    "choices": [
+      "ISVが新バージョンをリリースすると、インストール組織はアップグレードを実行できる",
+      "自動で常に最新版に更新される",
+      "アップグレード時にインストール組織のカスタマイズが消える",
+      "未管理パッケージと同じくアップグレード不可"
+    ],
+    "answers": [
+      "ISVが新バージョンをリリースすると、インストール組織はアップグレードを実行できる"
+    ],
+    "explanation": "□ ISVが新バージョンをリリースすると、インストール組織はアップグレードを実行できる　これは正解です。管理パッケージはアップグレード可能で、ISV側で新バージョンを公開するとインストール先で取り込めます。\n\n□ 自動で常に最新版に更新される　これは不正解です。自動更新ではなく、組織側でアップグレード操作が必要です(プッシュアップグレードは別の仕組み)。\n\n□ アップグレード時にインストール組織のカスタマイズが消える　これは不正解です。管理パッケージはアップグレード時に追加されたコンポーネントを保持します。\n\n□ 未管理パッケージと同じくアップグレード不可　これは不正解です。未管理はアップグレード不可、管理は可能、というのが重要な違いです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lcc_appexchange_packages_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "AppExchange",
+      "管理パッケージ",
+      "アップグレード"
+    ]
+  },
+  {
+    "id": 306,
+    "url": "claude-generated",
+    "question": "レコードタイプを使用するために必要な最低エディションはどれですか。",
+    "choices": [
+      "Professional Edition",
+      "Enterprise Edition",
+      "Unlimited Edition",
+      "Essentials Edition"
+    ],
+    "answers": [
+      "Professional Edition"
+    ],
+    "explanation": "□ Professional Edition　これは正解です。レコードタイプはProfessional Edition以上で利用可能です(2024年以降の構成)。\n\n□ Enterprise Edition　これは不正解です。EE以上で多機能化しますが、レコードタイプ自体はPE以上で使えます。\n\n□ Unlimited Edition　これは不正解です。最低エディションではありません。\n\n□ Essentials Edition　これは不正解です。Essentialsは小規模向けで一部機能が制限されます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.overview_edition.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "エディション",
+      "レコードタイプ",
+      "ライセンス"
+    ]
+  },
+  {
+    "id": 307,
+    "url": "claude-generated",
+    "question": "Enterprise Editionで作成できるカスタムオブジェクトの最大数はおよそいくつですか。",
+    "choices": [
+      "50個",
+      "200個",
+      "2,000個",
+      "無制限"
+    ],
+    "answers": [
+      "200個"
+    ],
+    "explanation": "□ 50個　これは不正解です。少なすぎます。\n\n□ 200個　これは正解です。Enterprise Editionではカスタムオブジェクト200個までサポートされます(ライセンスや追加によって上限は変動)。\n\n□ 2,000個　これは不正解です。Unlimited Editionでもこの数字には届きません。\n\n□ 無制限　これは不正解です。エディションごとに上限が設定されています。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.overview_edition.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "エディション",
+      "カスタムオブジェクト",
+      "ライセンス"
+    ]
+  },
+  {
+    "id": 308,
+    "url": "claude-generated",
+    "question": "Developer Editionの主な特徴を2つ選びなさい。",
+    "choices": [
+      "無料で利用できる",
+      "本番組織と比べてユーザー数とストレージに大きな制限がある",
+      "Full Sandboxを作成できる",
+      "本番組織として顧客に提供できる"
+    ],
+    "answers": [
+      "無料で利用できる",
+      "本番組織と比べてユーザー数とストレージに大きな制限がある"
+    ],
+    "explanation": "□ 無料で利用できる　これは正解です。Developer Editionは開発・学習用に無料で提供されています。\n\n□ 本番組織と比べてユーザー数とストレージに大きな制限がある　これは正解です。ユーザー数2名・ストレージ5MB程度など、商用に使うには制限が厳しい設定です。\n\n□ Full Sandboxを作成できる　これは不正解です。Developer EditionはSandbox機能がありません。\n\n□ 本番組織として顧客に提供できる　これは不正解です。開発・学習用途のみで、商用配布には使えません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.overview_edition.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "Developer Edition",
+      "エディション",
+      "ライセンス"
+    ]
+  },
+  {
+    "id": 309,
+    "url": "claude-generated",
+    "question": "1オブジェクトで項目履歴管理を有効化できる項目数の上限はおよそいくつですか。",
+    "choices": [
+      "5個",
+      "20個",
+      "50個",
+      "100個"
+    ],
+    "answers": [
+      "20個"
+    ],
+    "explanation": "□ 5個　これは不正解です。\n\n□ 20個　これは正解です。標準/カスタム合わせて20項目までです(オブジェクトごと)。\n\n□ 50個　これは不正解です。\n\n□ 100個　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.tracking_field_history.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "項目履歴管理",
+      "データ管理",
+      "監査"
+    ]
+  },
+  {
+    "id": 310,
+    "url": "claude-generated",
+    "question": "項目履歴管理で保存される変更履歴の標準保持期間はどれですか。",
+    "choices": [
+      "1ヶ月",
+      "6ヶ月",
+      "18ヶ月（Enterprise+で24ヶ月）",
+      "無期限"
+    ],
+    "answers": [
+      "18ヶ月（Enterprise+で24ヶ月）"
+    ],
+    "explanation": "□ 1ヶ月　これは不正解です。\n\n□ 6ヶ月　これは不正解です。\n\n□ 18ヶ月（Enterprise+で24ヶ月）　これは正解です。項目履歴は最大18ヶ月(エディションにより最大24ヶ月)保存され、それを超えるとField Audit Trail(別ライセンス)が必要です。\n\n□ 無期限　これは不正解です。標準では無期限保持はできません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.tracking_field_history.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "項目履歴管理",
+      "データ保持",
+      "監査"
+    ]
+  },
+  {
+    "id": 311,
+    "url": "claude-generated",
+    "question": "項目履歴管理を有効にする場所はどこですか。",
+    "choices": [
+      "オブジェクトマネージャ → 対象オブジェクト → 項目とリレーション → [履歴管理を設定]",
+      "プロファイル → 履歴管理",
+      "共有設定 → 履歴管理",
+      "Lightning アプリケーションビルダー"
+    ],
+    "answers": [
+      "オブジェクトマネージャ → 対象オブジェクト → 項目とリレーション → [履歴管理を設定]"
+    ],
+    "explanation": "□ オブジェクトマネージャ → 対象オブジェクト → 項目とリレーション → [履歴管理を設定]　これは正解です。各オブジェクトの設定画面で項目を最大20個選んで履歴管理を有効化します。\n\n□ プロファイル → 履歴管理　これは不正解です。プロファイルでは設定できません。\n\n□ 共有設定 → 履歴管理　これは不正解です。共有設定はOWDです。\n\n□ Lightning アプリケーションビルダー　これは不正解です。LABはレコードページのUI構成用です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.tracking_field_history.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "項目履歴管理",
+      "オブジェクトマネージャ",
+      "データ管理"
+    ]
+  },
+  {
+    "id": 312,
+    "url": "claude-generated",
+    "question": "Lightningアプリの「コンソールアプリ」と「標準アプリ」の主な違いはどれですか。",
+    "choices": [
+      "コンソールはタブ型UIで複数レコードを同時に開ける、標準は1レコード1タブ",
+      "コンソールはモバイル専用、標準はPC専用",
+      "コンソールはApexで作る、標準はノーコード",
+      "両者は機能的に同じで、名称が違うだけ"
+    ],
+    "answers": [
+      "コンソールはタブ型UIで複数レコードを同時に開ける、標準は1レコード1タブ"
+    ],
+    "explanation": "□ コンソールはタブ型UIで複数レコードを同時に開ける、標準は1レコード1タブ　これは正解です。コンソールアプリはサポート/オペレーション向けの複数タブ作業に最適化されたUIです。\n\n□ コンソールはモバイル専用、標準はPC専用　これは不正解です。コンソールはPC向けです。\n\n□ コンソールはApexで作る、標準はノーコード　これは不正解です。両方ともLightning アプリケーションマネージャから宣言的に作れます。\n\n□ 両者は機能的に同じで、名称が違うだけ　これは不正解です。UI設計が異なります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.apps_overview_lightning.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Lightningアプリ",
+      "コンソール",
+      "UI"
+    ]
+  },
+  {
+    "id": 313,
+    "url": "claude-generated",
+    "question": "アプリランチャーに表示されるアプリの順序はどうやって変えられますか。",
+    "choices": [
+      "ユーザーが自分の好きな順序にドラッグして並び替えできる",
+      "管理者だけが順序を変えられる",
+      "アルファベット順固定で変えられない",
+      "ライセンス購入順固定で変えられない"
+    ],
+    "answers": [
+      "ユーザーが自分の好きな順序にドラッグして並び替えできる"
+    ],
+    "explanation": "□ ユーザーが自分の好きな順序にドラッグして並び替えできる　これは正解です。各ユーザーがアプリランチャーで自由に並び替えできます。\n\n□ 管理者だけが順序を変えられる　これは不正解です。ユーザー自身が変えられます。\n\n□ アルファベット順固定で変えられない　これは不正解です。\n\n□ ライセンス購入順固定で変えられない　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.basics_app_launcher_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "アプリランチャー",
+      "Lightningアプリ",
+      "UI"
+    ]
+  },
+  {
+    "id": 314,
+    "url": "claude-generated",
+    "question": "ユーティリティバー(Utility Bar)を構成できる場所はどこですか。",
+    "choices": [
+      "Lightning アプリケーションマネージャで各 Lightning アプリごとに",
+      "プロファイルごとに",
+      "ユーザーごとに",
+      "オブジェクトマネージャで各オブジェクトごとに"
+    ],
+    "answers": [
+      "Lightning アプリケーションマネージャで各 Lightning アプリごとに"
+    ],
+    "explanation": "□ Lightning アプリケーションマネージャで各 Lightning アプリごとに　これは正解です。ユーティリティバーはLightningアプリ単位で構成し、画面下部の常時表示エリアにコンポーネントを並べます。\n\n□ プロファイルごとに　これは不正解です。プロファイルはアプリへのアクセス権を制御するだけです。\n\n□ ユーザーごとに　これは不正解です。\n\n□ オブジェクトマネージャで各オブジェクトごとに　これは不正解です。オブジェクト単位ではありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.apps_overview_lightning.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ユーティリティバー",
+      "Lightningアプリ",
+      "UI"
+    ]
+  },
+  {
+    "id": 315,
+    "url": "claude-generated",
+    "question": "Flow Builderの「割り当て」要素の主な用途はどれですか。",
+    "choices": [
+      "変数に値を設定または更新する",
+      "条件分岐を作る",
+      "レコードを取得する",
+      "別のフローを呼び出す"
+    ],
+    "answers": [
+      "変数に値を設定または更新する"
+    ],
+    "explanation": "□ 変数に値を設定または更新する　これは正解です。「割り当て」要素はフロー内の変数に値を代入したり、加算・追加(Add)などで更新するための基本要素です。\n\n□ 条件分岐を作る　これは不正解です。それは「決定(Decision)」要素の役割です。\n\n□ レコードを取得する　これは不正解です。それは「レコードを取得」要素の役割です。\n\n□ 別のフローを呼び出す　これは不正解です。それは「サブフロー」要素の役割です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "割り当て",
+      "フロー",
+      "Flow Builder"
+    ]
+  },
+  {
+    "id": 316,
+    "url": "claude-generated",
+    "question": "「決定(Decision)」要素で評価できる条件として正しいものを2つ選びなさい。",
+    "choices": [
+      "変数の値が指定値と等しいかどうか",
+      "選択リストの値がブランクかどうか",
+      "他のフロー(サブフロー)を呼び出すか",
+      "Apexクラスをデプロイするか"
+    ],
+    "answers": [
+      "変数の値が指定値と等しいかどうか",
+      "選択リストの値がブランクかどうか"
+    ],
+    "explanation": "□ 変数の値が指定値と等しいかどうか　これは正解です。等価/不等価/含む/より大きい等で評価できます。\n\n□ 選択リストの値がブランクかどうか　これは正解です。ブランク判定も含めて評価できます。\n\n□ 他のフロー(サブフロー)を呼び出すか　これは不正解です。サブフロー要素が別途あります。\n\n□ Apexクラスをデプロイするか　これは不正解です。フローはデプロイ操作を行いません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_decision.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "決定要素",
+      "フロー",
+      "Flow Builder"
+    ]
+  },
+  {
+    "id": 317,
+    "url": "claude-generated",
+    "question": "「ループ」要素を使うべき場面はどれですか。",
+    "choices": [
+      "レコードコレクション内の各要素に対して同じ処理を繰り返したい時",
+      "1つのレコードを取得する時",
+      "ユーザー入力を求める時",
+      "別のフローを呼び出す時"
+    ],
+    "answers": [
+      "レコードコレクション内の各要素に対して同じ処理を繰り返したい時"
+    ],
+    "explanation": "□ レコードコレクション内の各要素に対して同じ処理を繰り返したい時　これは正解です。ループ要素はコレクションを順に処理する制御要素で、内部で割り当てや決定と組み合わせて使います。\n\n□ 1つのレコードを取得する時　これは不正解です。「レコードを取得」要素を使います。\n\n□ ユーザー入力を求める時　これは不正解です。画面要素を使います。\n\n□ 別のフローを呼び出す時　これは不正解です。サブフロー要素を使います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ループ",
+      "フロー",
+      "コレクション"
+    ]
+  },
+  {
+    "id": 318,
+    "url": "claude-generated",
+    "question": "「レコードを取得」要素で並び順(Sort Order)を指定する利点はどれですか。",
+    "choices": [
+      "最初のレコードを使いたい場合に、明示的な順序で1件目を取得できる",
+      "クエリ速度が必ず向上する",
+      "Apexクラスを呼び出せる",
+      "DML制限を回避できる"
+    ],
+    "answers": [
+      "最初のレコードを使いたい場合に、明示的な順序で1件目を取得できる"
+    ],
+    "explanation": "□ 最初のレコードを使いたい場合に、明示的な順序で1件目を取得できる　これは正解です。並び順を指定して「最初のレコードのみを保存」と組み合わせると、最新の/最古のレコードを安全に取得できます。\n\n□ クエリ速度が必ず向上する　これは不正解です。並び順はパフォーマンス保証ではありません。\n\n□ Apexクラスを呼び出せる　これは不正解です。それは別機能です。\n\n□ DML制限を回避できる　これは不正解です。Get自体はSOQL制限の対象です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "レコードを取得",
+      "フロー",
+      "Flow Builder"
+    ]
+  },
+  {
+    "id": 319,
+    "url": "claude-generated",
+    "question": "フローで DML(レコード操作)制限にカウントされない要素はどれですか。",
+    "choices": [
+      "レコードを取得(Get Records)",
+      "レコードを作成(Create Records)",
+      "レコードを更新(Update Records)",
+      "レコードを削除(Delete Records)"
+    ],
+    "answers": [
+      "レコードを取得(Get Records)"
+    ],
+    "explanation": "□ レコードを取得(Get Records)　これは正解です。GetはSOQL制限の対象ですがDML制限にはカウントされません。\n\n□ レコードを作成(Create Records)　これは不正解です。DML制限の対象です。\n\n□ レコードを更新(Update Records)　これは不正解です。DML制限の対象です。\n\n□ レコードを削除(Delete Records)　これは不正解です。DML制限の対象です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "フロー",
+      "DML",
+      "ガバナ制限"
+    ]
+  },
+  {
+    "id": 320,
+    "url": "claude-generated",
+    "question": "保存前(Before-Save)レコードトリガフローでできることはどれですか。",
+    "choices": [
+      "同じレコードの項目を更新する(DML不要)",
+      "別オブジェクトのレコードを作成する",
+      "メールを送信する",
+      "外部システムに通知する"
+    ],
+    "answers": [
+      "同じレコードの項目を更新する(DML不要)"
+    ],
+    "explanation": "□ 同じレコードの項目を更新する(DML不要)　これは正解です。保存前フローは同じレコードの項目を非常に高速に更新でき、ワークフロー項目更新の代替に最適です。\n\n□ 別オブジェクトのレコードを作成する　これは不正解です。それは保存後フローの役割です。\n\n□ メールを送信する　これは不正解です。保存後フローで実施します。\n\n□ 外部システムに通知する　これは不正解です。保存後フローで実施します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "保存前フロー",
+      "レコードトリガフロー",
+      "自動化"
+    ]
+  },
+  {
+    "id": 321,
+    "url": "claude-generated",
+    "question": "保存後(After-Save)レコードトリガフローでできるが保存前ではできないことを2つ選びなさい。",
+    "choices": [
+      "別レコードの作成・更新",
+      "メール送信",
+      "同じレコードの項目更新",
+      "入力規則の起動"
+    ],
+    "answers": [
+      "別レコードの作成・更新",
+      "メール送信"
+    ],
+    "explanation": "□ 別レコードの作成・更新　これは正解です。保存後フローはDMLを伴う他レコード操作が可能です。\n\n□ メール送信　これは正解です。メールアクションは保存後フローで実行します。\n\n□ 同じレコードの項目更新　これは不正解です。保存前フローで高速に実施できる典型例です。\n\n□ 入力規則の起動　これは不正解です。入力規則はフローによって明示的に起動するものではありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "保存後フロー",
+      "レコードトリガフロー",
+      "自動化"
+    ]
+  },
+  {
+    "id": 322,
+    "url": "claude-generated",
+    "question": "「作成または更新時」に起動するレコードトリガフローで、新規レコードに対してISCHANGED()関数はどう振る舞いますか。",
+    "choices": [
+      "新規作成時は必ずFALSEを返す",
+      "新規作成時は必ずTRUEを返す",
+      "新規作成時はエラーになる",
+      "新規作成時はNULLを返す"
+    ],
+    "answers": [
+      "新規作成時は必ずFALSEを返す"
+    ],
+    "explanation": "□ 新規作成時は必ずFALSEを返す　これは正解です。ISCHANGEDは「以前の値と異なるか」を判定しますが、新規レコードには以前の値がないため常にFALSEとして扱われます。\n\n□ 新規作成時は必ずTRUEを返す　これは不正解です。\n\n□ 新規作成時はエラーになる　これは不正解です。エラーにはなりません。\n\n□ 新規作成時はNULLを返す　これは不正解です。論理値として評価されます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ISCHANGED",
+      "レコードトリガフロー",
+      "数式"
+    ]
+  },
+  {
+    "id": 323,
+    "url": "claude-generated",
+    "question": "同じオブジェクトに複数のレコードトリガフローがある場合の実行順序として正しいものはどれですか。",
+    "choices": [
+      "デフォルトでは順不同。明示したい場合はフロー設定で「優先度(Order)」を指定する",
+      "作成日時の昇順",
+      "名前のアルファベット順",
+      "常に並行実行される"
+    ],
+    "answers": [
+      "デフォルトでは順不同。明示したい場合はフロー設定で「優先度(Order)」を指定する"
+    ],
+    "explanation": "□ デフォルトでは順不同。明示したい場合はフロー設定で「優先度(Order)」を指定する　これは正解です。複数のレコードトリガフローがある場合は順序を保証する仕組み(優先度設定)を使う必要があります。\n\n□ 作成日時の昇順　これは不正解です。デフォルトの保証順ではありません。\n\n□ 名前のアルファベット順　これは不正解です。\n\n□ 常に並行実行される　これは不正解です。並行ではなく順序が不定です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "レコードトリガフロー",
+      "実行順序",
+      "自動化"
+    ]
+  },
+  {
+    "id": 324,
+    "url": "claude-generated",
+    "question": "画面フロー(Screen Flow)を起動できる方法を2つ選びなさい。",
+    "choices": [
+      "クイックアクション(オブジェクト固有/グローバル)",
+      "Lightningページのユーティリティバー",
+      "保存前レコードトリガフロー",
+      "Apex バッチ"
+    ],
+    "answers": [
+      "クイックアクション(オブジェクト固有/グローバル)",
+      "Lightningページのユーティリティバー"
+    ],
+    "explanation": "□ クイックアクション(オブジェクト固有/グローバル)　これは正解です。画面フローはクイックアクションから起動でき、レコードページから入力ウィザードを呼び出せます。\n\n□ Lightningページのユーティリティバー　これは正解です。ユーティリティバーに画面フローコンポーネントを置いて起動できます。\n\n□ 保存前レコードトリガフロー　これは不正解です。レコードトリガフローは画面要素を持てません。\n\n□ Apex バッチ　これは不正解です。バッチからは自律フローを起動できますが、画面フローは画面UIが必要なため不可です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_screen_flow_screen_actions.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "画面フロー",
+      "クイックアクション",
+      "ユーティリティバー"
+    ]
+  },
+  {
+    "id": 325,
+    "url": "claude-generated",
+    "question": "画面要素で入力項目を必須にする方法はどれですか。",
+    "choices": [
+      "画面要素の項目プロパティで「必須」をオンにする",
+      "入力規則を作る",
+      "デフォルト値を空にする",
+      "プロファイルで設定する"
+    ],
+    "answers": [
+      "画面要素の項目プロパティで「必須」をオンにする"
+    ],
+    "explanation": "□ 画面要素の項目プロパティで「必須」をオンにする　これは正解です。画面要素の各入力コンポーネントには「必須」プロパティがあり、ONにすると入力が強制されます。\n\n□ 入力規則を作る　これは不正解です。入力規則はレコード保存時の検証で、画面要素レベルの必須化とは別軸です。\n\n□ デフォルト値を空にする　これは不正解です。デフォルト値の有無で必須にはなりません。\n\n□ プロファイルで設定する　これは不正解です。プロファイルは画面要素の必須プロパティを操作しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_screen_flow_screen_actions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "画面フロー",
+      "必須項目",
+      "Flow Builder"
+    ]
+  },
+  {
+    "id": 326,
+    "url": "claude-generated",
+    "question": "画面フローとレコードトリガフローを組み合わせるパターンとして正しいものはどれですか。",
+    "choices": [
+      "画面フローでユーザー入力を受け取り、保存後にレコードトリガフローが追加処理を行う",
+      "画面フローからレコードトリガフローを「呼び出す」",
+      "画面フローはレコードトリガフローと同居できない",
+      "両者は機能的に同じで使い分けは不要"
+    ],
+    "answers": [
+      "画面フローでユーザー入力を受け取り、保存後にレコードトリガフローが追加処理を行う"
+    ],
+    "explanation": "□ 画面フローでユーザー入力を受け取り、保存後にレコードトリガフローが追加処理を行う　これは正解です。それぞれの強みを組み合わせる典型的なパターンです。\n\n□ 画面フローからレコードトリガフローを「呼び出す」　これは不正解です。レコードトリガフローはレコード保存をトリガーに自動起動する形で、サブフローのように呼べません。\n\n□ 画面フローはレコードトリガフローと同居できない　これは不正解です。同居できます。\n\n□ 両者は機能的に同じで使い分けは不要　これは不正解です。役割が異なります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "画面フロー",
+      "レコードトリガフロー",
+      "フロー組合せ"
+    ]
+  },
+  {
+    "id": 327,
+    "url": "claude-generated",
+    "question": "スケジュールトリガフローで設定する3項目として正しいものはどれですか。",
+    "choices": [
+      "開始日時、頻度、対象レコード条件(オプション)",
+      "プロファイル、権限セット、ロール",
+      "送信元メール、件名、本文",
+      "アプリ、コンポーネント、可視性"
+    ],
+    "answers": [
+      "開始日時、頻度、対象レコード条件(オプション)"
+    ],
+    "explanation": "□ 開始日時、頻度、対象レコード条件(オプション)　これは正解です。開始日時(初回実行)、繰り返し頻度(日次/週次など)、絞り込み条件の3要素で構成します。\n\n□ プロファイル、権限セット、ロール　これは不正解です。これらは権限管理用です。\n\n□ 送信元メール、件名、本文　これは不正解です。メールテンプレートの構成です。\n\n□ アプリ、コンポーネント、可視性　これは不正解です。Lightning App Builderの設定項目です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_schedule.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "スケジュールトリガフロー",
+      "フロー",
+      "自動化"
+    ]
+  },
+  {
+    "id": 328,
+    "url": "claude-generated",
+    "question": "スケジュールトリガフローと自律フロー(Autolaunched Flow)の主な違いはどれですか。",
+    "choices": [
+      "スケジュールは時刻指定で自動起動、自律フローはApex/REST/サブフローからの呼び出し起動",
+      "スケジュールはApexから呼べる、自律フローはレコード保存から呼べる",
+      "両者は機能的に同じ",
+      "スケジュールは画面フローでしか起動できない"
+    ],
+    "answers": [
+      "スケジュールは時刻指定で自動起動、自律フローはApex/REST/サブフローからの呼び出し起動"
+    ],
+    "explanation": "□ スケジュールは時刻指定で自動起動、自律フローはApex/REST/サブフローからの呼び出し起動　これは正解です。起動契機が異なります。\n\n□ スケジュールはApexから呼べる、自律フローはレコード保存から呼べる　これは不正解です。逆/間違いです。\n\n□ 両者は機能的に同じ　これは不正解です。起動契機が異なります。\n\n□ スケジュールは画面フローでしか起動できない　これは不正解です。スケジュールは画面UIを持ちません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_schedule.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "スケジュールトリガフロー",
+      "自律フロー",
+      "フロー"
+    ]
+  },
+  {
+    "id": 329,
+    "url": "claude-generated",
+    "question": "サブフロー(Subflow)要素を使う主な利点はどれですか。",
+    "choices": [
+      "共通ロジックを再利用してメンテナンスを容易にする",
+      "Apexコードを直接実行する",
+      "ガバナ制限を完全に回避する",
+      "ユーザー権限を上書きする"
+    ],
+    "answers": [
+      "共通ロジックを再利用してメンテナンスを容易にする"
+    ],
+    "explanation": "□ 共通ロジックを再利用してメンテナンスを容易にする　これは正解です。共通ロジックを別フローに切り出してサブフローで呼び出すことで、変更時の影響範囲を抑えられます。\n\n□ Apexコードを直接実行する　これは不正解です。Apexを実行するには「Apexアクション」を使います。\n\n□ ガバナ制限を完全に回避する　これは不正解です。サブフローでもガバナ制限は通算されます。\n\n□ ユーザー権限を上書きする　これは不正解です。サブフローは呼び出し元の実行コンテキストを継承します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_subflow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "サブフロー",
+      "フロー",
+      "再利用"
+    ]
+  },
+  {
+    "id": 330,
+    "url": "claude-generated",
+    "question": "自律フロー(Autolaunched Flow)を呼び出せる場所を2つ選びなさい。",
+    "choices": [
+      "Apex クラス",
+      "REST API",
+      "Lightning レコードページのクイックアクション",
+      "レポート"
+    ],
+    "answers": [
+      "Apex クラス",
+      "REST API"
+    ],
+    "explanation": "□ Apex クラス　これは正解です。`Flow.Interview` を使ってApexから自律フローを起動できます。\n\n□ REST API　これは正解です。Salesforce REST APIで自律フローを起動できます(Connect API)。\n\n□ Lightning レコードページのクイックアクション　これは不正解です。それは画面フローの起動方法です。\n\n□ レポート　これは不正解です。レポートからフローを起動する仕組みはありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "自律フロー",
+      "Apex",
+      "REST API"
+    ]
+  },
+  {
+    "id": 331,
+    "url": "claude-generated",
+    "question": "承認プロセスで使えるアクションタイプとして正しいものを2つ選びなさい。",
+    "choices": [
+      "項目更新",
+      "メールアラート",
+      "Apex トリガの自動生成",
+      "レポート更新"
+    ],
+    "answers": [
+      "項目更新",
+      "メールアラート"
+    ],
+    "explanation": "□ 項目更新　これは正解です。承認プロセスでは申請時/承認時/却下時/再承認時に項目更新アクションを実行できます。\n\n□ メールアラート　これは正解です。同じくメール送信アクションが利用できます。\n\n□ Apex トリガの自動生成　これは不正解です。承認プロセスはトリガを生成しません。\n\n□ レポート更新　これは不正解です。レポートは別機能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.ls_create_approval_process.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "承認プロセス",
+      "項目更新",
+      "メールアラート"
+    ]
+  },
+  {
+    "id": 332,
+    "url": "claude-generated",
+    "question": "承認プロセスで申請中のレコードがロックされた状態でできないことを2つ選びなさい。",
+    "choices": [
+      "ロックされた項目の編集",
+      "レコードの所有者変更(管理者を除く)",
+      "Chatterへの投稿",
+      "添付ファイルの追加"
+    ],
+    "answers": [
+      "ロックされた項目の編集",
+      "レコードの所有者変更(管理者を除く)"
+    ],
+    "explanation": "□ ロックされた項目の編集　これは正解です。レコードロック中は通常ユーザーは編集できません(管理者は例外設定可能)。\n\n□ レコードの所有者変更(管理者を除く)　これは正解です。所有者変更も通常ユーザーには許可されません。\n\n□ Chatterへの投稿　これは不正解です。Chatter投稿は通常可能です。\n\n□ 添付ファイルの追加　これは不正解です。添付追加は通常可能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.approvals_creating_approval_steps.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "承認プロセス",
+      "レコードロック",
+      "ロック"
+    ]
+  },
+  {
+    "id": 333,
+    "url": "claude-generated",
+    "question": "条件によって承認ルートを変える「動的承認ルート」を実装する方法として正しいものはどれですか。",
+    "choices": [
+      "承認プロセスのステップに「条件式」と「次のステップへ」分岐を設定する",
+      "Apexトリガを書く以外に方法はない",
+      "プロファイルで分岐させる",
+      "OWDを変更する"
+    ],
+    "answers": [
+      "承認プロセスのステップに「条件式」と「次のステップへ」分岐を設定する"
+    ],
+    "explanation": "□ 承認プロセスのステップに「条件式」と「次のステップへ」分岐を設定する　これは正解です。各承認ステップにエントリ条件と次のステップ動作を設定することで、金額やリージョンに応じた動的ルートが組めます。\n\n□ Apexトリガを書く以外に方法はない　これは不正解です。宣言的に実現できます。\n\n□ プロファイルで分岐させる　これは不正解です。プロファイルは静的な権限定義です。\n\n□ OWDを変更する　これは不正解です。OWDは共有設定で承認ルートと無関係です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.approvals_creating_approval_steps.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "承認プロセス",
+      "動的承認",
+      "承認ステップ"
+    ]
+  },
+  {
+    "id": 334,
+    "url": "claude-generated",
+    "question": "ISPICKVAL関数の用途として正しいものはどれですか。",
+    "choices": [
+      "選択リスト項目の値が指定した値と一致するか判定する",
+      "選択リスト項目の選択肢を増やす",
+      "選択リスト項目をテキストに変換する",
+      "選択リスト項目のレコードタイプを切り替える"
+    ],
+    "answers": [
+      "選択リスト項目の値が指定した値と一致するか判定する"
+    ],
+    "explanation": "□ 選択リスト項目の値が指定した値と一致するか判定する　これは正解です。ISPICKVAL(field, \"value\") の形で選択リストの値判定に使い、IFやANDと組み合わせて入力規則や数式項目で利用します。\n\n□ 選択リスト項目の選択肢を増やす　これは不正解です。選択肢追加はメタデータ編集で行います。\n\n□ 選択リスト項目をテキストに変換する　これは不正解です。それはTEXT関数の役割です。\n\n□ 選択リスト項目のレコードタイプを切り替える　これは不正解です。レコードタイプは別の仕組みです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ISPICKVAL",
+      "数式関数",
+      "選択リスト"
+    ]
+  },
+  {
+    "id": 335,
+    "url": "claude-generated",
+    "question": "ISBLANKとISNULLの違いに関する説明として正しいものはどれですか。",
+    "choices": [
+      "ISBLANKはテキストにも数値にも使えるが、ISNULLはテキストでは常にFALSEを返す",
+      "ISNULLはテキストにも数値にも使えるが、ISBLANKは数値専用",
+      "両者は機能的に完全に同じ",
+      "ISBLANKは数式項目専用、ISNULLは入力規則専用"
+    ],
+    "answers": [
+      "ISBLANKはテキストにも数値にも使えるが、ISNULLはテキストでは常にFALSEを返す"
+    ],
+    "explanation": "□ ISBLANKはテキストにも数値にも使えるが、ISNULLはテキストでは常にFALSEを返す　これは正解です。テキスト項目では空文字列もNULLとして扱わないため、ISBLANK の使用が推奨されます。\n\n□ ISNULLはテキストにも数値にも使えるが、ISBLANKは数値専用　これは不正解です。逆です。\n\n□ 両者は機能的に完全に同じ　これは不正解です。テキスト項目で挙動が異なります。\n\n□ ISBLANKは数式項目専用、ISNULLは入力規則専用　これは不正解です。両者は数式項目・入力規則・フローのいずれでも使えます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ISBLANK",
+      "ISNULL",
+      "数式関数"
+    ]
+  },
+  {
+    "id": 336,
+    "url": "claude-generated",
+    "question": "入力規則でISCHANGED関数を使う際の注意点として正しいものはどれですか。",
+    "choices": [
+      "新規レコード作成時には常にFALSEを返すため、別途ISNEWで判定する必要がある",
+      "新規レコード作成時には常にTRUEを返す",
+      "ISCHANGEDは入力規則では使えない",
+      "ISCHANGEDはApexトリガでのみ使える"
+    ],
+    "answers": [
+      "新規レコード作成時には常にFALSEを返すため、別途ISNEWで判定する必要がある"
+    ],
+    "explanation": "□ 新規レコード作成時には常にFALSEを返すため、別途ISNEWで判定する必要がある　これは正解です。新規レコードには「以前の値」がないためISCHANGEDはFALSEになります。新規時にも検証したい場合はISNEW()でOR結合する典型パターンです。\n\n□ 新規レコード作成時には常にTRUEを返す　これは不正解です。\n\n□ ISCHANGEDは入力規則では使えない　これは不正解です。使えます。\n\n□ ISCHANGEDはApexトリガでのみ使える　これは不正解です。Apexトリガとは別関数があります(Trigger.oldNew)。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ISCHANGED",
+      "ISNEW",
+      "入力規則"
+    ]
+  },
+  {
+    "id": 337,
+    "url": "claude-generated",
+    "question": "ワークフロールールの「項目更新」アクションをフローに移行する際の第一選択はどれですか。",
+    "choices": [
+      "保存前(Before-Save)レコードトリガフロー",
+      "保存後(After-Save)レコードトリガフロー",
+      "画面フロー",
+      "スケジュールトリガフロー"
+    ],
+    "answers": [
+      "保存前(Before-Save)レコードトリガフロー"
+    ],
+    "explanation": "□ 保存前(Before-Save)レコードトリガフロー　これは正解です。同一レコードの項目更新はDML不要で最も高速な保存前フローが第一選択です。\n\n□ 保存後(After-Save)レコードトリガフロー　これは不正解です。同一レコード更新でDMLが発生するため非効率です。\n\n□ 画面フロー　これは不正解です。UIを伴うため不適切です。\n\n□ スケジュールトリガフロー　これは不正解です。時刻指定の処理用です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ワークフロー移行",
+      "保存前フロー",
+      "Migrate to Flow"
+    ]
+  },
+  {
+    "id": 338,
+    "url": "claude-generated",
+    "question": "レコード保存時の実行順序として、保存前(Before-Save)レコードトリガフローと入力規則のどちらが先に実行されますか。",
+    "choices": [
+      "保存前フローが先に実行される(入力規則はその結果に対して走る)",
+      "入力規則が先に実行される",
+      "並行して同時に走る",
+      "毎回ランダム"
+    ],
+    "answers": [
+      "保存前フローが先に実行される(入力規則はその結果に対して走る)"
+    ],
+    "explanation": "□ 保存前フローが先に実行される(入力規則はその結果に対して走る)　これは正解です。順序は「システム検証 → 保存前フロー → 入力規則 → 保存(コミット前) → 保存後フロー → 割り当て → 承認 → コミット」です。\n\n□ 入力規則が先に実行される　これは不正解です。順序が逆です。\n\n□ 並行して同時に走る　これは不正解です。明確な順序があります。\n\n□ 毎回ランダム　これは不正解です。固定の順序です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.rules_processing_order.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "実行順序",
+      "保存前フロー",
+      "入力規則"
+    ]
+  },
+  {
+    "id": 339,
+    "url": "claude-generated",
+    "question": "承認プロセスの初期化(申請の受け付け)が実行される段階はどこですか。",
+    "choices": [
+      "保存後の自動化処理が終わった後、DBコミットの直前",
+      "システム検証の前",
+      "保存前フローの直前",
+      "コミット後"
+    ],
+    "answers": [
+      "保存後の自動化処理が終わった後、DBコミットの直前"
+    ],
+    "explanation": "□ 保存後の自動化処理が終わった後、DBコミットの直前　これは正解です。承認プロセスは実行順序の終盤に位置し、保存後フロー・割り当てルール・自動応答などが終わった後に起動します。\n\n□ システム検証の前　これは不正解です。初期段階ではありません。\n\n□ 保存前フローの直前　これは不正解です。順序が違います。\n\n□ コミット後　これは不正解です。コミット直前です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.rules_processing_order.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "実行順序",
+      "承認プロセス",
+      "自動化"
+    ]
   }
 ]
