@@ -8212,5 +8212,2459 @@
       "承認プロセス",
       "自動化"
     ]
+  },
+  {
+    "id": 340,
+    "url": "claude-generated",
+    "question": "Salesforceで「リード」と「取引先責任者」の主な違いはどれですか。",
+    "choices": [
+      "リードは見込み客で、商談化していない人物を管理する",
+      "取引先責任者はマーケティングオートメーション専用",
+      "リードは個人取引先と同じデータモデルを共有する",
+      "取引先責任者は重複ルールが適用されない"
+    ],
+    "answers": [
+      "リードは見込み客で、商談化していない人物を管理する"
+    ],
+    "explanation": "□ リードは見込み客で、商談化していない人物を管理する　これは正解です。リードは見込み客のステージで管理され、有望と判断されると「リード変換」で取引先・取引先責任者・商談に分割されます。\n\n□ 取引先責任者はマーケティングオートメーション専用　これは不正解です。Account Engagement (旧Pardot) などのMA製品とは結合しますが、取引先責任者自体は汎用的なCRM対象です。\n\n□ リードは個人取引先と同じデータモデルを共有する　これは不正解です。個人取引先(Person Account)は取引先と取引先責任者を統合したオブジェクトで、リードとは別物です。\n\n□ 取引先責任者は重複ルールが適用されない　これは不正解です。取引先責任者にも重複ルールを設定可能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "リード",
+      "取引先責任者",
+      "標準オブジェクト"
+    ]
+  },
+  {
+    "id": 341,
+    "url": "claude-generated",
+    "question": "リード変換で標準的に作成されるレコードを2つ選びなさい。",
+    "choices": [
+      "商談",
+      "取引先",
+      "ケース",
+      "キャンペーン"
+    ],
+    "answers": [
+      "商談",
+      "取引先"
+    ],
+    "explanation": "□ 商談　これは正解です。リード変換時に新規商談を作成するか、既存商談に関連付けるか選べます。\n\n□ 取引先　これは正解です。リード変換時に取引先(と取引先責任者)が作成されます。\n\n□ ケース　これは不正解です。ケースはサポート対象オブジェクトで、リード変換のフローには含まれません。\n\n□ キャンペーン　これは不正解です。キャンペーンはマーケティング活動の単位で、リード変換で自動作成はされません(リードがキャンペーンメンバーとして紐づくことはある)。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "リード変換",
+      "商談",
+      "取引先",
+      "標準オブジェクト"
+    ]
+  },
+  {
+    "id": 342,
+    "url": "claude-generated",
+    "question": "「個人取引先(Person Account)」を有効化した場合の動作として正しいものはどれですか。",
+    "choices": [
+      "1度有効化すると無効化できない",
+      "ライセンスを変えれば取引先と個人取引先を切り替えできる",
+      "取引先責任者オブジェクトが廃止される",
+      "リードオブジェクトと統合される"
+    ],
+    "answers": [
+      "1度有効化すると無効化できない"
+    ],
+    "explanation": "□ 1度有効化すると無効化できない　これは正解です。Person Accountは有効化すると元に戻せないため、慎重な評価とSalesforceのサポート依頼が必要です。\n\n□ ライセンスを変えれば取引先と個人取引先を切り替えできる　これは不正解です。レコード単位でビジネス取引先↔個人取引先の切替はサポートされていません。\n\n□ 取引先責任者オブジェクトが廃止される　これは不正解です。取引先責任者は引き続き使えます(B2B用途)。\n\n□ リードオブジェクトと統合される　これは不正解です。リードは独立して残ります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "個人取引先",
+      "Person Account",
+      "標準オブジェクト"
+    ]
+  },
+  {
+    "id": 343,
+    "url": "claude-generated",
+    "question": "商談ステージで「成立フラグ(IsClosed/IsWon)」を制御する仕組みはどれですか。",
+    "choices": [
+      "ステージごとに「商談を終了するか」「成立か」のフラグを設定する",
+      "入力規則で IsClosed を更新する",
+      "ワークフローで自動更新する",
+      "レコードタイプごとに別フィールドで管理する"
+    ],
+    "answers": [
+      "ステージごとに「商談を終了するか」「成立か」のフラグを設定する"
+    ],
+    "explanation": "□ ステージごとに「商談を終了するか」「成立か」のフラグを設定する　これは正解です。商談ステージのメタデータにIsClosed/IsWonの定義があり、ステージの値が変わると自動でフラグが更新されます。\n\n□ 入力規則で IsClosed を更新する　これは不正解です。入力規則は値を更新するのではなく検証する仕組みです。\n\n□ ワークフローで自動更新する　これは不正解です。標準でステージとフラグが連動しており、ワークフロー不要です。\n\n□ レコードタイプごとに別フィールドで管理する　これは不正解です。レコードタイプはステージ選択肢を絞れますが、フラグは共通定義です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "商談ステージ",
+      "IsClosed",
+      "IsWon",
+      "標準オブジェクト"
+    ]
+  },
+  {
+    "id": 344,
+    "url": "claude-generated",
+    "question": "ケースの「自動応答ルール」と「割り当てルール」の違いとして正しいものはどれですか。",
+    "choices": [
+      "自動応答はメール送信、割り当てはレコード所有者の決定",
+      "自動応答はSlack通知、割り当てはメール送信",
+      "両方とも所有者を決定する仕組み",
+      "両方ともメール送信する仕組み"
+    ],
+    "answers": [
+      "自動応答はメール送信、割り当てはレコード所有者の決定"
+    ],
+    "explanation": "□ 自動応答はメール送信、割り当てはレコード所有者の決定　これは正解です。自動応答ルールは初回受付メールの送信制御、割り当てルールはレコード所有者(チーム/個人/キュー)を条件で決定する仕組みです。\n\n□ 自動応答はSlack通知、割り当てはメール送信　これは不正解です。標準の自動応答はメールが基本です。\n\n□ 両方とも所有者を決定する仕組み　これは不正解です。自動応答は所有者決定とは別軸です。\n\n□ 両方ともメール送信する仕組み　これは不正解です。割り当ては所有者決定が主目的です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ケース",
+      "自動応答ルール",
+      "割り当てルール",
+      "標準オブジェクト"
+    ]
+  },
+  {
+    "id": 345,
+    "url": "claude-generated",
+    "question": "標準オブジェクトの「キャンペーン」とそのメンバーに関する説明として正しいものはどれですか。",
+    "choices": [
+      "1リード/取引先責任者は複数のキャンペーンメンバーになれる",
+      "1人は1キャンペーンメンバーまで",
+      "リードはキャンペーンメンバーになれない",
+      "キャンペーン階層は最大3階層"
+    ],
+    "answers": [
+      "1リード/取引先責任者は複数のキャンペーンメンバーになれる"
+    ],
+    "explanation": "□ 1リード/取引先責任者は複数のキャンペーンメンバーになれる　これは正解です。リード/取引先責任者と複数のキャンペーンを多対多で結ぶ接合オブジェクトがキャンペーンメンバーです。\n\n□ 1人は1キャンペーンメンバーまで　これは不正解です。複数のキャンペーンに同時に所属できます。\n\n□ リードはキャンペーンメンバーになれない　これは不正解です。リード・取引先責任者の両方がメンバーになれます。\n\n□ キャンペーン階層は最大3階層　これは不正解です。キャンペーン階層は最大5階層です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "キャンペーン",
+      "キャンペーンメンバー",
+      "標準オブジェクト"
+    ]
+  },
+  {
+    "id": 346,
+    "url": "claude-generated",
+    "question": "Lightning Experienceでサポートされず、Salesforce Classicでのみサポートされている機能はどれですか。",
+    "choices": [
+      "S-Control",
+      "Lightning ページ",
+      "Lightning Web Component",
+      "Lightning アプリケーションビルダー"
+    ],
+    "answers": [
+      "S-Control"
+    ],
+    "explanation": "□ S-Control　これは正解です。S-ControlはClassic時代の旧UIカスタマイズ機構で、Lightning Experienceではサポートされません。\n\n□ Lightning ページ　これは不正解です。Lightning Experience固有の機能です。\n\n□ Lightning Web Component　これは不正解です。LWCはLightning Experience向けのモダンなコンポーネントです。\n\n□ Lightning アプリケーションビルダー　これは不正解です。LABはLightning ExperienceのUI構築の中核です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.apps_overview_lightning.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "S-Control",
+      "Salesforce Classic",
+      "Lightning Experience"
+    ]
+  },
+  {
+    "id": 347,
+    "url": "claude-generated",
+    "question": "Lightning ExperienceとSalesforce Classicでの「アプリ」の違いとして正しいものを2つ選びなさい。",
+    "choices": [
+      "Lightning ExperienceはLightningアプリ、Classicは「カスタムアプリ」と呼ぶ",
+      "Lightning アプリはユーティリティバーを持てる",
+      "Classic ではアプリランチャーが標準で使える",
+      "両者とも同じアプリメタデータを共有している"
+    ],
+    "answers": [
+      "Lightning ExperienceはLightningアプリ、Classicは「カスタムアプリ」と呼ぶ",
+      "Lightning アプリはユーティリティバーを持てる"
+    ],
+    "explanation": "□ Lightning ExperienceはLightningアプリ、Classicは「カスタムアプリ」と呼ぶ　これは正解です。アプリのメタデータ種別が異なります。\n\n□ Lightning アプリはユーティリティバーを持てる　これは正解です。画面下部にユーティリティ機能を常駐できます。\n\n□ Classic ではアプリランチャーが標準で使える　これは不正解です。アプリランチャーはLightning Experienceの機能です。\n\n□ 両者とも同じアプリメタデータを共有している　これは不正解です。LightningアプリとClassicカスタムアプリは別のメタデータタイプです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.apps_overview_lightning.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "Lightning アプリ",
+      "Classic",
+      "アプリランチャー"
+    ]
+  },
+  {
+    "id": 348,
+    "url": "claude-generated",
+    "question": "Lightning Experienceでカスタムボタン(JavaScriptボタン)を作成しようとするとどうなりますか。",
+    "choices": [
+      "Lightning Experienceでは動作しないため、クイックアクション/フローで代替する",
+      "エラーになるが管理者なら作成できる",
+      "Lightning Experienceでも標準で動作する",
+      "Apexトリガに自動変換される"
+    ],
+    "answers": [
+      "Lightning Experienceでは動作しないため、クイックアクション/フローで代替する"
+    ],
+    "explanation": "□ Lightning Experienceでは動作しないため、クイックアクション/フローで代替する　これは正解です。JavaScriptボタンはClassic専用で、Lightning Experienceではサポートされません。代替としてクイックアクションや画面フローを使います。\n\n□ エラーになるが管理者なら作成できる　これは不正解です。管理者でもサポート対象外です。\n\n□ Lightning Experienceでも標準で動作する　これは不正解です。サポートされません。\n\n□ Apexトリガに自動変換される　これは不正解です。自動変換はありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.apps_overview_lightning.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "JavaScriptボタン",
+      "Lightning Experience",
+      "クイックアクション"
+    ]
+  },
+  {
+    "id": 349,
+    "url": "claude-generated",
+    "question": "AppExchangeのアプリで「無料試用版(Free Trial)」と「フル版」の違いに関する説明として正しいものはどれですか。",
+    "choices": [
+      "試用版は期間限定で機能制限がある場合がある",
+      "試用版は本番組織にしかインストールできない",
+      "試用版は管理パッケージとして提供されない",
+      "試用版はAppExchangeに掲載されない"
+    ],
+    "answers": [
+      "試用版は期間限定で機能制限がある場合がある"
+    ],
+    "explanation": "□ 試用版は期間限定で機能制限がある場合がある　これは正解です。試用版はISVの設定により、評価期間や機能制限を伴うのが一般的です。\n\n□ 試用版は本番組織にしかインストールできない　これは不正解です。サンドボックスでも試用できます。\n\n□ 試用版は管理パッケージとして提供されない　これは不正解です。試用版も管理パッケージ形態で配布されることがあります。\n\n□ 試用版はAppExchangeに掲載されない　これは不正解です。掲載されています。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lcc_appexchange_packages_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "AppExchange",
+      "試用版",
+      "管理パッケージ"
+    ]
+  },
+  {
+    "id": 350,
+    "url": "claude-generated",
+    "question": "管理パッケージで「組織の名前空間プレフィックス」が必要になるのはどの場合ですか。",
+    "choices": [
+      "パッケージをアップグレード可能な管理パッケージとしてリリースする時",
+      "パッケージを試験的にインストールする時",
+      "未管理パッケージを作成する時",
+      "パッケージをサンドボックスに送る時"
+    ],
+    "answers": [
+      "パッケージをアップグレード可能な管理パッケージとしてリリースする時"
+    ],
+    "explanation": "□ パッケージをアップグレード可能な管理パッケージとしてリリースする時　これは正解です。管理パッケージはISVの組織で名前空間を予約し、コンポーネントに付与してリリースします。\n\n□ パッケージを試験的にインストールする時　これは不正解です。インストールに名前空間予約は不要です。\n\n□ 未管理パッケージを作成する時　これは不正解です。未管理パッケージは名前空間不要です。\n\n□ パッケージをサンドボックスに送る時　これは不正解です。サンドボックスへの送信は変更セット等で行います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lcc_appexchange_packages_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "名前空間",
+      "管理パッケージ",
+      "AppExchange"
+    ]
+  },
+  {
+    "id": 351,
+    "url": "claude-generated",
+    "question": "AppExchangeの「セキュリティレビュー(Security Review)」に関する説明として正しいものはどれですか。",
+    "choices": [
+      "AppExchangeに掲載するためにISVが受ける必須の審査プロセス",
+      "インストール先組織のセキュリティ設定を変える機能",
+      "ユーザーごとの権限を変える機能",
+      "パスワードポリシーを強制する機能"
+    ],
+    "answers": [
+      "AppExchangeに掲載するためにISVが受ける必須の審査プロセス"
+    ],
+    "explanation": "□ AppExchangeに掲載するためにISVが受ける必須の審査プロセス　これは正解です。セキュリティレビューはAppExchange掲載前にSalesforceが行う公式審査で、合格しないとパブリックに公開できません。\n\n□ インストール先組織のセキュリティ設定を変える機能　これは不正解です。セキュリティ設定はインストール先で個別管理します。\n\n□ ユーザーごとの権限を変える機能　これは不正解です。それは権限セットの役割です。\n\n□ パスワードポリシーを強制する機能　これは不正解です。パスワードポリシーは別機能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lcc_appexchange_packages_overview.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "セキュリティレビュー",
+      "AppExchange",
+      "ISV"
+    ]
+  },
+  {
+    "id": 352,
+    "url": "claude-generated",
+    "question": "Salesforceの「多通貨(Multiple Currencies)」を有効化した場合の挙動として正しいものはどれですか。",
+    "choices": [
+      "1度有効化すると無効化はSalesforceサポート経由でしかできない",
+      "ユーザーは複数の表示通貨を同時に切り替えできる",
+      "通貨レートは自動的に外部APIから更新される",
+      "商談の金額項目が自動で複数列に分割される"
+    ],
+    "answers": [
+      "1度有効化すると無効化はSalesforceサポート経由でしかできない"
+    ],
+    "explanation": "□ 1度有効化すると無効化はSalesforceサポート経由でしかできない　これは正解です。多通貨は有効化が大きな変更であり、無効化は容易ではないため通常Salesforceサポートを通じます。\n\n□ ユーザーは複数の表示通貨を同時に切り替えできる　これは不正解です。ユーザーには個人通貨が1つ設定され、表示はその通貨で変換されます。\n\n□ 通貨レートは自動的に外部APIから更新される　これは不正解です。標準では手動更新です(Advanced Currency Managementで履歴管理可)。\n\n□ 商談の金額項目が自動で複数列に分割される　これは不正解です。金額項目には通貨コードと値のセットが入ります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.administration_about_advanced_currency_management.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "多通貨",
+      "Multiple Currencies",
+      "通貨設定"
+    ]
+  },
+  {
+    "id": 353,
+    "url": "claude-generated",
+    "question": "Advanced Currency Management(高度な通貨管理)を有効にすると何ができるようになりますか。",
+    "choices": [
+      "日付ごとに異なる為替レートを履歴として保持して商談に適用できる",
+      "通貨記号を自由に変更できる",
+      "ユーザーが個人通貨を毎日変えられる",
+      "クラウドサーバから自動でレート取得する"
+    ],
+    "answers": [
+      "日付ごとに異なる為替レートを履歴として保持して商談に適用できる"
+    ],
+    "explanation": "□ 日付ごとに異なる為替レートを履歴として保持して商談に適用できる　これは正解です。Advanced Currency Managementは日付別のレート履歴を持ち、商談の値はその時点のレートで換算されます。\n\n□ 通貨記号を自由に変更できる　これは不正解です。記号は通貨設定で標準的に決まります。\n\n□ ユーザーが個人通貨を毎日変えられる　これは不正解です。個人通貨の頻繁な変更はAdvanced Currencyの機能ではありません。\n\n□ クラウドサーバから自動でレート取得する　これは不正解です。Salesforce標準では自動取得はありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.administration_about_advanced_currency_management.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Advanced Currency",
+      "為替レート",
+      "通貨設定"
+    ]
+  },
+  {
+    "id": 354,
+    "url": "claude-generated",
+    "question": "Salesforceで翻訳ワークベンチ(Translation Workbench)を使う目的はどれですか。",
+    "choices": [
+      "カスタム項目やピックリスト値などのラベルを多言語に翻訳する",
+      "商談金額を自動換算する",
+      "メールテンプレートを自動翻訳する",
+      "Apexクラスを多言語化する"
+    ],
+    "answers": [
+      "カスタム項目やピックリスト値などのラベルを多言語に翻訳する"
+    ],
+    "explanation": "□ カスタム項目やピックリスト値などのラベルを多言語に翻訳する　これは正解です。Translation Workbenchはメタデータラベル(項目名・選択肢・カスタムアプリ名等)の翻訳ファイルを管理します。\n\n□ 商談金額を自動換算する　これは不正解です。金額換算は通貨機能です。\n\n□ メールテンプレートを自動翻訳する　これは不正解です。テンプレートは個別管理です。\n\n□ Apexクラスを多言語化する　これは不正解です。Apexは別途Custom Labelsなどを使います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.administration_about_advanced_currency_management.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "翻訳ワークベンチ",
+      "多言語",
+      "ローカライズ"
+    ]
+  },
+  {
+    "id": 355,
+    "url": "claude-generated",
+    "question": "Chatterグループの「公開グループ」と「非公開グループ」の主な違いはどれですか。",
+    "choices": [
+      "公開はメンバー以外も閲覧/投稿できる、非公開はメンバーのみ",
+      "公開は管理者の承認が必要、非公開は不要",
+      "公開はモバイル専用、非公開はPC専用",
+      "両者は機能的に同じで命名のみ異なる"
+    ],
+    "answers": [
+      "公開はメンバー以外も閲覧/投稿できる、非公開はメンバーのみ"
+    ],
+    "explanation": "□ 公開はメンバー以外も閲覧/投稿できる、非公開はメンバーのみ　これは正解です。Chatterの公開グループは誰でも投稿/閲覧でき、非公開グループはメンバーのみアクセスできます。\n\n□ 公開は管理者の承認が必要、非公開は不要　これは不正解です。承認制かどうかはグループ設定で別に決められます。\n\n□ 公開はモバイル専用、非公開はPC専用　これは不正解です。デバイスによる区別はありません。\n\n□ 両者は機能的に同じで命名のみ異なる　これは不正解です。アクセス制御で明確に異なります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_group_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Chatter",
+      "公開グループ",
+      "非公開グループ"
+    ]
+  },
+  {
+    "id": 356,
+    "url": "claude-generated",
+    "question": "Chatterの「ハッシュタグ」と「メンション」の用途として正しいものはどれですか。",
+    "choices": [
+      "ハッシュタグはトピック分類、メンションは個人/グループへの通知",
+      "ハッシュタグは画像投稿、メンションはファイル共有",
+      "両者ともレコード追跡用",
+      "両者ともメールリンクへの変換用"
+    ],
+    "answers": [
+      "ハッシュタグはトピック分類、メンションは個人/グループへの通知"
+    ],
+    "explanation": "□ ハッシュタグはトピック分類、メンションは個人/グループへの通知　これは正解です。#topicでトピック分類、@userで個人/@groupでグループへの通知です。\n\n□ ハッシュタグは画像投稿、メンションはファイル共有　これは不正解です。両者ともテキスト中のタグ機能です。\n\n□ 両者ともレコード追跡用　これは不正解です。レコード追跡は別機能です。\n\n□ 両者ともメールリンクへの変換用　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_group_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Chatter",
+      "ハッシュタグ",
+      "メンション"
+    ]
+  },
+  {
+    "id": 357,
+    "url": "claude-generated",
+    "question": "Chatterの「フィード追跡(Feed Tracking)」を有効化したフィールドに変更があった場合、何が起こりますか。",
+    "choices": [
+      "対象レコードのChatterフィードに自動投稿される",
+      "フィードグループに通知メールが飛ぶ",
+      "フィールド履歴管理にも自動で記録される",
+      "Apexトリガが発火する"
+    ],
+    "answers": [
+      "対象レコードのChatterフィードに自動投稿される"
+    ],
+    "explanation": "□ 対象レコードのChatterフィードに自動投稿される　これは正解です。フィード追跡は指定フィールドの変更を対象レコードのフィードに自動投稿する機能です。\n\n□ フィードグループに通知メールが飛ぶ　これは不正解です。メール通知はフォロワー設定によります。\n\n□ フィールド履歴管理にも自動で記録される　これは不正解です。履歴管理は別の機能で、別途有効化が必要です。\n\n□ Apexトリガが発火する　これは不正解です。Apexトリガは別契機で動きます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_group_about.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Chatter",
+      "フィード追跡",
+      "変更追跡"
+    ]
+  },
+  {
+    "id": 358,
+    "url": "claude-generated",
+    "question": "「ToDo(Task)」と「行動(Event)」の主な違いはどれですか。",
+    "choices": [
+      "ToDoは期日のみ、行動は開始/終了の時刻を持つ",
+      "ToDoは取引先のみ、行動はリードのみ",
+      "ToDoはモバイル専用、行動はPC専用",
+      "両者とも同じデータモデルで違いは表示色のみ"
+    ],
+    "answers": [
+      "ToDoは期日のみ、行動は開始/終了の時刻を持つ"
+    ],
+    "explanation": "□ ToDoは期日のみ、行動は開始/終了の時刻を持つ　これは正解です。ToDoは「いつまでに何をする」、行動は「いつから何時まで」のスケジュールイベントです。\n\n□ ToDoは取引先のみ、行動はリードのみ　これは不正解です。両者ともリード/取引先/取引先責任者/商談等に関連付けられます。\n\n□ ToDoはモバイル専用、行動はPC専用　これは不正解です。\n\n□ 両者とも同じデータモデルで違いは表示色のみ　これは不正解です。データモデル(項目構成)が異なります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.activities.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ToDo",
+      "行動",
+      "活動",
+      "Activities"
+    ]
+  },
+  {
+    "id": 359,
+    "url": "claude-generated",
+    "question": "活動(ToDo/行動)の「名前」と「関連先」項目の組み合わせで正しいものはどれですか。",
+    "choices": [
+      "「名前」=人物(リード/取引先責任者)、「関連先」=オブジェクト(商談/取引先など)",
+      "「名前」=取引先、「関連先」=リード",
+      "両者とも商談しか入れられない",
+      "両者とも自由テキスト"
+    ],
+    "answers": [
+      "「名前」=人物(リード/取引先責任者)、「関連先」=オブジェクト(商談/取引先など)"
+    ],
+    "explanation": "□ 「名前」=人物(リード/取引先責任者)、「関連先」=オブジェクト(商談/取引先など)　これは正解です。「名前」項目は活動の対象人物、「関連先」項目は親オブジェクトのコンテキストを示します。\n\n□ 「名前」=取引先、「関連先」=リード　これは不正解です。役割が逆/不正確です。\n\n□ 両者とも商談しか入れられない　これは不正解です。多種オブジェクトを対象にできます。\n\n□ 両者とも自由テキスト　これは不正解です。これらは参照関係項目です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.activities.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "活動",
+      "関連先",
+      "名前項目",
+      "Activities"
+    ]
+  },
+  {
+    "id": 360,
+    "url": "claude-generated",
+    "question": "ToDoや行動に「メール送信」「電話通話」のサブタイプを設定したい場合、どの機能を使いますか。",
+    "choices": [
+      "ToDoのタイプ選択リスト(活動タイプ)を設定する",
+      "新規カスタムオブジェクトを作る",
+      "プロファイルでアクションを定義する",
+      "Apexで自動分類する"
+    ],
+    "answers": [
+      "ToDoのタイプ選択リスト(活動タイプ)を設定する"
+    ],
+    "explanation": "□ ToDoのタイプ選択リスト(活動タイプ)を設定する　これは正解です。活動のType(タイプ)選択リストでメール/電話/会議などのサブタイプを定義します。\n\n□ 新規カスタムオブジェクトを作る　これは不正解です。標準オブジェクトの選択リストで実現できます。\n\n□ プロファイルでアクションを定義する　これは不正解です。プロファイルは権限定義です。\n\n□ Apexで自動分類する　これは不正解です。標準機能で十分です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.activities.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "活動タイプ",
+      "ToDo",
+      "活動"
+    ]
+  },
+  {
+    "id": 361,
+    "url": "claude-generated",
+    "question": "「Salesforce Files」と旧「添付ファイル(Attachments)」の主な違いはどれですか。",
+    "choices": [
+      "Filesは複数レコードへの共有・バージョン管理・プレビューに対応する",
+      "Filesは添付不可で、Chatter専用",
+      "添付ファイルはAPI経由でしかアクセスできない",
+      "両者は機能的に同じで管理画面の見た目のみ異なる"
+    ],
+    "answers": [
+      "Filesは複数レコードへの共有・バージョン管理・プレビューに対応する"
+    ],
+    "explanation": "□ Filesは複数レコードへの共有・バージョン管理・プレビューに対応する　これは正解です。Salesforce FilesはContentDocumentベースで、複数レコードへのリンク・バージョン・プレビュー機能を備えます。\n\n□ Filesは添付不可で、Chatter専用　これは不正解です。Filesはレコードへの添付や直接アップロードも可能です。\n\n□ 添付ファイルはAPI経由でしかアクセスできない　これは不正解です。UIからも操作可能です。\n\n□ 両者は機能的に同じで管理画面の見た目のみ異なる　これは不正解です。データモデルと機能が異なります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collaboration_admin_files.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Salesforce Files",
+      "添付ファイル",
+      "Attachments"
+    ]
+  },
+  {
+    "id": 362,
+    "url": "claude-generated",
+    "question": "Salesforce Filesのストレージ消費に関する記述として正しいものはどれですか。",
+    "choices": [
+      "「ファイルストレージ」枠を消費し、「データストレージ」とは別枠",
+      "「データストレージ」と同じ枠を消費する",
+      "FilesはSalesforce外部に保存されるためストレージを消費しない",
+      "ファイル数で課金されサイズは無関係"
+    ],
+    "answers": [
+      "「ファイルストレージ」枠を消費し、「データストレージ」とは別枠"
+    ],
+    "explanation": "□ 「ファイルストレージ」枠を消費し、「データストレージ」とは別枠　これは正解です。Salesforceはファイル用ストレージとレコードデータ用ストレージを別々に管理します。\n\n□ 「データストレージ」と同じ枠を消費する　これは不正解です。別枠です。\n\n□ FilesはSalesforce外部に保存されるためストレージを消費しない　これは不正解です。外部参照を除き標準では内部に保存されます。\n\n□ ファイル数で課金されサイズは無関係　これは不正解です。サイズが消費の基準です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collaboration_admin_files.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Salesforce Files",
+      "ストレージ",
+      "ファイル管理"
+    ]
+  },
+  {
+    "id": 363,
+    "url": "claude-generated",
+    "question": "Lightning Experienceでレコードに添付された「メモ(旧Notes)」と「新メモ(Enhanced Notes)」の違いとして正しいものはどれですか。",
+    "choices": [
+      "新メモはリッチテキスト・複数レコード共有・自動保存に対応する",
+      "旧メモはモバイル専用",
+      "新メモはApex経由でしか作成できない",
+      "両者は機能的に同じで命名のみ異なる"
+    ],
+    "answers": [
+      "新メモはリッチテキスト・複数レコード共有・自動保存に対応する"
+    ],
+    "explanation": "□ 新メモはリッチテキスト・複数レコード共有・自動保存に対応する　これは正解です。Enhanced Notesは旧Notes(プレーンテキスト1対1)から大幅に強化されています。\n\n□ 旧メモはモバイル専用　これは不正解です。\n\n□ 新メモはApex経由でしか作成できない　これは不正解です。UI/API両対応です。\n\n□ 両者は機能的に同じで命名のみ異なる　これは不正解です。機能差があります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collaboration_admin_files.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "メモ",
+      "Enhanced Notes",
+      "Notes"
+    ]
+  },
+  {
+    "id": 364,
+    "url": "claude-generated",
+    "question": "「グローバルアクション」と「オブジェクト固有アクション」の主な違いはどれですか。",
+    "choices": [
+      "グローバルはどのページからも起動可、オブジェクト固有は対象オブジェクトのレコードページから起動",
+      "グローバルはApex専用、オブジェクト固有はノーコード",
+      "オブジェクト固有はモバイル専用",
+      "グローバルはレコード作成、オブジェクト固有は閲覧のみ"
+    ],
+    "answers": [
+      "グローバルはどのページからも起動可、オブジェクト固有は対象オブジェクトのレコードページから起動"
+    ],
+    "explanation": "□ グローバルはどのページからも起動可、オブジェクト固有は対象オブジェクトのレコードページから起動　これは正解です。グローバルアクションは画面右上やナビ等の任意の場所から、オブジェクト固有アクションは対象レコードページから起動します。\n\n□ グローバルはApex専用、オブジェクト固有はノーコード　これは不正解です。両者ともノーコード/コード両対応です。\n\n□ オブジェクト固有はモバイル専用　これは不正解です。\n\n□ グローバルはレコード作成、オブジェクト固有は閲覧のみ　これは不正解です。両者ともレコード作成・カスタム操作等が可能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_global.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "グローバルアクション",
+      "オブジェクト固有アクション",
+      "クイックアクション"
+    ]
+  },
+  {
+    "id": 365,
+    "url": "claude-generated",
+    "question": "クイックアクションで起動できる処理を2つ選びなさい。",
+    "choices": [
+      "新規レコード作成",
+      "画面フロー(Screen Flow)",
+      "Apex バッチジョブ",
+      "変更セットの送信"
+    ],
+    "answers": [
+      "新規レコード作成",
+      "画面フロー(Screen Flow)"
+    ],
+    "explanation": "□ 新規レコード作成　これは正解です。新規レコードを作成するクイックアクションが標準で用意されています。\n\n□ 画面フロー(Screen Flow)　これは正解です。画面フローはクイックアクションから起動できます。\n\n□ Apex バッチジョブ　これは不正解です。バッチは別途デプロイメントから起動します。\n\n□ 変更セットの送信　これは不正解です。変更セットは管理画面から送信します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_global.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "クイックアクション",
+      "画面フロー",
+      "レコード作成"
+    ]
+  },
+  {
+    "id": 366,
+    "url": "claude-generated",
+    "question": "オブジェクト固有のクイックアクションを画面に表示するには何が必要ですか。",
+    "choices": [
+      "対象オブジェクトのページレイアウトに「Salesforce Mobile および Lightning Experience のアクション」セクションでアクションを追加する",
+      "プロファイルでアクションを有効化する",
+      "Lightning コンポーネントをデプロイする",
+      "レコードタイプにアクションを割り当てる"
+    ],
+    "answers": [
+      "対象オブジェクトのページレイアウトに「Salesforce Mobile および Lightning Experience のアクション」セクションでアクションを追加する"
+    ],
+    "explanation": "□ 対象オブジェクトのページレイアウトに「Salesforce Mobile および Lightning Experience のアクション」セクションでアクションを追加する　これは正解です。ページレイアウト編集画面でアクションパレットからドラッグして追加します。\n\n□ プロファイルでアクションを有効化する　これは不正解です。表示はページレイアウトの設定です。\n\n□ Lightning コンポーネントをデプロイする　これは不正解です。クイックアクションは宣言的設定で表示されます。\n\n□ レコードタイプにアクションを割り当てる　これは不正解です。アクションの割当はページレイアウト経由です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_global.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "クイックアクション",
+      "ページレイアウト",
+      "オブジェクト固有"
+    ]
+  },
+  {
+    "id": 367,
+    "url": "claude-generated",
+    "question": "「すべての項目を変更」権限を持つユーザーは何ができますか。",
+    "choices": [
+      "項目レベルセキュリティをバイパスして、参照不可項目も含めて編集できる",
+      "ユーザーレコードを削除できる",
+      "OWDを変更できる",
+      "リリースされた管理パッケージを編集できる"
+    ],
+    "answers": [
+      "項目レベルセキュリティをバイパスして、参照不可項目も含めて編集できる"
+    ],
+    "explanation": "□ 項目レベルセキュリティをバイパスして、参照不可項目も含めて編集できる　これは正解です。「すべての項目を変更」は強力な管理者権限で、FLSを無効化します。\n\n□ ユーザーレコードを削除できる　これは不正解です。ユーザー削除自体ができません(無効化が最大)。\n\n□ OWDを変更できる　これは不正解です。OWD変更には別の「アプリケーションのカスタマイズ」等の権限が必要です。\n\n□ リリースされた管理パッケージを編集できる　これは不正解です。管理パッケージはロックされており編集不可です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "すべての項目を変更",
+      "管理者権限",
+      "FLS"
+    ]
+  },
+  {
+    "id": 368,
+    "url": "claude-generated",
+    "question": "「すべてのデータを変更」権限を持つユーザーが取得できる挙動はどれですか。",
+    "choices": [
+      "OWDをバイパスして全レコードを参照・編集・削除できる",
+      "Apex の システム コンテキスト で動作する",
+      "ログインIP制限をバイパスできる",
+      "パッケージインストール時に必ず要求される"
+    ],
+    "answers": [
+      "OWDをバイパスして全レコードを参照・編集・削除できる"
+    ],
+    "explanation": "□ OWDをバイパスして全レコードを参照・編集・削除できる　これは正解です。「すべてのデータを変更」はレコードレベルセキュリティ(OWD・共有)をバイパスする強権限です。\n\n□ Apex の システム コンテキスト で動作する　これは不正解です。Apexの実行モードはコード側の指定です。\n\n□ ログインIP制限をバイパスできる　これは不正解です。IP制限はバイパスされません。\n\n□ パッケージインストール時に必ず要求される　これは不正解です。インストールには別の権限が必要です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "すべてのデータを変更",
+      "管理者権限",
+      "OWD"
+    ]
+  },
+  {
+    "id": 369,
+    "url": "claude-generated",
+    "question": "「APIの有効化」権限の役割はどれですか。",
+    "choices": [
+      "ユーザーがREST/SOAP APIでSalesforceに接続できるようにする",
+      "Apexクラスを編集できるようにする",
+      "Lightningコンポーネントを開発できるようにする",
+      "変更セットを送信できるようにする"
+    ],
+    "answers": [
+      "ユーザーがREST/SOAP APIでSalesforceに接続できるようにする"
+    ],
+    "explanation": "□ ユーザーがREST/SOAP APIでSalesforceに接続できるようにする　これは正解です。APIアクセスの基本権限で、外部システムや統合ツールがそのユーザーで認証する際に必要です。\n\n□ Apexクラスを編集できるようにする　これは不正解です。それは別の権限(Apex作成)です。\n\n□ Lightningコンポーネントを開発できるようにする　これは不正解です。開発は別権限です。\n\n□ 変更セットを送信できるようにする　これは不正解です。変更セット送信は別権限です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "APIの有効化",
+      "API",
+      "ユーザー権限"
+    ]
+  },
+  {
+    "id": 370,
+    "url": "claude-generated",
+    "question": "プロファイルのパスワードポリシーで設定できる項目を2つ選びなさい。",
+    "choices": [
+      "パスワードの有効期間(何日で失効するか)",
+      "パスワードの複雑さ要件(英数字、記号等)",
+      "MFAの強制設定",
+      "SSO の認証プロバイダ"
+    ],
+    "answers": [
+      "パスワードの有効期間(何日で失効するか)",
+      "パスワードの複雑さ要件(英数字、記号等)"
+    ],
+    "explanation": "□ パスワードの有効期間(何日で失効するか)　これは正解です。プロファイル単位で30/60/90日等を設定可能です。\n\n□ パスワードの複雑さ要件(英数字、記号等)　これは正解です。複雑さ要件もプロファイル単位で設定できます。\n\n□ MFAの強制設定　これは不正解です。MFAは組織全体設定+プロファイル/権限セット権限で管理します。\n\n□ SSO の認証プロバイダ　これは不正解です。SSOは設定の「シングルサインオン設定」で管理します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_password_policies_ref.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "パスワードポリシー",
+      "プロファイル",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 371,
+    "url": "claude-generated",
+    "question": "Salesforceのパスワードを忘れたユーザーが自分でリセットする機能を有効化するためにはどうしますか。",
+    "choices": [
+      "プロファイルの「パスワード入力エラー時のユーザーロックアウト」と「パスワード再設定の質問」を構成する",
+      "Apexでカスタムフローを書く",
+      "管理者にチャットで連絡してパスワード変更してもらう以外に方法はない",
+      "新規ユーザーとして再作成する"
+    ],
+    "answers": [
+      "プロファイルの「パスワード入力エラー時のユーザーロックアウト」と「パスワード再設定の質問」を構成する"
+    ],
+    "explanation": "□ プロファイルの「パスワード入力エラー時のユーザーロックアウト」と「パスワード再設定の質問」を構成する　これは正解です。プロファイルでセルフリセットの質問設定や試行回数を制御できます。\n\n□ Apexでカスタムフローを書く　これは不正解です。標準でセルフサービス可能です。\n\n□ 管理者にチャットで連絡してパスワード変更してもらう以外に方法はない　これは不正解です。セルフリセットが標準機能です。\n\n□ 新規ユーザーとして再作成する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_password_policies_ref.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "パスワードポリシー",
+      "プロファイル",
+      "セルフリセット"
+    ]
+  },
+  {
+    "id": 372,
+    "url": "claude-generated",
+    "question": "「ログイン履歴(Login History)」で確認できる情報を2つ選びなさい。",
+    "choices": [
+      "ログイン元のIPアドレス",
+      "ログイン成功/失敗の結果",
+      "ユーザーが閲覧したレコードのリスト",
+      "Apexコードの実行回数"
+    ],
+    "answers": [
+      "ログイン元のIPアドレス",
+      "ログイン成功/失敗の結果"
+    ],
+    "explanation": "□ ログイン元のIPアドレス　これは正解です。各ログインのソースIPが記録されます。\n\n□ ログイン成功/失敗の結果　これは正解です。成功/失敗とその理由が記録されます。\n\n□ ユーザーが閲覧したレコードのリスト　これは不正解です。それはレコード参照履歴(Setup Audit Trailとも別)で、別機能(Field Audit Trailや Event Monitoring)が必要です。\n\n□ Apexコードの実行回数　これは不正解です。それはDeveloper Consoleや Event Monitorで参照します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_monitorsetup.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "ログイン履歴",
+      "Login History",
+      "監査"
+    ]
+  },
+  {
+    "id": 373,
+    "url": "claude-generated",
+    "question": "ログイン履歴の保持期間として正しいものはどれですか。",
+    "choices": [
+      "過去6ヶ月分",
+      "過去30日分",
+      "過去2週間分",
+      "無期限"
+    ],
+    "answers": [
+      "過去6ヶ月分"
+    ],
+    "explanation": "□ 過去6ヶ月分　これは正解です。ログイン履歴は過去6ヶ月(最新20,000件)分が保持されます。長期保存にはイベントモニタリングを使います。\n\n□ 過去30日分　これは不正解です。\n\n□ 過去2週間分　これは不正解です。\n\n□ 無期限　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_monitorsetup.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ログイン履歴",
+      "データ保持",
+      "監査"
+    ]
+  },
+  {
+    "id": 374,
+    "url": "claude-generated",
+    "question": "Setup Audit Trail(設定変更履歴)で確認できる情報はどれですか。",
+    "choices": [
+      "過去180日間の設定変更操作(誰が・何を・いつ)",
+      "ユーザーがアクセスしたレコードのリスト",
+      "Apexのデバッグログ",
+      "データインポートウィザードの履歴"
+    ],
+    "answers": [
+      "過去180日間の設定変更操作(誰が・何を・いつ)"
+    ],
+    "explanation": "□ 過去180日間の設定変更操作(誰が・何を・いつ)　これは正解です。Setup Audit Trailは設定変更を180日間保持し、CSVダウンロードも可能です。\n\n□ ユーザーがアクセスしたレコードのリスト　これは不正解です。それはイベントモニタリングです。\n\n□ Apexのデバッグログ　これは不正解です。デバッグログはDeveloper Consoleで参照します。\n\n□ データインポートウィザードの履歴　これは不正解です。それは別のジョブ管理画面です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_monitorsetup.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Setup Audit Trail",
+      "設定変更履歴",
+      "監査"
+    ]
+  },
+  {
+    "id": 375,
+    "url": "claude-generated",
+    "question": "180日を超えてSetup Audit Trailを保管したい場合の対応として正しいものはどれですか。",
+    "choices": [
+      "定期的にCSVをダウンロードして組織外に保管する",
+      "Salesforceサポートに依頼して延長する",
+      "Field Audit Trailライセンスで自動延長される",
+      "プロファイルで保持期間を変更する"
+    ],
+    "answers": [
+      "定期的にCSVをダウンロードして組織外に保管する"
+    ],
+    "explanation": "□ 定期的にCSVをダウンロードして組織外に保管する　これは正解です。180日を超える長期保管は手動エクスポートが基本です。\n\n□ Salesforceサポートに依頼して延長する　これは不正解です。サポートでは延長できません。\n\n□ Field Audit Trailライセンスで自動延長される　これは不正解です。FATは項目履歴の長期保管で、Setup Audit Trailとは別物です。\n\n□ プロファイルで保持期間を変更する　これは不正解です。プロファイルで保持期間設定はできません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_monitorsetup.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Setup Audit Trail",
+      "データ保持",
+      "CSV"
+    ]
+  },
+  {
+    "id": 376,
+    "url": "claude-generated",
+    "question": "Salesforceの多要素認証(MFA)の現在の方針として正しいものはどれですか。",
+    "choices": [
+      "原則、すべてのユーザーに必須(契約条項で義務化)",
+      "新規ユーザーのみ必須",
+      "管理者のみ必須",
+      "API接続では不要"
+    ],
+    "answers": [
+      "原則、すべてのユーザーに必須(契約条項で義務化)"
+    ],
+    "explanation": "□ 原則、すべてのユーザーに必須(契約条項で義務化)　これは正解です。2022年以降、SalesforceはMSA(マスターサブスクリプション契約)でMFAを必須化しており、UIログインユーザーは原則対象です。\n\n□ 新規ユーザーのみ必須　これは不正解です。既存ユーザーも対象です。\n\n□ 管理者のみ必須　これは不正解です。全ユーザーが対象です。\n\n□ API接続では不要　これは不正解です。API専用ユーザー(integrationユーザー)は対象外ですが、UIログインがある場合はMFAが必要です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_mfa_org_wide_setting.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "MFA",
+      "多要素認証",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 377,
+    "url": "claude-generated",
+    "question": "Salesforceの「セッション設定」で構成できる項目を2つ選びなさい。",
+    "choices": [
+      "セッションのタイムアウト時間",
+      "IPアドレスをロックダウンするかどうか",
+      "ユーザーのプロファイルの自動付与",
+      "Apexの実行時間制限"
+    ],
+    "answers": [
+      "セッションのタイムアウト時間",
+      "IPアドレスをロックダウンするかどうか"
+    ],
+    "explanation": "□ セッションのタイムアウト時間　これは正解です。無操作のタイムアウト時間を15分〜数時間で設定可能です。\n\n□ IPアドレスをロックダウンするかどうか　これは正解です。セッションを開いたIPアドレスから変わるとセッションを切るかを設定できます。\n\n□ ユーザーのプロファイルの自動付与　これは不正解です。プロファイルは個別割当です。\n\n□ Apexの実行時間制限　これは不正解です。ガバナ制限はプラットフォーム側で決まっています。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_overview_sessions.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "セッション",
+      "セッションセキュリティ",
+      "セキュリティ"
+    ]
+  },
+  {
+    "id": 378,
+    "url": "claude-generated",
+    "question": "「高保証(High Assurance)セッションを必要とする」をクリックパス系の機能で設定するとどうなりますか。",
+    "choices": [
+      "対象機能を使う時にMFAなど追加認証を要求できる",
+      "セッションタイムアウトが2倍になる",
+      "IPアドレス制限が外れる",
+      "Apex実行ログが詳細化される"
+    ],
+    "answers": [
+      "対象機能を使う時にMFAなど追加認証を要求できる"
+    ],
+    "explanation": "□ 対象機能を使う時にMFAなど追加認証を要求できる　これは正解です。高保証セッションは強力な機能(例：レポートのエクスポート、設定変更)を保護するため、対応する機能の使用前にMFA等の確認を促せます。\n\n□ セッションタイムアウトが2倍になる　これは不正解です。タイムアウトは別設定です。\n\n□ IPアドレス制限が外れる　これは不正解です。\n\n□ Apex実行ログが詳細化される　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_overview_sessions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "高保証セッション",
+      "セッションセキュリティ",
+      "MFA"
+    ]
+  },
+  {
+    "id": 379,
+    "url": "claude-generated",
+    "question": "Flow Builderで「割り当て(Assignment)」要素を使い、変数Aに値Xを「追加(Add)」する操作をした。Aが数値変数だった場合の挙動はどれですか。",
+    "choices": [
+      "A = A + X として加算される",
+      "A は X で上書きされる",
+      "A は配列化され [A, X] になる",
+      "Aは文字列に変換され連結される"
+    ],
+    "answers": [
+      "A = A + X として加算される"
+    ],
+    "explanation": "□ A = A + X として加算される　これは正解です。Addオペレータは数値変数では加算、コレクション変数では追加、テキスト変数では連結として動作します。\n\n□ A は X で上書きされる　これは不正解です。それは「Equals(=)」の動作です。\n\n□ A は配列化され [A, X] になる　これは不正解です。それはコレクション変数の場合の動作です。\n\n□ A は文字列に変換され連結される　これは不正解です。それはテキスト変数の場合の動作です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "割り当て",
+      "Assignment",
+      "フロー"
+    ]
+  },
+  {
+    "id": 380,
+    "url": "claude-generated",
+    "question": "Flow Builderで「決定(Decision)」要素のアウトカム(Outcome)を複数定義した場合、どのアウトカムが実行されますか。",
+    "choices": [
+      "最初に条件を満たしたアウトカムのみ",
+      "条件を満たした全アウトカムが並列実行される",
+      "デフォルト(Default)アウトカムが必ず実行される",
+      "ユーザーが選択したアウトカムだけ"
+    ],
+    "answers": [
+      "最初に条件を満たしたアウトカムのみ"
+    ],
+    "explanation": "□ 最初に条件を満たしたアウトカムのみ　これは正解です。Decisionは上から順に条件を評価し、最初にマッチしたパスに進みます。\n\n□ 条件を満たした全アウトカムが並列実行される　これは不正解です。決定は分岐で、複数同時実行ではありません。\n\n□ デフォルト(Default)アウトカムが必ず実行される　これは不正解です。デフォルトはどのアウトカムも満たさなかった場合のみです。\n\n□ ユーザーが選択したアウトカムだけ　これは不正解です。決定要素はユーザー入力ではなく条件評価です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_decision.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "決定要素",
+      "アウトカム",
+      "フロー"
+    ]
+  },
+  {
+    "id": 381,
+    "url": "claude-generated",
+    "question": "Flow Builderの「ループ(Loop)」要素を使う際に必要な変数はどれですか。",
+    "choices": [
+      "処理対象のレコードコレクション変数",
+      "Datatable変数",
+      "DML変数",
+      "プラットフォームイベント変数"
+    ],
+    "answers": [
+      "処理対象のレコードコレクション変数"
+    ],
+    "explanation": "□ 処理対象のレコードコレクション変数　これは正解です。ループは「コレクション変数」を入力として、各要素を順に処理します。ループ内で操作するための「現在のアイテム」変数も自動生成されます。\n\n□ Datatable変数　これは不正解です。Datatableは画面要素のコンポーネントで、ループ入力ではありません。\n\n□ DML変数　これは不正解です。そういう変数型はありません。\n\n□ プラットフォームイベント変数　これは不正解です。プラットフォームイベントは別のトリガ契機です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ループ",
+      "コレクション",
+      "フロー"
+    ]
+  },
+  {
+    "id": 382,
+    "url": "claude-generated",
+    "question": "Flow Builderで「レコードを取得(Get Records)」要素のフィルタとして「条件なし」「すべてのレコードを取得」を設定した。バルク処理で何か注意点はありますか。",
+    "choices": [
+      "SOQLクエリの行数制限に達する可能性があり、フィルタや上限の指定が推奨される",
+      "エラーになるので必ず条件を入れる必要がある",
+      "ガバナ制限はかからない",
+      "ループ内に置けない"
+    ],
+    "answers": [
+      "SOQLクエリの行数制限に達する可能性があり、フィルタや上限の指定が推奨される"
+    ],
+    "explanation": "□ SOQLクエリの行数制限に達する可能性があり、フィルタや上限の指定が推奨される　これは正解です。Getはバルク実行時に50,000行のSOQL返却制限がかかる可能性があり、適切なフィルタとレコード数上限を指定するのがベストプラクティスです。\n\n□ エラーになるので必ず条件を入れる必要がある　これは不正解です。条件なしでも動きますが推奨されません。\n\n□ ガバナ制限はかからない　これは不正解です。SOQL制限がかかります。\n\n□ ループ内に置けない　これは不正解です。置けますが、ループ内のGetはSOQL呼び出し数を増やすため避けるべきです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "レコードを取得",
+      "Get Records",
+      "ガバナ制限"
+    ]
+  },
+  {
+    "id": 383,
+    "url": "claude-generated",
+    "question": "Flow Builderの「Apexアクション」要素を呼び出すとき、呼ぶことができるApexメソッドの条件はどれですか。",
+    "choices": [
+      "@InvocableMethod アノテーションが付いていて、staticメソッドであること",
+      "public メソッドであれば全部呼べる",
+      "@AuraEnabled アノテーションが必要",
+      "@RestResource アノテーションが必要"
+    ],
+    "answers": [
+      "@InvocableMethod アノテーションが付いていて、staticメソッドであること"
+    ],
+    "explanation": "□ @InvocableMethod アノテーションが付いていて、staticメソッドであること　これは正解です。フローから呼べるApexは@InvocableMethodアノテーションを持つpublic/global staticメソッドのみです。\n\n□ public メソッドであれば全部呼べる　これは不正解です。Invocableが必要です。\n\n□ @AuraEnabled アノテーションが必要　これは不正解です。それはAuraコンポーネント向けです。\n\n□ @RestResource アノテーションが必要　これは不正解です。それはREST API向けです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Apexアクション",
+      "InvocableMethod",
+      "フロー"
+    ]
+  },
+  {
+    "id": 384,
+    "url": "claude-generated",
+    "question": "画面フローで「コレクション選択画面コンポーネント(Data Table)」を使うときの主な用途はどれですか。",
+    "choices": [
+      "レコードのリストを表示してユーザーに選択させる",
+      "Apexからデータを取得する",
+      "外部APIを呼ぶ",
+      "レポートを生成する"
+    ],
+    "answers": [
+      "レコードのリストを表示してユーザーに選択させる"
+    ],
+    "explanation": "□ レコードのリストを表示してユーザーに選択させる　これは正解です。Data Tableは画面に表形式でデータを表示し、ユーザーに行選択させる(単一/複数選択)コンポーネントです。\n\n□ Apexからデータを取得する　これは不正解です。データ取得は「レコードを取得」要素です。\n\n□ 外部APIを呼ぶ　これは不正解です。外部API連携は別アクションです。\n\n□ レポートを生成する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_screen_flow_screen_actions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Data Table",
+      "画面フロー",
+      "コンポーネント"
+    ]
+  },
+  {
+    "id": 385,
+    "url": "claude-generated",
+    "question": "Flow Builderの「Pause(一時停止)」要素を使うべき場面はどれですか。",
+    "choices": [
+      "一定時間/特定日時/プラットフォームイベントまで処理を待ちたい時",
+      "ユーザーに画面を見せたい時",
+      "別のフローを呼びたい時",
+      "Apexを実行したい時"
+    ],
+    "answers": [
+      "一定時間/特定日時/プラットフォームイベントまで処理を待ちたい時"
+    ],
+    "explanation": "□ 一定時間/特定日時/プラットフォームイベントまで処理を待ちたい時　これは正解です。Pause要素は時間待機(リソース時間/絶対時間)やプラットフォームイベント待機を構成できます。\n\n□ ユーザーに画面を見せたい時　これは不正解です。それは画面要素です。\n\n□ 別のフローを呼びたい時　これは不正解です。それはサブフロー要素です。\n\n□ Apexを実行したい時　これは不正解です。それはApexアクション要素です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Pause",
+      "一時停止",
+      "フロー"
+    ]
+  },
+  {
+    "id": 386,
+    "url": "claude-generated",
+    "question": "Flow Builderの「フォールトパス(Fault Path)」を設定する目的はどれですか。",
+    "choices": [
+      "エラー時の代替経路を作り、エラーハンドリングを宣言的に行う",
+      "失敗時に自動でリトライする",
+      "Apex例外を握りつぶす",
+      "フロー実行時間を計測する"
+    ],
+    "answers": [
+      "エラー時の代替経路を作り、エラーハンドリングを宣言的に行う"
+    ],
+    "explanation": "□ エラー時の代替経路を作り、エラーハンドリングを宣言的に行う　これは正解です。フォールトパスはレコード操作やApex呼び出しなど失敗の可能性がある要素から伸び、エラー時に通知や代替処理を構成できます。\n\n□ 失敗時に自動でリトライする　これは不正解です。リトライは自動ではなく、必要なら設計します。\n\n□ Apex例外を握りつぶす　これは不正解です。捕捉して処理する設計です。\n\n□ フロー実行時間を計測する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "フォールトパス",
+      "Fault Path",
+      "エラーハンドリング"
+    ]
+  },
+  {
+    "id": 387,
+    "url": "claude-generated",
+    "question": "数式項目で「テキストとして連結」したい場合に使う演算子はどれですか。",
+    "choices": [
+      "& または +",
+      "CONCAT()",
+      "JOIN()",
+      "MERGE()"
+    ],
+    "answers": [
+      "& または +"
+    ],
+    "explanation": "□ & または +　これは正解です。Salesforce数式ではテキスト連結に「&」または「+」が使えます(&が一般的)。\n\n□ CONCAT()　これは不正解です。SOQL/SQLには近いものがありますが、Salesforce数式では演算子を使います。\n\n□ JOIN()　これは不正解です。配列結合のような関数はApex側です。\n\n□ MERGE()　これは不正解です。MERGEはApexのDML操作で別概念です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "テキスト連結",
+      "&",
+      "数式"
+    ]
+  },
+  {
+    "id": 388,
+    "url": "claude-generated",
+    "question": "数式項目で「IF(条件, 真の値, 偽の値)」を多段にしたい時、推奨される関数はどれですか。",
+    "choices": [
+      "CASE関数で値判定を簡潔にする",
+      "IFを多重ネストする以外に方法はない",
+      "SOQLのCASE文を呼ぶ",
+      "Apexで実装する"
+    ],
+    "answers": [
+      "CASE関数で値判定を簡潔にする"
+    ],
+    "explanation": "□ CASE関数で値判定を簡潔にする　これは正解です。「CASE(field, val1, ret1, val2, ret2, default)」形式で多段判定をシンプルに記述できます。\n\n□ IFを多重ネストする以外に方法はない　これは不正解です。CASEで簡潔化可能です。\n\n□ SOQLのCASE文を呼ぶ　これは不正解です。数式とSOQLは別レイヤです。\n\n□ Apexで実装する　これは不正解です。宣言的に書けます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "IF",
+      "CASE",
+      "数式関数"
+    ]
+  },
+  {
+    "id": 389,
+    "url": "claude-generated",
+    "question": "数式関数の「TEXT()」と「VALUE()」の役割の組み合わせとして正しいものはどれですか。",
+    "choices": [
+      "TEXT()=値をテキストに変換、VALUE()=テキストを数値に変換",
+      "TEXT()=テキストを取得、VALUE()=値を保存",
+      "両方ともテキスト変換用",
+      "TEXT()=日付→文字列のみ、VALUE()=数値→文字列"
+    ],
+    "answers": [
+      "TEXT()=値をテキストに変換、VALUE()=テキストを数値に変換"
+    ],
+    "explanation": "□ TEXT()=値をテキストに変換、VALUE()=テキストを数値に変換　これは正解です。TEXTは選択リスト/日付/数値などをテキスト表現に、VALUEはテキストを数値型に変換します。\n\n□ TEXT()=テキストを取得、VALUE()=値を保存　これは不正解です。どちらも変換関数です。\n\n□ 両方ともテキスト変換用　これは不正解です。VALUEは数値化です。\n\n□ TEXT()=日付→文字列のみ、VALUE()=数値→文字列　これは不正解です。TEXTは多型対応、VALUEは数値化です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "TEXT",
+      "VALUE",
+      "数式関数"
+    ]
+  },
+  {
+    "id": 390,
+    "url": "claude-generated",
+    "question": "「TODAY()」と「NOW()」の戻り値の型として正しいものはどれですか。",
+    "choices": [
+      "TODAY()=日付型(Date)、NOW()=日付/時刻型(DateTime)",
+      "両方とも日付型",
+      "両方とも日付/時刻型",
+      "TODAY()=DateTime、NOW()=Date"
+    ],
+    "answers": [
+      "TODAY()=日付型(Date)、NOW()=日付/時刻型(DateTime)"
+    ],
+    "explanation": "□ TODAY()=日付型(Date)、NOW()=日付/時刻型(DateTime)　これは正解です。TODAYは日付のみ(時刻なし)、NOWは時刻を含むDateTimeを返します。\n\n□ 両方とも日付型　これは不正解です。NOWはDateTimeです。\n\n□ 両方とも日付/時刻型　これは不正解です。TODAYはDateです。\n\n□ TODAY()=DateTime、NOW()=Date　これは不正解です。型が逆です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "TODAY",
+      "NOW",
+      "日付関数"
+    ]
+  },
+  {
+    "id": 391,
+    "url": "claude-generated",
+    "question": "数式で「IMAGE(画像URL, alt)」関数を使う場面はどれですか。",
+    "choices": [
+      "レコード詳細やレポートに条件付き画像(信号機・チェック等)を表示する",
+      "ApexからUI画像を生成する",
+      "Lightning Componentの画像を差し替える",
+      "レポートのグラフを生成する"
+    ],
+    "answers": [
+      "レコード詳細やレポートに条件付き画像(信号機・チェック等)を表示する"
+    ],
+    "explanation": "□ レコード詳細やレポートに条件付き画像(信号機・チェック等)を表示する　これは正解です。IMAGE関数で画像URLを返す数式項目を作り、ステータスを視覚化する典型用途です。\n\n□ ApexからUI画像を生成する　これは不正解です。それはApexの役割で数式関数ではありません。\n\n□ Lightning Componentの画像を差し替える　これは不正解です。それはコンポーネント開発の話です。\n\n□ レポートのグラフを生成する　これは不正解です。レポートグラフは別機能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "IMAGE",
+      "数式関数",
+      "UI"
+    ]
+  },
+  {
+    "id": 392,
+    "url": "claude-generated",
+    "question": "「AND(条件1, 条件2, ...)」と「条件1 && 条件2」の違いとして正しいものはどれですか。",
+    "choices": [
+      "機能的に同じで好みで使い分け可能",
+      "AND()は3つ以上専用、&&は2つ専用",
+      "AND()はApex専用、&&は数式専用",
+      "AND()はTRUE/FALSE以外も評価する"
+    ],
+    "answers": [
+      "機能的に同じで好みで使い分け可能"
+    ],
+    "explanation": "□ 機能的に同じで好みで使い分け可能　これは正解です。AND関数と&&演算子は数式上で同じ論理積を表現します。\n\n□ AND()は3つ以上専用、&&は2つ専用　これは不正解です。両方とも複数引数を扱えます。\n\n□ AND()はApex専用、&&は数式専用　これは不正解です。両者とも数式で使えます。\n\n□ AND()はTRUE/FALSE以外も評価する　これは不正解です。両者とも論理値評価です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "AND",
+      "論理演算",
+      "数式関数"
+    ]
+  },
+  {
+    "id": 393,
+    "url": "claude-generated",
+    "question": "「BLANKVALUE(field, replacement)」関数の用途はどれですか。",
+    "choices": [
+      "フィールドがブランクなら代替値を返す",
+      "常にreplacementを返す",
+      "フィールドの先頭文字をreplacementで置換する",
+      "レコードにreplacementを保存する"
+    ],
+    "answers": [
+      "フィールドがブランクなら代替値を返す"
+    ],
+    "explanation": "□ フィールドがブランクなら代替値を返す　これは正解です。BLANKVALUEはNULL/空の場合のフォールバックに使います。\n\n□ 常にreplacementを返す　これは不正解です。\n\n□ フィールドの先頭文字をreplacementで置換する　これは不正解です。\n\n□ レコードにreplacementを保存する　これは不正解です。数式は値を返すだけで保存はしません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "BLANKVALUE",
+      "数式関数",
+      "NULL"
+    ]
+  },
+  {
+    "id": 394,
+    "url": "claude-generated",
+    "question": "「PRIORVALUE(field)」関数を使える場所はどれですか。",
+    "choices": [
+      "入力規則やワークフロー/フローのトリガ条件で「変更前の値」を取得する",
+      "数式項目で常に過去の値を取得する",
+      "レポートで前月値を表示する",
+      "Apexトリガでold値を取得する"
+    ],
+    "answers": [
+      "入力規則やワークフロー/フローのトリガ条件で「変更前の値」を取得する"
+    ],
+    "explanation": "□ 入力規則やワークフロー/フローのトリガ条件で「変更前の値」を取得する　これは正解です。PRIORVALUEは更新時の旧値を返す関数で、変更検証に使います。新規作成時は現在の値を返します。\n\n□ 数式項目で常に過去の値を取得する　これは不正解です。数式項目では使えません(変更前後の概念がない)。\n\n□ レポートで前月値を表示する　これは不正解です。レポートは別機能です。\n\n□ Apexトリガでold値を取得する　これは不正解です。Apexは Trigger.old を使います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "PRIORVALUE",
+      "入力規則",
+      "数式関数"
+    ]
+  },
+  {
+    "id": 395,
+    "url": "claude-generated",
+    "question": "1トランザクションあたりのフローのSOQLクエリ上限の説明として正しいものはどれですか。",
+    "choices": [
+      "フローも他の処理と合わせて 100 SOQL/トランザクションのプラットフォーム制限を共有する",
+      "フローは独立した上限を持つ",
+      "フローはSOQLを発行しない",
+      "SOQL上限はガバナ制限の対象外"
+    ],
+    "answers": [
+      "フローも他の処理と合わせて 100 SOQL/トランザクションのプラットフォーム制限を共有する"
+    ],
+    "explanation": "□ フローも他の処理と合わせて 100 SOQL/トランザクションのプラットフォーム制限を共有する　これは正解です。ガバナ制限は同期/非同期コンテキストごとに共有され、フローのGetもこのカウントに含まれます。\n\n□ フローは独立した上限を持つ　これは不正解です。プラットフォーム共通の制限内です。\n\n□ フローはSOQLを発行しない　これは不正解です。GetはSOQLを発行します。\n\n□ SOQL上限はガバナ制限の対象外　これは不正解です。SOQL数は中核的なガバナ制限です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ガバナ制限",
+      "SOQL",
+      "フロー"
+    ]
+  },
+  {
+    "id": 396,
+    "url": "claude-generated",
+    "question": "フロー内でループの中に「レコードを更新(Update Records)」を置くと何が問題ですか。",
+    "choices": [
+      "1回あたりのDMLが回数分発生し、DML回数上限(150回/トランザクション)に達するリスクがある",
+      "ループ内では更新できない",
+      "Apexが必要になる",
+      "フロー実行時間が10倍になる"
+    ],
+    "answers": [
+      "1回あたりのDMLが回数分発生し、DML回数上限(150回/トランザクション)に達するリスクがある"
+    ],
+    "explanation": "□ 1回あたりのDMLが回数分発生し、DML回数上限(150回/トランザクション)に達するリスクがある　これは正解です。DMLはループの外で「コレクションに追加→ループ後に一括Update」のバルクパターンが推奨されます。\n\n□ ループ内では更新できない　これは不正解です。書けますが非推奨です。\n\n□ Apexが必要になる　これは不正解です。ノーコードで対応できます。\n\n□ フロー実行時間が10倍になる　これは不正解です。具体的な倍率の話ではありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ガバナ制限",
+      "DML",
+      "フロー",
+      "バルク"
+    ]
+  },
+  {
+    "id": 397,
+    "url": "claude-generated",
+    "question": "フローで作成・更新するレコードを「バルク化(まとめて処理)」したい場合の推奨パターンはどれですか。",
+    "choices": [
+      "ループでコレクション変数に追加し、ループ後に1回でDML実行する",
+      "各レコードを別フローで処理する",
+      "Apexトリガに切り替える",
+      "ループの中で即時DMLする"
+    ],
+    "answers": [
+      "ループでコレクション変数に追加し、ループ後に1回でDML実行する"
+    ],
+    "explanation": "□ ループでコレクション変数に追加し、ループ後に1回でDML実行する　これは正解です。ループ内でレコード変数をコレクションに追加し、ループ後の単一DMLでまとめて処理するのがベストプラクティスです。\n\n□ 各レコードを別フローで処理する　これは不正解です。むしろ多重コールでガバナ制限に近づきます。\n\n□ Apexトリガに切り替える　これは不正解です。フローでバルク処理は可能です。\n\n□ ループの中で即時DMLする　これは不正解です。ガバナ制限の典型的な踏み方です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "バルク",
+      "DML",
+      "フロー",
+      "ガバナ制限"
+    ]
+  },
+  {
+    "id": 398,
+    "url": "claude-generated",
+    "question": "フロー実行で同期(同じトランザクション)と非同期(別トランザクション)になる典型例はどれですか。",
+    "choices": [
+      "保存後フローの「非同期パス」は別トランザクションで実行される",
+      "画面フローは常に非同期",
+      "スケジュールフローは同期",
+      "サブフローは常に非同期"
+    ],
+    "answers": [
+      "保存後フローの「非同期パス」は別トランザクションで実行される"
+    ],
+    "explanation": "□ 保存後フローの「非同期パス」は別トランザクションで実行される　これは正解です。レコードトリガフローには「非同期で実行」用のパスがあり、外部API呼び出しなどガバナ制限を別計上したい処理に使います。\n\n□ 画面フローは常に非同期　これは不正解です。同期コンテキストで動きます。\n\n□ スケジュールフローは同期　これは不正解です。スケジュール起動は別トランザクションです。\n\n□ サブフローは常に非同期　これは不正解です。呼び出し元のコンテキストを継承します。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "非同期",
+      "ガバナ制限",
+      "フロー"
+    ]
+  },
+  {
+    "id": 399,
+    "url": "claude-generated",
+    "question": "Migrate to Flowツールで変換できる対象として正しいものを2つ選びなさい。",
+    "choices": [
+      "ワークフロールール",
+      "プロセスビルダー(Process Builder)",
+      "承認プロセス",
+      "入力規則"
+    ],
+    "answers": [
+      "ワークフロールール",
+      "プロセスビルダー(Process Builder)"
+    ],
+    "explanation": "□ ワークフロールール　これは正解です。Migrate to Flow ツールでワークフローをフローに変換できます。\n\n□ プロセスビルダー(Process Builder)　これは正解です。同ツールでプロセスビルダーもフローに変換できます。\n\n□ 承認プロセス　これは不正解です。承認プロセスは現役機能で移行対象ではありません。\n\n□ 入力規則　これは不正解です。入力規則は現役機能でフローに変換しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "Migrate to Flow",
+      "ワークフロー",
+      "プロセスビルダー"
+    ]
+  },
+  {
+    "id": 400,
+    "url": "claude-generated",
+    "question": "ワークフロールールの「項目自動更新」を保存前レコードトリガフローに移行した場合、どんな利点がありますか。",
+    "choices": [
+      "DMLを伴わない更新で高速、同一レコードの値を直接書き換えできる",
+      "レコードロックを完全に回避できる",
+      "ガバナ制限が無視される",
+      "Apexコードと統合できる"
+    ],
+    "answers": [
+      "DMLを伴わない更新で高速、同一レコードの値を直接書き換えできる"
+    ],
+    "explanation": "□ DMLを伴わない更新で高速、同一レコードの値を直接書き換えできる　これは正解です。保存前フローは保存ボタン押下後、保存される直前に項目を変更できるため、追加DMLなしで最も高速に同レコードを更新できます。\n\n□ レコードロックを完全に回避できる　これは不正解です。ロック挙動は変わりません。\n\n□ ガバナ制限が無視される　これは不正解です。ガバナ制限内です。\n\n□ Apexコードと統合できる　これは不正解です。Apex連携は別軸です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "保存前フロー",
+      "ワークフロー移行",
+      "項目更新"
+    ]
+  },
+  {
+    "id": 401,
+    "url": "claude-generated",
+    "question": "ワークフローの「時間ベース(Time-Dependent)」アクションをフローで実現する方法として推奨されるものはどれですか。",
+    "choices": [
+      "スケジュールトリガフロー、または保存後フローの「スケジュール済みパス」",
+      "Pause要素を保存前フローで使う",
+      "Apex バッチを起動する",
+      "承認プロセスで代替する"
+    ],
+    "answers": [
+      "スケジュールトリガフロー、または保存後フローの「スケジュール済みパス」"
+    ],
+    "explanation": "□ スケジュールトリガフロー、または保存後フローの「スケジュール済みパス」　これは正解です。レコードトリガフローには「スケジュール済みパス」があり、保存後にN日後等の実行を予約できます。\n\n□ Pause要素を保存前フローで使う　これは不正解です。保存前フローではPauseは使えません。\n\n□ Apex バッチを起動する　これは不正解です。宣言的に解決可能です。\n\n□ 承認プロセスで代替する　これは不正解です。役割が違います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "時間ベース",
+      "スケジュール済みパス",
+      "フロー"
+    ]
+  },
+  {
+    "id": 402,
+    "url": "claude-generated",
+    "question": "Migrate to Flowツールでワークフローを変換した場合、元のワークフローはどうなりますか。",
+    "choices": [
+      "元のワークフローは無効化されず残るため、明示的に無効化する必要がある",
+      "自動的に削除される",
+      "自動的に無効化される",
+      "変換と同時に上書きされて消える"
+    ],
+    "answers": [
+      "元のワークフローは無効化されず残るため、明示的に無効化する必要がある"
+    ],
+    "explanation": "□ 元のワークフローは無効化されず残るため、明示的に無効化する必要がある　これは正解です。フロー版に切り替えた後、二重実行を防ぐため元のワークフローを手動で無効化します。\n\n□ 自動的に削除される　これは不正解です。残ります。\n\n□ 自動的に無効化される　これは不正解です。残って動き続けます。\n\n□ 変換と同時に上書きされて消える　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Migrate to Flow",
+      "ワークフロー無効化",
+      "移行"
+    ]
+  },
+  {
+    "id": 403,
+    "url": "claude-generated",
+    "question": "Process Builderからフローに移行する第一推奨はどれですか。",
+    "choices": [
+      "Migrate to Flow ツールで保存後レコードトリガフローに変換する",
+      "Apexトリガに置き換える",
+      "ワークフロールールに戻す",
+      "スケジュールフローに変換する"
+    ],
+    "answers": [
+      "Migrate to Flow ツールで保存後レコードトリガフローに変換する"
+    ],
+    "explanation": "□ Migrate to Flow ツールで保存後レコードトリガフローに変換する　これは正解です。プロセスビルダーは保存後のロジックが主のため、保存後フローへの変換が標準ルートです。\n\n□ Apexトリガに置き換える　これは不正解です。宣言的に解決できる場面でApexは推奨されません。\n\n□ ワークフロールールに戻す　これは不正解です。ワークフローも廃止予定です。\n\n□ スケジュールフローに変換する　これは不正解です。スケジュールは別契機です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Process Builder",
+      "Migrate to Flow",
+      "保存後フロー"
+    ]
+  },
+  {
+    "id": 404,
+    "url": "claude-generated",
+    "question": "プロセスビルダーの「即時アクション」と「スケジュール済みアクション」をフローで再現する場合、どう設計しますか。",
+    "choices": [
+      "即時=保存後フローの即時要素、スケジュール済み=スケジュール済みパス要素で表現する",
+      "両者ともサブフローで実装",
+      "両者とも画面フローで実装",
+      "両者ともスケジュールトリガフローで実装"
+    ],
+    "answers": [
+      "即時=保存後フローの即時要素、スケジュール済み=スケジュール済みパス要素で表現する"
+    ],
+    "explanation": "□ 即時=保存後フローの即時要素、スケジュール済み=スケジュール済みパス要素で表現する　これは正解です。レコードトリガフロー(保存後)には即時と「スケジュール済みパス(N分後・N日後)」の両方を構成できます。\n\n□ 両者ともサブフローで実装　これは不正解です。サブフローは抽象化用で、契機に直接置き換わりません。\n\n□ 両者とも画面フローで実装　これは不正解です。UI不要です。\n\n□ 両者ともスケジュールトリガフローで実装　これは不正解です。スケジュールトリガは時刻基盤の別契機です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Process Builder",
+      "スケジュール済みパス",
+      "フロー"
+    ]
+  },
+  {
+    "id": 405,
+    "url": "claude-generated",
+    "question": "プロセスビルダーから移行したフローの動作を本番に適用する前に、推奨されるテスト方法はどれですか。",
+    "choices": [
+      "サンドボックスで新旧両方を有効化したサイドバイサイドテスト",
+      "本番組織で直接ON/OFF切替",
+      "テスト不要(自動変換のため信頼できる)",
+      "Apexテストクラスでカバー率100%"
+    ],
+    "answers": [
+      "サンドボックスで新旧両方を有効化したサイドバイサイドテスト"
+    ],
+    "explanation": "□ サンドボックスで新旧両方を有効化したサイドバイサイドテスト　これは正解です。サンドボックスで結果を比較し、ロジック差や副作用を検出するのが推奨されるアプローチです。\n\n□ 本番組織で直接ON/OFF切替　これは不正解です。リスクが高いです。\n\n□ テスト不要(自動変換のため信頼できる)　これは不正解です。変換結果の検証は必須です。\n\n□ Apexテストクラスでカバー率100%　これは不正解です。フローのテストはフローのデバッグ/テスト機能を使います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "フロー移行",
+      "サンドボックス",
+      "テスト"
+    ]
+  },
+  {
+    "id": 406,
+    "url": "claude-generated",
+    "question": "プロセスビルダーで「子レコードを更新」していた処理をフローで作る場合、どの要素を使いますか。",
+    "choices": [
+      "「レコードを更新」要素を保存後フローで使う",
+      "「レコードを取得」要素のみで実現",
+      "「割り当て」要素のみで実現",
+      "「画面」要素を使う"
+    ],
+    "answers": [
+      "「レコードを更新」要素を保存後フローで使う"
+    ],
+    "explanation": "□ 「レコードを更新」要素を保存後フローで使う　これは正解です。子レコードはGet→Updateの流れか、直接Updateで条件指定して更新します。\n\n□ 「レコードを取得」要素のみで実現　これは不正解です。取得だけでは更新できません。\n\n□ 「割り当て」要素のみで実現　これは不正解です。割り当てはメモリ内の変数操作です。\n\n□ 「画面」要素を使う　これは不正解です。子レコード更新にUIは不要です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "子レコード更新",
+      "保存後フロー",
+      "レコードを更新"
+    ]
+  },
+  {
+    "id": 407,
+    "url": "claude-generated",
+    "question": "Apexトリガで「バルクトリガ(bulk-safe)」と呼ばれる設計の原則はどれですか。",
+    "choices": [
+      "Trigger.new をループしながら個別にSOQLやDMLを書かない",
+      "Apex以外の言語で書く",
+      "クラス名にBulkを含める",
+      "常にAfter Insert のみ実装する"
+    ],
+    "answers": [
+      "Trigger.new をループしながら個別にSOQLやDMLを書かない"
+    ],
+    "explanation": "□ Trigger.new をループしながら個別にSOQLやDMLを書かない　これは正解です。ループ内のSOQL/DMLはガバナ制限に直撃するため、まとめて取得→まとめて更新するパターンが必須です。\n\n□ Apex以外の言語で書く　これは不正解です。\n\n□ クラス名にBulkを含める　これは不正解です。命名規則はバルク化と無関係です。\n\n□ 常にAfter Insert のみ実装する　これは不正解です。トリガコンテキストはユースケースで決めます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "バルクトリガ",
+      "Apex",
+      "ガバナ制限"
+    ]
+  },
+  {
+    "id": 408,
+    "url": "claude-generated",
+    "question": "200レコードを1度に挿入したい場合、Apexで実装する典型的なパターンはどれですか。",
+    "choices": [
+      "List<Object> を作って単一の insert を呼ぶ",
+      "forループで1件ずつ insert する",
+      "Database.executeBatch でジョブにする",
+      "REST APIで個別に呼ぶ"
+    ],
+    "answers": [
+      "List<Object> を作って単一の insert を呼ぶ"
+    ],
+    "explanation": "□ List<Object> を作って単一の insert を呼ぶ　これは正解です。DML呼び出し回数を1にし、200件をまとめて挿入するのがバルク処理の基本です。\n\n□ forループで1件ずつ insert する　これは不正解です。DML回数が200回になりガバナ制限に達します。\n\n□ Database.executeBatch でジョブにする　これは不正解です。バッチは大量データ向けで、200件には過剰です。\n\n□ REST APIで個別に呼ぶ　これは不正解です。同様にAPI呼び出しが膨らみます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "バルク",
+      "DML",
+      "Apex"
+    ]
+  },
+  {
+    "id": 409,
+    "url": "claude-generated",
+    "question": "フローの「レコードを取得」をループの中に置くとどうなりますか。",
+    "choices": [
+      "SOQL呼び出し回数がループ回数分だけ消費される(ガバナ制限に達するリスク)",
+      "Salesforceが自動的に最適化してくれる",
+      "フローはエラーになり実行できない",
+      "SOQLは0回として扱われる"
+    ],
+    "answers": [
+      "SOQL呼び出し回数がループ回数分だけ消費される(ガバナ制限に達するリスク)"
+    ],
+    "explanation": "□ SOQL呼び出し回数がループ回数分だけ消費される(ガバナ制限に達するリスク)　これは正解です。ループ内のGetは必ず避け、ループ前に必要なデータを一括Getしておくのがベストプラクティスです。\n\n□ Salesforceが自動的に最適化してくれる　これは不正解です。手動最適化が必要です。\n\n□ フローはエラーになり実行できない　これは不正解です。動きますが非推奨です。\n\n□ SOQLは0回として扱われる　これは不正解です。呼ばれる回数だけカウントされます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "バルク",
+      "SOQL",
+      "フロー"
+    ]
+  },
+  {
+    "id": 410,
+    "url": "claude-generated",
+    "question": "保存後フローの「非同期パス(Run Asynchronously)」を使う代表的なメリットはどれですか。",
+    "choices": [
+      "外部API呼び出しなどの長時間処理を別トランザクションに切り出せて、ロック競合や同期制限を回避できる",
+      "ガバナ制限が完全に消える",
+      "Apexコードを書かなくて済む",
+      "データ保存が高速になる"
+    ],
+    "answers": [
+      "外部API呼び出しなどの長時間処理を別トランザクションに切り出せて、ロック競合や同期制限を回避できる"
+    ],
+    "explanation": "□ 外部API呼び出しなどの長時間処理を別トランザクションに切り出せて、ロック競合や同期制限を回避できる　これは正解です。非同期パスはレコードトリガフローの保存後で、コミット後に切り出して実行することでロック・同期制限を回避します。\n\n□ ガバナ制限が完全に消える　これは不正解です。別トランザクションになるだけで、制限自体はあります。\n\n□ Apexコードを書かなくて済む　これは不正解です。フローでもApexでも非同期は使えます。\n\n□ データ保存が高速になる　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "非同期パス",
+      "保存後フロー",
+      "フロー"
+    ]
+  },
+  {
+    "id": 411,
+    "url": "claude-generated",
+    "question": "フォールトパスを明示的に設定しなかった場合、エラー発生時にユーザーは何を見ますか。",
+    "choices": [
+      "デフォルトのエラーメッセージ画面(管理者宛にメール通知も飛ぶ)",
+      "エラーが無視されて処理続行",
+      "Salesforceから自動でリトライされる",
+      "フローを最初から再実行する選択肢"
+    ],
+    "answers": [
+      "デフォルトのエラーメッセージ画面(管理者宛にメール通知も飛ぶ)"
+    ],
+    "explanation": "□ デフォルトのエラーメッセージ画面(管理者宛にメール通知も飛ぶ)　これは正解です。フォールトパス未設定の場合、ユーザーには一般エラー画面、管理者にはエラー詳細メールが送られます。\n\n□ エラーが無視されて処理続行　これは不正解です。フローは停止します。\n\n□ Salesforceから自動でリトライされる　これは不正解です。\n\n□ フローを最初から再実行する選択肢　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "フォールトパス",
+      "エラー",
+      "フロー"
+    ]
+  },
+  {
+    "id": 412,
+    "url": "claude-generated",
+    "question": "フォールトパスから取得できる「$Flow.FaultMessage」変数の用途はどれですか。",
+    "choices": [
+      "エラーメッセージを取得して画面表示やログに使う",
+      "エラーを抑止する",
+      "リトライ回数を保存する",
+      "Apex例外を再スローする"
+    ],
+    "answers": [
+      "エラーメッセージを取得して画面表示やログに使う"
+    ],
+    "explanation": "□ エラーメッセージを取得して画面表示やログに使う　これは正解です。$Flow.FaultMessageでエラー文字列を取得し、ユーザー通知やカスタムオブジェクトへのログ記録に使います。\n\n□ エラーを抑止する　これは不正解です。読み取り用の変数です。\n\n□ リトライ回数を保存する　これは不正解です。\n\n□ Apex例外を再スローする　これは不正解です。フローからの例外スローは別の話です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "FaultMessage",
+      "フォールトパス",
+      "フロー"
+    ]
+  },
+  {
+    "id": 413,
+    "url": "claude-generated",
+    "question": "「DMLでフィールドが必須なのに空でエラー」が発生する典型的な対処はどれですか。",
+    "choices": [
+      "フォールトパスで原因を捕捉し、対象レコードと項目をログ保存する",
+      "エラーを無視する",
+      "Apexで強制更新する",
+      "入力規則を削除する"
+    ],
+    "answers": [
+      "フォールトパスで原因を捕捉し、対象レコードと項目をログ保存する"
+    ],
+    "explanation": "□ フォールトパスで原因を捕捉し、対象レコードと項目をログ保存する　これは正解です。データ品質問題はフォールトパスで補足→診断ログ保存→運用フィードバックのパターンが標準です。\n\n□ エラーを無視する　これは不正解です。\n\n□ Apexで強制更新する　これは不正解です。データの整合性を壊します。\n\n□ 入力規則を削除する　これは不正解です。必須項目は入力規則とは別概念です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "フォールトパス",
+      "エラーハンドリング",
+      "データ品質"
+    ]
+  },
+  {
+    "id": 414,
+    "url": "claude-generated",
+    "question": "フローの「割り当て」要素で式エラー(例：null参照)が発生した時、フォールトパスは発火しますか。",
+    "choices": [
+      "はい、割り当て要素もエラーパスを持ち、式エラーで発火する",
+      "いいえ、割り当て要素にフォールトパスは設定できない",
+      "Apexコールアウトのみ発火する",
+      "画面要素のみ発火する"
+    ],
+    "answers": [
+      "はい、割り当て要素もエラーパスを持ち、式エラーで発火する"
+    ],
+    "explanation": "□ はい、割り当て要素もエラーパスを持ち、式エラーで発火する　これは正解です。割り当てを含む多くの要素にフォールトパスがあり、ロジックエラーを補足できます。\n\n□ いいえ、割り当て要素にフォールトパスは設定できない　これは不正解です。設定可能です。\n\n□ Apexコールアウトのみ発火する　これは不正解です。\n\n□ 画面要素のみ発火する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "フォールトパス",
+      "割り当て",
+      "フロー"
+    ]
+  },
+  {
+    "id": 415,
+    "url": "claude-generated",
+    "question": "フローのPause要素で「リソース時間ベース(Resource-Based Time)」とは何ですか。",
+    "choices": [
+      "特定の日付/時刻項目を基準に、その前後N日で待機する",
+      "固定の絶対時刻で待機する",
+      "Apexから動的に時刻を渡す",
+      "Pauseは時刻指定できない"
+    ],
+    "answers": [
+      "特定の日付/時刻項目を基準に、その前後N日で待機する"
+    ],
+    "explanation": "□ 特定の日付/時刻項目を基準に、その前後N日で待機する　これは正解です。リソースベースは「契約終了日の3日前」のような相対指定で、レコードの値が変わると待機時刻も更新されます。\n\n□ 固定の絶対時刻で待機する　これは不正解です。それは「絶対時間」指定です。\n\n□ Apexから動的に時刻を渡す　これは不正解です。\n\n□ Pauseは時刻指定できない　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Pause",
+      "リソース時間",
+      "フロー"
+    ]
+  },
+  {
+    "id": 416,
+    "url": "claude-generated",
+    "question": "保存後レコードトリガフローの「スケジュール済みパス」と Pause 要素の使い分けとして適切なものはどれですか。",
+    "choices": [
+      "スケジュール済みパス=保存時から N時間/日後に時刻ベースで実行、Pause=画面/自律フロー内で複雑な待機を表現",
+      "両者は機能的に同じ",
+      "Pauseは保存後フローで使えない",
+      "スケジュール済みパスはApex必須"
+    ],
+    "answers": [
+      "スケジュール済みパス=保存時から N時間/日後に時刻ベースで実行、Pause=画面/自律フロー内で複雑な待機を表現"
+    ],
+    "explanation": "□ スケジュール済みパス=保存時から N時間/日後に時刻ベースで実行、Pause=画面/自律フロー内で複雑な待機を表現　これは正解です。レコードトリガフローでは時刻基盤のスケジュール済みパスが使いやすく、Pause は画面/自律フローで条件待機やイベント待機を含む高機能版です。\n\n□ 両者は機能的に同じ　これは不正解です。動作と適用範囲が異なります。\n\n□ Pauseは保存後フローで使えない　これは不正解です。保存後フローではPauseは制限があります(直接の即時/スケジュール済みパスが推奨)。\n\n□ スケジュール済みパスはApex必須　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "スケジュール済みパス",
+      "Pause",
+      "フロー"
+    ]
+  },
+  {
+    "id": 417,
+    "url": "claude-generated",
+    "question": "フローでプラットフォームイベント(Platform Event)を待つにはどうしますか。",
+    "choices": [
+      "Pause要素で「プラットフォームイベント」を選択して条件を設定する",
+      "レコードトリガフローでイベントを書く",
+      "Apexから手動で待つコードを書く",
+      "スケジュールトリガフローを使う"
+    ],
+    "answers": [
+      "Pause要素で「プラットフォームイベント」を選択して条件を設定する"
+    ],
+    "explanation": "□ Pause要素で「プラットフォームイベント」を選択して条件を設定する　これは正解です。Pauseはプラットフォームイベント受信を待機条件にできます。\n\n□ レコードトリガフローでイベントを書く　これは不正解です。それは別物のプラットフォームイベントトリガフローです。\n\n□ Apexから手動で待つコードを書く　これは不正解です。フローで宣言的にできます。\n\n□ スケジュールトリガフローを使う　これは不正解です。スケジュールは時刻基盤です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "プラットフォームイベント",
+      "Pause",
+      "フロー"
+    ]
+  },
+  {
+    "id": 418,
+    "url": "claude-generated",
+    "question": "フローからカスタムメタデータ型(Custom Metadata Type)を読み込むには何を使いますか。",
+    "choices": [
+      "「レコードを取得」要素でカスタムメタデータをクエリする",
+      "カスタム設定としてしか読めない",
+      "Apex Action のみで読める",
+      "RESTで取得する以外に方法はない"
+    ],
+    "answers": [
+      "「レコードを取得」要素でカスタムメタデータをクエリする"
+    ],
+    "explanation": "□ 「レコードを取得」要素でカスタムメタデータをクエリする　これは正解です。フローのGet要素でカスタムメタデータレコードを取得し、設定値として使えます(SOQL消費なし)。\n\n□ カスタム設定としてしか読めない　これは不正解です。カスタムメタデータ型もフローから読めます。\n\n□ Apex Action のみで読める　これは不正解です。ノーコードでアクセスできます。\n\n□ RESTで取得する以外に方法はない　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "カスタムメタデータ型",
+      "フロー",
+      "設定値"
+    ]
+  },
+  {
+    "id": 419,
+    "url": "claude-generated",
+    "question": "フローで「カスタムメタデータ型を使った設定値」を活用する典型シナリオはどれですか。",
+    "choices": [
+      "承認しきい値や閾値テーブルをハードコードせずメタデータで持つ",
+      "ユーザーの個別表示を切り替える",
+      "ロール階層を変更する",
+      "プロファイルを動的に変える"
+    ],
+    "answers": [
+      "承認しきい値や閾値テーブルをハードコードせずメタデータで持つ"
+    ],
+    "explanation": "□ 承認しきい値や閾値テーブルをハードコードせずメタデータで持つ　これは正解です。閾値・税率・カテゴリ別ルールなど業務パラメタをメタデータ化し、フローから参照する設計が一般的です。\n\n□ ユーザーの個別表示を切り替える　これは不正解です。それは階層型カスタム設定の用途です。\n\n□ ロール階層を変更する　これは不正解です。\n\n□ プロファイルを動的に変える　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "カスタムメタデータ型",
+      "設定値",
+      "フロー"
+    ]
+  },
+  {
+    "id": 420,
+    "url": "claude-generated",
+    "question": "カスタムメタデータ型でフローの設定値を更新した場合、リリースの扱いはどうなりますか。",
+    "choices": [
+      "パッケージ/変更セットで本番環境にデプロイできる",
+      "本番環境では手動で再入力するしかない",
+      "Apexで自動同期する",
+      "フローと一緒に変更不可になる"
+    ],
+    "answers": [
+      "パッケージ/変更セットで本番環境にデプロイできる"
+    ],
+    "explanation": "□ パッケージ/変更セットで本番環境にデプロイできる　これは正解です。カスタムメタデータ型はデプロイ可能で、これがカスタム設定との大きな差別化点です。\n\n□ 本番環境では手動で再入力するしかない　これは不正解です。それはカスタム設定の話です。\n\n□ Apexで自動同期する　これは不正解です。\n\n□ フローと一緒に変更不可になる　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "カスタムメタデータ型",
+      "デプロイ",
+      "リリース"
+    ]
+  },
+  {
+    "id": 421,
+    "url": "claude-generated",
+    "question": "リードの「割り当てルール(Assignment Rule)」が起動する典型的なタイミングはどれですか。",
+    "choices": [
+      "リード作成時/更新時に条件で所有者を自動決定する",
+      "リードが画面で表示された時",
+      "リードがメール送信された時",
+      "リードがApexで参照された時"
+    ],
+    "answers": [
+      "リード作成時/更新時に条件で所有者を自動決定する"
+    ],
+    "explanation": "□ リード作成時/更新時に条件で所有者を自動決定する　これは正解です。割り当てルールはユーザー/キューにリードを振り分け、Web-to-Lead からの自動振り分けにも使われます。\n\n□ リードが画面で表示された時　これは不正解です。閲覧時には動きません。\n\n□ リードがメール送信された時　これは不正解です。\n\n□ リードがApexで参照された時　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "割り当てルール",
+      "リード",
+      "自動化"
+    ]
+  },
+  {
+    "id": 422,
+    "url": "claude-generated",
+    "question": "ケースの「エスカレーションルール(Escalation Rule)」と「割り当てルール」の違いはどれですか。",
+    "choices": [
+      "エスカレーションは時間経過で対応されない場合に再割当/通知、割り当ては作成時の所有者決定",
+      "両者ともリード専用",
+      "エスカレーションはApex専用、割り当てはノーコード",
+      "両者は機能的に同じ"
+    ],
+    "answers": [
+      "エスカレーションは時間経過で対応されない場合に再割当/通知、割り当ては作成時の所有者決定"
+    ],
+    "explanation": "□ エスカレーションは時間経過で対応されない場合に再割当/通知、割り当ては作成時の所有者決定　これは正解です。エスカレーションはSLAやレスポンス時間管理向けの仕組みで、割り当てとは時間軸が異なります。\n\n□ 両者ともリード専用　これは不正解です。エスカレーションはケース専用、割り当てはリード・ケース両対応です。\n\n□ エスカレーションはApex専用、割り当てはノーコード　これは不正解です。両者ともノーコードです。\n\n□ 両者は機能的に同じ　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "エスカレーションルール",
+      "割り当てルール",
+      "ケース"
+    ]
+  },
+  {
+    "id": 423,
+    "url": "claude-generated",
+    "question": "ケースの自動応答ルール(Auto-Response Rule)が動く典型タイミングはどれですか。",
+    "choices": [
+      "Web-to-Case/Email-to-Caseでケースが作成された時に初回応答メールを送信",
+      "ケース解決時に満足度調査メールを送信",
+      "ケース所有者変更時に通知メールを送信",
+      "SLA違反時にエスカレーションメールを送信"
+    ],
+    "answers": [
+      "Web-to-Case/Email-to-Caseでケースが作成された時に初回応答メールを送信"
+    ],
+    "explanation": "□ Web-to-Case/Email-to-Caseでケースが作成された時に初回応答メールを送信　これは正解です。自動応答はチャネル経由のケース受付時の初回返信を制御します。\n\n□ ケース解決時に満足度調査メールを送信　これは不正解です。それは別のフロー設計です。\n\n□ ケース所有者変更時に通知メールを送信　これは不正解です。\n\n□ SLA違反時にエスカレーションメールを送信　これは不正解です。それはエスカレーションルールです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "自動応答ルール",
+      "ケース",
+      "初回応答"
+    ]
+  },
+  {
+    "id": 424,
+    "url": "claude-generated",
+    "question": "割り当てルール内のエントリの評価順序として正しいものはどれですか。",
+    "choices": [
+      "上から順に評価し、最初にマッチした条件で所有者を決定する",
+      "全エントリを評価し、最も高い優先度のものが勝つ",
+      "ランダムで1つ選ばれる",
+      "ユーザーが選択する"
+    ],
+    "answers": [
+      "上から順に評価し、最初にマッチした条件で所有者を決定する"
+    ],
+    "explanation": "□ 上から順に評価し、最初にマッチした条件で所有者を決定する　これは正解です。Decisionと同じく上から評価し、最初のマッチで決まります。\n\n□ 全エントリを評価し、最も高い優先度のものが勝つ　これは不正解です。\n\n□ ランダムで1つ選ばれる　これは不正解です。\n\n□ ユーザーが選択する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "割り当てルール",
+      "評価順序",
+      "自動化"
+    ]
+  },
+  {
+    "id": 425,
+    "url": "claude-generated",
+    "question": "サブフローを呼ぶ親フローと子フローで「変数の受け渡し」を行う方法はどれですか。",
+    "choices": [
+      "子フローの変数を「入力使用可」「出力使用可」にして親から渡し/受け取る",
+      "Apexクラス経由でしか渡せない",
+      "親と子は変数を共有しない",
+      "プラットフォームイベントを介在させる"
+    ],
+    "answers": [
+      "子フローの変数を「入力使用可」「出力使用可」にして親から渡し/受け取る"
+    ],
+    "explanation": "□ 子フローの変数を「入力使用可」「出力使用可」にして親から渡し/受け取る　これは正解です。サブフロー側で変数のInput/Outputフラグを設定し、親フローからサブフロー要素で値を受け渡しします。\n\n□ Apexクラス経由でしか渡せない　これは不正解です。標準機能で完結します。\n\n□ 親と子は変数を共有しない　これは不正解です。明示的に渡せます。\n\n□ プラットフォームイベントを介在させる　これは不正解です。直接渡せます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_subflow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "サブフロー",
+      "変数",
+      "フロー"
+    ]
+  },
+  {
+    "id": 426,
+    "url": "claude-generated",
+    "question": "親フローからサブフローを呼ぶ際、トランザクションは新規になりますか。",
+    "choices": [
+      "ならない。同じトランザクションで実行され、ガバナ制限は親と合算される",
+      "新規トランザクションになる",
+      "管理者の設定で選べる",
+      "非同期パスを通る"
+    ],
+    "answers": [
+      "ならない。同じトランザクションで実行され、ガバナ制限は親と合算される"
+    ],
+    "explanation": "□ ならない。同じトランザクションで実行され、ガバナ制限は親と合算される　これは正解です。サブフローはApexメソッド呼び出しのように同期で実行され、ガバナ制限を共有します。\n\n□ 新規トランザクションになる　これは不正解です。\n\n□ 管理者の設定で選べる　これは不正解です。\n\n□ 非同期パスを通る　これは不正解です。同期実行が標準です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_subflow.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "サブフロー",
+      "ガバナ制限",
+      "フロー"
+    ]
+  },
+  {
+    "id": 427,
+    "url": "claude-generated",
+    "question": "アウトバウンド変更セット(Outbound Change Set)を送るために、組織間で必要な準備はどれですか。",
+    "choices": [
+      "送信元と受信先で「リリース接続(Deployment Connection)」を承認し合う",
+      "RESTで認証トークンを交換する",
+      "Apex で認証クラスを書く",
+      "管理パッケージとして配布する"
+    ],
+    "answers": [
+      "送信元と受信先で「リリース接続(Deployment Connection)」を承認し合う"
+    ],
+    "explanation": "□ 送信元と受信先で「リリース接続(Deployment Connection)」を承認し合う　これは正解です。リリース接続を相互に承認しないと変更セットを送受信できません。\n\n□ RESTで認証トークンを交換する　これは不正解です。リリース接続は組織のメタデータ設定で行います。\n\n□ Apex で認証クラスを書く　これは不正解です。ノーコードで完結します。\n\n□ 管理パッケージとして配布する　これは不正解です。それは別のリリース手段です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "リリース接続",
+      "アウトバウンド"
+    ]
+  },
+  {
+    "id": 428,
+    "url": "claude-generated",
+    "question": "変更セットに含めることができないものとして正しいものはどれですか。",
+    "choices": [
+      "レコードデータ(取引先などの実データ)",
+      "Apexクラス",
+      "Lightningコンポーネント",
+      "カスタムオブジェクトの定義"
+    ],
+    "answers": [
+      "レコードデータ(取引先などの実データ)"
+    ],
+    "explanation": "□ レコードデータ(取引先などの実データ)　これは正解です。変更セットはメタデータのみを移送します。データはデータローダ等で別途移します。\n\n□ Apexクラス　これは不正解です。含められます。\n\n□ Lightningコンポーネント　これは不正解です。含められます。\n\n□ カスタムオブジェクトの定義　これは不正解です。含められます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "メタデータ",
+      "データ"
+    ]
+  },
+  {
+    "id": 429,
+    "url": "claude-generated",
+    "question": "変更セットの「コンポーネントを表示(View/Add Components)」で「参照解決(View/Add Dependencies)」を実行する目的はどれですか。",
+    "choices": [
+      "選択したコンポーネントが依存する他コンポーネントを自動検出して追加候補にする",
+      "Apex のテストカバレッジを表示する",
+      "コンポーネントの所有者を変更する",
+      "コンポーネントを並べ替える"
+    ],
+    "answers": [
+      "選択したコンポーネントが依存する他コンポーネントを自動検出して追加候補にする"
+    ],
+    "explanation": "□ 選択したコンポーネントが依存する他コンポーネントを自動検出して追加候補にする　これは正解です。依存関係を見落とすとデプロイが失敗するため、参照解決で関連コンポーネントを取り込みます。\n\n□ Apex のテストカバレッジを表示する　これは不正解です。それは別画面です。\n\n□ コンポーネントの所有者を変更する　これは不正解です。\n\n□ コンポーネントを並べ替える　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "参照解決",
+      "依存関係"
+    ]
+  },
+  {
+    "id": 430,
+    "url": "claude-generated",
+    "question": "受信側で変更セットを「検証(Validate)」する目的はどれですか。",
+    "choices": [
+      "実際にデプロイせずに、エラーなく適用できるかを事前チェックする",
+      "送信元組織のメタデータを更新する",
+      "本番環境にコミットする",
+      "Apex を実行する"
+    ],
+    "answers": [
+      "実際にデプロイせずに、エラーなく適用できるかを事前チェックする"
+    ],
+    "explanation": "□ 実際にデプロイせずに、エラーなく適用できるかを事前チェックする　これは正解です。検証は本番反映前のリハーサルで、テスト結果や競合を事前に把握できます。\n\n□ 送信元組織のメタデータを更新する　これは不正解です。受信側の操作です。\n\n□ 本番環境にコミットする　これは不正解です。それは「リリース」操作です。\n\n□ Apex を実行する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "検証",
+      "Validate"
+    ]
+  },
+  {
+    "id": 431,
+    "url": "claude-generated",
+    "question": "本番に変更セットをリリース(Deploy)する時、Apexテストの実行はどう扱われますか。",
+    "choices": [
+      "既定でローカル組織のApexテストを実行し、カバレッジ75%以上を満たす必要がある",
+      "Apexテストは実行されない",
+      "Apexテストは管理者が手動で起動する",
+      "100%のカバレッジが必要"
+    ],
+    "answers": [
+      "既定でローカル組織のApexテストを実行し、カバレッジ75%以上を満たす必要がある"
+    ],
+    "explanation": "□ 既定でローカル組織のApexテストを実行し、カバレッジ75%以上を満たす必要がある　これは正解です。本番デプロイでは組織のApexテストを実行し、全体75%以上のカバレッジが必要です。\n\n□ Apexテストは実行されない　これは不正解です。本番では必ず実行されます。\n\n□ Apexテストは管理者が手動で起動する　これは不正解です。デプロイの一部です。\n\n□ 100%のカバレッジが必要　これは不正解です。75%が要件です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "Apexテスト",
+      "カバレッジ"
+    ]
+  },
+  {
+    "id": 432,
+    "url": "claude-generated",
+    "question": "変更セットでデプロイしたコンポーネントをロールバックしたい時、Salesforceの標準的なやり方はどれですか。",
+    "choices": [
+      "元の状態を含む変更セットを別途作って再デプロイする",
+      "Salesforceサポートに依頼して取り消す",
+      "ボタンひとつでロールバックする",
+      "直近1時間以内ならundo可能"
+    ],
+    "answers": [
+      "元の状態を含む変更セットを別途作って再デプロイする"
+    ],
+    "explanation": "□ 元の状態を含む変更セットを別途作って再デプロイする　これは正解です。変更セットには明示的なロールバック機能がないため、「逆向き」変更セットを用意して上書きします。\n\n□ Salesforceサポートに依頼して取り消す　これは不正解です。サポートで取り消せません。\n\n□ ボタンひとつでロールバックする　これは不正解です。\n\n□ 直近1時間以内ならundo可能　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "ロールバック",
+      "リリース管理"
+    ]
+  },
+  {
+    "id": 433,
+    "url": "claude-generated",
+    "question": "第2世代パッケージ(2GP)で「unlocked」と「managed」の違いとして正しいものはどれですか。",
+    "choices": [
+      "unlockedはインストール先で編集可能、managedはコードがロックされる",
+      "unlockedは無料、managedは有料",
+      "unlockedはモバイル専用、managedはPC専用",
+      "両者は機能的に同じ"
+    ],
+    "answers": [
+      "unlockedはインストール先で編集可能、managedはコードがロックされる"
+    ],
+    "explanation": "□ unlockedはインストール先で編集可能、managedはコードがロックされる　これは正解です。社内DevOps向けはunlocked(編集可)、ISV配布はmanaged(ロック+アップグレード)を選びます。\n\n□ unlockedは無料、managedは有料　これは不正解です。価格はAppExchange登録の話で、パッケージ種別と直接の関係はありません。\n\n□ unlockedはモバイル専用、managedはPC専用　これは不正解です。\n\n□ 両者は機能的に同じ　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "2GP",
+      "unlocked",
+      "managed"
+    ]
+  },
+  {
+    "id": 434,
+    "url": "claude-generated",
+    "question": "2GP管理パッケージのリリースに必要な前提として正しいものを2つ選びなさい。",
+    "choices": [
+      "Dev Hubの有効化",
+      "名前空間の登録",
+      "Apexコードの100%カバレッジ",
+      "本番組織での直接ビルド"
+    ],
+    "answers": [
+      "Dev Hubの有効化",
+      "名前空間の登録"
+    ],
+    "explanation": "□ Dev Hubの有効化　これは正解です。2GPはDev Hubでパッケージを管理します。\n\n□ 名前空間の登録　これは正解です。管理パッケージは名前空間プレフィックスを必要とします。\n\n□ Apexコードの100%カバレッジ　これは不正解です。要件は75%です。\n\n□ 本番組織での直接ビルド　これは不正解です。Dev Hub組織で管理し、開発はスクラッチ組織で行います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "deploy",
+    "keywords": [
+      "2GP",
+      "Dev Hub",
+      "名前空間"
+    ]
+  },
+  {
+    "id": 435,
+    "url": "claude-generated",
+    "question": "1GP管理パッケージ(従来の管理パッケージ)を維持しつつ、2GPに移行する標準的な経路はどれですか。",
+    "choices": [
+      "1GPメタデータを2GPプロジェクトに取り込み、段階的に2GPでリリースに切り替える",
+      "ISVが新ID発番してすべて新規パッケージにする",
+      "Apexを書き直す以外に方法はない",
+      "Salesforceサポートに依頼してパッケージID変換してもらう"
+    ],
+    "answers": [
+      "1GPメタデータを2GPプロジェクトに取り込み、段階的に2GPでリリースに切り替える"
+    ],
+    "explanation": "□ 1GPメタデータを2GPプロジェクトに取り込み、段階的に2GPでリリースに切り替える　これは正解です。Salesforce CLIで1GP内容を2GPプロジェクト構造に取り込み、新規バージョンを2GPで配布する公式パスがあります。\n\n□ ISVが新ID発番してすべて新規パッケージにする　これは不正解です。同じパッケージのまま2GPに移れます。\n\n□ Apexを書き直す以外に方法はない　これは不正解です。\n\n□ Salesforceサポートに依頼してパッケージID変換してもらう　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "1GP",
+      "2GP",
+      "移行"
+    ]
+  },
+  {
+    "id": 436,
+    "url": "claude-generated",
+    "question": "未管理パッケージ(Unmanaged Package)が向いている用途として正しいものはどれですか。",
+    "choices": [
+      "教材や開始テンプレートを配布したい場合(編集前提)",
+      "ISVが定期アップグレードを提供したい場合",
+      "顧客間の長期保守を行いたい場合",
+      "コードを保護したい場合"
+    ],
+    "answers": [
+      "教材や開始テンプレートを配布したい場合(編集前提)"
+    ],
+    "explanation": "□ 教材や開始テンプレートを配布したい場合(編集前提)　これは正解です。未管理パッケージはインストール後に編集可能、アップグレード不可。テンプレートや学習素材の配布に最適です。\n\n□ ISVが定期アップグレードを提供したい場合　これは不正解です。それは管理パッケージの役割です。\n\n□ 顧客間の長期保守を行いたい場合　これは不正解です。\n\n□ コードを保護したい場合　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "未管理パッケージ",
+      "テンプレート",
+      "リリース"
+    ]
+  },
+  {
+    "id": 437,
+    "url": "claude-generated",
+    "question": "パッケージインストール時に「インストールするユーザー」を選ぶ画面では何を決めますか。",
+    "choices": [
+      "どのプロファイルに対してパッケージの権限を有効にするか",
+      "パッケージの価格",
+      "Apexテストの実行有無",
+      "ストレージ割り当て"
+    ],
+    "answers": [
+      "どのプロファイルに対してパッケージの権限を有効にするか"
+    ],
+    "explanation": "□ どのプロファイルに対してパッケージの権限を有効にするか　これは正解です。「管理者のみ」「全ユーザー」「特定プロファイル」から選び、パッケージのオブジェクト/Apex権限を割り当てます。\n\n□ パッケージの価格　これは不正解です。価格はAppExchangeでの調達側で扱います。\n\n□ Apexテストの実行有無　これは不正解です。\n\n□ ストレージ割り当て　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "パッケージインストール",
+      "プロファイル",
+      "権限"
+    ]
+  },
+  {
+    "id": 438,
+    "url": "claude-generated",
+    "question": "Salesforce CLI(sf/sfdx) で組織にメタデータをデプロイするコマンドの代表例はどれですか。",
+    "choices": [
+      "sf project deploy start",
+      "sf upload metadata",
+      "sf push package",
+      "sf admin install"
+    ],
+    "answers": [
+      "sf project deploy start"
+    ],
+    "explanation": "□ sf project deploy start　これは正解です。これがプロジェクトのソースを組織にデプロイする標準コマンドです(旧 sfdx force:source:deploy)。\n\n□ sf upload metadata　これは不正解です。そのようなコマンドはありません。\n\n□ sf push package　これは不正解です。\n\n□ sf admin install　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Salesforce CLI",
+      "sf",
+      "デプロイ"
+    ]
+  },
+  {
+    "id": 439,
+    "url": "claude-generated",
+    "question": "Metadata API でメタデータをエクスポートする時に使うファイルはどれですか。",
+    "choices": [
+      "package.xml(取得対象を列挙)",
+      "schema.json",
+      "Apex.cls(クラスのみ)",
+      "data.csv"
+    ],
+    "answers": [
+      "package.xml(取得対象を列挙)"
+    ],
+    "explanation": "□ package.xml(取得対象を列挙)　これは正解です。Metadata API のretrieve/deployでは取得・送信対象をpackage.xmlで指定します。\n\n□ schema.json　これは不正解です。\n\n□ Apex.cls(クラスのみ)　これは不正解です。Apex単体ではなくpackage.xmlで全種別を扱います。\n\n□ data.csv　これは不正解です。Metadata APIはデータを扱いません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Metadata API",
+      "package.xml",
+      "CLI"
+    ]
+  },
+  {
+    "id": 440,
+    "url": "claude-generated",
+    "question": "Salesforce DXでの開発フローとして正しいものはどれですか。",
+    "choices": [
+      "Dev Hub→Scratch Org作成→ローカル開発→ソースを組織にpush→テスト→パッケージ化",
+      "本番組織で直接編集する",
+      "全部Apex Anonymousで実行する",
+      "変更セットだけで管理する"
+    ],
+    "answers": [
+      "Dev Hub→Scratch Org作成→ローカル開発→ソースを組織にpush→テスト→パッケージ化"
+    ],
+    "explanation": "□ Dev Hub→Scratch Org作成→ローカル開発→ソースを組織にpush→テスト→パッケージ化　これは正解です。Salesforce DXのソース駆動型開発フローの典型例です。\n\n□ 本番組織で直接編集する　これは不正解です。\n\n□ 全部Apex Anonymousで実行する　これは不正解です。\n\n□ 変更セットだけで管理する　これは不正解です。DXとはむしろ対極の旧手法です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Salesforce DX",
+      "Scratch Org",
+      "Dev Hub"
+    ]
+  },
+  {
+    "id": 441,
+    "url": "claude-generated",
+    "question": "Salesforce CLIで認証を行うコマンドはどれですか。",
+    "choices": [
+      "sf org login web",
+      "sf authenticate",
+      "sf admin login",
+      "sf user create"
+    ],
+    "answers": [
+      "sf org login web"
+    ],
+    "explanation": "□ sf org login web　これは正解です。Webブラウザ経由でログインしてorgを登録します(旧 sfdx force:auth:web:login)。\n\n□ sf authenticate　これは不正解です。\n\n□ sf admin login　これは不正解です。\n\n□ sf user create　これは不正解です。それはScratch Org内のユーザー作成です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Salesforce CLI",
+      "認証",
+      "sf org"
+    ]
+  },
+  {
+    "id": 442,
+    "url": "claude-generated",
+    "question": "Scratch Org の主な特徴を2つ選びなさい。",
+    "choices": [
+      "短命の使い捨て組織",
+      "Dev Hubでライフサイクル管理",
+      "本番組織にデータが同期される",
+      "ライセンスは無制限"
+    ],
+    "answers": [
+      "短命の使い捨て組織",
+      "Dev Hubでライフサイクル管理"
+    ],
+    "explanation": "□ 短命の使い捨て組織　これは正解です。Scratch Orgはデフォルトで7日(最大30日)で消滅する開発用組織です。\n\n□ Dev Hubでライフサイクル管理　これは正解です。Dev Hubから作成/管理します。\n\n□ 本番組織にデータが同期される　これは不正解です。データは別途投入が必要です。\n\n□ ライセンスは無制限　これは不正解です。Dev Hubで日別作成数・同時アクティブ数の上限があります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "deploy",
+    "keywords": [
+      "Scratch Org",
+      "Dev Hub",
+      "Salesforce DX"
+    ]
+  },
+  {
+    "id": 443,
+    "url": "claude-generated",
+    "question": "Scratch Orgで本番組織の「形状(機能ライセンス等)」を再現したい場合に使う仕組みはどれですか。",
+    "choices": [
+      "Org Shape(組織形状)を本番からスナップショットして Scratch Org 定義に使う",
+      "Apexで設定ファイルを書く",
+      "サポートに依頼して手動コピー",
+      "変更セットで送信"
+    ],
+    "answers": [
+      "Org Shape(組織形状)を本番からスナップショットして Scratch Org 定義に使う"
+    ],
+    "explanation": "□ Org Shape(組織形状)を本番からスナップショットして Scratch Org 定義に使う　これは正解です。Org Shape は本番の機能・制限設定を Scratch Org に反映するための仕組みです。\n\n□ Apexで設定ファイルを書く　これは不正解です。\n\n□ サポートに依頼して手動コピー　これは不正解です。\n\n□ 変更セットで送信　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Org Shape",
+      "Scratch Org",
+      "Salesforce DX"
+    ]
+  },
+  {
+    "id": 444,
+    "url": "claude-generated",
+    "question": "本番リリース前の標準的な検証フローとして適切なものはどれですか。",
+    "choices": [
+      "Developer Sandbox→Partial/Full Sandbox→本番、で段階的に検証する",
+      "本番にいきなりデプロイする",
+      "Scratch Orgから直接本番にpushする",
+      "変更セットなしでマージしてよい"
+    ],
+    "answers": [
+      "Developer Sandbox→Partial/Full Sandbox→本番、で段階的に検証する"
+    ],
+    "explanation": "□ Developer Sandbox→Partial/Full Sandbox→本番、で段階的に検証する　これは正解です。低リスク→高忠実度の順で検証してリスクを段階的に下げます。\n\n□ 本番にいきなりデプロイする　これは不正解です。\n\n□ Scratch Orgから直接本番にpushする　これは不正解です。\n\n□ 変更セットなしでマージしてよい　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "リリース戦略",
+      "サンドボックス",
+      "本番"
+    ]
+  },
+  {
+    "id": 445,
+    "url": "claude-generated",
+    "question": "リリース時に「テスト失敗→ロールバック」を機械化したい場合の典型的なアプローチはどれですか。",
+    "choices": [
+      "CI/CDパイプラインで sf project deploy validate を使い、合格時のみ本番デプロイをトリガする",
+      "本番でテストを並行実行",
+      "Apexテストを別の組織で動かす",
+      "変更セットを手動で何度も検証する"
+    ],
+    "answers": [
+      "CI/CDパイプラインで sf project deploy validate を使い、合格時のみ本番デプロイをトリガする"
+    ],
+    "explanation": "□ CI/CDパイプラインで sf project deploy validate を使い、合格時のみ本番デプロイをトリガする　これは正解です。Salesforce DXのvalidate(Quick Deploy)を組み込めば検証成功→本番反映の自動化が可能です。\n\n□ 本番でテストを並行実行　これは不正解です。リスクが高いです。\n\n□ Apexテストを別の組織で動かす　これは不正解です。\n\n□ 変更セットを手動で何度も検証する　これは不正解です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sfdx_dev_scratch_orgs_view_lex.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "CI/CD",
+      "Salesforce DX",
+      "リリース"
+    ]
   }
 ]
