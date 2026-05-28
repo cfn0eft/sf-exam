@@ -61,59 +61,71 @@
     <div class="stat-card"><div class="stat-num" id="st-acc">—</div><div class="stat-label">正答率</div></div>
     <div class="stat-card"><div class="stat-num" id="st-vocab">0</div><div class="stat-label">習得用語</div></div>
   </div>
-  <div class="sec-label">問題を解く</div>
+
+  <!-- 今日やる：復習・SRS・弱点を1枚に集約 -->
+  <div class="next-card">
+    <div class="next-head">今日やる</div>
+    <button class="next-row" onclick="startSRS()">
+      <span class="next-ico">🧠</span>
+      <span class="next-main"><span class="next-title">SRS 復習</span><span class="next-sub">忘れる前に再出題</span></span>
+      <span class="next-badge" id="next-srs">0</span>
+    </button>
+    <button class="next-row" onclick="startReview()">
+      <span class="next-ico">🔁</span>
+      <span class="next-main"><span class="next-title">間違えた問題を復習</span><span class="next-sub">★ブックマーク含む</span></span>
+      <span class="next-badge" id="next-wrong">0</span>
+    </button>
+    <button class="next-row" onclick="startWeakDomains()">
+      <span class="next-ico">🎯</span>
+      <span class="next-main"><span class="next-title">弱点分野を出題</span><span class="next-sub">正答率の低い分野から</span></span>
+      <span class="next-badge" id="next-weak"></span>
+    </button>
+  </div>
+
+  <!-- メイン2ボタン -->
   <button class="mode-btn btn-study" onclick="startStudy()">
     <span class="bi">📖</span><span class="bs"><span>学習モード</span><span class="bsub">問題を解いて解説を確認</span></span>
   </button>
   <button class="mode-btn btn-exam" onclick="startExam()">
-    <span class="bi">⏱️</span><span class="bs"><span>試験モード</span><span class="bsub"></span></span>
+    <span class="bi">⏱️</span><span class="bs"><span>試験モード</span><span class="bsub">本番形式・時間制限あり</span></span>
   </button>
-  <button class="mode-btn btn-review" onclick="startReview()">
-    <span class="bi">🔁</span><span class="bs"><span>復習モード</span><span class="bsub">間違えた問題・★のみ出題</span></span>
-  </button>
-  <button class="mode-btn btn-srs" onclick="startSRS()">
-    <span class="bi">🧠</span><span class="bs"><span>SRS 復習<span id="srs-count"></span></span><span class="bsub">忘れる前に出題する間隔反復</span></span>
-  </button>
-  <div class="sec-label">教材を読む</div>
-  <button class="mode-btn btn-textbook" onclick="goTo('textbook')">
-    <span class="bi">📚</span><span class="bs"><span>教科書</span><span class="bsub">学習ガイド・設定画面マップ</span></span>
-  </button>
-  <button class="mode-btn btn-vocab" onclick="goTo('vocab')">
-    <span class="bi">🔤</span><span class="bs"><span>用語帳</span><span class="bsub">フラッシュカードで用語を暗記</span></span>
-  </button>
-  <button class="mode-btn btn-cram" onclick="goTo('cram')">
-    <span class="bi">📋</span><span class="bs"><span>直前まとめ</span><span class="bsub">頻出の使い分け・当日のコツ</span></span>
-  </button>
-  <div class="sec-label">絞り込み</div>
+
+  <!-- SRS件数のレガシー受け皿（エンジン互換用に非表示で残す） -->
+  <span id="srs-count" style="display:none"></span>
+
+  <!-- 出題対象：常時3つ、他は折りたたみ -->
+  <div class="sec-label">出題対象</div>
   <div class="filter-bar">
     <label class="chip" id="chip-new">
       <input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span>
     </label>
     <label class="chip" id="chip-wrong">
-      <input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた問題<span id="wrong-count"></span>
-    </label>
-    <label class="chip" id="chip-lc">
-      <input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span>
+      <input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた<span id="wrong-count"></span>
     </label>
     <label class="chip" id="chip-bm">
       <input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク
     </label>
-    <label class="chip" id="chip-multi">
-      <input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ
-    </label>
   </div>
-  <div class="filter-bar">
-    <label class="chip on" id="chip-shuf">
-      <input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順
-    </label>
-    <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCShuf()">🔀 選択肢順</button>
-  </div>
-  <select class="fsel" id="f-kw" onchange="applyFilters()">
-    <option value="">🏷️ キーワードで絞り込み（全て）</option>
-  </select>
-  <div id="f-count" style="font-size:12px;color:var(--text-sub);margin-bottom:14px"></div>
-  <div class="sec-label">データ</div>
-  <button class="btn bg" style="width:100%;margin-top:8px" onclick="resetAll()">🗑️ 進捗データをリセット</button>
+  <details class="more-filter">
+    <summary>詳細設定</summary>
+    <div class="filter-bar" style="margin-top:8px">
+      <label class="chip" id="chip-lc">
+        <input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span>
+      </label>
+      <label class="chip" id="chip-multi">
+        <input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ
+      </label>
+      <label class="chip on" id="chip-shuf">
+        <input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順
+      </label>
+      <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCShuf()">🔀 選択肢順</button>
+    </div>
+    <select class="fsel" id="f-kw" onchange="applyFilters()">
+      <option value="">🏷️ キーワードで絞り込み（全て）</option>
+    </select>
+    <button class="reset-link" onclick="resetAll()">🗑️ 進捗データをリセット</button>
+  </details>
+  <div id="f-count" style="font-size:12px;color:var(--text-sub);margin:6px 0 14px"></div>
 </div>
 
 <!-- ===== STUDY ===== -->
@@ -228,9 +240,6 @@
       <button class="chip" id="tt-cmp" onclick="switchTbTab('cmp')">📊 比較表</button>
     </div>
 
-    <!-- ★ 章ナビゲーションバー -->
-    <div class="ch-nav" id="ch-nav"></div>
-
     <!-- 検索バー -->
     <div class="search-wrap">
       <input class="search-box" id="tb-search" placeholder="🔍 用語・定義を検索..." oninput="tbSearch(this.value)">
@@ -238,13 +247,17 @@
     </div>
     <div class="search-count" id="search-count" style="display:none"></div>
 
-    <!-- ★ 未読フィルター -->
-    <div class="tb-mark-filter" id="tb-mark-filter" style="display:none">
-      <button class="chip on" id="tmf-all" onclick="setMarkFilter('all')">すべて</button>
-      <button class="chip" id="tmf-bm" onclick="setMarkFilter('bm')">🔖 しおり</button>
-      <button class="chip" id="tmf-undone" onclick="setMarkFilter('undone')">未読</button>
-      <button class="chip" id="tmf-done" onclick="setMarkFilter('done')">✓ 読了</button>
-    </div>
+    <!-- ★ 章ナビ＋未読フィルタを折りたたみに集約 -->
+    <details class="tb-filter-wrap">
+      <summary>章ジャンプ / 読了状態フィルタ</summary>
+      <div class="ch-nav" id="ch-nav"></div>
+      <div class="tb-mark-filter" id="tb-mark-filter" style="display:none">
+        <button class="chip on" id="tmf-all" onclick="setMarkFilter('all')">すべて</button>
+        <button class="chip" id="tmf-bm" onclick="setMarkFilter('bm')">🔖 しおり</button>
+        <button class="chip" id="tmf-undone" onclick="setMarkFilter('undone')">未読</button>
+        <button class="chip" id="tmf-done" onclick="setMarkFilter('done')">✓ 読了</button>
+      </div>
+    </details>
 
     <div id="tb-guide"></div>
     <div id="tb-nav" style="display:none"></div>
@@ -341,15 +354,15 @@
     <div class="stat-card"><div class="stat-num" id="st2-streak">0</div><div class="stat-label">連続正解</div></div>
   </div>
   <div class="card">
-    <div class="sec-label" style="margin-top:0">📈 今週のレポート</div>
-    <div id="weekly"></div>
-  </div>
-  <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px">
       <div class="sec-label" style="margin:0">🎯 分野別の習熟度</div>
       <button class="dom-focus-btn" id="dom-focus-all" onclick="startWeakDomains()">弱点を出題</button>
     </div>
     <div id="dom-list"></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">📈 今週のレポート</div>
+    <div id="weekly"></div>
   </div>
   <div class="card">
     <div class="sec-label" style="margin-top:0">📅 学習カレンダー</div>
@@ -360,14 +373,17 @@
     <div class="sec-label" style="margin-top:0">🏅 実績バッジ <span id="badge-count" style="font-weight:400;color:var(--text-sub);text-transform:none;letter-spacing:0"></span></div>
     <div class="badge-grid" id="badge-grid"></div>
   </div>
-  <div class="card">
-    <div class="sec-label" style="margin-top:0">キーワード別 正答率（低い順）</div>
-    <div id="st-kw"></div>
-  </div>
-  <div class="card">
-    <div class="sec-label" style="margin-top:0">問題別 解答履歴（正答率低い順）</div>
-    <div id="st-q" style="max-height:420px;overflow-y:auto"></div>
-  </div>
+  <details class="more-stats">
+    <summary>詳細を表示（キーワード別・問題別）</summary>
+    <div class="card">
+      <div class="sec-label" style="margin-top:0">キーワード別 正答率（低い順）</div>
+      <div id="st-kw"></div>
+    </div>
+    <div class="card">
+      <div class="sec-label" style="margin-top:0">問題別 解答履歴（正答率低い順）</div>
+      <div id="st-q" style="max-height:420px;overflow-y:auto"></div>
+    </div>
+  </details>
 </div>
 
 <!-- ===== 直前まとめ（CRAM） ===== -->

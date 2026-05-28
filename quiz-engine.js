@@ -194,6 +194,9 @@ function applyFilters(){
   const wc=allQ.filter(q=>isWrong(q.id)).length;
   const wcEl=document.getElementById('wrong-count');
   if(wcEl)wcEl.textContent=wc?' '+wc:'';
+  // 「次にやる」カード用ミラー
+  const nwEl=document.getElementById('next-wrong');
+  if(nwEl)nwEl.textContent=wc;
   const lc=allQ.filter(q=>isLowConfCorrect(q.id)).length;
   const lcEl=document.getElementById('lc-count');
   if(lcEl)lcEl.textContent=lc?' '+lc:'';
@@ -212,6 +215,14 @@ function homeStats(){
   const mastered=Object.values(store.vm||{}).filter(v=>v>=2).length;
   setText('st-vocab',mastered);
   updateSrsBtn();
+  // 「次にやる」カードの弱点件数（弱点分野の問題プール数）
+  try{
+    const ds=domainStats().filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct);
+    const weak=ds.slice(0,3).map(d=>d.code);
+    const pool=weak.length?allQ.filter(q=>weak.includes(domainOf(q.id))).length:0;
+    const nwk=document.getElementById('next-weak');
+    if(nwk)nwk.textContent=pool||'';
+  }catch(e){}
   renderPlan();
 }
 
@@ -1308,7 +1319,11 @@ function srsUpdate(id,ok,low){
 function srsDue(id){const s=store.srs&&store.srs[id];if(!s)return false;return (s.due||'9999-99-99')<=_today();}
 function srsDueList(){return allQ.filter(q=>srsDue(q.id));}
 function srsDueCount(){return srsDueList().length;}
-function updateSrsBtn(){const el=document.getElementById('srs-count');if(el){const n=srsDueCount();el.textContent=n?(' '+n):'';}}
+function updateSrsBtn(){
+  const n=srsDueCount();
+  const el=document.getElementById('srs-count');if(el){el.textContent=n?(' '+n):'';}
+  const el2=document.getElementById('next-srs');if(el2){el2.textContent=n;}
+}
 // startStudy() を経由せずに任意の問題集合で学習を開始（applyFilters で上書きされないように）
 function beginStudyWith(arr){
   if(!arr||!arr.length){toast('対象の問題がありません');return;}
