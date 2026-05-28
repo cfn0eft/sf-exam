@@ -14,10 +14,15 @@
       "選択したオブジェクトをページに表示する"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ページレイアウトを新しいウィンドウで表示する　これは正解です。任意のオブジェクトにある設定ボタンを押下後、[ページレイアウトを表示]のオプションを選択することで、関連するページレイアウトを新しいウィンドウで表示できます。\n\n□ カスタム設定を編集する　これは不正解です。スキーマビルダーは主にオブジェクト・項目・関係の視覚的表現と編集のために使用されます。カスタム設定の編集は範囲外で、設定メニューや専用ツールで行います。\n\n□ 選択したオブジェクトをページに表示する　これは正解です。スキーマビルダーの主な機能の一つは、データモデルの中から選択したオブジェクトやその関係を視覚的に表示することです。選択した任意のオブジェクトのみ画面に表示することも可能です。\n\n□ 新しいレコードタイプを作成する　これは不正解です。レコードタイプの作成はスキーマビルダーではなくオブジェクト管理設定から行います。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.schema_builder.htm&language=ja&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["スキーマビルダー", "データモデル", "オブジェクト", "ページレイアウト"]
+    "keywords": [
+      "スキーマビルダー",
+      "データモデル",
+      "オブジェクト",
+      "ページレイアウト"
+    ]
   },
   {
     "id": 2,
@@ -36,7 +41,11 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_defining_report_types.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["カスタムレポートタイプ", "レポート", "主オブジェクト"]
+    "keywords": [
+      "カスタムレポートタイプ",
+      "レポート",
+      "主オブジェクト"
+    ]
   },
   {
     "id": 3,
@@ -52,10 +61,15 @@
       "Apexコード"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ワークフロールール　これは不正解です。ワークフロールールは条件に応じて項目更新や通知を行えますが、更新対象は基本的にそのオブジェクト自身に限られます。\n\n□ 積み上げ集計項目　これは不正解です。積み上げ集計項目は主従関係を前提に従レコードのCOUNTやSUMを計算できますが、相対日付（今後30日以内など）を検索条件に直接指定することはできません。取引先と商談は参照関係である点も考慮が必要です。\n\n□ プロセスビルダー　これは不正解です。プロセスビルダーは子の値を親へコピー・固定値更新はできますが、複数の子レコードを集計して件数や合計を親に反映することはできません。\n\n□ Apexコード　これは正解です。Apexはカスタムロジックで、相対日付条件に基づく集計と親オブジェクトへの反映を実装できます。\n\n【注意】本問はプロセスビルダー廃止前の古い問題です。原則として宣言型（積み上げ集計や数式、フロー）で解決すべきで、出題元でも差し替え予定とされています。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_roll_up_summary_fields.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["積み上げ集計", "Apex", "商談", "自動化"],
+    "keywords": [
+      "積み上げ集計",
+      "Apex",
+      "商談",
+      "自動化"
+    ],
     "_verify": "要裏取り: 古い/曖昧。現行の宣言型代替の可否を確認"
   },
   {
@@ -72,10 +86,14 @@
       "現在のバージョンをアンインストールし、新しいバージョンをインストールする。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 現在のバージョンをアンインストールし、新しいバージョンをインストールする。　これは正解です。未管理パッケージにはアップグレードの仕組みがないため、新バージョンを適用するには既存をアンインストールして再インストールします。\n\n□ インストールウィザードを使用して、本番環境にアップグレードをインストールする。　これは不正解です。Salesforceに[インストールウィザード]という機能は存在しません。\n\n□ 新しいバージョンを開発者組織にインストールし、本番環境にデプロイする。　これは不正解です。開発者組織は独立した組織であり、本番環境へデプロイする手段がありません。\n\n□ [インストール済みパッケージ]ページの[更新]リンクをクリックする。　これは不正解です。未管理パッケージにはバージョン管理やアップグレードの仕組みがなく、[更新]リンクは存在しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["未管理パッケージ", "アップグレード", "リリース"]
+    "keywords": [
+      "未管理パッケージ",
+      "アップグレード",
+      "リリース"
+    ]
   },
   {
     "id": 5,
@@ -94,7 +112,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_embed_pagelayout.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["レポートグラフ", "サマリーレポート", "ページレイアウト", "商談"]
+    "keywords": [
+      "レポートグラフ",
+      "サマリーレポート",
+      "ページレイアウト",
+      "商談"
+    ]
   },
   {
     "id": 6,
@@ -110,10 +133,14 @@
       "選択リスト"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 数式　これは不正解です。数式項目は計算結果を表示するもので、ユーザーが入力することはできません。\n\n□ メール　これは不正解です。メール項目はメールアドレスの入力用で、「電話番号」と「メール」のどちらかを選ぶ用途には使えません。\n\n□ 選択リスト　これは正解です。選択リストは複数の選択肢から一つを選ばせる項目で、「電話番号」「メール」を選択肢として提供できます。\n\n□ チェックボックス　これは不正解です。チェックボックスは真偽の二項選択用で、複数選択肢から一つを選ぶ用途には適しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.updating_picklists.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["選択リスト", "データ型", "カスタム項目"]
+    "keywords": [
+      "選択リスト",
+      "データ型",
+      "カスタム項目"
+    ]
   },
   {
     "id": 7,
@@ -130,10 +157,14 @@
       "Visualforceページは、ページレイアウトのどこにでも配置できます。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ページレイアウトのVisualforceページには幅と高さの属性があります。　これは正解です。埋め込んだVisualforceページには幅（ピクセルまたは%）と高さ（ピクセル）の属性を設定でき、表示サイズを調整できます。\n\n□ 項目セットのVisualforceページには、幅と高さの属性があります。　これは不正解です。項目セットは項目をグループ化する機能で、それ自体に幅・高さの属性はありません。\n\n□ Visualforceページは、ページレイアウトのどこにでも配置できます。　これは正解です。詳細セクションなどカスタマイズ可能なセクションに配置できます。\n\n□ Visualforceページは、ページレイアウトのVisualforceセクションにのみ配置できます。　これは不正解です。Visualforce専用のセクションは存在しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.pages_about.htm&language=ja&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["Visualforce", "ページレイアウト", "埋め込み"]
+    "keywords": [
+      "Visualforce",
+      "ページレイアウト",
+      "埋め込み"
+    ]
   },
   {
     "id": 8,
@@ -149,10 +180,15 @@
       "ワークフロールール"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 承認プロセス　これは不正解です。承認プロセスはレコード変更の承認ワークフローで、チェックボックス変更時に自動で項目を消す用途には適しません。\n\n□ 入力規則　これは不正解です。入力規則は保存時の検証で保存を拒否する仕組みで、項目の値を変更できません。\n\n□ ワークフロールール　これは正解です。条件成立時に項目の自動更新を実行でき、[DoNotCall]がオンになった際に電話番号を空白（Null）で更新できます。\n\n□ クイックアクション　これは不正解です。ユーザーが手動実行するもので、自動削除の用途には適しません。\n\n【注意】本問はワークフロールール廃止方向の古い問題です。現行ではレコードトリガーフロー（フロー）が推奨される自動化ツールです。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_migrate_to_flow.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["ワークフロールール", "フロー", "自動化", "項目自動更新"],
+    "keywords": [
+      "ワークフロールール",
+      "フロー",
+      "自動化",
+      "項目自動更新"
+    ],
     "_verify": "要裏取り: 現行はレコードトリガーフローが推奨。出題は旧仕様"
   },
   {
@@ -172,7 +208,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.notes_on_changing_custom_field_types.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["データ型変更", "日付/時間", "カスタム項目", "データ損失"]
+    "keywords": [
+      "データ型変更",
+      "日付/時間",
+      "カスタム項目",
+      "データ損失"
+    ]
   },
   {
     "id": 10,
@@ -191,7 +232,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.customize_functions_parent.htm&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "数式", "ISCHANGED", "ISBLANK"]
+    "keywords": [
+      "入力規則",
+      "数式",
+      "ISCHANGED",
+      "ISBLANK"
+    ]
   },
   {
     "id": 11,
@@ -210,7 +256,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.workflow_time_action_considerations.htm&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["再帰", "ループ", "ワークフロー", "ガバナ制限"],
+    "keywords": [
+      "再帰",
+      "ループ",
+      "ワークフロー",
+      "ガバナ制限"
+    ],
     "_verify": "旧仕様(ワークフロータイムトリガー)。概念は有効だが現行ツール文脈での妥当性を確認"
   },
   {
@@ -233,7 +284,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.approvals_automated_actions.htm&type=5",
     "multi": true,
     "domain": "logic",
-    "keywords": ["承認プロセス", "自動アクション", "メールアラート", "送信メッセージ"]
+    "keywords": [
+      "承認プロセス",
+      "自動アクション",
+      "メールアラート",
+      "送信メッセージ"
+    ]
   },
   {
     "id": 13,
@@ -249,10 +305,15 @@
       "入力規則"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ワークフロールール　これは不正解です。項目の自動更新やメール送信はできますが、入力を強制（検証）する機能はありません。\n\n□ プロセスビルダー　これは不正解です。自動化アクションは実行できますが、ユーザーに入力を強制する機能はありません。\n\n□ 承認プロセス　これは不正解です。承認フローを管理するもので、項目入力の強制はできません。\n\n□ 入力規則　これは正解です。保存前に条件を検証でき、フェーズがClosed Wonのとき金額が未入力ならエラーを表示して保存を防げます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "必須化", "Closed Won", "検証"]
+    "keywords": [
+      "入力規則",
+      "必須化",
+      "Closed Won",
+      "検証"
+    ]
   },
   {
     "id": 14,
@@ -269,10 +330,15 @@
       "ワークフロールール"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ エスカレーションルール　これは不正解です。ケースオブジェクトに適用され、未対応ケースを上位や別担当へエスカレートします。商談には適用されません。\n\n□ 入力規則　これは正解です。商談に設定でき、保存前にデータの整合性や必須入力を検証できます。\n\n□ 割り当てルール　これは不正解です。リードやケースの自動割り当てに使われ、商談には通常適用されません。\n\n□ ワークフロールール　これは正解です。商談に設定でき、条件成立時にタスク作成やメール通知などのアクションをトリガーできます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": true,
     "domain": "logic",
-    "keywords": ["入力規則", "ワークフロールール", "商談", "割り当てルール"]
+    "keywords": [
+      "入力規則",
+      "ワークフロールール",
+      "商談",
+      "割り当てルール"
+    ]
   },
   {
     "id": 16,
@@ -291,7 +357,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.relationships_considerations.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["主従関係", "所有者", "共有", "レコード"]
+    "keywords": [
+      "主従関係",
+      "所有者",
+      "共有",
+      "レコード"
+    ]
   },
   {
     "id": 17,
@@ -310,7 +381,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_controlling_access_using_hierarchies.htm&type=5",
     "multi": false,
     "domain": "fund",
-    "keywords": ["ロール階層", "共有", "アクセス権", "セキュリティ"]
+    "keywords": [
+      "ロール階層",
+      "共有",
+      "アクセス権",
+      "セキュリティ"
+    ]
   },
   {
     "id": 18,
@@ -329,7 +405,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.relationships_considerations.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["主従関係", "参照関係", "積み上げ集計", "関係変更"]
+    "keywords": [
+      "主従関係",
+      "参照関係",
+      "積み上げ集計",
+      "関係変更"
+    ]
   },
   {
     "id": 19,
@@ -349,7 +430,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=000385222&type=1",
     "multi": true,
     "domain": "ui",
-    "keywords": ["レポートタイプ", "開発中", "リリース済み", "アクセス権"]
+    "keywords": [
+      "レポートタイプ",
+      "開発中",
+      "リリース済み",
+      "アクセス権"
+    ]
   },
   {
     "id": 20,
@@ -366,10 +452,14 @@
       "未管理パッケージを作成した人は、インストールされたコンポーネントを制御できません。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 作成者がインストール済みコンポーネントを変更・アップグレードできる。　これは不正解です。未管理パッケージはインストール後、インストール先組織が制御し、作成者はアップグレードできません。\n\n□ 作成に名前空間が必要。　これは不正解です。名前空間は主に管理パッケージで使われ、未管理パッケージには不要です。\n\n□ 作成に名前空間は不要。　これは正解です。未管理パッケージの作成に名前空間は必要ありません。\n\n□ 作成者はインストール済みコンポーネントを制御できない。　これは正解です。インストール後はインストール先組織が管理し、作成者は制御できません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
     "multi": true,
     "domain": "deploy",
-    "keywords": ["未管理パッケージ", "名前空間", "リリース"]
+    "keywords": [
+      "未管理パッケージ",
+      "名前空間",
+      "リリース"
+    ]
   },
   {
     "id": 15,
@@ -388,7 +478,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.what_are_approvals.htm&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["承認プロセス", "割引", "承認", "自動化"]
+    "keywords": [
+      "承認プロセス",
+      "割引",
+      "承認",
+      "自動化"
+    ]
   },
   {
     "id": 21,
@@ -408,7 +503,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.links_override_considerations.htm&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["標準ボタン", "上書き", "Visualforce", "ページレイアウト"]
+    "keywords": [
+      "標準ボタン",
+      "上書き",
+      "Visualforce",
+      "ページレイアウト"
+    ]
   },
   {
     "id": 22,
@@ -428,7 +528,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_sharing_rule_types.htm&type=5",
     "multi": true,
     "domain": "fund",
-    "keywords": ["共有ルール", "組織全体のデフォルト", "アクセス拡張", "セキュリティ"]
+    "keywords": [
+      "共有ルール",
+      "組織全体のデフォルト",
+      "アクセス拡張",
+      "セキュリティ"
+    ]
   },
   {
     "id": 23,
@@ -450,7 +555,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.defining_custom_links.htm&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["カスタムボタン", "関連リスト", "リストビュー", "個人取引先"]
+    "keywords": [
+      "カスタムボタン",
+      "関連リスト",
+      "リストビュー",
+      "個人取引先"
+    ]
   },
   {
     "id": 24,
@@ -466,10 +576,15 @@
       "Partial Copy Sandbox"
     ],
     "explanation": "サンドボックスの種類とSandboxテンプレートの利用可否:\n\n・Developer Sandbox：メタデータのみ／テンプレート利用不可\n・Developer Pro Sandbox：メタデータのみ／テンプレート利用不可\n・Partial Copy Sandbox：メタデータ＋サンプルデータ／テンプレート必須\n・Full Sandbox：メタデータ＋全データ／テンプレート利用可\n\n□ Developer Pro Sandbox　不正解。メタデータのみでテンプレートは使えません。\n\n□ Partial Copy Sandbox　これは正解です。Sandboxテンプレートで本番データのサブセットをコピーします。\n\n□ Developer Sandbox　不正解。メタデータのみでテンプレートは使えません。\n\n□ Config Sandbox　不正解。そのようなサンドボックスタイプは存在しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["サンドボックス", "Sandboxテンプレート", "Partial Copy", "リリース"]
+    "keywords": [
+      "サンドボックス",
+      "Sandboxテンプレート",
+      "Partial Copy",
+      "リリース"
+    ]
   },
   {
     "id": 25,
@@ -485,10 +600,15 @@
       "フロー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ フロー　これは正解です。フローは条件に基づくレコードの作成・更新・削除を自動化でき、拒否された見積書を条件指定で自動削除できます。\n\n□ 承認プロセス　これは不正解です。承認の仕組みであり、レコード削除の自動化には適しません。\n\n□ 入力規則　これは不正解です。保存前の検証用で、削除はできません。\n\n□ ワークフロールール　これは不正解です。項目更新・メール・タスクは可能ですが、レコード削除はできません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["フロー", "レコード削除", "見積書", "自動化"]
+    "keywords": [
+      "フロー",
+      "レコード削除",
+      "見積書",
+      "自動化"
+    ]
   },
   {
     "id": 26,
@@ -504,10 +624,15 @@
       "商談と取引先所有者を比較する商談の入力規則を作成する。"
     ],
     "explanation": "要件は「全取引先を表示」かつ「自分が所有する取引先でのみ商談作成」です。\n\n□ 商談のOWDを非公開にして再計算　これは不正解です。商談を非公開にすると暗黙の共有で得ていた取引先(親)の参照権も失われ、全取引先表示の要件を満たせません。\n\n□ 商談のOWDを親が管理に設定　これは不正解です。商談にそのようなOWDオプションは存在しません。\n\n□ 商談と取引先所有者を比較する入力規則を作成　これは正解です。$User.Id != Account.OwnerId のような入力規則で、自分が所有しない取引先での商談作成を防げます。商談-取引先は参照関係のため、商談に参照権があれば暗黙の共有で取引先も参照でき、全取引先表示も満たせます。\n\n□ 所有権を検証するクイックアクション　これは不正解です。クイックアクション自体に所有権検証ロジックは持たせられません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "暗黙の共有", "商談", "アクセス権"]
+    "keywords": [
+      "入力規則",
+      "暗黙の共有",
+      "商談",
+      "アクセス権"
+    ]
   },
   {
     "id": 27,
@@ -523,10 +648,15 @@
       "数式項目"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ケースプロセス　これは不正解です。そのような機能は存在しません（類似のサポートプロセスはステータス管理用で、経過日数に応じたテキスト表示はできません）。\n\n□ 数式項目　これは正解です。数式項目で経過日数を計算し、その値に応じて表示テキストを動的に生成できます。レコード上に即時・動的なフィードバックを表示するのに適します。\n\n□ ワークフロールール　これは不正解です。条件成立時の自動アクション用で、動的なテキスト表示はできません。\n\n□ プロセスビルダー　これは不正解です。自動化アクション用で、経過日数に応じた動的テキスト表示はできません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_formuladef.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["数式項目", "経過日数", "ケース", "動的テキスト"]
+    "keywords": [
+      "数式項目",
+      "経過日数",
+      "ケース",
+      "動的テキスト"
+    ]
   },
   {
     "id": 28,
@@ -546,7 +676,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_embed_pagelayout.htm&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["レポートグラフ", "サマリー", "マトリックス", "ページレイアウト"]
+    "keywords": [
+      "レポートグラフ",
+      "サマリー",
+      "マトリックス",
+      "ページレイアウト"
+    ]
   },
   {
     "id": 29,
@@ -565,7 +700,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.dashboards_del.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["ダッシュボード", "削除", "コンポーネント", "レポート"]
+    "keywords": [
+      "ダッシュボード",
+      "削除",
+      "コンポーネント",
+      "レポート"
+    ]
   },
   {
     "id": 30,
@@ -587,7 +727,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.relationships_considerations.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["主従関係", "参照関係", "カスケード削除", "リレーション"]
+    "keywords": [
+      "主従関係",
+      "参照関係",
+      "カスケード削除",
+      "リレーション"
+    ]
   },
   {
     "id": 31,
@@ -606,7 +751,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_object_specific.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["アクション", "レコードの作成", "Chatter", "取引先責任者"]
+    "keywords": [
+      "アクション",
+      "レコードの作成",
+      "Chatter",
+      "取引先責任者"
+    ]
   },
   {
     "id": 32,
@@ -625,7 +775,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=000387689&type=1",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["変更セット", "デプロイ", "バージョン", "リリース"]
+    "keywords": [
+      "変更セット",
+      "デプロイ",
+      "バージョン",
+      "リリース"
+    ]
   },
   {
     "id": 33,
@@ -647,7 +802,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.custom_tab_overview.htm&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["カスタムタブ", "Visualforceタブ", "Webタブ", "タブ"]
+    "keywords": [
+      "カスタムタブ",
+      "Visualforceタブ",
+      "Webタブ",
+      "タブ"
+    ]
   },
   {
     "id": 34,
@@ -663,10 +823,15 @@
       "不等価演算子を使用して入力規則を作成する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 不等価演算子を使用　これは正解です。入力規則は「条件が真のとき保存を拒否」する仕組みなので、2つの郵便番号が一致しない（!= / <>）ときにエラーになるよう設定します。\n\n□ 等価演算子を使用　これは不正解です。等価(=)では一致したときにエラーになり、要件と逆です。\n\n□ DISTANCE関数　これは不正解です。2点間の地理的距離を計算する関数で、郵便番号一致の検証には使えません。\n\n□ GEOLOCATION関数　これは不正解です。緯度経度の地理位置を作る関数で、郵便番号一致の検証用ではありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "不等価演算子", "郵便番号", "検証"]
+    "keywords": [
+      "入力規則",
+      "不等価演算子",
+      "郵便番号",
+      "検証"
+    ]
   },
   {
     "id": 35,
@@ -685,7 +850,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.custom_field_types.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["地理位置情報", "座標", "データ型", "カスタム項目"]
+    "keywords": [
+      "地理位置情報",
+      "座標",
+      "データ型",
+      "カスタム項目"
+    ]
   },
   {
     "id": 36,
@@ -705,7 +875,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.workflow_field_updates_reevalute_wf.htm&type=5",
     "multi": true,
     "domain": "logic",
-    "keywords": ["ワークフロー", "再帰", "ガバナ制限", "項目自動更新"],
+    "keywords": [
+      "ワークフロー",
+      "再帰",
+      "ガバナ制限",
+      "項目自動更新"
+    ],
     "_verify": "旧仕様(ワークフロー再評価)。概念は有効だが現行ツール文脈での扱いを確認"
   },
   {
@@ -726,7 +901,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_recordtype_considerations.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["レコードタイプ", "選択リスト", "マスター選択リスト", "選択リスト値"]
+    "keywords": [
+      "レコードタイプ",
+      "選択リスト",
+      "マスター選択リスト",
+      "選択リスト値"
+    ]
   },
   {
     "id": 38,
@@ -743,10 +923,15 @@
       "ユーザーオブジェクトでフローを作成し、権限セットを割り当てる。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ユーザーオブジェクトでワークフロールールを作成し、権限セットを割り当てる。　これは不正解です。ワークフロールールを使用して直接権限セットを割り当てることはできません。ワークフロールールは主に通知の送信、項目の自動更新、Todoの作成などに使用されますが、権限セットの割り当てには対応していません。\n\n□ ユーザーオブジェクトでプロセスを作成し、フローを起動する。　これは正解です。Salesforceのプロセスビルダーを使用して、新規ユーザー作成時に特定の条件を満たす場合にフローを起動するプロセスを作成できます。このフロー内で、権限セットをユーザーに割り当てるロジックを組み込むことができます。\n\n□ ユーザーオブジェクトで承認プロセスを作成し、権限セットを割り当てる。　これは不正解です。承認プロセスは、レコードが特定の基準を満たした場合に承認フローを開始するために使用されますが、権限セットの自動割り当てには適していません。\n\n□ ユーザーオブジェクトでフローを作成し、権限セットを割り当てる。　これは正解です。Salesforceのフロービルダーを使用して、新規ユーザーが作成された時に特定の条件に基づいて権限セットを自動的に割り当てるフローを作成することができます。\n\n【注意】選択肢のうちプロセスビルダーを使う方法は旧機能です。プロセスビルダーは廃止方向のため、現行ではレコードトリガーフロー（フロー）による権限セットの自動割り当てが推奨されます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
     "multi": true,
     "domain": "logic",
-    "keywords": ["権限セットの自動割り当て", "フロー", "プロセスビルダー", "新規ユーザー"],
+    "keywords": [
+      "権限セットの自動割り当て",
+      "フロー",
+      "プロセスビルダー",
+      "新規ユーザー"
+    ],
     "_verify": "正解の片方がプロセスビルダー前提で旧機能。現行はフロー単独で完結するため設問の妥当性に注意。"
   },
   {
@@ -763,10 +948,15 @@
       "クロスオブジェクト数式項目"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 積み上げ集計項目　これは不正解です。積み上げ集計項目は、関連する従レコードの件数を計算します。または、従レコードで項目の合計、最小値、または最大値を計算するために使用されます。取引先の情報を表示するためには適していません。\n\n□ クロスオブジェクト数式項目　これは正解です。クロスオブジェクト数式項目は、関連するオブジェクトの項目の値を参照して、一つのオブジェクトのレコードに表示するために使用されます。商談と取引先は既に標準的な関連を持っているため、この数式項目を使って取引先の情報を商談レコードに直接表示することができます。\n\n□ プロセスビルダー　これは不正解です。プロセスビルダーは、特定の条件に基づいて自動的なアクション（項目の更新、レコードの作成、フローの起動など）を実行するために使用されますが、レコード間での情報の表示には直接適していません。\n\n□ ワークフロールール　これは不正解です。ワークフロールールは、特定の条件が満たされた時に自動的なアクション（項目の更新、メール通知、タスクの作成など）をトリガーしますが、これもレコード間での情報の表示には直接適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_formuladef.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["クロスオブジェクト数式項目", "商談", "取引先", "数式項目"]
+    "keywords": [
+      "クロスオブジェクト数式項目",
+      "商談",
+      "取引先",
+      "数式項目"
+    ]
   },
   {
     "id": 40,
@@ -785,7 +975,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_embed_chartdialog_contextfilter.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["レポートグラフ", "ページレイアウト", "絞り込み", "ID項目"]
+    "keywords": [
+      "レポートグラフ",
+      "ページレイアウト",
+      "絞り込み",
+      "ID項目"
+    ]
   },
   {
     "id": 41,
@@ -804,7 +999,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.create_test_instance.htm&type=5",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["サンドボックス", "Full Sandbox", "負荷テスト", "パフォーマンステスト"]
+    "keywords": [
+      "サンドボックス",
+      "Full Sandbox",
+      "負荷テスト",
+      "パフォーマンステスト"
+    ]
   },
   {
     "id": 42,
@@ -824,7 +1024,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_about_sharing_rules.htm&type=5",
     "multi": true,
     "domain": "fund",
-    "keywords": ["共有ルール", "ロール", "公開グループ", "組織の共有設定"]
+    "keywords": [
+      "共有ルール",
+      "ロール",
+      "公開グループ",
+      "組織の共有設定"
+    ]
   },
   {
     "id": 43,
@@ -844,7 +1049,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.notes_on_changing_custom_field_types.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["データ型の変更", "選択リスト", "テキスト項目", "データバックアップ"]
+    "keywords": [
+      "データ型の変更",
+      "選択リスト",
+      "テキスト項目",
+      "データバックアップ"
+    ]
   },
   {
     "id": 44,
@@ -863,7 +1073,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.apps_lightning_utilities.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["ユーティリティバー", "営業コンソール", "Lightningアプリ", "コンポーネント"]
+    "keywords": [
+      "ユーティリティバー",
+      "営業コンソール",
+      "Lightningアプリ",
+      "コンポーネント"
+    ]
   },
   {
     "id": 45,
@@ -882,7 +1097,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_defining_summary_fields.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["積み上げ集計項目", "主従関係", "参照関係", "カスタムオブジェクト"]
+    "keywords": [
+      "積み上げ集計項目",
+      "主従関係",
+      "参照関係",
+      "カスタムオブジェクト"
+    ]
   },
   {
     "id": 46,
@@ -902,7 +1122,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.import_currency.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["データローダー", "マルチ通貨", "通貨ISOコード", "データインポート"]
+    "keywords": [
+      "データローダー",
+      "マルチ通貨",
+      "通貨ISOコード",
+      "データインポート"
+    ]
   },
   {
     "id": 47,
@@ -924,7 +1149,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_controlling_access_using_hierarchies.htm&type=5",
     "multi": true,
     "domain": "fund",
-    "keywords": ["共有設定", "組織全体のデフォルト", "共有ルール", "ロール階層"]
+    "keywords": [
+      "共有設定",
+      "組織全体のデフォルト",
+      "共有ルール",
+      "ロール階層"
+    ]
   },
   {
     "id": 48,
@@ -943,7 +1173,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions_addmonths.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["数式項目", "ADDMONTHS関数", "日付計算", "プロセスビルダー"]
+    "keywords": [
+      "数式項目",
+      "ADDMONTHS関数",
+      "日付計算",
+      "プロセスビルダー"
+    ]
   },
   {
     "id": 49,
@@ -962,7 +1197,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_field_validation.htm&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "商談フェーズ", "必須項目", "データ整合性"]
+    "keywords": [
+      "入力規則",
+      "商談フェーズ",
+      "必須項目",
+      "データ整合性"
+    ]
   },
   {
     "id": 50,
@@ -981,10 +1221,15 @@
       "公開グループ"
     ],
     "explanation": "個々のレコードを手動で共有するためのオプションはユーザー、ロール、および公開グループです。これらのオプションを使用することで、非公開のカスタムオブジェクトのレコードを特定の人またはグループと効果的に共有できます。\n\nそれぞれの選択肢の理由について説明します。\n\n□ 権限セット　これは不正解です。権限セットは、ユーザーに対して追加のアクセス権を提供するために使用されますが、個々のレコードの共有には直接使用されません。権限セットは、アクセスレベルを拡張するために使用されるもので、具体的なレコードの共有設定には影響しません。\n\n□ ユーザー　これは正解です。Salesforceでは、レコードの共有ルールや手動共有を通じて、特定のレコードを特定のユーザーと共有することが可能です。これにより、非公開のカスタムオブジェクトのレコードを、必要に応じて個別に共有できます。\n\n□ ロール　これは正解です。ロール階層を使用して、特定のロールに属するユーザーグループに対してレコードアクセスを設定することができます。これは、組織内の階層的なアクセス管理を実現するために有効な手段です。\n\n□ プロファイル　これは不正解です。プロファイルは、ユーザーの役割や職務に基づくアクセス権を定義するものであり、オブジェクトレベルや項目レベルのアクセスを制御しますが、個別のレコードを手動で共有する目的で使用されるものではありません。\n\n□ 公開グループ　これは正解です。公開グループは、特定のレコードをグループ内のユーザーと共有するために使用できます。これにより、非公開のカスタムオブジェクトのレコードを、グループ内のユーザーと効率的に共有することができます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
     "multi": true,
     "domain": "fund",
-    "keywords": ["手動共有", "公開グループ", "ロール", "非公開"]
+    "keywords": [
+      "手動共有",
+      "公開グループ",
+      "ロール",
+      "非公開"
+    ]
   },
   {
     "id": 51,
@@ -1003,7 +1248,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["主従関係", "オブジェクトリレーション", "親レコードに連動", "参照関係"]
+    "keywords": [
+      "主従関係",
+      "オブジェクトリレーション",
+      "親レコードに連動",
+      "参照関係"
+    ]
   },
   {
     "id": 52,
@@ -1022,7 +1272,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.faq_import_general.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["データローダー", "大量インポート", "データインポートウィザード", "件数制限"]
+    "keywords": [
+      "データローダー",
+      "大量インポート",
+      "データインポートウィザード",
+      "件数制限"
+    ]
   },
   {
     "id": 53,
@@ -1041,7 +1296,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.customize_cross_object.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["クロスオブジェクト数式項目", "選択リスト", "商談", "親子参照"]
+    "keywords": [
+      "クロスオブジェクト数式項目",
+      "選択リスト",
+      "商談",
+      "親子参照"
+    ]
   },
   {
     "id": 54,
@@ -1058,10 +1318,15 @@
       "表示された取引先検索レイアウトの検索結果列を更新する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 取引先検索レイアウトの検索フィルターを更新する。　これは正解です。検索フィルターを更新することで、エンドユーザーがより簡単に特定の条件に合致する取引先を見つけることができるようになります。例えば、業界や地域などの特定の項目に基づいて絞り込むことが可能になり、類似した会社名を持つ異なる取引先を区別しやすくなります。\n\n□ 表示された取引先検索レイアウトの取引先タブ列を更新する。　これは不正解です。この機能では取引先レコードを昇順や降順に並べ替えは可能ですが、特定の企業の絞り込みには対応していません。そのため、似た名前を持つ多くの取引先から特定の企業を見つけるための検索エクスペリエンスを具体的に向上させる効果は限られています。\n\n□ 表示された取引先検索レイアウトの検索結果列を更新する。　これは正解です。検索結果から、任意の項目の絞り込みを行うことで、検索結果から特定の値を持つ項目を絞り込むことができます。これにより、似たような名前の取引先の中から適切なレコードを選択しやすくなります。\n\n□ 取引先検索レイアウトのリストビューのフィルター設定を更新する。　これは不正解です。取引先検索レイアウトの設定とリストビューのフィルターは関連していません。また、リストビューのフィルター設定を更新することは、特定のビュー内で表示されるレコードを制御するものであり、検索機能そのものや検索結果の表示方法には直接影響しません。このアクションは、検索エクスペリエンスを直接改善するものではありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customizing_search_layouts.htm&language=ja&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["検索レイアウト", "検索フィルター", "検索結果列", "取引先"]
+    "keywords": [
+      "検索レイアウト",
+      "検索フィルター",
+      "検索結果列",
+      "取引先"
+    ]
   },
   {
     "id": 55,
@@ -1081,7 +1346,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["主従関係", "参照関係", "積み上げ集計", "宣言的"]
+    "keywords": [
+      "主従関係",
+      "参照関係",
+      "積み上げ集計",
+      "宣言的"
+    ]
   },
   {
     "id": 56,
@@ -1101,7 +1371,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["外部オブジェクト", "外部参照関係", "間接参照関係", "リレーション"]
+    "keywords": [
+      "外部オブジェクト",
+      "外部参照関係",
+      "間接参照関係",
+      "リレーション"
+    ]
   },
   {
     "id": 57,
@@ -1120,7 +1395,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions_text.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["数式項目", "TEXT関数", "選択リスト", "クロスオブジェクト"]
+    "keywords": [
+      "数式項目",
+      "TEXT関数",
+      "選択リスト",
+      "クロスオブジェクト"
+    ]
   },
   {
     "id": 58,
@@ -1136,10 +1416,15 @@
       "取引先オブジェクトのクイックアクション"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 商談の更新をトリガーとするプロセスビルダー　これは不正解です。プロセスビルダーは、レコードの作成ではなく更新をトリガーとするため、新規商談を作成する要件には適していません。また、取引先の情報を基に自動入力する仕組みも持たず、ユーザーが手動で入力する項目を許容する設計にはできません。\n\n□ 取引先の更新をトリガーとするプロセスビルダー　これは不正解です。取引先が更新された際に自動で商談を作成することは可能ですが、ユーザーの入力を求めることができないため、要件を満たしません。また、取引先の更新がトリガーとなるため、ユーザーが必要なタイミングで商談を作成する柔軟性がありません。\n\n□ 取引先オブジェクトのクイックアクション　これは正解です。取引先オブジェクトにクイックアクションを設定すると、取引先レコードから直接商談を作成できます。クイックアクションでは、取引先の情報を商談の項目に自動入力できるため、入力の手間が削減されます。また、ユーザーが手動で入力する項目も設定できるため、完全自動ではなく、必要な情報を適宜入力する柔軟な運用が可能です。さらに、作業中の取引先レコードから直接商談を作成できるため、スムーズな業務フローを実現できます。\n\n【注意】不正解選択肢にプロセスビルダーが含まれますが、現行ではレコードトリガーフロー(フロー)が推奨される旧機能です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_global.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["クイックアクション", "商談作成", "自動入力", "取引先"]
+    "keywords": [
+      "クイックアクション",
+      "商談作成",
+      "自動入力",
+      "取引先"
+    ]
   },
   {
     "id": 59,
@@ -1155,10 +1440,15 @@
       "パッチ"
     ],
     "explanation": "以下は、パッチリリース、マイナーリリース、メジャーリリースについての簡潔なまとめです。\n\n□ パッチリリース　バグ修正や簡単な変更に焦点を当てたリリース。レポート、ダッシュボード、リストビュー、メールテンプレートなどの小規模な更新が含まれます。迅速な対応が可能で、広範なテストや変更管理プロセスは必要ありません。\n\n□ マイナーリリース　限定的な影響を持つ軽微な変更を伴うリリース。例えば、1つのビジネスプロセスにのみ影響する新しいトリガーが該当します。これらの変更にはテストが必要ですが、トレーニングや変更管理の必要性は限定的です。マイナーリリースは数週間以内に実施されることが一般的です。\n\n□ メジャーリリース　多大な影響を及ぼす大規模な変更を伴うリリース。これには、複数のビジネスプロセスに影響を与える変更が含まれ、ユーザーエクスペリエンスやデータ品質に重大な影響を及ぼす可能性があります。メジャーリリースでは、綿密なテスト、トレーニング、および慎重な変更管理が要求されます。これらは通常、四半期に1回(Salesforceの場合は年3回)実施されます。\n\nそれぞれの選択肢の理由について説明します。\n\n□ マイナー　これは不正解です。マイナーリリースは、新機能の追加や既存機能の拡張など、比較的小規模な変更を含むアップデートを指します。しかし、バグ修正や単純な変更に特化したカテゴリーではありません。\n\n□ ロールバック　これは不正解です。ロールバックは、リリースや変更が原因で問題が発生した場合に、システムを以前の状態に戻すプロセスを指します。これはバグ修正や変更を扱うカテゴリーではなく、問題発生後の対応策を指す用語です。\n\n□ パッチ　これは正解です。パッチリリースは、バグ修正や単純な変更を扱う主なカテゴリーです。これらは、既存の機能の小さな改善やエラーの修正を目的としており、システムの機能性に影響を与えることなく迅速にデプロイされることが多いです。\n\n□ メジャー　これは不正解です。メジャーリリースは、大規模な新機能追加やアプリケーションの大幅な改善を含むリリースを指します。バグ修正や単純な変更を主に扱うカテゴリーではありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.release_updates_manage.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["リリース管理", "パッチリリース", "アプリケーションライフサイクル", "変更管理"]
+    "keywords": [
+      "リリース管理",
+      "パッチリリース",
+      "アプリケーションライフサイクル",
+      "変更管理"
+    ]
   },
   {
     "id": 60,
@@ -1174,10 +1464,15 @@
       "ComponentにProductへの参照関係を作成し、ProductページレイアウトにComponent関連リストを追加する。"
     ],
     "explanation": "この問題のポイントは、ComponentとProductの間の関係性を正確に理解し、どちらが親(主)オブジェクトでどちらが子(従)オブジェクトとなるかを判断することです。関連リストとして表示するためには、親(または主)オブジェクト側のページレイアウトに子(または従)オブジェクトのリレーション項目を関連リストとして追加することが必要なため、ComponentにProductへの参照関係(または主従関係)を作成し、ProductページレイアウトにComponentの関連リストを追加することが適切なアプローチとなります。\n\nそれぞれの選択肢の理由について説明します。\n\n□ ProductにComponentへの主従関係を作成し、ProductページレイアウトにComponent関連リストを追加する。　これは不正解です。このアプローチでは、主従関係はComponentがProductに従属する形を意味しますが、関連リストを表示するためには、ComponentオブジェクトにProductへの参照(主従または参照関係)が必要です。この選択肢は、関係の定義が逆になっています。\n\n□ ComponentにProductへの参照関係を作成し、ProductページレイアウトにComponent関連リストを追加する。　これは正解です。ComponentオブジェクトにProductへの参照関係を作成することで、Componentレコードは特定のProductレコードに関連付けられます。そして、ProductページレイアウトにComponentの関連リストを追加することで、Productレコードに紐づいたComponentレコードを関連リストとして表示できます。\n\n□ 連結オブジェクトを作成し、ComponentとProductを関連付ける。Component関連リストをProductページレイアウトに追加する。　これは不正解です。このシナリオでは、連結オブジェクト(多対多の関係を作成するために使用されるオブジェクト)の作成は必要ありません。ComponentがProductに直接関連付けられる単純な参照関係で要件を満たすことができます。\n\n□ Productに積み上げ集計項目を作成し、Component関連リストをProductページレイアウトに追加する。　これは不正解です。積み上げ集計項目は、主従関係を作成したうえで、主レコード側に従レコードの項目の合計、最小値、または最大値を計算するために使用されますが、関連するレコードのリストを表示するためには使用されません。したがって、このアプローチでは要件を満たせません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["参照関係", "関連リスト", "親子オブジェクト", "ページレイアウト"]
+    "keywords": [
+      "参照関係",
+      "関連リスト",
+      "親子オブジェクト",
+      "ページレイアウト"
+    ]
   },
   {
     "id": 61,
@@ -1196,7 +1491,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.lightning_page_components.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["Lightningレコードページ", "Chatterフィード", "標準コンポーネント", "Lightningアプリケーションビルダー"]
+    "keywords": [
+      "Lightningレコードページ",
+      "Chatterフィード",
+      "標準コンポーネント",
+      "Lightningアプリケーションビルダー"
+    ]
   },
   {
     "id": 62,
@@ -1212,10 +1512,15 @@
       "キャンペーン階層とキャンペーン統計を設定する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 取引先階層と積み上げ集計項目を利用する。　これは不正解です。取引先階層と積み上げ集計項目は取引先に関連するデータの集計には有効ですが、広告購入に対する投資収益率を直接測定するためのものではありません。\n\n□ 公開セキュリティモデルに変更する。　これは不正解です。セキュリティモデルの変更は、レコードの可視性やアクセス制御に関わりますが、広告購入の投資収益率の測定に直接寄与するものではありません。\n\n□ 商談パイプラインレポートを実行する。　これは不正解です。商談パイプラインレポートは、現在の商談の状況や進捗を把握するために有用ですが、特定の広告購入に対する投資収益率を把握するためには、キャンペーンとその影響を追跡する機能が必要です。\n\n□ キャンペーン階層とキャンペーン統計を設定する。　これは正解です。Salesforceでの「キャンペーン統計の設定」は、特定のツールやメニューを指すのではなく、キャンペーンに関連する一連の活動とデータ入力のプロセスを指します。キャンペーン階層とキャンペーン統計を使用することにより、キャンペーンのパフォーマンスと投資収益率を効果的に分析できます。広告購入は通常、マーケティングキャンペーンの一部として行われるため、このアプローチは広告購入に対する投資収益率を理解するのに適しています。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.campaigns_hierarchy.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["キャンペーン階層", "キャンペーン統計", "投資収益率", "ROI"]
+    "keywords": [
+      "キャンペーン階層",
+      "キャンペーン統計",
+      "投資収益率",
+      "ROI"
+    ]
   },
   {
     "id": 63,
@@ -1231,10 +1536,15 @@
       "ページ構造は、レコードページを表示するために使用されるデバイスに自動的に適応する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ テンプレートは初回保存後に変更することができない。　これは不正解です。Lightningレコードページのテンプレートは、初回保存後でも「編集」モードで変更できます。必要に応じて新しいテンプレートに切り替えることが可能です。このため、テンプレートが固定されるという制約はありません。\n\n□ レコードページを表示するには、ユーザーがオブジェクトに対する[すべてのデータの参照]権限を持っている必要がある。　これは不正解です。レコードページを表示するために[すべてのデータの参照]権限は必要ありません。ユーザーは、対象オブジェクトに対する最低限の「参照」権限を持っていればレコードページを閲覧できます。\n\n□ ページ構造は、レコードページを表示するために使用されるデバイスに自動的に適応する。　これは正解です。Lightningレコードページのテンプレートはレスポンシブデザインを採用しており、デバイスの種類や画面サイズに応じて自動的に構造が調整されます。これにより、ユーザーエクスペリエンスがデスクトップ、タブレット、モバイルで最適化されます。\n\n□ ユーザーがレコードページを表示するために使用するデバイスごとに新しいテンプレートを選択する必要がある。　これは不正解です。Lightningレコードページはレスポンシブデザインを採用しているため、デバイスごとに別のテンプレートを設定する必要はありません。1つのテンプレートで、複数のデバイスに対応できます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lightning_app_builder_customize_lex_pages.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["Lightningレコードページ", "テンプレート", "レスポンシブデザイン", "デバイス対応"]
+    "keywords": [
+      "Lightningレコードページ",
+      "テンプレート",
+      "レスポンシブデザイン",
+      "デバイス対応"
+    ]
   },
   {
     "id": 64,
@@ -1253,7 +1563,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions_parent.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["数式項目", "LEFT関数", "クロスオブジェクト", "テキスト抽出"]
+    "keywords": [
+      "数式項目",
+      "LEFT関数",
+      "クロスオブジェクト",
+      "テキスト抽出"
+    ]
   },
   {
     "id": 65,
@@ -1273,7 +1588,12 @@
     "reference_url": "https://trailhead.salesforce.com/ja/content/learn/projects/build-a-discount-approval-process",
     "multi": true,
     "domain": "logic",
-    "keywords": ["承認プロセス", "レコードロック", "承認ステップ", "条件設定"]
+    "keywords": [
+      "承認プロセス",
+      "レコードロック",
+      "承認ステップ",
+      "条件設定"
+    ]
   },
   {
     "id": 66,
@@ -1292,7 +1612,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_functions_priorvalue.htm&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "PRIORVALUE", "数式関数", "値の変更制御"]
+    "keywords": [
+      "入力規則",
+      "PRIORVALUE",
+      "数式関数",
+      "値の変更制御"
+    ]
   },
   {
     "id": 67,
@@ -1311,7 +1636,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=000386212&type=1",
     "multi": false,
     "domain": "data",
-    "keywords": ["クロスオブジェクト数式", "選択リスト", "TEXT関数", "数式項目"]
+    "keywords": [
+      "クロスオブジェクト数式",
+      "選択リスト",
+      "TEXT関数",
+      "数式項目"
+    ]
   },
   {
     "id": 68,
@@ -1331,7 +1661,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&type=5",
     "multi": true,
     "domain": "data",
-    "keywords": ["主従関係", "参照関係", "リレーション変換", "カスタムオブジェクト"]
+    "keywords": [
+      "主従関係",
+      "参照関係",
+      "リレーション変換",
+      "カスタムオブジェクト"
+    ]
   },
   {
     "id": 69,
@@ -1350,7 +1685,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_validation_considerations.htm&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["入力規則", "ワークフロールール", "処理順序", "項目更新"],
+    "keywords": [
+      "入力規則",
+      "ワークフロールール",
+      "処理順序",
+      "項目更新"
+    ],
     "_verify": "ワークフロールールが前提の設問。旧機能のため現行のレコードトリガーフローへの読み替えが必要。"
   },
   {
@@ -1367,10 +1707,15 @@
       "保存後のレコードトリガーフロー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 保存後のレコードトリガーフロー　これは正解です。保存後のレコードトリガーフローはレコードの保存が完了した後に実行されるため、確定したデータに基づいて処理を行えます。このタイミングではApexや外部サービスとの連携も許可されているため、在庫の更新完了後にWebサイトに通知する要件に最適です。\n\n□ 保存前のレコードトリガーフロー　これは不正解です。保存前のフローはレコードが保存される前に動作し、まだレコードが確定しておらずApexや外部サービスとの連携は許可されていません。在庫更新後にSOAP Webサービスを呼び出す要件には適しません。\n\n□ プロセスビルダー　これは不正解です。プロセスビルダーは外部のSOAPウェブサービスを直接呼び出す機能をサポートしていません。また現在はフローへの移行が推奨されており新規開発には非推奨です。\n\n□ ワークフロールール　これは不正解です。ワークフロールールは通知や項目更新、ToDo作成などに使用されますが、外部のWebサービスを呼び出す機能はありません。また現在はフローへの移行が推奨されており新規開発には非推奨です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["レコードトリガーフロー", "保存後フロー", "外部連携", "SOAP"]
+    "keywords": [
+      "レコードトリガーフロー",
+      "保存後フロー",
+      "外部連携",
+      "SOAP"
+    ]
   },
   {
     "id": 71,
@@ -1389,7 +1734,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sharing_across_objects.htm&type=5",
     "multi": false,
     "domain": "fund",
-    "keywords": ["暗黙的な共有", "共有モデル", "手動共有", "非公開"]
+    "keywords": [
+      "暗黙的な共有",
+      "共有モデル",
+      "手動共有",
+      "非公開"
+    ]
   },
   {
     "id": 72,
@@ -1405,10 +1755,15 @@
       "最初の商談ページレイアウトで、商談の種別項目を必須項目にし、商談の種別項目に基づいてレコードタイプを更新するために、種別項目に入力する自動化を使用する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 共有ルールを使用して新しい項目をユーザーと共有する　これは不正解です。共有ルールはレコードのアクセス権を管理するものであり、ページレイアウトや項目の表示を制御する機能はありません。\n\n□ ユーザープロファイルに基づいて種別項目ごとに異なるページレイアウトを使用する　これは不正解です。プロファイルに基づくレイアウト変更は可能ですが、商談作成時に動的にレイアウトを変更することはできません。レイアウトはレコードタイプまたはプロファイルに固定的に関連付けられます。\n\n□ 追加セクションを非表示にし、ユーザーが手動でセクションを展開する　これは不正解です。Salesforceではページレイアウト上のセクションをユーザーが動的に表示・非表示にする機能は提供しておらず、ページレイアウトは静的です。\n\n□ 種別項目を必須項目にし、種別項目に基づいてレコードタイプを更新する自動化を使用する　これは正解です。商談の種別項目を必須とし、これに基づく自動化（フローなど）でレコードタイプを更新することで、追加項目を含む異なるページレイアウトに切り替えられます。これにより初期入力後に完全なレコードページを表示する要件を満たせます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_record_types.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["ページレイアウト", "レコードタイプ", "必須項目", "自動化"]
+    "keywords": [
+      "ページレイアウト",
+      "レコードタイプ",
+      "必須項目",
+      "自動化"
+    ]
   },
   {
     "id": 73,
@@ -1427,7 +1782,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.schema_builder_elements_fields.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["スキーマビルダー", "ページレイアウト", "項目追加", "カスタムオブジェクト"]
+    "keywords": [
+      "スキーマビルダー",
+      "ページレイアウト",
+      "項目追加",
+      "カスタムオブジェクト"
+    ]
   },
   {
     "id": 74,
@@ -1444,10 +1804,15 @@
       "[設定]の[Lightning コンポーネント]"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ [設定]の[Visualforce コンポーネント]　これは不正解です。Visualforce コンポーネントはVisualforceページの開発に使用されるコンポーネントであり、Lightningコンポーネントとは異なります。ここではLightningコンポーネントのリストを確認できません。\n\n□ Lightning アプリケーションビルダー　これは正解です。Lightning アプリケーションビルダーはカスタムLightningページを作成・編集するツールで、利用可能な標準コンポーネントとカスタムLightningコンポーネントの一覧がページ編集画面のサイドバーに表示され、直接ドラッグ＆ドロップして使用できます。\n\n□ [設定]の[Lightning コンポーネント]　これは正解です。[設定]の[Lightning コンポーネント]セクションでは、組織内のすべてのカスタムLightningコンポーネントを一覧で確認でき、各コンポーネントの詳細確認や管理も行えます。\n\n□ Lightning コンポーネントジェネレーター　これは不正解です。Lightning コンポーネントジェネレーターというツールはSalesforceの標準機能としては存在しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lightning_app_builder_overview.htm&language=ja&type=5",
     "multi": true,
     "domain": "ui",
-    "keywords": ["Lightningコンポーネント", "Lightningアプリケーションビルダー", "設定", "コンポーネント一覧"]
+    "keywords": [
+      "Lightningコンポーネント",
+      "Lightningアプリケーションビルダー",
+      "設定",
+      "コンポーネント一覧"
+    ]
   },
   {
     "id": 75,
@@ -1466,7 +1831,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_cross_object.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["クロスオブジェクト数式", "親レコード", "数式項目", "リレーション参照"]
+    "keywords": [
+      "クロスオブジェクト数式",
+      "親レコード",
+      "数式項目",
+      "リレーション参照"
+    ]
   },
   {
     "id": 76,
@@ -1485,7 +1855,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.lightning_app_builder_create_dynamic_action.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["動的アクション", "Lightningレコードページ", "アクションボタン", "条件表示"]
+    "keywords": [
+      "動的アクション",
+      "Lightningレコードページ",
+      "アクションボタン",
+      "条件表示"
+    ]
   },
   {
     "id": 77,
@@ -1504,7 +1879,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.managing_the_sharing_model.htm&type=5",
     "multi": false,
     "domain": "fund",
-    "keywords": ["組織の共有設定", "非公開", "コミュニティ", "レコードアクセス"]
+    "keywords": [
+      "組織の共有設定",
+      "非公開",
+      "コミュニティ",
+      "レコードアクセス"
+    ]
   },
   {
     "id": 78,
@@ -1523,7 +1903,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_creating_global_picklists.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["グローバル選択リスト値セット", "選択リスト", "値の共有", "カスタムオブジェクト"]
+    "keywords": [
+      "グローバル選択リスト値セット",
+      "選択リスト",
+      "値の共有",
+      "カスタムオブジェクト"
+    ]
   },
   {
     "id": 79,
@@ -1539,10 +1924,15 @@
       "関連項目を含む独自のページレイアウトを持つ3つのリードレコードタイプを作成する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 関連項目を含む独自のページレイアウトを持つ3つのリードレコードタイプを作成する。　これは正解です。リードレコードタイプごとに独自のページレイアウトを設定することで、各ソースに固有の項目を表示することができます。これにより、各リードソースに適した情報のみをユーザーに提示することが可能になります。これは、異なるソースからのリードに対して特有の情報を効率的に管理するための最良の方法です。\n\n□ リードレイアウトに3つのセクションを作成し、関連性のない項目は折りたたむようにユーザーに指示する。　これは不正解です。この方法は、ページ上の情報を整理するための一時的な解決策に過ぎません。ユーザーが関連性のない情報を手動で折りたたむ必要があるため、ユーザービリティが低下し、データ入力の誤りが生じる可能性があります。\n\n□ パートナーコミュニティと、ウェブおよび展示会リード用のレコードタイプを作成する。　これは不正解です。このアプローチは、すべてのソースに対して2つのレコードタイプしか提供しないため、Universal Containers社の要件を完全に満たしていません。3つの異なるソースがあるため、各ソースに適したレコードタイプが必要です。\n\n□ 関連項目のみを含む、リードのタイプごとのカスタムページレイアウトを作成する。　これは不正解です。各リードの種類に応じて関連項目のみを含むカスタムページレイアウトを作成することで、アプリケーションビルダーはリードが提供する情報をソースに基づいて適切に管理できます。ただし、このアプローチを実現するためには、最初の選択肢で述べたように、リードレコードタイプと組み合わせて使用する必要があります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_record_types.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["レコードタイプ", "ページレイアウト", "リード", "データ管理"]
+    "keywords": [
+      "レコードタイプ",
+      "ページレイアウト",
+      "リード",
+      "データ管理"
+    ]
   },
   {
     "id": 80,
@@ -1559,10 +1949,15 @@
       "[すべて表示]と[すべての変更]の商談のアクセス権限を有効にした権限セットを追加する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 営業オペレーションチームの各ユーザーと、すべての商談の手動共有を追加する。　これは不正解です。手動共有は非常に労力がかかり、新しい商談が作成されるたびに共有を更新する必要があります。大規模な組織や頻繁に商談が作成される環境では、この方法は実用的ではありません。\n\n□ 条件に基づく共有ルールを作成し、すべての商談を営業オペレーションの非公開グループと共有する。　これは不正解です。共有ルールは、公開グループ、ロール、またはテリトリー内のユーザーへの共有アクセス権を拡張するために使用されますが、非公開グループは共有ルールでの共有先として選択することはできません。\n\n□ 条件に基づく共有ルールを作成し、すべての商談を営業オペレーションの公開グループと共有する。　これは正解です。共有ルールは[参照のみ]、[参照・更新]などの異なるアクセスレベルを設定することが可能です。この場合、[参照・更新]のオプションを選択することで、営業オペレーションチームは商談データへの参照および更新アクセスを得ることができます。\n\n□ [すべて表示]と[すべての変更]の商談のアクセス権限を有効にした権限セットを追加する。　これは正解です。権限セットに[すべて表示]と[すべての変更]の権限を付与することで、営業オペレーションチームに商談データへの全体的な参照と編集アクセスを提供できます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
     "multi": true,
     "domain": "fund",
-    "keywords": ["共有ルール", "公開グループ", "権限セット", "すべて表示"]
+    "keywords": [
+      "共有ルール",
+      "公開グループ",
+      "権限セット",
+      "すべて表示"
+    ]
   },
   {
     "id": 81,
@@ -1581,7 +1976,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.reports_report_type_setup.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["カスタムレポートタイプ", "主オブジェクト", "レポート", "変更不可"]
+    "keywords": [
+      "カスタムレポートタイプ",
+      "主オブジェクト",
+      "レポート",
+      "変更不可"
+    ]
   },
   {
     "id": 82,
@@ -1600,7 +2000,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_distribute_deploy_active.htm&type=5",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["フロー", "Apexテストカバレッジ", "デプロイ", "本番環境"]
+    "keywords": [
+      "フロー",
+      "Apexテストカバレッジ",
+      "デプロイ",
+      "本番環境"
+    ]
   },
   {
     "id": 83,
@@ -1619,7 +2024,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.notes_on_changing_custom_field_types.htm&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["データ型変更", "テキストエリア", "255文字", "切り捨て"]
+    "keywords": [
+      "データ型変更",
+      "テキストエリア",
+      "255文字",
+      "切り捨て"
+    ]
   },
   {
     "id": 84,
@@ -1639,7 +2049,12 @@
     "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.salesforce_large_data_volumes_bp.meta/salesforce_large_data_volumes_bp/ldv_deployments_infrastructure_indexes.htm",
     "multi": true,
     "domain": "data",
-    "keywords": ["外部ID", "データ型", "データインポート", "数値・テキスト"]
+    "keywords": [
+      "外部ID",
+      "データ型",
+      "データインポート",
+      "数値・テキスト"
+    ]
   },
   {
     "id": 85,
@@ -1655,10 +2070,15 @@
       "レコードトリガーフロー"
     ],
     "explanation": "今回のCloud Kicks社の要件は、商談の[フェーズ]が[成立(Closed Won)]に変更された際の更新商談の自動作成と、Salesforce外部の契約チームへの通知の2点です。この2つを解決する自動化ソリューションを見つける必要があります。\n\n□ アウトバウンドメッセージ　これは不正解です。アウトバウンドメッセージはワークフロールールと連携してSalesforce外のシステムに情報を送信する機能ですが、単独では新しい商談を作成できません。\n\n□ レコードトリガーフロー　これは正解です。レコードトリガーフローを使用すれば、商談の[フェーズ]が[成立(Closed Won)]に変更された際に自動的に更新用の商談を作成でき、契約チームへの通知も同じフロー内で実行できるため、要件を満たす最適な選択肢です。\n\n□ 入力規則　これは不正解です。入力規則はレコードの作成や更新時に条件を満たさない場合に保存を防ぐ仕組みで、新しい商談の作成や外部通知はできません。\n\n□ 承認プロセス　これは不正解です。承認プロセスは特定の条件を満たしたレコードに承認を求めるワークフローで、新しい商談の作成や契約チームへの自動通知には適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
-    "keywords": ["レコードトリガーフロー", "自動化", "商談", "外部通知"]
+    "keywords": [
+      "レコードトリガーフロー",
+      "自動化",
+      "商談",
+      "外部通知"
+    ]
   },
   {
     "id": 86,
@@ -1677,7 +2097,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_feed_tracking_overview.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["フィード追跡", "Chatter", "項目変更", "カスタムオブジェクト"]
+    "keywords": [
+      "フィード追跡",
+      "Chatter",
+      "項目変更",
+      "カスタムオブジェクト"
+    ]
   },
   {
     "id": 87,
@@ -1693,10 +2118,15 @@
       "Partial Copy Sandbox"
     ],
     "explanation": "今回の問題のポイントは、各選択肢のサンドボックスでSandbox テンプレートが使用できるかどうかです。Developer SandboxとDeveloper Pro Sandboxはテンプレート利用不可、Partial Copy Sandboxはテンプレート必須(メタデータとサンプルデータをコピー)、Full Sandboxは利用可です。\n\n□ Developer Sandbox　これは不正解です。Developer Sandboxはメタデータのみをコピーし、データセットを含められません。Sandboxテンプレートも使用できないため要件を満たせません。\n\n□ Partial Copy Sandbox　これは正解です。Partial Copy Sandboxは本番環境からのデータセットのサブセットを含めることが可能で、Sandbox テンプレートを使用して取引先、プロジェクト、プロジェクトマイルストーンなどの特定のデータを含める設定ができるため、フローの再構成やテストに最適です。\n\n□ Developer Pro Sandbox　これは不正解です。Developer Pro SandboxはDeveloper Sandboxより多くのストレージを提供しますが、データセットを含める機能やSandboxテンプレートの利用はできません。\n\n□ スクラッチ組織　これは不正解です。スクラッチ組織は短期間の開発やCI/CD用であり、本番データやテンプレートを使用する要件には適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
-    "keywords": ["Partial Copy Sandbox", "サンドボックス", "テンプレート", "テスト環境"]
+    "keywords": [
+      "Partial Copy Sandbox",
+      "サンドボックス",
+      "テンプレート",
+      "テスト環境"
+    ]
   },
   {
     "id": 88,
@@ -1715,7 +2145,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=xcloud.lex_platform_support.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["Lightningコンポーネント", "モバイル", "レコードページ", "互換性"]
+    "keywords": [
+      "Lightningコンポーネント",
+      "モバイル",
+      "レコードページ",
+      "互換性"
+    ]
   },
   {
     "id": 89,
@@ -1735,7 +2170,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.changesets_inbound_deploy.htm&type=5",
     "multi": true,
     "domain": "deploy",
-    "keywords": ["変更セット", "デプロイ", "ロールバック", "本番環境"]
+    "keywords": [
+      "変更セット",
+      "デプロイ",
+      "ロールバック",
+      "本番環境"
+    ]
   },
   {
     "id": 90,
@@ -1754,7 +2194,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=000392569&type=1",
     "multi": false,
     "domain": "logic",
-    "keywords": ["承認プロセス", "自動化", "フロー", "商談"],
+    "keywords": [
+      "承認プロセス",
+      "自動化",
+      "フロー",
+      "商談"
+    ],
     "_verify": "解説でプロセスビルダー（旧機能）がフローと並列で正解手段として記載されているため、現行推奨機能の注記を追加した。"
   },
   {
@@ -1771,10 +2216,15 @@
       "主従関係の従オブジェクト"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ロングテキストエリア　これは不正解です。ロングテキストエリアは大量のテキストデータを格納するために使用されますが、関連レコードの最大値を計算したり集計したりする機能はありません。\n\n□ 複数選択リスト　これは不正解です。複数選択リストはユーザーが複数の値を選択できるリスト形式の項目であり、数値の比較や集計を行う機能はありません。\n\n□ 参照関係の子オブジェクト　これは不正解です。参照関係はオブジェクト同士を関連付ける関係ですが、親オブジェクト(Property__c)で子オブジェクト(Offer__c)の数値を集計する機能はありません。\n\n□ 主従関係の従オブジェクト　これは正解です。主従関係では主オブジェクト(Property__c)に対して従オブジェクト(Offer__c)の数値データを集計できる「積み上げ集計項目」を作成できます。今回の要件ではOffer__cの最高金額を取得するため、積み上げ集計項目を使用して最大値(MAX)を計算するのが適切であり、主従関係の従オブジェクトを使用するのが最適なソリューションです。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
-    "keywords": ["主従関係", "積み上げ集計項目", "最大値", "リレーション"]
+    "keywords": [
+      "主従関係",
+      "積み上げ集計項目",
+      "最大値",
+      "リレーション"
+    ]
   },
   {
     "id": 92,
@@ -1793,7 +2243,12 @@
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_object_specific.htm&type=5",
     "multi": false,
     "domain": "ui",
-    "keywords": ["オブジェクト固有アクション", "定義済み項目値", "取引先階層", "クイックアクション"]
+    "keywords": [
+      "オブジェクト固有アクション",
+      "定義済み項目値",
+      "取引先階層",
+      "クイックアクション"
+    ]
   },
   {
     "id": 93,
@@ -1809,7 +2264,7 @@
       "フロー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ フロー　これは正解です。フローを使用すると、ケースの AccountIdを基に未解決のケース数を集計し、その値を取引先のカスタム項目に更新できます。これにより、取引先ページで常に最新の未解決ケース数を表示できます。取引先とケースは参照関係にあるため、フローを活用することで、この情報を動的に反映させることが可能です。\n\n□ 承認プロセス　これは不正解です。承認プロセスは、レコードの承認ワークフローを管理するための機能であり、未解決のケース数を計算して表示する用途には適していません。\n\n□ 積み上げ集計項目　これは不正解です。積み上げ集計項目は、主従関係にあるオブジェクト間で集計データを表示するためのものですが、取引先とケースは参照関係のため、標準の積み上げ集計項目を作成できません。未解決のケース数を表示するには、Apexトリガーやフローなどの代替手段を使用する必要があります。\n\n□ カスタムオブジェクト　これは不正解です。カスタムオブジェクトを作成することでデータを整理できますが、未解決のケース数を表示するために新しいオブジェクトを作成するのは不要な手間です。既存の取引先オブジェクトに直接データを表示する方法を選択するのが適切です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -1833,7 +2288,7 @@
       "契約オブジェクトのカスタム詳細ページリンク"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 取引先オブジェクトのクイックアクション　これは不正解です。クイックアクションは、レコードページやグローバルアクションとして特定の操作を簡単に実行できる機能ですが、この要件では「契約を表示しているとき」に価格ガイドラインのドキュメントへアクセスできる必要があります。取引先オブジェクトのクイックアクションを使用すると、取引先ページでの操作が可能になりますが、契約ページ上で直接ドキュメントにアクセスできるわけではありません。\n\n□ 契約オブジェクトのクイックアクション　これは不正解です。契約オブジェクトにクイックアクションを設定すると、契約ページ上で特定の操作を実行できるようになりますが、主にレコードの更新、レコード作成、またはカスタムアクションをトリガーするためのものです。ドキュメントへの直接リンクを提供するには適していません。ユーザーが価格ガイドラインを閲覧するためには、単にリンクを表示すればよいため、クイックアクションを利用するのは適切ではありません。\n\n□ 取引先オブジェクトのカスタム詳細ページリンク　これは不正解です。カスタム詳細ページリンクは、オブジェクトの詳細ページにリンクを追加する機能ですが、この要件では契約レコードを表示しているときに価格ガイドラインへアクセスできる必要があります。取引先オブジェクトのカスタム詳細ページリンクでは、契約オブジェクトのページには影響を与えないため、契約レコードの画面上で直接リンクを表示することができません。\n\n□ 契約オブジェクトのカスタム詳細ページリンク　これは正解です。カスタム詳細ページリンクを契約オブジェクトに追加することで、契約レコードの詳細ページから直接価格ガイドラインのドキュメントへアクセスできるようになります。この方法なら、契約を表示しているときに、ページを離れることなくドキュメントをすぐに開くことができるため、要件を満たす適切なソリューションです。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.defining_custom_links_fields.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
     "keywords": [
@@ -1881,7 +2336,7 @@
       "サポートチームのプロファイルを更新し、Bronzeレコードタイプを削除する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ケースの組織の共有設定のデフォルトを非公開に更新する。　これは不正解です。組織の共有設定を非公開にすると、ケースのレコードアクセスを制限できますが、レコードタイプの作成制限には影響しません。レコードタイプの選択を制御するには、プロファイルの設定を変更する必要があります。\n\n□ サポートチームのプロファイルを更新し、Bronzeレコードタイプを削除する。　これは正解です。レコードタイプの作成権限はプロファイルで管理されており、Bronzeレコードタイプをサポートチームのプロファイルから削除することで、該当のレコードタイプを選択できなくなります。これにより、サポートチームがBronzeレコードタイプのケースを作成することを防ぐことができます。\n\n□ PlatinumとDiamondレコードタイプを含むケースの権限セットグループを作成する。　これは不正解です。権限セットはアクセスを追加するためのものであり、レコードタイプの制限を目的とするには適していません。権限セットグループを使用してPlatinumとDiamondのレコードタイプのみを許可することは可能ですが、プロファイル単位で適切に制御する方がシンプルで効率的です。\n\n□ サポートユーザーに対してレコードタイプを非表示にし、共有ルールを非公開に更新する。　これは不正解です。Salesforceには、レコードタイプ自体をユーザーごとに非表示にする機能はありません。また、共有ルールを非公開にしてもレコードタイプの作成権限には影響しません。この方法では、サポートチームがBronzeレコードタイプのケースを作成できないようにする要件を満たせません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_record_types.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -1905,7 +2360,7 @@
       "商談の[完了予定日]を使用し、[成立フラグ(IsWon=TRUE)]の条件を適用して、[最小値(MIN)]を取得する新しい積み上げ集計項目[初回注文日]を作成する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 商談の[完了予定日]を使用し、成立フラグの条件を適用して最小値(MIN)を取得する積み上げ集計項目を作成する。　これは正解です。積み上げ集計項目を使用すると、主オブジェクト(取引先)に関連する子オブジェクト(商談)のデータを集約できます。この場合、商談の[完了予定日]を基準に、[成立フラグ(IsWon=TRUE)]の条件を適用し、最小値(MIN)を取得すれば、顧客の最初の購入日を正しく記録できます。\n\n□ 新しい日付項目を作成し、ワークフロールールで日付を設定する。　これは不正解です。ワークフロールールはレコードが作成または編集された際に実行されるものですが、ワークフロー単体では複数の商談を集計することはできません。取引先に関連する複数の商談の中から最初の注文日を判定するロジックをワークフローだけで実装するのは難しく、この要件には適しません。\n\n□ 積み上げ集計項目で商談の[完了予定日]を対象に[合計(SUM)]を使用する。　これは不正解です。[合計(SUM)]は数値の集計には適していますが、日付項目の最小値(最初の購入日)を取得する用途には向いていません。この選択肢では商談の完了予定日を合計するため、正しく初回注文日を記録することができません。\n\n□ 新しい日付項目を作成し、積み上げ集計項目を使用して[最小値(MIN)]で項目を更新する。　これは不正解です。積み上げ集計項目は直接カスタム日付項目を更新することはできません。積み上げ集計項目は数値や日付の集計を実行することはできますが、別のカスタム項目を更新することはできないため、この方法では要件を満たせません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_roll_up_summary_fields.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -2025,7 +2480,7 @@
       "項目レベルセキュリティでこの項目を参照のみ許可する権限セットを作成し、該当の担当者に割り当てる。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 項目レベルセキュリティで参照のみ許可する権限セットを作成し、該当の担当者に割り当てる。　これは正解です。権限セットを使用すると、特定のユーザーにのみ追加の権限を付与できるため、既存のプロファイルを変更せずに柔軟に対応できます。今回の要件では、カスタマーサービス担当者のうち1名だけに特別な参照権限を付与する必要があるため、プロファイルを変更せずに権限セットで追加の項目レベルの参照権限を追加するのが最適です。\n\n□ 参照のみ許可する新しいプロファイルを作成し、該当の担当者に割り当てる。　これは不正解です。プロファイルは1人のユーザーにつき1つしか割り当てられないため、この方法を選択すると、該当の担当者専用のプロファイルを新たに作成し、それに置き換える必要があります。しかし、このためだけに新しいプロファイルを作成するのは非効率的であり、管理の負担が増えてしまいます。\n\n□ 既に割り当てられているカスタマーサービスプロファイルを更新し、項目レベルセキュリティで参照のみ許可する。　これは不正解です。プロファイルを変更すると、そのプロファイルを使用しているすべてのユーザーに変更が適用されてしまうため、特定の担当者のみ参照可能にするという要件を満たしません。\n\n□ 設定でカスタム項目の項目レベルセキュリティを更新し、該当の担当者に参照のみ許可する。　これは不正解です。Salesforceでは、項目レベルセキュリティはプロファイルまたは権限セットを通じて管理されるため、設定画面から直接特定の担当者のみに権限を付与することはできません。プロファイル単位で変更を行うと、該当の担当者だけでなく他のカスタマーサービス担当者にも影響を与えるため、この方法は適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
     "multi": false,
     "domain": "fund",
     "keywords": [
@@ -2050,7 +2505,7 @@
       "Apex"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ワークフロールール　これは不正解です。ワークフロールールは特定の条件が満たされたときに自動的にアクションを起動しますが、複雑な計算や要約を行うのには向いていません。オープンケースとクローズケースの数を要約し、それに基づいて利用率を評価するには、より高度なロジックが必要です。\n\n□ AppExchange　これは不正解です。AppExchangeはSalesforceのマーケットプレイスで、さまざまなアプリケーション、ソリューション、およびコンポーネントが提供されています。特定の要件を満たすカスタムソリューションが存在する可能性はありますが、AppExchange自体は自動化ツールではありません。\n\n□ フロー　これは正解です。フローは、複雑なビジネスロジックや自動化プロセスを設計するのに適しています。フローを使用して、オープンケースとクローズケースの数を集計し、特定の基準に基づいてカスタマーサポートの利用率を評価するプロセスを自動化できます。\n\n□ Apex　これは正解です。ApexはSalesforceのプログラミング言語で、複雑なビジネスロジックやデータ操作を実行するために使用されます。必要に応じて、オープンケースとクローズケースの数を処理し、利用率を判断するカスタムコードを記述することが可能です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow.htm&language=ja&type=5",
     "multi": true,
     "domain": "logic",
     "keywords": [
@@ -2321,7 +2776,7 @@
       "プロセスビルダー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Apex　これは正解です。Apexはカスタムコードを使用して複雑なビジネスロジックを実装するための強力なツールです。商談が特定の条件を満たした場合に自動で承認プロセスを開始するようなカスタムロジックを作成することができます。\n\n□ ワークフロールール　これは不正解です。ワークフロールールは自動化のためのオプションですが、主に項目の更新、メールアラートの送信、タスクの作成、アウトバウンドメッセージの送信に限定されており、承認プロセスを直接トリガーする機能は提供していません。\n\n□ Chatter アクション　これは不正解です。Chatter アクションは「投稿」、「アンケート」、「質問」、および「お知らせ」(グループのみ)が含まれ、これらは主にコミュニケーションと情報共有を目的とした機能です。これはコミュニケーションとコラボレーションを促進するツールであり、自動的に承認プロセスを開始する目的には適していません。\n\n□ フロー　これは正解です。フローを使用すると、ビジュアルデザインインターフェースを通じて複雑な自動化を構築できます。特定のフェーズに到達した商談に対して自動的に承認プロセスを開始するフローを設計できます。\n\n□ プロセスビルダー　これは正解です。プロセスビルダーは、特定のレコードが更新された時に自動的にアクションを実行するためのツールです。これを使用して、商談が成約の最終確認フェーズに移行した際に承認プロセスを自動的にトリガーすることができます。\n\n【注意】本設問では正解選択肢にプロセスビルダーが含まれますが、プロセスビルダーは廃止方向の旧機能であり、現行ではレコードトリガーフロー（フロー）が推奨されるため、出題内容は古い前提に基づいています。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.ls_create_approval_process.htm&language=ja&type=5",
     "multi": true,
     "domain": "logic",
     "keywords": [
@@ -2743,7 +3198,7 @@
       "顧客とディーラーの両方を取引先として作成し、対応する取引先にそれぞれの担当者を取引先責任者として追加し、取引先階層を作成する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 単一の取引先レコードを作成し、それぞれの担当者を取引先責任者として追加し、カスタムディーラーオブジェクトを作成する。　これは不正解です。顧客とディーラーは個別に請求されるため、顧客とディーラーを区別し、別々の取引先レコードとして管理する必要があります。この構成では、それぞれの請求を適切に追跡することが困難です。\n\n□ 顧客とディーラーの両方を取引先として作成し、対応する取引先にそれぞれの担当者を取引先責任者として追加し、取引先階層を作成する。　これは正解です。顧客とディーラーを個別の取引先として扱い、取引先階層を使用して顧客とディーラーの関係を表現できます。また、それぞれの取引先に担当者(取引先責任者)を追加することで、担当者ごとのやり取りも適切に管理できます。この構成は要件を満たします。\n\n□ 単一の親レコードを作成し、それぞれの担当者を親取引先に取引先責任者として追加し、各ディーラーを子レコードとして追加する。　これは不正解です。顧客とディーラーが個別に請求されるという要件を満たせません。この構成では、ディーラーが顧客の子レコードとして扱われるため、請求データの追跡が正確に行えなくなります。\n\n□ 顧客とディーラーの両方を取引先として作成し、各取引先に取引先チームを作成して、ディーラーレコードを親取引先に関連付ける。　これは不正解です。取引先チームは取引先レコードにアクセス権を付与するための機能であり、顧客とディーラーの関係を表現するものではありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_hierarchy_setup_lex.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -2767,7 +3222,7 @@
       "AND($UserRole.Name != 'Marketing', ISCHANGED(Retail_Opt_In__c), ISPICKVAL(Retail_Opt_In__c, \"Yes\"))"
     ],
     "explanation": "Salesforceの入力規則は、レコードの保存時に特定の条件が満たされた場合にエラーを発生させ、保存を防ぐ仕組みです。今回のエラー条件は、(1)ユーザーのロールが[マーケティング]でない、(2)[Retail Opt In]項目の値が\"Yes\"に変更されている、(3)新しい値が\"Yes\"である、の3点です。\n\n□ AND($UserRole.Name = 'Marketing', ISPICKVAL(Retail_Opt_In__c, \"Yes\"))　これは不正解です。「ユーザーのロールがマーケティングであり、値が\"Yes\"の場合にエラー」という設定であり、対象が逆です。マーケティングロールを持たないユーザーが対象であるため、要件に合致しません。\n\n□ AND($UserRole.Name != 'Marketing', ISCHANGED(Retail_Opt_In__c), ISPICKVAL(Retail_Opt_In__c, \"Yes\"))　これは正解です。「ロールがマーケティングでない場合に、項目が変更され、新しい値が\"Yes\"のときにエラー」という設定で、3つの条件をすべて満たしており要件に完全に合致します。\n\n□ AND($UserRole.Name = 'Marketing', Retail_Opt_In__c = \"Yes\")　これは不正解です。対象ロールが逆であるうえ、選択リストの値は数式で直接指定できずISPICKVAL関数が必要なため、構文エラーが発生します。\n\n□ AND($UserRole.Name != 'Marketing', Retail_Opt_In__c = \"Yes\")　これは不正解です。選択リストの値は数式で直接指定できずISPICKVAL関数が必要なため構文エラーになります。さらに、\"Yes\"に変更されたかを確認するISCHANGED条件が含まれていないため要件を完全には満たしません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -2791,7 +3246,7 @@
       "項目とリレーションシップは作成できますが、キャンバスからページレイアウトに項目を追加することはできません。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 項目とリレーションシップは作成できますが、キャンバスからページレイアウトに項目を追加することはできません。　これは正解です。スキーマビルダーでは、項目やリレーションシップの作成が可能ですが、これらを直接キャンバスからページレイアウトに追加する機能は提供されていません。ページレイアウトの編集は、オブジェクトマネージャーやページレイアウトエディターを通じて行う必要があります。\n\n□ リレーションシップはどのカスタムオブジェクトにも作成できますが、標準オブジェクトへのリレーションシップはオブジェクトマネージャーで作成する必要があります。　これは不正解です。スキーマビルダーでは、カスタムオブジェクトだけでなく、標準オブジェクトへのリレーションシップも作成できます。\n\n□ カスタム項目は、数式項目以外のすべてのカスタムオブジェクトに追加できます。　これは不正解です。スキーマビルダーを使用すると、数式項目を含むすべてのタイプのカスタム項目をカスタムオブジェクトに追加することが可能です。\n\n□ 新しいオブジェクト、項目、リレーションシップを作成するたびに\"保存\"をクリックする必要があります。　これは不正解です。この操作はスキーマビルダー特有の制限ではなく、Salesforceの一般的な操作手順です。オブジェクトマネージャーでカスタム項目を作成する場合も、変更を加えた後に「保存」をクリックする必要があります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.schema_builder.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -2815,7 +3270,7 @@
       "AppExchangeからの管理パッケージ"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ AppExchangeからの未管理パッケージ　これは不正解です。未管理パッケージは、ソースコードが公開されており利用者が自由にカスタマイズできますが、アップデートは手動で行う必要があり、オリジナルに戻ることができないため、アップデートのしやすさにおいては最適とは言えません。\n\n□ オープンソースの未管理パッケージ　これは不正解です。利用者がソースコードにアクセスしてカスタマイズできる柔軟性は高いですが、アップデートのしやすさでは管理パッケージに劣ります。アップデートのプロセスが複雑になる可能性があり、追加の管理作業が必要になります。\n\n□ AppExchangeからの管理パッケージ　これは正解です。管理パッケージは開発者がアップデートを配布し、簡単に適用できます。バージョン管理を利用することでアップデートがスムーズに行え、システムの安定運用を支援します。アップデートの容易さを優先する場合、最良の選択です。\n\n□ オープンソースのカスタム開発　これは不正解です。柔軟性は高いですが、アップデートはすべて自己管理が必要であり、アップデートのしやすさを確保するには不向きです。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
     "keywords": [
@@ -2839,7 +3294,7 @@
       "グループ化"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ フィルター　これは不正解です。フィルターはレポートに表示するレコードを特定の条件で絞り込む機能ですが、データを集計・分類して比較するものではありません。各状況と優先度ごとのケース数を比較する分類には対応できません。\n\n□ グループ化　これは正解です。レポートデータを「状況」と「優先度」の2つの項目で分類・集計するにはグループ化を使用します。各状況ごとにケースを分類し、その中でさらに優先度ごとにグループ化して件数を比較できるレポートを作成でき、効果的なデータ分析が可能になります。\n\n□ バケット列　これは不正解です。バケット列は特定の値をカスタムグループにまとめる機能ですが、状況や優先度は既存の標準項目であり、新たにバケット列を作成する必要はありません。\n\n□ カスタムレポートタイプ　これは不正解です。カスタムレポートタイプは複数オブジェクトのデータを組み合わせる際に使用しますが、今回はケースオブジェクトの標準項目のみで作成できるため不要です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_report_type_setup.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
     "keywords": [
@@ -2912,7 +3367,7 @@
       "選択されたリストビューが[最近参照したデータ]のリストビューであるかどうか"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ リストビューに複数のレコードタイプが含まれているかどうか　これは正解です。Salesforceでは、リストビューに複数のレコードタイプが含まれるとインライン編集はできません。異なるレコードタイプがそれぞれ独自の項目セットを持つためです。インライン編集を可能にするには、1つのレコードタイプのみを含むように検索条件を編集する必要があります。\n\n□ 選択されたリストビューが[最近参照したデータ]のリストビューであるかどうか　これは正解です。[最近表示したレコード]はシステムによって動的に生成されるリストビューで、通常複数のレコードタイプを含むため、インライン編集がサポートされていません。標準またはカスタムのリストビューを使用する必要があります。\n\n□ リストビューがユーザーの共有を制限しているかどうか　これは不正解です。リストビューの共有設定はインライン編集の可否には直接影響しません。共有設定は可視性とアクセス権を制御しますが、既にアクセス権があるユーザーのインライン編集能力には影響しません。\n\n□ リストビューにユーザーが作成したグラフが含まれているかどうか　これは不正解です。グラフはリストビューのデータを視覚的に表示するものであり、インライン編集機能に影響を与えることはありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customviews_edit_inline_listview_lex_considerations.htm&language=ja&type=5",
     "multi": true,
     "domain": "ui",
     "keywords": [
@@ -3034,7 +3489,7 @@
       "アプリケーション内ガイダンス"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ アプリケーション内ガイダンス　これは正解です。リアルタイムで指示やヒントを提供でき、ケースの優先度入力のガイドラインを視覚的に提示して入力の一貫性を確保できます。対象ユーザーや表示期間も設定でき、チーム全体にルールを伝えるのに適しています。\n\n□ Next Best Action　これは不正解です。AIで最適なアクションを推奨する機能で、ユーザーの手入力を促す目的には向いていません。\n\n□ フロー　これは不正解です。入力プロセスの自動化やガイド付きプロセス作成の機能で、優先度の自動設定には有効ですが、入力の一貫性を促す目的には過剰で、特定ページでリアルタイムに指示を表示するわけではありません。\n\n□ パス　これは不正解です。リード・商談・ケースの進行状況を視覚的に表示しプロセスをガイドする機能で、個々の項目入力のルールを統一する機能ではありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customhelp_lexguid.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
     "keywords": [
@@ -3082,7 +3537,7 @@
       "特定のレコードタイプに対して項目を必須にする入力規則を設定する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 重要な項目の形式をチェックする数式項目を作成する。　これは不正解です。数式項目は他の項目の値に基づく動的な計算に使われ、ユーザー入力の検証や必須項目の確認には適していません。\n\n□ 重要な項目をページレイアウトで必須に設定する。　これは不正解です。必須にすれば入力は保証されますが、入力されたデータが正しいかどうかは保証されません。\n\n□ 項目の形式が正しいかをチェックするワークフロールールを作成する。　これは不正解です。ワークフロールールは条件成立時の自動更新や通知の機能で、レコードの保存を阻止することはできません。\n\n□ 特定のレコードタイプに対して項目を必須にする入力規則を設定する。　これは正解です。入力規則は保存時に条件を満たさなければエラーを表示し保存を防ぎます。レコードタイプごとに異なる必須項目を設定でき、データ品質を確保する最適な方法です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -3107,7 +3562,7 @@
       "取引先オブジェクトで投稿アクションを使用する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Chatterアクションを使用して、完了するタスクを作成する。　これは不正解です。タスク管理に関連する機能であり、全社員が顧客との交流やコラボレーションを見たり参加したりすることに直接関係しません。\n\n□ 新しい公開Chatterグループを設定する。　これは正解です。全社員がアクセスできるプラットフォーム内で顧客との交流やコラボレーションができ、様々なトピックの議論を全社員が見ることができます。\n\n□ 新しい非公開Chatterグループを設定する。　これは不正解です。招待されたメンバーのみがアクセスできるため、全社員に見てもらいたいというニーズを満たしません。\n\n□ 取引先オブジェクトで投稿アクションを使用する。　これは正解です。特定の取引先レコードに関連する情報や更新を共有でき、顧客との交流やコラボレーションが促進され、全社員がその情報を見ることができます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_group_about.htm&language=ja&type=5",
     "multi": true,
     "domain": "ui",
     "keywords": [
@@ -3131,7 +3586,7 @@
       "レコードトリガーフロー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Apex　これは不正解です。複雑なビジネスロジックやデータ処理に使われますが、本ケースは比較的単純で宣言型のアプローチで満たせます。Apexは必要以上に複雑で維持管理も必要なため最初の選択肢には適しません。\n\n□ 画面フロー　これは不正解です。画面フローはユーザー入力をガイドし対話型プロセスを作るもので、本ケースは対話型ではなく自動化されたバックエンドのプロセスが必要なため適しません。\n\n□ レコードトリガーフロー　これは正解です。レコードの作成・更新・削除時に自動実行され、新規顧客レコード作成時に財務マネージャーへ通知メールを送り、条件に基づき営業マネージャーにタスクを割り当てることができます。\n\n□ 承認プロセス　これは不正解です。承認を要求する機能であり、本ケースは承認ではなく自動化された通知とタスク割り当てが必要なため要件に対応していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_considerations_trigger_record.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -3206,7 +3661,7 @@
       "カスタムボタン と フロー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ プロセスビルダー と フロー　これは不正解です。プロセスビルダーはユーザー入力を求めるポップアップを表示する機能を持たず、プロセスビルダー単体では実装できません。\n\n□ Lightning コンポーネント と プロセスビルダー　これは不正解です。Lightningコンポーネントでポップアップは実装できますが、プロセスビルダーはユーザー入力を求める処理をトリガーする機能を持ちません。\n\n□ カスタム選択リスト項目 と プロセスビルダー　これは不正解です。特定の値の入力はできますが、ポップアップで追加の質問を求める機能はなく、リアルタイムに入力を促せません。\n\n□ カスタムボタン と フロー　これは正解です。カスタムボタンをクリックするとフローが起動し、画面フローのスクリーン要素でポップアップを表示して追加の質問への入力を促せます。\n\n【注意】設問はプロセスビルダーを不正解選択肢として扱っていますが、プロセスビルダーは廃止方向の旧機能であり、現行では自動化はレコードトリガーフロー(フロー)が推奨されます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.actions_overview_global.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -3280,7 +3735,7 @@
       "C: Street__c & BR() & City__c & \", \" & Planet__c & \" \" & Galaxy__c"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ A: Street & BR() & City & \", \" & Planet & \" \" & Galaxy　これは不正解です。API参照名(__cで終わる)ではなく項目名で表されているため、数式エディターではエラーになります。\n\n□ B: Street（改行）City, Planet Galaxy　これは不正解です。数式としての文法が正しくなく、API参照名も使用されていません。\n\n□ C: Street__c & BR() & City__c & \", \" & Planet__c & \" \" & Galaxy__c　これは正解です。API参照名を正しく使用し、BR()関数で2行に分けています。1行目にStreet、2行目にCityの後にカンマとスペース、続いてPlanetとGalaxyがスペース区切りで表示されます。\n\n□ D: Street__c（改行）City__c, Planet__c Galaxy__c　これは不正解です。API参照名は正しいですがBR()関数が使われておらず2行に分ける要件を満たさず、カンマやスペースの使用も不適切です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_formuladef.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -3353,7 +3808,7 @@
       "新しい参照関係または主従関係を作成する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 標準オブジェクトとカスタムオブジェクトの説明を更新する。　これは不正解です。スキーマビルダーはオブジェクトの関係や項目のレイアウトを視覚的に表示し、編集する機能を提供しますが、オブジェクトの説明を直接更新する機能は提供していません。オブジェクトの説明はオブジェクトマネージャーまたは設定メニューを通じて更新されます。\n\n□ 標準オブジェクトのカスタム項目のヘルプテキストを変更する。　これは正解です。スキーマビルダーでは「項目のプロパティを編集」を通じて、カスタム項目の詳細を編集することができます。これによりヘルプテキストの変更も可能です。\n\n□ 新しい参照関係または主従関係を作成する。　これは正解です。スキーマビルダーでは、オブジェクト間の新しい参照関係や主従関係を作成することができます。これにより、オブジェクト間の関連付けが視覚的に理解しやすくなり、より効率的にデータモデルを設計できます。\n\n□ 標準オブジェクトで項目履歴管理を有効化する。　これは不正解です。スキーマビルダーはオブジェクト間の関係や項目のレイアウトを操作するためのツールですが、項目履歴管理のような設定を変更する機能は含まれていません。項目履歴管理は、オブジェクトマネージャーから対象のオブジェクトにアクセスし、設定を編集する必要があります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.schema_builder.htm&language=ja&type=5",
     "multi": true,
     "domain": "data",
     "keywords": [
@@ -3477,7 +3932,7 @@
       "Lightning Object Creator"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データローダー　これは不正解です。データローダーは既存のオブジェクトにデータをインポートするためのツールですが、新しいオブジェクトの作成機能はなく、データ挿入と同時にオブジェクトを作成することはできません。\n\n□ データインポートウィザード　これは不正解です。データインポートウィザードは一部の標準オブジェクトやカスタムオブジェクトへのデータインポートをサポートしますが、新しいオブジェクトの作成とデータの挿入を同時に行うことはできません。\n\n□ Lightning Object Creator　これは正解です。Lightning Object Creatorは、スプレッドシートから新しいカスタムオブジェクトを作成し、データを同時に挿入できるツールです。Cloud Kicks社の要件である「オブジェクトの作成とデータの一括追加」を満たすため、最適な選択肢です。\n\n□ スキーマビルダー　これは不正解です。スキーマビルダーはオブジェクトの作成や関係を視覚的に設計するツールですが、新しいオブジェクトの作成とデータの挿入を同時に行う機能は提供していません。\n\n参考：Lightning Object Creatorでサイロ化したデータを最新のクラウドアプリに",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.dev_objectcreate_task_lex_from_spreadsheet.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -3676,7 +4131,7 @@
       "Partial Copy Sandboxを作成し、Sandbox テンプレートを使用する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Full Sandboxを作成し、Sandbox テンプレートを使用する。　これは不正解です。Full Sandboxは、メタデータとすべてのデータをコピーし、Sandbox テンプレートの使用が可能です。テンプレートを使用することで、特定の機密オブジェクトを除外し、必要なデータレコードを含む環境を作成することができます。しかし、更新間隔が29日であるため、週に1回更新するという要件には合いません。\n\n□ Developer Pro Sandboxを作成し、選択したオブジェクトデータを毎週ダウンロードするようにデータローダーをスケジュールする。　これは不正解です。Developer Pro Sandboxはメタデータのみを含み、Sandbox テンプレートを使用できないため、機密オブジェクトを除外する直接的な方法を提供しません。また、データレコードを含む環境を必要とする要件にも対応していません。\n\n□ Partial Copy Sandboxを作成し、Sandbox テンプレートを使用する。　これは正解です。Partial Copy Sandboxは、メタデータとサンプルデータをコピーし、Sandbox テンプレートの使用が必須です。これにより、機密オブジェクトを除外し、必要なデータレコードを含む環境を作成できます。更新間隔が5日であるため、週に1回の更新要件にも適しています。\n\n□ Developer Sandboxを作成し、選択したオブジェクトデータを毎週ダウンロードするようにデータローダーをスケジュールする。　これは不正解です。Developer Sandboxは、主にメタデータのみを含む環境であり、Sandbox テンプレートを使用できないため、機密オブジェクトを除外する要件には適していません。また、データレコードを含む環境を作成するために必要な機能を提供しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
     "keywords": [
@@ -3727,7 +4182,7 @@
       "Partial Copy Sandbox"
     ],
     "explanation": "本番データの一部・5GB未満を使ったテストと、週1回の更新が可能なため、Partial Copy Sandboxが正解です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
     "keywords": [
@@ -4170,7 +4625,7 @@
       "ユーザーには、「レコードがロックされています」という通知が表示される。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ユーザーは[説明]項目のみ編集することができる。　これは不正解です。Salesforceでは、レコードが承認プロセスに提出されると、そのレコードは自動的にロックされます。レコードがロックされると、管理者または承認者でない限り、ユーザーは一切の編集ができません。個別の項目だけを編集できるということはありません。\n\n□ ユーザーには、そのレコードの所有者が上司になっていることが表示される。　これは不正解です。承認申請を提出しても、レコードの所有者は変更されません。承認者(この場合は上司)に通知は行きますが、所有者が自動的に変更されることはありません。\n\n□ ユーザーは[商談名]を編集できるが、[説明]は編集できない。　これは不正解です。先述の通り、承認プロセス中のレコードはロックされ、基本的にユーザーによる編集はできなくなります。商談名など一部項目だけを編集できるという仕様ではありません。\n\n□ ユーザーには、「レコードがロックされています」という通知が表示される。　これは正解です。Salesforceでは、レコードが承認プロセスに提出されると自動的にロックされます。この状態でユーザーが編集しようとすると、「このレコードはロックされています。」などの通知メッセージが表示され、編集できないことが示されます。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.ls_create_approval_process.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -4245,7 +4700,7 @@
       "参照関係項目"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 複数選択リスト項目　これは不正解です。複数選択リストは固定の選択肢から複数の値を選択する項目ですが、特定のユーザーを動的に割り当てる用途には適していません。新しいCSMが追加されるたびに手動で選択肢を更新する必要があり、管理の手間がかかります。また、ユーザーオブジェクトと関連付けられないため、レポートや検索がしづらく、要件を満たせません。\n\n□ 選択リスト項目　これは不正解です。選択リストは事前に定義された値のリストから1つを選択する形式ですが、特定のユーザーを直接関連付けることはできません。新しいCSMが追加されるたびに選択肢を手動で更新しなければならず、管理が煩雑になります。また、ユーザーオブジェクトと連携しないため、レポートや検索時に制約が生じ、要件を満たしません。\n\n□ 参照関係項目　これは正解です。参照関係項目を使用すると、取引先と特定のユーザー(CSM)を関連付けることができます。取引先にはすでに所有者としてユーザーへの参照関係がありますが、新たに [カスタマーサービスマネージャー(CSM)]の参照関係項目を追加すれば、別の担当者を動的に割り当てることができます。これにより、選択肢を手動で管理する必要がなく、レポートや検索でCSMごとの取引先を簡単に追跡できるため、今回の要件に最も適しています。\n\n□ テキスト項目　これは不正解です。テキスト項目ではCSMの名前を手入力することになり、データの一貫性が保てず、レポートや検索が困難になります。例えば、同じユーザーが「田中太郎」「Taro Tanaka」のように異なる表記で入力される可能性があり、データの整合性が損なわれます。さらに、ユーザーオブジェクトとの関連付けができないため、担当者情報の管理が煩雑になります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -4342,7 +4797,7 @@
       "B: OR ( ISPICKVAL ( StageName, \"Closed Won\" ) && ( Scheduled_Ship_Date__c - CloseDate ) > 14 , ISBLANK ( Scheduled_Ship_Date__c ))"
     ],
     "explanation": "【入力規則の導出プロセス】\n\n・要件の特定 商談を「Closed Won（獲得済み）」にする際に、「出荷予定日」が必ず入力されていて、かつ「完了予定日」から14日以内であることを確認する。\n・条件の整理 商談のフェーズが「Closed Won」であること 「出荷予定日」が空欄（未入力）である場合にエラーとする 「出荷予定日」が「完了予定日」より14日を超える場合にエラーとする\n・必要な関数・項目 ISPICKVAL(StageName, \"Closed Won\") ：商談のフェーズが「Closed Won」かを確認する ISBLANK(Scheduled_Ship_Date__c) ：「出荷予定日」が未入力であるかを確認する (Scheduled_Ship_Date__c - CloseDate) > 14 ：「出荷予定日」が「完了予定日」より14日を超えているかを確認する\n\n結果的に、適切な入力規則は以下のようになります。\n\nOR ( ISPICKVAL ( StageName, \"Closed Won\" ) && ( Scheduled_Ship_Date__c - CloseDate ) > 14 , ISBLANK ( Scheduled_Ship_Date__c ) )\n\nこの規則により、商談が「Closed Won」に設定された場合、「出荷予定日」が未入力、または「完了予定日」から14日を超えて設定されているとエラーが表示され、正しい日付入力が促されます。\n\nそれぞれの選択肢の理由について説明します。\n\n□ A　これは不正解です。この数式では、商談が “Closed Won” のときに「出荷予定日」が「完了予定日」の2週間以内であることはチェックしていますが、「出荷予定日」が未入力(空欄)の場合を考慮していません。\n\n□ B　これは正解です。この数式は、商談が “Closed Won” のときに、「出荷予定日」が空欄または「完了予定日」から2週間を超えている場合に入力規則が発動します。よって、「出荷予定日」の適切な入力を確実にできます。\n\n□ C　これは不正解です。”ISPICKVAL” 関数の書式が間違っています。ISPICKVALの正しい記法は (項目名, “値”) ですが、この選択肢では (項目名 = “値”) と記述されています。\n\n□ D　これは不正解です。こちらもISPICKVAL関数の記法が誤っています。正しい書式はカンマで区切って (項目名, “値”) とすべきですが、等号で記述されています。また、項目が空欄の場合の考慮もありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -4415,7 +4870,7 @@
       "Apexトリガーを使用した承認プロセス"
     ],
     "explanation": "この問題の要件は次の通りです。\n\n・商談の削除前に上司の許可を得る ：営業担当者が商談を削除しようとする際に、その削除が実行される前に上司の承認を得る必要がある。\n・リアルタイムでの承認プロセス ：削除操作を実行する前に許可を得るため、リアルタイムでの承認フローが必要である。\n・削除操作の制御 ：承認が得られない限り、商談の削除を防止するメカニズムが必要である。\n\nそれぞれの選択肢の理由について説明します。\n\n□ 時間ベースのアクションを使用した承認プロセス　これは不正解です。時間ベースのアクションは、指定された時間が経過した後にアクションを実行するためのものです。商談の削除に対するリアルタイムの承認には適していません。\n\n□ Apexトリガーを使用した承認プロセス　これは正解です。Apexトリガーを使用することで、商談の削除操作をキャプチャし、その削除を防止するために上司の承認を要求するプロセスを実装できます。これにより、リアルタイムでの承認フローを実現できます。\n\n□ 2段階の承認プロセス　これは不正解です。この選択肢は、商談の削除に関する承認が1段階であることが前提のため、2段階の承認プロセスは要件を超えたものであり、問題の要件を正確に満たしていません。\n\n□ プロセスビルダーと承認アクションの送信　これは不正解です。プロセスビルダーはレコードの変更や新規作成に対してアクションを実行するのに適していますが、削除操作に対しては直接対応できません。また、削除操作の防止をプロセスビルダーのみで実現することはできません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.ls_create_approval_process.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -4589,7 +5044,7 @@
       "AppExchangeソリューションを使用する。"
     ],
     "explanation": "【今回の要件】\n\n・開発リソースとスキルが不足している中で、4週間以内にカスタムコンポーネントを迅速に導入する 。\n\nそれぞれの選択肢の理由について説明します。\n\n□ Lightningレコードページを構築する。　これは不正解です。Lightningレコードページは既存のコンポーネントを配置するための設定作業であり、新しいカスタムコンポーネントの構築にはなりません。開発を代替するものではないため、要件の解決にはなりません。\n\n□ 画面フローを作成する。　これは不正解です。画面フローは、Salesforceのフロー機能の一部で、ユーザー入力を受け取ったり、条件分岐やレコードの作成・更新を実行したりできるインタラクティブな画面を、コードを書かずに構築できるツールです。ただし、これはあくまで既存のコンポーネントや標準要素を組み合わせて処理を構成するものであり、新たにLightning Web コンポーネントなどのカスタムコンポーネントを作成する機能は含まれていません。\n\n□ AppExchangeソリューションを使用する。　これは正解です。​AppExchangeは、Salesforce専用のアプリケーションストアで、​既に構築されたカスタムコンポーネントを迅速に導入できます。​開発やトレーニングを最小限に抑えつつ、短期間で要件を満たすことが可能なため、​リソースと時間が不足している今回の状況に最も適しています。\n\n□ Boltソリューションを使用する。　これは不正解です。Boltソリューションは、Experience Cloudサイト向けのテンプレートです。今回の要件は一般的なカスタムコンポーネントに関するもので、Boltテンプレートでは対応できません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
     "keywords": [
@@ -4637,7 +5092,7 @@
       "郵便番号が正しい形式で入力されていることを確認する。"
     ],
     "explanation": "入力規則は、レコードを保存する前にユーザーが入力したデータが定義された特定の基準やフォーマットに適合していることを確認し、データの品質と整合性を保つために使用されます。\n\nそれぞれの選択肢の理由について説明します。\n\n□ 郵便番号が正しい形式で入力されていることを確認する。　これは正解です。入力規則はフォーム上でユーザーが入力するデータが特定のフォーマットや基準を満たしていることを確認するために使用されます。郵便番号の形式を検証する場合、入力規則は適切なパターンに従っているかどうかをチェックする正規表現やその他の検証ロジックを適用して郵便番号が正しくフォーマットされていることを保証します。\n\n□ パートナーリードの可視性をチャネル営業チームに制限する。　これは不正解です。入力規則はデータのフォーマットや内容の検証に使われ、レコードの可視性やアクセス制御には適用されません。パートナーリードの可視性を制限するには、共有設定で、ロール階層や公開グループなどを使用する必要があります。\n\n□ 割引率が10%未満の案件が承認プロセスに入らないようにする。　これは不正解です。入力規則はユーザーがデータを入力する際の検証に使用され、承認プロセスの可否を決定する目的ではありません。この要件は入力規則ではなく、承認プロセスの条件設定を通じて実装するべきです。\n\n□ 管理者以外がプライベート Chatter グループに参加できないようにする。　これは不正解です。入力規則はデータ入力時の検証に関連し、Chatter グループの参加資格やアクセス制御には適用されません。プライベート Chatter グループへのアクセスを制御するには、Chatter のアクセス設定やグループ設定を使用する必要があります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -4686,7 +5141,7 @@
       "積み上げ集計項目は主従関係に限定される。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ オブジェクトは20個のオブジェクト参照を持つことができる。　これは不正解です。Salesforceではオブジェクトが持つことができる参照関係項目の数は、最大2個の主従関係を含む合計で40個のリレーションです。\n\n□ オブジェクトは25個の積み上げ集計項目を持つことができる。　これは正解です。Salesforceでは、1つのオブジェクトに作成可能な積み上げ集計項目の最大数は25です。この提案では、15項目を取引先オブジェクトに集約したいとしていますが、積み上げ集計項目は主従関係にあるオブジェクトに限定されます。したがって、主従関係でない2つのオブジェクトからの項目集約にはこの方法は適用できません。\n\n□ 積み上げ集計項目では、MAX、MIN、SUM、COUNT、およびAVGを使用できる。　これは不正解です。Salesforceの積み上げ集計項目では、最大値(MAX)、最小値(MIN)、合計(SUM)、および個数(COUNT)の集計方法を使用することができますが、平均(AVG)の計算はサポートされていません。\n\n□ 積み上げ集計項目は主従関係に限定される。　これは正解です。積み上げ集計項目を使用するには、集計対象の項目が含まれるオブジェクトと、集計結果を表示するオブジェクト間に主従関係が必要です。参照関係では積み上げ集計項目を利用できません。このシナリオでは、3つのカスタムオブジェクトのうち1つだけが主従関係にあるため、残りの2つのオブジェクトからは積み上げ集計項目を使用して指標を集約できません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_roll_up_summary_fields.htm&language=ja&type=5",
     "multi": true,
     "domain": "data",
     "keywords": [
@@ -4829,7 +5284,7 @@
       "公開グループ"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 階層項目　これは不正解です。階層項目は親子関係に基づいて承認者を指定しますが、部門メンバー全員を柔軟に含める用途には適していません。\n\n□ ロール　これは不正解です。ロールは、ユーザーの階層構造を利用して承認をルートできますが、部門メンバー以外を柔軟に含めることが難しく、公開グループほどの柔軟性がありません。\n\n□ 公開グループ　これは正解です。公開グループは、ユーザー、ロール、または他のグループを柔軟に含めることができ、部門メンバー全員を対象とした承認プロセスに最適です。\n\n□ キュー　これは不正解です。キューは、レコードの所有権を特定のグループに割り当てる場合に使用されますが、承認プロセスにおいては公開グループほど適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.ls_create_approval_process.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -4853,7 +5308,7 @@
       "主従関係"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 主従関係　これは正解です。主従関係を使用すると、ギフトカードが特定の取引先に厳密に関連付けられ、他の取引先に移動できなくなります。また、主従関係により、取引先で積み上げ集計項目を使用してギフトカードの総数を追跡できます。この関係は、要件を満たすための最適な選択肢です。\n\n□ 積み上げ集計　これは不正解です。積み上げ集計は主従関係の親オブジェクト(この場合は取引先)でのみ使用できます。そのため、ギフトカードオブジェクト自体で積み上げ集計項目を作成することはできません。積み上げ集計は要件の一部を満たしますが、他の取引先への移動を防ぐ要件には対応できません。\n\n□ 数式　これは不正解です。数式項目では、関係を結んでいない他のオブジェクト(今回の場合は取引先)のデータを参照できないため、ギフトカードの総数を計算することはできません。また、ギフトカードの他の取引先への移動を防ぐ要件にも対応できないため、要件を満たせません。\n\n□ 参照関係　これは不正解です。　参照関係では、ギフトカードを他の取引先に移動できてしまうため、「一度作成されたギフトカードを他の取引先に移動できないようにする」という要件を満たすことができません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -5070,7 +5525,7 @@
       "[非公開]の共有モデルを使用して、階層を利用してレコードアクセスを付与し、項目レベルセキュリティで項目アクセスを管理する。"
     ],
     "explanation": "【今回の要件】\n\n・レコードレベルのアクセス 営業担当者、そのマネージャー、および役員のみが評価レコードを閲覧可能にする。\n・項目レベルのアクセス 営業担当者は役員コメント項目を閲覧できないようにする。\n\n【解決策】\n\n・レコードレベルのアクセス [非公開]の共有モデルを適用すると、評価レコードはレコードの所有者とその上司(マネージャーや役員)に階層を通じて自動的にアクセス権が付与され、その他のユーザーには表示されません。\n・項目レベルのアクセス 項目レベルセキュリティを使用して、担当者自身が役員コメント項目にアクセスできないように制限します。\n\nそれぞれの選択肢の理由について説明します。\n\n□ [非公開]の共有モデルを使用して、階層を利用してレコードアクセスを付与し、レコードタイプと項目レベルセキュリティで項目アクセスを管理する。　これは不正解です。レコードタイプは、異なるページレイアウトやビジネスプロセスを提供するために使用されますが、項目へのアクセス制限を行うには適していません。\n\n□ [非公開]の共有モデルを使用して、階層を利用してレコードアクセスを付与し、項目レベルセキュリティで項目アクセスを管理する。　これは正解です。[非公開]の共有モデルにより、評価レコードは他のユーザーには表示されず、ロール階層を通じて自動的にレコードの所有者とその上司(マネージャーや役員)にアクセス権が付与されます。また、役員コメント項目の閲覧を制限するには項目レベルセキュリティを使用するため、この設定は過不足なく要件を満たします。\n\n□ [非公開]の共有モデルを使用して、カスタム設定を利用してレコードアクセスを付与し、レコードタイプとページレイアウトで項目アクセスを管理する。　これは不正解です。カスタム設定はデータの格納や参照に使用されるもので、レコードアクセスの管理には使用できません。また、ページレイアウトはUI上の項目の表示・非表示を制御するだけで、セキュリティ目的のアクセス制御には適しません。\n\n□ [非公開]の共有モデルを使用して、カスタム設定を利用してレコードアクセスを付与し、ページレイアウトと項目レベルセキュリティで項目アクセスを管理する。　これは不正解です。前述のように、カスタム設定はレコードアクセスの付与には使用できません。一方、項目レベルセキュリティは適切ですが、レコードアクセスの方法が不適切であるため、この選択肢は要件を満たしません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
     "multi": false,
     "domain": "fund",
     "keywords": [
@@ -5312,7 +5767,7 @@
       "データインポートウィザード"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Dataloader.io　これは不正解です。Dataloader.ioは、Salesforceのデータインポートやエクスポートに便利なクラウドベースのツールですが、重複の検出と防止機能がありません。そのため、既存のリードと照合しながら新しいリードを取り込むには適していません。\n\n□ データインポートウィザード　これは正解です。データインポートウィザードはSalesforceの標準機能で、リードの重複チェックを行いながらデータをインポートできます。インポート時に一致条件(例: メールアドレスや名前など)を設定することで、既存のリードと照合し、一致する場合は更新、該当がない場合は新規作成が可能です。マーケティングチームから送られる毎日のリストを重複なく正確に取り込むには、このツールが最適です。\n\n□ データローダー　これは不正解です。データローダーは、大量のデータを処理できる強力なツールですが、重複チェック機能がありません。既存のリードと照合する仕組みがないため、リードの重複を防ぐことができません。\n\n□ 手動入力　これは不正解です。手動でリードを入力する方法は、時間がかかり非効率です。800件のリードを毎日手動で確認しながら入力するのは現実的ではなく、エラーの発生リスクも高くなります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.data_import_wizard.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -5361,7 +5816,7 @@
       "データインポートウィザードを使用してリードリストをアップロードし、重複リード作成を防ぐための[リードの一致条件]を選択する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ リードの一致ルールと対応する重複ルールを活用し、新規作成される重複リードをブロックする。　これは正解です。リードの重複を防ぐには、まず一致ルールを作成し、リードの特定の項目(例: メールアドレスや会社名)を基準に重複を検出できるようにします。次に、重複ルールを作成し、先に設定した一致ルールを適用します。この重複ルールで[作成時のアクション]を[ブロック]に設定することで、新規リードが既存リードと一致した場合に作成を防ぐことができます。この設定により、同じリードが何度も登録されるのを防ぎ、データの一貫性を保つことができます。\n\n□ データローダーの更新機能を使用し、リードをメールアドレスに基づいて既存のレコードと照合してインポートする。　これは不正解です。データローダーの更新(Update)機能は、既存レコードの上書きには適していますが、新規リードの重複チェックは行えません。新しいリードを追加する際には、データローダーは既存データとの比較をせず、そのまま作成してしまうため、重複を防ぐことができません。\n\n□ 設定の[重複管理]セクションで[重複一致]を有効にし、リード間の重複シナリオを有効化する。　これは不正解です。Salesforceには[重複ルール]と[一致ルール]は存在しますが、[重複一致]という機能はありません。そのため、この設定ではリードの重複を防ぐことができません。\n\n□ データインポートウィザードを使用してリードリストをアップロードし、重複リード作成を防ぐための[リードの一致条件]を選択する。　これは正解です。データインポートウィザードは、Salesforce標準のツールで、リードの重複作成を防ぐための[リードの一致条件]を指定できます。この一致条件では、メールアドレスや名前などの特定の項目を基準に、既存のリードと照合します。照合結果に基づき、既存のリードを更新し、新規リードのみを作成することが可能です。この設定により、重複レコードを防ぎながら効率的にリストをインポートできるため、400件のリードを安全にアップロードするのに適しています。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.duplicate_rules_overview.htm&language=ja&type=5",
     "multi": true,
     "domain": "data",
     "keywords": [
@@ -5457,7 +5912,7 @@
       "Apexトリガー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ スケジュールトリガーフロー　これは不正解です。スケジュールトリガーフローは、特定の条件に基づいてレコードを定期的に処理するために使用されます。しかし、ケースが再オープンされた瞬間に回数を増やすという要件には適していません。\n\n□ 画面フロー　これは不正解です。画面フローは、ユーザーが手動で操作するプロセスを作成するためのツールであり、自動的にケースの再オープン回数をカウントする用途には適していません。\n\n□ プロセスビルダー　これは不正解です。プロセスビルダーは、特定の条件に基づいて自動アクションを実行できますが、項目の値を累積的に更新する機能は持っていません。ケースの再オープン回数を追跡するには、レコードの値を変更し続ける必要があるため、プロセスビルダーでは対応できません。\n\n□ Apexトリガー　これは正解です。Apexトリガーを使用すると、ケースの[状況]が[再オープン]に変更されたタイミングで、再オープン回数をカウントするロジックを実装できます。トリガーでは、レコードの更新時に特定の項目の値をインクリメント(+1)する処理を実行できるため、この要件を満たす最適なソリューションです。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.code_define_trigger.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -5579,7 +6034,7 @@
       "承認プロセス"
     ],
     "explanation": "【要件】\n\n・営業マネージャーが商談レコードページから迅速に承認できること\n・特定の条件(値引きが20%〜30%のとき)でのみ承認機能を表示すること\n\nそれぞれの選択肢の理由について説明します。\n\n□ 入力規則　これは不正解です。入力規則は、レコードの保存時に特定の条件を満たしていない場合にエラーを表示するための機能です。今回の要件を満たしません。\n\n□ 動的アクション　これは正解です。動的アクションを使用すると、特定の条件が満たされた場合にのみ、ボタンやアクションをレコードページに表示することができます。今回の②の要件を満たします。\n\n□ スキーマビルダー　これは不正解です。スキーマビルダーは、オブジェクトの構造やリレーションを視覚的に管理するツールであり、今回の要件には関係ありません。\n\n□ 承認プロセス　これは正解です。承認プロセスを使用すると、特定の条件が満たされた場合に、マネージャーの承認を必要とするワークフローを設定できます。今回の①の要件を満たします。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.ls_create_approval_process.htm&language=ja&type=5",
     "multi": true,
     "domain": "logic",
     "keywords": [
@@ -5627,7 +6082,7 @@
       "[納入商品在庫]に[納入商品]への参照関係を作成し、[納入商品在庫]の関連リストを[納入商品]のページレイアウトに追加する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ [納入商品]に積み上げ集計項目を作成し、[納入商品在庫]の関連リストを[納入商品]のページレイアウトに追加する。　これは不正解です。積み上げ集計項目は、主従関係でのみ使用できます。従レコードの数値を集計するためのものであり、関連リストの表示には使用できません。\n\n□ [納入商品在庫]と[納入商品]を関連付けるために連結オブジェクトを作成し、[納入商品在庫]の関連リストを[納入商品]のページレイアウトに追加する。　これは不正解です。連結オブジェクトは多対多の関係を作成するために使用されます。しかし、今回の要件では「1つの[納入商品]が複数の[納入商品在庫]と関連する」という 1対多の関係を作成する必要があります。したがって、連結オブジェクトを作成するのは適切ではありません。\n\n□ [納入商品在庫]に[納入商品]への参照関係を作成し、[納入商品在庫]の関連リストを[納入商品]のページレイアウトに追加する。　これは正解です。参照関係を使用すると、1つの[納入商品]に対して複数の[納入商品在庫]を関連付けることができます。さらに、[納入商品在庫]オブジェクトが[納入商品]オブジェクトに正しく関連付けられていれば、[納入商品]のレコードページに[納入商品在庫]の関連リストを追加できます。\n\n□ [納入商品]から[納入商品在庫]への主従関係を作成し、[納入商品在庫]の関連リストを[納入商品]のページレイアウトに追加する。　これは不正解です。Salesforceの標準オブジェクト(納入商品)は、主従関係の従側になることはできません。また、[納入商品]に[納入商品在庫]を関連リストとして表示するには、[納入商品在庫]から[納入商品]への主従関係を作成する必要があるため、この選択肢は関係が逆になっています。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -5699,7 +6154,7 @@
       "項目レベルセキュリティ"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 従来の暗号化　これは不正解です。暗号化はデータを保護するための機能であり、アクセス制御を行うものではありません。暗号化された項目は、適切な権限を持つユーザーであれば復号して表示できますが、特定のプロファイルのみに参照権限を付与する方法としては適していません。\n\n□ フィルタービュー　これは不正解です。Salesforceには「フィルタービュー」という機能はありません。\n\n□ 項目レベルセキュリティ　これは正解です。項目レベルセキュリティを使用すると、特定のプロファイルごとに特定の項目の表示や編集を制御できます。Outer PlanetsプロファイルのみにJupiter項目を表示するには、他のプロファイルでこの項目を「非表示」に設定すればよいため、この方法が最も適しています。\n\n□ 共有ルール　これは不正解です。共有ルールは、レコード単位のアクセス権を制御するための機能であり、項目単位の制御には使用できません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm&language=ja&type=5",
     "multi": false,
     "domain": "fund",
     "keywords": [
@@ -5944,7 +6399,7 @@
       "ユーザーAは、共有ルールによってアクセス権を持つ公開グループに属している。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ユーザーAは、ユーザーCと同じ取引先チームに所している。　これは正解です。取引先チームに追加されたユーザーは、その取引先レコードへのアクセス権を持つことができます。ユーザーAはユーザーCの取引先チームに追加されていた可能性があり、その結果、レコードにアクセスできたと考えられます。一方、ユーザーBは取引先チームに含まれていなかったため、アクセスできませんでした。\n\n□ ユーザーAとユーザーBのプロファイルが異なる。　これは不正解です。プロファイルはオブジェクトレベルや項目レベルのアクセス権を制御しますが、今回のケースでは、ユーザーAとユーザーBはそれぞれ自身が所有する取引先を持っており、オブジェクトのアクセス権限は既に与えられています。そのため、今回の問題はオブジェクト権限ではなく、レコードの共有設定に関するものです。プロファイルの違いは、レコードの可視性には影響しません。\n\n□ ユーザーCがレコードをユーザーAに手動で共有した。　これは正解です。Salesforceでは、手動共有を使用して、特定のユーザーに対して個別にレコードのアクセス権を付与できます。ユーザーCがユーザーAに対して手動共有を行った場合、ユーザーAはそのレコードを閲覧できます。一方、ユーザーBには手動共有されていなかったため、アクセスできなかった可能性があります。\n\n□ ユーザーAには追加の権限セットが付与されている。　これは不正解です。権限セットは、オブジェクトや項目レベルの権限を追加するためのものであり、レコードのアクセス権を直接制御するものではありません。今回のケースでは、取引先の共有設定が[非公開]に設定されているため、権限セットによってユーザーAに特定の取引先レコードへのアクセスを付与することはできません。\n\n□ ユーザーAは、共有ルールによってアクセス権を持つ公開グループに属している。　これは正解です。共有ルールを使用すると、特定のロール、公開グループ、または特定のユーザーに対してレコードのアクセス権を拡張できます。ユーザーAが共有ルールによってアクセス権を持つ公開グループに属していた場合、取引先レコードにアクセスできたと考えられます。一方、ユーザーBがその公開グループに含まれていなかったため、アクセスできなかった可能性があります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
     "multi": true,
     "domain": "fund",
     "keywords": [
@@ -5992,7 +6447,7 @@
       "スキーマビルダー"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ スキーマビルダー　これは正解です。スキーマビルダーは、1つの画面でオブジェクトや項目、リレーションをドラッグ＆ドロップで直感的に作成・編集できるツールです。複数のオブジェクト間の関係を視覚的に把握できるため、迅速な作成や管理に最適です。\n\n□ 開発者コンソール　これは不正解です。開発者コンソールは、主にApexコードの記述やデバッグ、SOQLの実行など、コードベースの開発作業に使われます。オブジェクトや項目、リレーションを直感的かつ迅速に作成する用途には適していません。\n\n□ 項目レベルセキュリティ　これは不正解です。項目レベルセキュリティは、ユーザーが各項目を参照または編集できるかどうかを管理するための設定です。項目やオブジェクト、リレーションの作成自体とは無関係であり、この要件に該当しません。\n\n□ Lightning Object Creator　これは不正解です。Lightning Object Creatorは、スプレッドシートなどの外部データを取り込み、新規オブジェクトと項目を作成するツールです。ただし、リレーションの作成や既存オブジェクトの管理は行えないため、この要件には適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.schema_builder.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -6040,7 +6495,7 @@
       "AppExchange"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データインポートウィザード　これは不正解です。データインポートウィザードは、主にCSVなどのファイルからSalesforceにレコードをインポートするためのツールであり、Lightning Experienceへの移行に役立つ事前構築済みリソースは提供していません。\n\n□ Lightning Object Creator　これは不正解です。Lightning Object Creatorはスプレッドシートなどの外部データから新しいカスタムオブジェクトを作成するツールです。ClassicからLightning Experienceへの移行に役立つ事前構築済みリソースを提供するものではありません。\n\n□ AppExchange　これは正解です。AppExchangeには、ClassicからLightning Experienceへの移行を支援するためのアプリケーション、コンポーネント、コンサルティングサービスなど、多数の事前構築済みリソースが提供されています。そのため、移行プロジェクトの支援に最適です。\n\n□ フロービルダー　これは不正解です。フロービルダーは業務プロセスの自動化を行うためのツールであり、Lightning Experienceへの移行に役立つ事前構築済みのリソースや移行支援に特化した機能はありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
     "keywords": [
@@ -6089,7 +6544,7 @@
       "データ入力を自動化するAppExchange上のデータ強化製品を調査・評価する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データ入力を自動化するAppExchange上のデータ強化製品を調査・評価する。　これは正解です。名刺から得た情報の手入力を減らすためには、名刺スキャンや自動入力に対応したAppExchangeのデータ強化製品を活用するのが最も現実的で効率的です。これにより、現場での営業活動の時間を確保しつつ、正確で最新のデータを自動で取り込むことができます。\n\n□ 入力が必要な項目を毎日Chatterフィードに投稿する。　これは不正解です。Chatterフィードに情報を投稿しても、手作業での入力作業を減らすことにはつながりません。また、ユーザーが毎日投稿を見る保証もなく、データ品質の改善にも寄与しません。\n\n□ フローを使用してデータ入力ウィザードを作成し、自動入力を行う。　これは不正解です。フローによる入力支援は有効ですが、今回のように「名刺からの情報を手動入力せずに済ませたい」という自動化の要求には不十分です。フローは主に画面入力の手順をガイドするものであり、名刺画像から情報を抽出して自動で入力する仕組み(OCR)には対応していません。\n\n□ ワークフロールールと数式項目を組み合わせて、営業ユーザー向けの主要項目を入力する。　これは不正解です。ワークフロールールや数式項目では、新しいレコードに名刺情報を自動入力することはできません。これらの機能は主に既存データの更新や計算に使うもので、データ入力の負担軽減には適していません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.distribution_installing_packages.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -6113,7 +6568,7 @@
       "Open_Position__cからApplication__cへの主従関係を作成する。"
     ],
     "explanation": "【要件】\n\n1人の応募者(Applicant__c)が、1つの応募書類(Application__c)で、複数の募集ポジション(Open_Position__c)に応募できるようにする。\n\n・主オブジェクト 応募者(Applicant__c) 応募書類(Application__c)\n・連結オブジェクト( 従 )オブジェクト 募集ポジション(Open_Position__c)\n\nSalesforceでの主従関係は従側から作成する必要があるため、Open_Position__cからApplicant__cおよび Application__cに対して主従関係を作成する必要があります。\n\nよって今回の正解は「Open_Position__cからApplication__cへの主従関係を作成する。」です。　その他の選択肢は、「要件を満たせない構成」や「対象のオブジェクト名の誤り」のため不正解となります。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
     "multi": false,
     "domain": "data",
     "keywords": [
@@ -6161,7 +6616,7 @@
       "カスタムレポートタイプの項目レイアウトにその項目を追加する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 項目レベルセキュリティを調整して、レポートタイプに含める。　これは不正解です。項目レベルセキュリティを変更することで、ユーザーがその項目を参照できるようにはなりますが、レポートにその項目が表示されるかどうかはカスタムレポートタイプの設定に依存します。\n\n□ PositionおよびApplicantオブジェクトで[レポートを許可]設定を確認する。　これは不正解です。オブジェクトに対して[レポートを許可]の設定が無効になっていると、そのオブジェクトを含むレポートタイプ自体が作成・使用できません。しかし、今回は既にレポートが存在し実行できているため、この設定は問題ではありません。\n\n□ カスタムレポートタイプの項目レイアウトにその項目を追加する。　これは正解です。カスタムレポートタイプでは、項目レイアウトに明示的に項目を追加しなければ、レポート作成画面に表示されません。今回のように新しい項目が追加された後、その項目がレポートに表示されない原因として最も考えられるのは、カスタムレポートタイプの項目レイアウトに含まれていないことです。\n\n□ プロファイルに[公開フォルダーのレポートを管理]権限を追加する。　これは不正解です。[公開フォルダーのレポートを管理]権限は、レポートやダッシュボードを公開フォルダー内で管理・編集・削除するためのものであり、レポートに表示される項目の制御には関係ありません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_report_type_setup.htm&language=ja&type=5",
     "multi": false,
     "domain": "ui",
     "keywords": [
@@ -6209,7 +6664,7 @@
       "取引先責任者に入力規則を作成する。"
     ],
     "explanation": "今回の要件での構成は以下になります。\n\n・取引先 選択リスト項目：顧客ステータス(Customer_Status__c) 高優先 中優先 低優先\n・取引先責任者 テキスト項目：地域(Region__c)\n\nそれぞれの選択肢の理由について説明します。\n\n□ 取引先責任者の[地域]項目を必須にする。　これは不正解です。項目を「必須」に設定すると、すべての取引先責任者レコードで[地域]項目の入力が強制されるため、[顧客ステータス]が[高優先]でない取引先に関連する取引先責任者にまで影響してしまいます。条件付きで必須にしたい今回の要件には適していません。\n\n□ 取引先責任者に入力規則を作成する。　これは正解です。入力規則を使用すれば、関連する取引先の[顧客ステータス]項目が[高優先]の場合に限り、[地域]項目の入力を必須にするという条件付きの制御が可能です。たとえば以下のような入力規則を使うことで実現できます。\n\n□ 取引先に4つの入力規則を作成する。　これは不正解です。今回の制御対象は「取引先」ではなく「取引先責任者」です。また、なぜ「4つ」必要なのかが不明で、要件とも合致しません。入力規則を設定すべき場所と対象が適切ではありません。\n\n□ 取引先の[顧客ステータス]項目を必須にする。　これは不正解です。[顧客ステータス]を必須にしても、[地域]項目の入力を条件付きで強制する要件は満たせません。あくまで[顧客ステータス]が[高優先]のときだけ[地域]を必須にしたいのであり、この設定は要件の一部しかカバーしていません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.fields_defining_field_validation_rules.htm&language=ja&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -6234,7 +6689,7 @@
       "タブ"
     ],
     "explanation": "【今回の要件】\n\n・ケースレコードページをコンパクトに表示したい。\n・ケースページ上で関連する取引先責任者および取引先のレコードを編集可能にしたい。\n\nそれぞれの選択肢の理由について説明します。\n\n□ パス　これは不正解です。パスは、レコードの進行状況(商談フェーズやケースの状況など)を表示するためのコンポーネントであり、ページをコンパクトにしたり、関連レコードを編集したりする機能はありません。\n\n□ リッチテキスト　これは不正解です。リッチテキストコンポーネントは、説明文やヘルプガイドなどの静的な情報を表示するためのものです。関連レコードの編集やページの圧縮表示には使用できません。\n\n□ 関連レコード　これは正解です。このコンポーネントを使うことで、ケースに紐づく取引先責任者や取引先のレコードをケースページ上から直接表示・編集できます。これは、要件②「関連する取引先責任者および取引先のレコードを編集可能にしたい」を満たします。\n\n□ タブ　これは正解です。タブコンポーネントを使用すると、情報をタブで分割表示して整理でき、画面の見やすさと操作性を向上させることができます。これは、要件①「ケースレコードページをコンパクトに表示したい」を満たします。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lightning_app_builder_customize_lex_pages.htm&language=ja&type=5",
     "multi": true,
     "domain": "ui",
     "keywords": [
@@ -6259,7 +6714,7 @@
       "[条件に基づく共有ルール]を作成する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 営業プロファイルを更新する。　これは不正解です。プロファイルではオブジェクトへのアクセス権(参照、作成など)や項目レベルセキュリティを制御できますが、レコード単位の共有設定(どのレコードが見られるか)は制御できません。今回のように「Salesレコードタイプの取引先レコードすべてを営業チームに見せたい」という要件は、共有ルールで対応すべきです。\n\n□ 組織全体のデフォルトを更新する。　これは正解です。まず「より制限のある共有モデルに移行したい」という要件に応じて、取引先オブジェクトの組織全体のデフォルトを[非公開]に変更することが前提となります。この設定により、ユーザーは自分が所有するレコードのみ参照可能になりますが、後述の共有ルールによって必要なレコードの可視性を追加できます。\n\n□ 条件に基づく共有ルールを作成する。　これは正解です。「Salesレコードタイプ」の取引先のみを営業チームに共有したいという条件は、条件に基づく共有ルールで実現できます。条件に「ケースレコードタイプ = Sales」を設定し、対象のロールや公開グループ(営業チーム)に参照権限を与えることで、要件を満たせます。\n\n□ レコード所有者に基づく共有ルールを作成する。　これは不正解です。所有者に基づく共有ルールは、「特定のロールや公開グループのユーザーが所有するレコードを他のユーザーに共有する」というものです。今回のようにレコードタイプという内容ベースの条件に基づいた共有には適しておらず、要件に合致しません。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.security_sharing_owd_about.htm&language=ja&type=5",
     "multi": true,
     "domain": "fund",
     "keywords": [
@@ -6284,7 +6739,7 @@
       "公園レコード上に積み上げ集計項目を作成して、小道の合計数を表示する。"
     ],
     "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 公園オブジェクトと小道オブジェクトの間に主従関係を作成する。　これは正解です。積み上げ集計項目は、主従関係にある主オブジェクト(この場合は公園)に対してのみ作成できます。そのため、小道を従オブジェクト、公園を主オブジェクトとして主従関係を定義することで、従である小道の件数を公園レコードに集計できるようになります。\n\n□ 公園オブジェクトと小道オブジェクトの間に参照関係を作成する。　これは不正解です。参照関係では、親オブジェクト側に積み上げ集計項目を作成することができません。集計を実現するには、代わりにApexトリガやフローなどを使う必要があり、「コードを書かない」という今回の要件に反します。\n\n□ 公園レコード上に数式項目を作成して、小道の合計数を表示する。　これは不正解です。数式項目では、関連する複数の子レコード(小道)の件数をカウントすることはできません。数式項目は主に単一レコードや親レコードからの値を参照するためのものであり、子レコードの集計には対応していません。\n\n□ 公園レコード上に積み上げ集計項目を作成して、小道の合計数を表示する。　これは正解です。積み上げ集計項目を使用すれば、従オブジェクトである小道の件数を主オブジェクトである公園レコードに表示できます。ただし、これを使用するには、公園と小道の間に主従関係が必要です。今回の要件(コードを使わずに集計)に最適な機能です。",
-    "reference_url": null,
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_roll_up_summary_fields.htm&language=ja&type=5",
     "multi": true,
     "domain": "data",
     "keywords": [
