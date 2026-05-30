@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{renderCram();}catch(e){}
   if(typeof updateSrsBtn==='function')updateSrsBtn();
   if(localStorage.getItem('dark')==='1')applyDark(true);
+  try{maybeOnboard();}catch(e){}
   document.addEventListener('keydown',handleKey);
   try{var _hv=(location.hash||'').replace('#','');if(['cram','textbook','vocab','stats'].indexOf(_hv)>=0)goTo(_hv);}catch(e){}
 });
@@ -254,6 +255,7 @@ function homeStats(){
     const nwk=document.getElementById('next-weak');
     if(nwk)nwk.textContent=pool||'';
   }catch(e){}
+  try{renderStreakBanner();}catch(e){}
   renderPlan();
 }
 
@@ -1382,6 +1384,58 @@ function dayStreak(){
   while(daily[_fmtD(d)]){n++;d.setDate(d.getDate()-1);}
   return n;
 }
+// ホーム上部の学習ストリークバナー（連続学習日数＋直近7日）
+function renderStreakBanner(){
+  const home=document.getElementById('pg-home');if(!home)return;
+  const n=dayStreak();
+  let el=document.getElementById('home-streak');
+  if(n<1){if(el)el.style.display='none';return;}
+  if(!el){el=document.createElement('div');el.id='home-streak';home.insertBefore(el,home.firstElementChild);}
+  const daily=store.daily||{},labels=['日','月','火','水','木','金','土'];
+  const d=new Date();d.setHours(0,0,0,0);let dots='';
+  for(let i=6;i>=0;i--){const dd=new Date(d);dd.setDate(d.getDate()-i);const on=!!daily[_fmtD(dd)];
+    dots+='<span style="width:15px;height:15px;border-radius:4px;font-size:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;'+(on?'background:#fff;color:#ff5e3a':'background:rgba(255,255,255,.35);color:#fff')+'">'+labels[dd.getDay()]+'</span>';}
+  el.style.cssText='display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#ff8a3d,#ff5e3a);color:#fff;border-radius:12px;padding:12px 16px;margin-bottom:12px';
+  el.innerHTML='<span style="font-size:30px">🔥</span>'
+    +'<div><div style="font-size:22px;font-weight:800;line-height:1">'+n+'日連続</div><div style="font-size:12px;opacity:.95">学習ストリーク継続中！</div></div>'
+    +'<div style="margin-left:auto;display:flex;gap:4px">'+dots+'</div>';
+}
+// ===== 初回オンボーディング（3ステップ） =====
+const OB_STEPS=[
+  {ic:'📖',t:'学習モードで解く',d:'1問ずつ解いて、選択肢ごとの解説をその場で確認。間違えた問題は自動で復習キューに入ります。'},
+  {ic:'⏱️',t:'試験モードで実力チェック',d:'公式の出題比率で本番形式60問。問題ナビゲータ・🚩フラグ・採点で弱点が分かります。'},
+  {ic:'🔁',t:'復習で定着させる',d:'ホームの「今日やる」から、間違えた問題・SRS・弱点分野をワンタップで復習できます。'}
+];
+let _obI=0;
+function maybeOnboard(){
+  try{if(localStorage.getItem('sfq_onboarded')==='1')return;}catch(e){return;}
+  _obI=0;showOnboard();
+}
+function showOnboard(){
+  let dim=document.getElementById('ob-dim');
+  if(!dim){
+    dim=document.createElement('div');dim.id='ob-dim';
+    dim.style.cssText='position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:24px';
+    dim.innerHTML='<div id="ob-card" style="background:var(--card);color:var(--text);border-radius:16px;max-width:340px;width:100%;padding:24px 20px;box-shadow:0 12px 40px rgba(0,0,0,.35);text-align:center"></div>';
+    document.body.appendChild(dim);
+  }
+  obRender();
+}
+function obRender(){
+  const c=document.getElementById('ob-card');if(!c)return;const s=OB_STEPS[_obI];
+  let dots='';for(let i=0;i<OB_STEPS.length;i++){dots+='<span style="height:7px;border-radius:4px;background:'+(i===_obI?'var(--primary)':'var(--border)')+';width:'+(i===_obI?'18px':'7px')+'"></span>';}
+  const last=_obI===OB_STEPS.length-1;
+  c.innerHTML='<div style="font-size:46px;margin-bottom:8px">'+s.ic+'</div>'
+    +'<div style="font-size:17px;font-weight:800;margin-bottom:8px">'+escH(s.t)+'</div>'
+    +'<div style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:18px">'+escH(s.d)+'</div>'
+    +'<div style="display:flex;gap:6px;justify-content:center;margin-bottom:18px">'+dots+'</div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'
+    +'<button onclick="obClose()" style="background:none;border:none;color:var(--text-sub);font-size:13px;cursor:pointer">スキップ</button>'
+    +'<button onclick="obNext()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px 20px;cursor:pointer">'+(last?'はじめる 🚀':'次へ →')+'</button>'
+    +'</div>';
+}
+function obNext(){if(_obI<OB_STEPS.length-1){_obI++;obRender();}else obClose();}
+function obClose(){try{localStorage.setItem('sfq_onboarded','1');}catch(e){}const d=document.getElementById('ob-dim');if(d)d.remove();}
 function renderWeekly(){
   const host=document.getElementById('weekly');if(!host)return;
   const daily=store.daily||{};
