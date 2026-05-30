@@ -165,7 +165,7 @@ git push origin main
 
 ## 残タスク（2026-05-30 時点）
 
-- App Builder の用語集（`vocab.json`）/ 設定マップ（`navmap.json`）の全範囲拡充＋公式裏取り（現状はスターターのみ）
+- App Builder の用語集（`vocab.json`、現状5章83語）/ 設定マップ（`navmap.json`、10件）の公式裏取り・精査（量はスターター段階を脱したので、残りは内容の正確性確認）
 - App Builder `_verify` フラグ付き13問（id 3,8,11,36,38,69,90,114,129,141,150,152,183）の旧機能補正
 - 3資格目（Developer 等）の立ち上げは「4JSON＋シェル複製＋LP CERTS に1行追加」だけ
 
