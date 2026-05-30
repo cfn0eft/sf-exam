@@ -113,6 +113,37 @@
       '.sfqc-sort{border:1px solid #cbd5e1;background:#fff;color:#475569;padding:6px 10px;font-size:11.5px;font-weight:700;border-radius:8px;cursor:pointer}' +
       '.sfqc-sort.on{background:#2563eb;color:#fff;border-color:#2563eb}' +
       '.sfqc-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:700}' +
+      /* 拡充ダッシュボード */
+      '.sfqc-sec{font-size:12px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}' +
+      '.sfqc-kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:4px}' +
+      '@media(max-width:760px){.sfqc-kpis{grid-template-columns:repeat(3,1fr)}}' +
+      '.sfqc-kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px}' +
+      '.sfqc-kpi .n{font-size:21px;font-weight:800;color:#0f172a;line-height:1.1}' +
+      '.sfqc-kpi .l{font-size:10px;color:#64748b;margin-top:3px}' +
+      '.sfqc-dash-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px}' +
+      '.sfqc-dom{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px}' +
+      '.sfqc-dom .nm{width:140px;flex-shrink:0;font-weight:600;color:#334155}' +
+      '.sfqc-dom .bw{flex:1;height:9px;background:#eef2f7;border-radius:6px;overflow:hidden}' +
+      '.sfqc-dom .bf{height:100%;border-radius:6px}' +
+      '.sfqc-dom .pc{width:100px;text-align:right;font-weight:800;font-size:12px}' +
+      '.sfqc-dom .pc small{font-weight:600;color:#94a3b8}' +
+      '.sfqc-itemwrap{margin-bottom:6px}' +
+      '.sfqc-itemwrap>summary{cursor:pointer;font-size:13px;font-weight:700;color:#2563eb;padding:8px 4px;list-style:none}' +
+      '.sfqc-itemwrap>summary::-webkit-details-marker{display:none}' +
+      '.sfqc-itemwrap>summary::before{content:"\\25B8 "}' +
+      '.sfqc-itemwrap[open]>summary::before{content:"\\25BE "}' +
+      '.sfqc-itbl{width:100%;border-collapse:collapse;font-size:12.5px}' +
+      '.sfqc-itbl th,.sfqc-itbl td{border-bottom:1px solid #eef2f7;padding:7px 8px;text-align:left}' +
+      '.sfqc-itbl th{color:#64748b;font-weight:700;font-size:11px}' +
+      '.sfqc-itbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}' +
+      '.sfqc-itbl .qx{max-width:430px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155}' +
+      '.sfqc-rate{font-weight:800}.sfqc-rate.lo{color:#dc2626}.sfqc-rate.mi{color:#d97706}.sfqc-rate.hi{color:#16a34a}' +
+      '.sfqc-flag{font-size:10px;background:#fee2e2;color:#b91c1c;border-radius:5px;padding:1px 6px;font-weight:700;margin-left:6px}' +
+      '.sfqc-itnote{font-size:11px;color:#64748b;margin-top:8px}' +
+      '.sfqc-fchip{border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:999px;padding:6px 11px;font-size:11.5px;font-weight:700;cursor:pointer}' +
+      '.sfqc-fchip.on{background:#2563eb;color:#fff;border-color:#2563eb}' +
+      '.sfqc-toolbar2{margin-top:-6px}' +
+      '.sfqc-inactive{font-size:10px;background:#fef9c3;color:#854d0e;border-radius:5px;padding:1px 6px;font-weight:700}' +
       /* ユーザー集計行：メール表示 */
       '.sfqc-acc-email{font-weight:500;color:#64748b;font-size:12px;margin-left:8px}' +
       /* 詳細インナー */
@@ -464,7 +495,70 @@
   var adminRows = [];   // 旧：CSV/詳細互換用に1cert=1行も保持
   var adminUsers = [];  // 新：uid単位でグルーピング { uid, name, email, updated, certs:[{cert,store,stats}], agg }
   var adminFilter = ''; // 名前/メール検索
-  var adminSort = 'updated'; // 'updated'|'answered'|'name'
+  var adminSort = 'updated'; // 'updated'|'answered'|'rate'|'days'|'name'
+  var adminCert = 'all';     // 資格フィルタ
+  var adminActivity = 'all'; // 'all'|'week'|'dormant'
+  var adminPass = false;     // 合格者のみ
+
+  function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+  function admDaysAgo(s) { if (!s) return Infinity; try { var d = new Date(s + 'T00:00:00'); return Math.floor((Date.now() - d.getTime()) / 86400000); } catch (e) { return Infinity; } }
+
+  // 全体ダッシュボード（KPI＋分野別＋問題別正答率）。問題別は折りたたみ。
+  function adminDashboardHTML() {
+    var total = adminUsers.length, today = admToday();
+    var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumEx = 0, sumExP = 0;
+    adminUsers.forEach(function (u) {
+      var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumEx += a.examCount; sumExP += a.examPassed;
+      if (a.lastStudyDate === today) actToday++;
+      if (admDaysAgo(a.lastStudyDate) <= 6) actWeek++;
+    });
+    var avgRate = sumAtt ? Math.round(sumCorr / sumAtt * 100) : 0;
+    var passRate = sumEx ? Math.round(sumExP / sumEx * 100) : 0;
+    var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
+    var html = '<div class="sfqc-sec">全体サマリー</div><div class="sfqc-kpis">' +
+      kpi(total, '総ユーザー') + kpi(actToday, '今日のアクティブ') + kpi(actWeek, '今週のアクティブ') +
+      kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumEx, '試験受験') + kpi(passRate + '%', '試験合格率') +
+      '</div>';
+
+    var certName = (window.CERT_CONFIG && CERT_CONFIG.shortName) || CERT_KEY;
+    var haveEngine = (typeof QDATA !== 'undefined' && QDATA && QDATA.length && typeof domainOf === 'function');
+    if (haveEngine) {
+      var domAgg = {}, perQ = {};
+      adminRows.forEach(function (r) {
+        if (r.cert !== CERT_KEY) return;
+        var hist = r.store.hist || {};
+        Object.keys(hist).forEach(function (id) {
+          var h = hist[id], c = h.c || 0, t = (h.c || 0) + (h.w || 0); if (!t) return;
+          var pq = perQ[id] || (perQ[id] = { c: 0, t: 0 }); pq.c += c; pq.t += t;
+          var dc; try { dc = domainOf(+id); } catch (e) { dc = null; }
+          if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0 }); da.c += c; da.t += t; }
+        });
+      });
+      var defs = (typeof DOMAIN_DEFS !== 'undefined') ? DOMAIN_DEFS : [];
+      var dbars = '';
+      defs.forEach(function (d) {
+        var a = domAgg[d.code]; if (!a || !a.t) return; var pc = Math.round(a.c / a.t * 100);
+        var col = pc >= 70 ? '#16a34a' : pc >= 50 ? '#d97706' : '#dc2626';
+        dbars += '<div class="sfqc-dom"><span class="nm">' + esc(d.emoji + ' ' + d.name) + '</span><div class="bw"><div class="bf" style="width:' + pc + '%;background:' + col + '"></div></div><span class="pc" style="color:' + col + '">' + pc + '% <small>(' + a.c + '/' + a.t + ')</small></span></div>';
+      });
+      if (dbars) html += '<div class="sfqc-sec">分野別 平均正答率（全ユーザー・' + esc(certName) + '）</div><div class="sfqc-dash-card">' + dbars + '</div>';
+
+      var qmap = qTextMap();
+      var items = Object.keys(perQ).map(function (id) { var a = perQ[id]; return { id: id, c: a.c, t: a.t, rate: Math.round(a.c / a.t * 100) }; });
+      items.sort(function (a, b) { return a.rate - b.rate || b.t - a.t; });
+      var rows = items.slice(0, 40).map(function (it) {
+        var rc = it.rate < 50 ? 'lo' : it.rate < 70 ? 'mi' : 'hi';
+        var flag = (it.t >= 5 && it.rate < 40) ? '<span class="sfqc-flag">要確認</span>' : '';
+        return '<tr><td class="num">Q' + esc(it.id) + '</td><td class="qx">' + esc((qmap[it.id] || '').slice(0, 60)) + '</td><td class="num">' + it.t + '</td><td class="num"><span class="sfqc-rate ' + rc + '">' + it.rate + '%</span>' + flag + '</td></tr>';
+      }).join('');
+      if (items.length) {
+        html += '<details class="sfqc-itemwrap"><summary>📝 問題別 正答率（低い順・全ユーザー集計・' + esc(certName) + ' ' + items.length + '問）</summary>' +
+          '<div class="sfqc-dash-card" style="margin-top:8px"><table class="sfqc-itbl"><thead><tr><th>問題</th><th>内容</th><th class="num">回答数</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+          '<div class="sfqc-itnote">※ 回答数が多く正答率が低い問題＝難しすぎる/設問に問題がある可能性。改善の優先候補（最大40件）。</div></div></details>';
+      }
+    }
+    return html;
+  }
 
   function qTextMap() {
     var map = {};
@@ -556,8 +650,14 @@
              (u.email || '').toLowerCase().indexOf(q) >= 0 ||
              (u.uid || '').toLowerCase().indexOf(q) >= 0;
     });
+    if (adminCert !== 'all') list = list.filter(function (u) { return u.certs.some(function (c) { return c.cert === adminCert; }); });
+    if (adminActivity === 'week') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) <= 6; });
+    else if (adminActivity === 'dormant') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) >= 30; });
+    if (adminPass) list = list.filter(function (u) { return u.agg.examPassed > 0; });
     list.sort(function (a, b) {
       if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
+      if (adminSort === 'rate')     return b.agg.rate - a.agg.rate;
+      if (adminSort === 'days')     return b.agg.daysActive - a.agg.daysActive;
       if (adminSort === 'name')     return (a.name || '').localeCompare(b.name || '', 'ja');
       return (b.updated || 0) - (a.updated || 0); // 'updated'
     });
@@ -569,14 +669,27 @@
     if (!adminUsers.length) { body.innerHTML = '<div class="sfqc-empty">アカウントがまだありません。</div>'; return; }
     var list = filterSortUsers();
 
-    var html =
-      '<div class="sfqc-toolbar">' +
+    var certSet = {}; adminRows.forEach(function (r) { certSet[r.cert] = 1; });
+    var certChips = '<button class="sfqc-fchip' + (adminCert === 'all' ? ' on' : '') + '" data-cert="all">すべて</button>';
+    Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
+    var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
+
+    var html = adminDashboardHTML();
+    html += '<div class="sfqc-sec">ユーザー</div>';
+    html += '<div class="sfqc-toolbar">' +
         '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
-        '<span class="sfqc-sort-label">並び順:</span>' +
-        '<button class="sfqc-sort' + (adminSort === 'updated' ? ' on' : '') + '" data-sort="updated">最終更新</button>' +
-        '<button class="sfqc-sort' + (adminSort === 'answered' ? ' on' : '') + '" data-sort="answered">解答数</button>' +
-        '<button class="sfqc-sort' + (adminSort === 'name' ? ' on' : '') + '" data-sort="name">名前</button>' +
         '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
+      '</div>';
+    html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
+        '<span class="sfqc-sort-label">資格:</span>' + certChips +
+        '<span class="sfqc-sort-label">状態:</span>' +
+        '<button class="sfqc-fchip' + (adminActivity === 'week' ? ' on' : '') + '" data-act="week">7日以内</button>' +
+        '<button class="sfqc-fchip' + (adminActivity === 'dormant' ? ' on' : '') + '" data-act="dormant">休眠30日+</button>' +
+        '<button class="sfqc-fchip' + (adminPass ? ' on' : '') + '" data-pass="1">合格者</button>' +
+      '</div>';
+    html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
+        '<span class="sfqc-sort-label">並び順:</span>' +
+        sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
       '</div>';
 
     if (!list.length) {
@@ -587,10 +700,12 @@
       var a = u.agg;
       var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
       var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
+      var dago = admDaysAgo(a.lastStudyDate);
+      var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
       html +=
         '<div class="sfqc-acc">' +
           '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + '</span>' +
+            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + dormantLabel + '</span>' +
             '<span class="sfqc-acc-stats">' +
               '<span>登録資格 <b>' + a.certCount + '</b></span>' +
               '<span>解答 <b>' + a.answered + '</b>問 / 述べ<b>' + a.attempts + '</b>回</span>' +
@@ -618,6 +733,15 @@
     }
     body.querySelectorAll('.sfqc-sort').forEach(function (b) {
       b.addEventListener('click', function () { adminSort = b.getAttribute('data-sort'); renderAdmin(); });
+    });
+    body.querySelectorAll('[data-cert]').forEach(function (b) {
+      b.addEventListener('click', function () { adminCert = b.getAttribute('data-cert'); renderAdmin(); });
+    });
+    body.querySelectorAll('[data-act]').forEach(function (b) {
+      b.addEventListener('click', function () { var v = b.getAttribute('data-act'); adminActivity = (adminActivity === v ? 'all' : v); renderAdmin(); });
+    });
+    body.querySelectorAll('[data-pass]').forEach(function (b) {
+      b.addEventListener('click', function () { adminPass = !adminPass; renderAdmin(); });
     });
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
