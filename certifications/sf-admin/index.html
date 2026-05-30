@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=12">
+<link rel="stylesheet" href="../../quiz.css?v=13">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -23,6 +23,7 @@
   <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
   <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
   <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
+  <button class="topbar-btn" id="btn-mypage" onclick="goTo('mypage')" title="マイページ">👤</button>
   <button class="topbar-btn" id="btn-dark" onclick="toggleDark()">🌙</button>
 </div>
 <div class="toast" id="toast"></div>
@@ -398,6 +399,11 @@
   <button class="btn bg" onclick="goTo('home')" style="width:100%;margin:10px 0 16px">← ホームへ</button>
 </div>
 
+<!-- ===== マイページ ===== -->
+<div class="page" id="pg-mypage">
+  <div id="mypage-body"></div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nb-home" onclick="goTo('home')"><span class="nav-icon">🏠</span>ホーム</button>
@@ -423,9 +429,9 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=12"></script>
+<script src="../../quiz-engine.js?v=13"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=12"></script>
+<script src="../../cloud-sync.js?v=13"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>

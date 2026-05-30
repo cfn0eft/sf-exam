@@ -273,6 +273,7 @@ function goTo(name){
   if(name==='stats')renderStats();
   if(name==='vocab')initVocab();
   if(name==='cram')renderCram();
+  if(name==='mypage')renderMypage();
   if(name==='textbook'){
     document.getElementById('td-view').classList.remove('on');
     document.getElementById('tb-list').style.display='';
@@ -1558,9 +1559,76 @@ function clearPlan(){
   document.getElementById('plan-edit').classList.remove('on');renderPlan();toast('学習計画をクリア');
 }
 
+/* ===== マイページ ===== */
+function renderMypage(){
+  const host=document.getElementById('mypage-body');if(!host)return;
+  const acc=(typeof window.__sfqAccount==='function')?window.__sfqAccount():{loggedIn:false,local:true};
+  // 学習サマリー
+  let tc=0,tt=0;Object.values(store.hist).forEach(h=>{tc+=h.c;tt+=h.c+h.w;});
+  const overall=tt?Math.round(tc/tt*100):0,pass=overall>=PASS;
+  const ringCol=pass?'var(--success)':overall>=PASS-10?'var(--warning)':'var(--danger)';
+  const ringLab=pass?'合格圏に到達':overall>=PASS-10?'合格まであと少し':'基礎固めが必要';
+  const c=2*Math.PI*26,off=c*(1-overall/100);
+  const answered=answeredCount();
+  const days=Object.keys(store.daily||{}).filter(k=>(store.daily[k]||0)>0).length;
+  const mastered=Object.values(store.vm||{}).filter(v=>v>=2).length;
+  const exams=store.exams||[];const best=exams.reduce((m,e)=>Math.max(m,e.pct||0),0);
+  const passed=exams.filter(e=>e.pass).length;const streak=dayStreak();
+  let accHtml;
+  if(acc.loggedIn){
+    accHtml='<div class="acct"><div class="mp-avatar">👤</div><div><div class="mp-name">'+escH(acc.name||'ユーザー')+'</div>'
+      +'<div class="mp-asub"><span class="mp-dot"></span>'+escH(acc.status||'同期済み')+(acc.email?' ・ ID: '+escH(acc.email.split('@')[0]):'')+'</div></div></div>'
+      +'<div class="mp-aact">'+(acc.isAdmin?'<button class="mp-b mp-admin" onclick="window.__sfqOpenAdmin&&window.__sfqOpenAdmin()">👑 管理者ビュー</button>':'')
+      +'<button class="mp-b mp-logout" onclick="window.__sfqLogout&&window.__sfqLogout()">ログアウト</button></div>';
+  }else if(acc.local){
+    accHtml='<div class="acct"><div class="mp-avatar" style="background:linear-gradient(135deg,#64748b,#94a3b8)">💻</div><div><div class="mp-name">ローカルモード</div><div class="mp-asub">この端末内に保存（クラウド同期なし）</div></div></div>';
+  }else{
+    accHtml='<div class="acct"><div class="mp-avatar">👤</div><div><div class="mp-name">未ログイン</div><div class="mp-asub">ホームからログインすると進捗が同期されます</div></div></div>';
+  }
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  const sf=(typeof srcFilter!=='undefined')?srcFilter:'all';
+  const seg=(on,label,fn)=>'<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+label+'</button>';
+  const ed=store.examDate||'',goal=store.goal||0;let planInfo='';
+  if(ed){const t=new Date();t.setHours(0,0,0,0);const e=new Date(ed+'T00:00:00');const dl=Math.round((e-t)/86400000);const unans=allQ.length-answered;
+    planInfo=dl>=0?('受験まで あと '+dl+'日'+(dl>0&&unans>0?' ・ 未着手 '+unans+'問 → 目安 '+Math.ceil(unans/dl)+'問/日':'')):'受験日は過ぎました';}
+  host.innerHTML=
+    '<div class="card">'+accHtml+'</div>'
+    +'<div class="sec-label">学習の記録</div>'
+    +'<div class="card"><div class="mp-sumtop"><div class="mp-ring"><svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="'+ringCol+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 32 32)"/></svg><div class="mp-rt" style="color:'+ringCol+'">'+overall+'%</div></div>'
+    +'<div><div class="mp-sumlab">'+ringLab+'</div><div class="mp-sumsub">総合到達度（合格ライン '+PASS+'%）</div></div></div>'
+    +'<div class="mp-grid">'
+    +'<div class="mp-mini"><div class="n">'+answered+'</div><div class="l">解答済み</div></div>'
+    +'<div class="mp-mini"><div class="n">🔥'+streak+'</div><div class="l">連続日数</div></div>'
+    +'<div class="mp-mini"><div class="n">'+days+'</div><div class="l">学習日数</div></div>'
+    +'<div class="mp-mini"><div class="n">'+mastered+'</div><div class="l">習得用語</div></div>'
+    +'<div class="mp-mini"><div class="n">'+(exams.length?best+'%':'—')+'</div><div class="l">試験ベスト</div></div>'
+    +'<div class="mp-mini"><div class="n">'+passed+'</div><div class="l">合格回数</div></div>'
+    +'</div></div>'
+    +'<div class="sec-label">学習計画</div>'
+    +'<div class="card"><div class="mp-field"><label>🎯 受験予定日</label><input type="date" id="mp-exam" value="'+escH(ed)+'"></div>'
+    +'<div class="mp-field"><label>📅 1日の目標問題数</label><input type="number" id="mp-goal" min="0" max="999" value="'+(goal||'')+'" placeholder="例: 20"></div>'
+    +(planInfo?'<div class="mp-planinfo">'+escH(planInfo)+'</div>':'')
+    +'<div class="mp-saverow"><button class="mp-b mp-save" onclick="saveMyPlan()">保存</button><button class="mp-b mp-clear" onclick="clearMyPlan()">クリア</button></div></div>'
+    +'<div class="sec-label">表示・データ</div>'
+    +'<div class="card">'
+    +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
+    +'<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+seg(sf==='tyson',"タイソン","setSrcFilter('tyson');renderMypage()")+seg(sf==='gen',"生成","setSrcFilter('gen');renderMypage()")+'</span></div>'
+    +'<div class="mp-opt"><span class="mp-ic">🗑️</span><span class="mp-main">進捗データ<div class="mp-osub">この資格の履歴・設定を初期化</div></span><button class="mp-danger" onclick="resetAll()">リセット</button></div>'
+    +'</div>';
+}
+function saveMyPlan(){
+  const d=document.getElementById('mp-exam').value;
+  const g=parseInt(document.getElementById('mp-goal').value,10);
+  store.examDate=d||'';store.goal=(g>0?g:0);save();
+  renderPlan();renderMypage();toast('✅ 学習計画を保存');
+}
+function clearMyPlan(){store.examDate='';store.goal=0;save();renderPlan();renderMypage();toast('学習計画をクリア');}
+function setDarkMode(on){applyDark(on);try{localStorage.setItem('dark',on?'1':'0');}catch(e){}renderMypage();}
+window.__sfqOnAccount=function(){var p=document.getElementById('pg-mypage');if(p&&p.classList.contains('active'))renderMypage();};
+
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{}};save();homeStats();renderTextbook();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
 // ===== SRS（間隔反復・SM-2簡易版）=====

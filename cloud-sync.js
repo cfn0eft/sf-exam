@@ -250,12 +250,17 @@
   function showOverlay() { if (elOverlay) elOverlay.classList.add('show'); }
   function hideOverlay() { if (elOverlay) elOverlay.classList.remove('show'); }
   function setMsg(t, kind) { if (elMsg) { elMsg.textContent = t || ''; elMsg.className = 'sfqc-msg' + (kind ? ' ' + kind : ''); } }
-  function setStatus(t) { if (elStatus) elStatus.textContent = t || ''; }
+  function setStatus(t) { if (elStatus) elStatus.textContent = t || ''; notifyAccount(); }
   function setBadge(name) {
     if (!elBadge) return;
-    if (name) { document.getElementById('sfqc-name').textContent = '👤 ' + name; elBadge.classList.add('show'); }
+    // client（資格ページ）は「マイページ」にアカウントUIを集約するため、浮遊バッジは出さない。
+    // gateway（LP）はマイページが無いのでバッジを表示する。
+    if (name) { document.getElementById('sfqc-name').textContent = '👤 ' + name; if (ROLE !== 'client') elBadge.classList.add('show'); }
     else { elBadge.classList.remove('show'); }
+    notifyAccount();
   }
+  // マイページ等へアカウント状態の更新を通知（エンジン側が __sfqOnAccount を実装）
+  function notifyAccount() { if (window.__sfqOnAccount) { try { window.__sfqOnAccount(); } catch (e) {} } }
   function showAdminBtn(v) { if (elAdminBtn) elAdminBtn.classList[v ? 'add' : 'remove']('show'); }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
 
@@ -773,6 +778,15 @@
     HOME_URL = window.SFQ_HOME_URL || 'index.html';
 
     buildUI();
+
+    // マイページ（エンジン側）がアカウント情報・操作を取得するための橋渡し。
+    window.__sfqAccount = function () {
+      var h = location.hostname, loc = (h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '');
+      return { loggedIn: !!currentUser, name: currentName || '', email: currentEmail || '', isAdmin: !!isAdmin,
+               status: (elStatus ? elStatus.textContent : '') || '', configured: configOk(), local: loc };
+    };
+    window.__sfqLogout = function () { doLogout(); };
+    window.__sfqOpenAdmin = function () { openAdmin(); };
 
     // ローカル開発環境（localhost / 127.0.0.1 / file://）では、ログイン/同期を一切要求しない。
     // Firebase の HTTP リファラー制限で localhost からは認証できないため、ローカル保存のみで素通しする。
