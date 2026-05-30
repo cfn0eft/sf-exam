@@ -25,7 +25,7 @@ let allQ=[], filtQ=[];
 let certName=CFG.certName||'';
 let store=loadStore();
 // study
-let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false;
+let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false,sLastWrong=[];
 // exam
 let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={};
 // filters
@@ -1021,7 +1021,22 @@ function studyDone(){
   const total=sOk+sNg,pct=total?Math.round(sOk/total*100):0;
   setText('s-end-score',pct+'%');
   setText('s-end-sub',total+'問中 '+sOk+'問正解');
+  // このセッションで間違えた問題だけを即復習する導線
+  sLastWrong=sQueue.filter(q=>isWrong(q.id));
+  const box=document.querySelector('#s-end .result-box');
+  if(box){
+    let rb=document.getElementById('s-end-redo');
+    if(!rb){
+      rb=document.createElement('button');rb.id='s-end-redo';rb.className='btn bd';
+      rb.style.cssText='width:100%;margin:14px 0 0';rb.onclick=redoWrong;
+      box.insertBefore(rb,box.lastElementChild);
+    }
+    if(sLastWrong.length){rb.style.display='block';rb.textContent='🔁 間違えた '+sLastWrong.length+' 問だけ復習';}
+    else rb.style.display='none';
+  }
 }
+// 直近セッションの誤答だけで学習を再開
+function redoWrong(){if(sLastWrong&&sLastWrong.length)beginStudyWith(sLastWrong.slice());}
 
 // ===== EXAM =====
 function startExam(){
