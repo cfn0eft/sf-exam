@@ -59,13 +59,23 @@
       '.sfqc-msg.err{color:#dc2626}' +
       '.sfqc-msg.ok{color:#16a34a}' +
       '.sfqc-hint{margin-top:16px;font-size:11px;color:#94a3b8;line-height:1.6}' +
-      '#sfqc-badge{position:fixed;top:8px;right:10px;z-index:9000;display:none;align-items:center;gap:8px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:#4338ca;padding:5px 8px 5px 11px;border-radius:999px;font-size:12px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif}' +
-      '#sfqc-badge.show{display:inline-flex}' +
-      '#sfqc-badge .sfqc-status{font-weight:500;color:#6366f1;font-size:11px}' +
-      '#sfqc-admin-btn{display:none;background:#f59e0b;border:none;color:#fff;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer}' +
-      '#sfqc-admin-btn.show{display:inline-block}' +
-      '#sfqc-logout{background:rgba(255,255,255,.7);border:1px solid rgba(99,102,241,.3);color:#4338ca;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer}' +
-      '#sfqc-logout:hover{background:#fff}' +
+      '#sfqc-badge{position:fixed;top:9px;right:56px;z-index:9000;display:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif}' +
+      '#sfqc-badge.show{display:block}' +
+      '#sfqc-badge-toggle{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.92);border:1px solid rgba(99,102,241,.35);color:#4338ca;padding:6px 11px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 5px rgba(0,0,0,.18);max-width:150px;white-space:nowrap;overflow:hidden}' +
+      '.sfqc-caret{font-size:9px;opacity:.7;flex-shrink:0}' +
+      '#sfqc-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.22);padding:8px;min-width:172px}' +
+      '#sfqc-badge.open #sfqc-menu{display:block}' +
+      '#sfqc-menu .sfqc-status{font-size:11px;color:#16a34a;font-weight:600;padding:4px 8px 8px;border-bottom:1px solid #eef2f7;margin-bottom:6px}' +
+      '#sfqc-menu button{display:block;width:100%;text-align:left;border:none;background:none;padding:9px 10px;border-radius:8px;font-size:13px;font-weight:600;color:#334155;cursor:pointer}' +
+      '#sfqc-menu button:hover{background:#f1f5f9}' +
+      '#sfqc-admin-btn{display:none;color:#92400e}' +
+      '#sfqc-admin-btn.show{display:block}' +
+      '#sfqc-logout{color:#b91c1c}' +
+      '[data-theme=dark] #sfqc-badge-toggle,body.dark #sfqc-badge-toggle{background:rgba(30,41,59,.95);color:#a5b4fc;border-color:#475569}' +
+      '[data-theme=dark] #sfqc-menu,body.dark #sfqc-menu{background:#1e293b;border-color:#334155}' +
+      '[data-theme=dark] #sfqc-menu button,body.dark #sfqc-menu button{color:#cbd5e1}' +
+      '[data-theme=dark] #sfqc-menu button:hover,body.dark #sfqc-menu button:hover{background:#334155}' +
+      '[data-theme=dark] #sfqc-menu .sfqc-status,body.dark #sfqc-menu .sfqc-status{border-color:#334155}' +
       /* 管理者パネル */
       '#sfqc-admin{position:fixed;inset:0;z-index:100000;display:none;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif}' +
       '#sfqc-admin.show{display:block}' +
@@ -182,10 +192,12 @@
     elBadge = document.createElement('div');
     elBadge.id = 'sfqc-badge';
     elBadge.innerHTML =
-      '<span id="sfqc-name">👤</span>' +
-      '<span class="sfqc-status" id="sfqc-status"></span>' +
-      '<button id="sfqc-admin-btn">👑 管理者</button>' +
-      '<button id="sfqc-logout">ログアウト</button>';
+      '<button id="sfqc-badge-toggle" type="button"><span id="sfqc-name">👤</span><span class="sfqc-caret">▾</span></button>' +
+      '<div id="sfqc-menu">' +
+        '<div class="sfqc-status" id="sfqc-status"></div>' +
+        '<button id="sfqc-admin-btn" type="button">👑 管理者ビュー</button>' +
+        '<button id="sfqc-logout" type="button">ログアウト</button>' +
+      '</div>';
     document.body.appendChild(elBadge);
 
     elAdmin = document.createElement('div');
@@ -222,9 +234,14 @@
       elId.addEventListener('keydown', function (e) { if (e.key === 'Enter') elPw.focus(); });
     }
 
+    // アカウントバッジのドロップダウン開閉
+    var badgeToggle = document.getElementById('sfqc-badge-toggle');
+    if (badgeToggle) badgeToggle.addEventListener('click', function (e) { e.stopPropagation(); elBadge.classList.toggle('open'); });
+    document.addEventListener('click', function (e) { if (elBadge && !elBadge.contains(e.target)) elBadge.classList.remove('open'); });
+
     // バッジ・管理者パネルは両モード共通
-    document.getElementById('sfqc-logout').addEventListener('click', doLogout);
-    elAdminBtn.addEventListener('click', openAdmin);
+    document.getElementById('sfqc-logout').addEventListener('click', function () { elBadge.classList.remove('open'); doLogout(); });
+    elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
     document.getElementById('sfqc-adm-csv').addEventListener('click', exportCsv);
