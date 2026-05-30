@@ -27,7 +27,7 @@ let store=loadStore();
 // study
 let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false;
 // exam
-let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false;
+let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={};
 // filters
 let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
 // 出典フィルタ（tyson=タイソンブログ / gen=生成 / all=両方）
@@ -152,6 +152,8 @@ function handleKey(e){
       if(eCur<EXAM_N-1){eNav(1);e.preventDefault();}
     }else if(e.key==='ArrowLeft'){
       if(eCur>0){eNav(-1);e.preventDefault();}
+    }else if(e.key==='f'||e.key==='F'){
+      toggleEFlag();e.preventDefault();
     }
   }
 }
@@ -1024,7 +1026,7 @@ function studyDone(){
 // ===== EXAM =====
 function startExam(){
   if(scopedQ().length<EXAM_N){toast('問題数が不足しています（出典フィルタを「すべて」にすると増えます）');return;}
-  eQ=pickWeightedExam(EXAM_N);eCur=0;eAns={};eSecs=EXAM_MIN*60;
+  eQ=pickWeightedExam(EXAM_N);eCur=0;eAns={};eFlag={};eSecs=EXAM_MIN*60;
   eDispArr=eQ.map(q=> cshufOn()? shuffle(q.choices.map((_,i)=>i)) : q.choices.map((_,i)=>i));
   document.getElementById('e-result').style.display='none';
   document.getElementById('e-area').style.display='block';
@@ -1083,6 +1085,38 @@ function renderEQ(){
   });
   document.getElementById('e-prev').disabled=eCur===0;
   document.getElementById('e-next').style.display=eCur===EXAM_N-1?'none':'';
+  const fb=document.getElementById('e-flag');
+  if(fb){const on=!!eFlag[eCur];fb.classList.toggle('on',on);fb.textContent=on?'🚩 見直す':'🚩 後で';}
+  renderNavPalette();
+  updateFinishLabel();
+}
+// 解答済み問題数
+function eAnsweredCount(){let n=0;for(let i=0;i<EXAM_N;i++){if((eAns[i]||[]).length>0)n++;}return n;}
+// フラグの切替
+function toggleEFlag(){eFlag[eCur]=!eFlag[eCur];renderEQ();}
+// 任意の問題へジャンプ
+function eJump(i){closeExamSheet();eCur=Math.max(0,Math.min(EXAM_N-1,i));renderEQ();window.scrollTo({top:0,behavior:'smooth'});}
+// 採点ボタンに解答済み件数を表示
+function updateFinishLabel(){
+  const b=document.getElementById('e-finish');if(!b)return;
+  b.innerHTML='📝 採点する<span class="finish-cnt">'+eAnsweredCount()+'/'+EXAM_N+' 回答</span>';
+}
+// 問題ナビゲータ（一覧グリッド）
+function renderNavPalette(){
+  const host=document.getElementById('e-navpal');if(!host)return;
+  const done=eAnsweredCount();
+  let h='<div class="navpal-head"><span>問題一覧</span><span class="navpal-cnt">'+done+' / '+EXAM_N+' 回答済</span></div>';
+  h+='<div class="navgrid">';
+  for(let i=0;i<EXAM_N;i++){
+    let cls='ncell';
+    if((eAns[i]||[]).length>0)cls+=' answered';
+    if(i===eCur)cls+=' current';
+    if(eFlag[i])cls+=' flagged';
+    h+='<button type="button" class="'+cls+'" onclick="eJump('+i+')">'+(i+1)+'</button>';
+  }
+  h+='</div>';
+  h+='<div class="navlegend"><span><i class="lg a"></i>回答済</span><span><i class="lg"></i>未回答</span><span><i class="lg c"></i>現在</span><span><i class="lg f"></i>🚩フラグ</span></div>';
+  host.innerHTML=h;
 }
 function selEChoice(idx,isM){
   if(!eAns[eCur])eAns[eCur]=[];
@@ -1092,8 +1126,65 @@ function selEChoice(idx,isM){
   renderEQ();
 }
 function eNav(d){eCur=Math.max(0,Math.min(EXAM_N-1,eCur+d));renderEQ();}
+// 採点ボタン押下時：未回答／フラグがあれば確認シートを出し、無ければ即採点
+function confirmFinishExam(){
+  const unans=[];for(let i=0;i<EXAM_N;i++){if((eAns[i]||[]).length===0)unans.push(i);}
+  let flags=0;for(let i=0;i<EXAM_N;i++){if(eFlag[i])flags++;}
+  if(unans.length===0&&flags===0){finishExam();return;}
+  showExamSheet(unans,flags);
+}
+// 採点前確認シート（DOMは初回に動的生成しbodyへ）
+function showExamSheet(unans,flags){
+  let dim=document.getElementById('e-sheet-dim');
+  if(!dim){
+    dim=document.createElement('div');dim.id='e-sheet-dim';dim.className='e-sheet-dim';
+    dim.addEventListener('click',e=>{if(e.target===dim)closeExamSheet();});
+    dim.innerHTML='<div class="e-sheet" role="dialog" aria-modal="true">'
+      +'<h3>採点する前に確認</h3>'
+      +'<p class="e-sheet-sub">未回答のまま採点すると不正解扱いになります。</p>'
+      +'<div class="e-sheet-pills" id="e-sheet-pills"></div>'
+      +'<div id="e-sheet-jump"></div>'
+      +'<div class="e-sheet-btns"><button type="button" class="btn bg" onclick="closeExamSheet()">戻って見直す</button>'
+      +'<button type="button" class="btn bd" onclick="closeExamSheet();finishExam()">このまま採点する</button></div>'
+      +'</div>';
+    document.body.appendChild(dim);
+  }
+  let pills='';
+  pills+='<div class="e-wpill un"><span class="n">'+unans.length+'</span>問 未回答</div>';
+  pills+='<div class="e-wpill fl"><span class="n">'+flags+'</span>問 🚩フラグ</div>';
+  document.getElementById('e-sheet-pills').innerHTML=pills;
+  const jw=document.getElementById('e-sheet-jump');
+  if(unans.length){
+    let h='<div class="e-jump-label">未回答にジャンプ（タップ）</div><div class="e-jump-wrap">';
+    unans.forEach(i=>{h+='<button type="button" class="e-jumpchip" onclick="eJump('+i+')">Q'+(i+1)+'</button>';});
+    h+='</div>';jw.innerHTML=h;
+  }else jw.innerHTML='';
+  dim.classList.add('open');
+}
+function closeExamSheet(){const d=document.getElementById('e-sheet-dim');if(d)d.classList.remove('open');}
+// 弱点分野コールアウト（合格ライン未満の分野を抽出）
+function renderWeakCallout(byd){
+  const host=document.getElementById('e-weak-callout');if(!host)return;
+  const weak=DOMAIN_DEFS.filter(d=>{const b=byd[d.code];return b&&b.t&&Math.round(b.c/b.t*100)<PASS;});
+  if(!weak.length){host.innerHTML='<div class="e-callout ok">🎉 全分野で合格ラインを超えています！</div>';return;}
+  const names=weak.map(d=>d.name).join('・');
+  host.innerHTML='<div class="e-callout">弱点は <b>'+escH(names)+'</b>。'
+    +'<button type="button" class="e-callout-btn" onclick="startWeakDomains()">弱点分野を出題 →</button></div>';
+}
+// スコアリング（円グラフ）描画
+function renderScoreRing(pct,pass){
+  const host=document.getElementById('e-ring');if(!host){setText('e-pct',pct+'%');return;}
+  const r=68,c=2*Math.PI*r,off=c*(1-pct/100);
+  const col=pass?'var(--success)':'var(--danger)';
+  host.innerHTML='<svg width="160" height="160" viewBox="0 0 160 160">'
+    +'<circle cx="80" cy="80" r="'+r+'" fill="none" stroke="var(--border)" stroke-width="14"/>'
+    +'<circle cx="80" cy="80" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="14" stroke-linecap="round" '
+    +'stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 80 80)"/>'
+    +'</svg><div class="ring-num"><span class="big" id="e-pct" style="color:'+col+'">'+pct+'%</span><span class="lab">正答率</span></div>';
+}
 function finishExam(){
   if(eTimer){clearInterval(eTimer);eTimer=null;}
+  closeExamSheet();
   let ok=0;const byd={};
   eQ.forEach((q,i)=>{
     const sel=(eAns[i]||[]).map(idx=>q.choices[idx]);
@@ -1110,12 +1201,13 @@ function finishExam(){
   checkBadges();
   document.getElementById('e-area').style.display='none';
   document.getElementById('e-result').style.display='block';
-  setText('e-pct',pct+'%');
+  renderScoreRing(pct,pass);
   setText('e-detail',EXAM_N+'問中 '+ok+'問正解');
   const pill=document.getElementById('e-pill');
-  pill.textContent=pass?'合格 🎉':'不合格 📖';
+  pill.textContent=(pass?'合格 🎉':'不合格 📖')+'（合格ライン '+PASS+'%）';
   pill.className='pass-pill '+(pass?'pass':'fail');
   renderExamDomains(byd);
+  renderWeakCallout(byd);
   eWrongOnly=false;
   const wt=document.getElementById('e-wrong-toggle');if(wt)wt.classList.remove('on');
   renderExamResultList();

@@ -10,13 +10,12 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css">
+<link rel="stylesheet" href="../../quiz.css?v=5">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-config.js"></script>
 </head>
-<body>
 <body>
 
 <!-- TOP BAR -->
@@ -189,29 +188,33 @@
   <div class="pbar"><div class="pfill" id="e-pfill"></div></div>
   <div id="e-area">
     <div class="card">
-      <div class="qbadge" id="e-badge">Q1</div>
+      <div class="qhead">
+        <div class="qbadge" id="e-badge">Q1</div>
+        <button class="flagbtn" id="e-flag" onclick="toggleEFlag()" title="後で見直す問題に印を付ける（Fキー）">🚩 後で</button>
+      </div>
       <div class="qtext" id="e-qtext"></div>
       <div class="choices" id="e-choices"></div>
       <div class="action-row exam-nav-row" style="margin-top:10px">
         <button class="btn bg" id="e-prev" onclick="eNav(-1)">← 前へ</button>
         <button class="btn bp" id="e-next" onclick="eNav(1)">次へ →</button>
       </div>
-      <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>←</kbd> <kbd>→</kbd> で問題移動</div>
+      <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>←</kbd> <kbd>→</kbd> で移動　/　<kbd>F</kbd> でフラグ</div>
     </div>
+    <div id="e-navpal" class="navpal"></div>
     <div class="exam-finish-row">
-      <button class="btn bd btn-finish" onclick="finishExam()">📝 採点する</button>
+      <button class="btn bd btn-finish" id="e-finish" onclick="confirmFinishExam()">📝 採点する</button>
     </div>
   </div>
   <div id="e-result" style="display:none">
     <div class="card result-box">
-      <div class="result-num" id="e-pct"></div>
-      <div class="result-label">正答率</div>
+      <div class="ring-wrap" id="e-ring"></div>
       <div class="pass-pill" id="e-pill"></div>
       <div class="result-sub" id="e-detail"></div>
     </div>
     <div class="card">
       <div class="sec-label" style="margin-top:0">📊 分野別スコア</div>
       <div id="e-domains"></div>
+      <div id="e-weak-callout"></div>
     </div>
     <details class="exam-rlist-details">
       <summary>問題ごとの結果を見る</summary>
@@ -431,9 +434,9 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js"></script>
+<script src="../../quiz-engine.js?v=5"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js"></script>
+<script src="../../cloud-sync.js?v=5"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>

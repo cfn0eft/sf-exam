@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>モック: 試験モード改善案</title>
+<style>
+/* ===== 既存 quiz.css のデザイントークンを流用 ===== */
+:root{
+  --primary:#0176d3;--primary-dark:#014486;--primary-light:#d8edff;
+  --success:#2e844a;--success-light:#cdefc4;
+  --danger:#ba0517;--danger-light:#fcdde0;
+  --warning:#dd7a01;--warning-light:#fef3e2;
+  --purple:#7b5ea7;--teal:#0b827c;
+  --bg:#f3f3f3;--card:#fff;--text:#181818;--text-sub:#5c5c5c;
+  --border:#e0e0e0;--shadow:0 2px 8px rgba(0,0,0,.08);--radius:12px;
+}
+[data-theme=dark]{
+  --primary:#4ba3e3;--primary-dark:#1d5fa8;--primary-light:#0c2d4a;
+  --success:#3ba755;--danger:#e5404e;--warning:#f0a830;
+  --bg:#111;--card:#1e1e1e;--text:#f0f0f0;--text-sub:#aaa;
+  --border:#333;--shadow:0 2px 8px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif;
+  background:#e7e9ee;color:var(--text);padding:18px;line-height:1.5}
+[data-theme=dark] body{background:#000}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:19px;margin-bottom:4px}
+.lead{font-size:13px;color:#555;margin-bottom:16px}
+[data-theme=dark] .lead{color:#aaa}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.ctl{padding:7px 14px;border-radius:999px;border:1.5px solid #c7ccd6;background:#fff;
+  cursor:pointer;font-size:12px;font-weight:700;color:#444}
+.ctl.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.note{font-size:12px;color:#777;margin-top:2px}
+
+/* 3画面を横並びで一覧（モック比較用） */
+.screens{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.phone{width:360px;background:var(--bg);border-radius:30px;overflow:hidden;
+  box-shadow:0 14px 40px rgba(0,0,0,.22);border:8px solid #1b1b1b;position:relative}
+.phone-cap{position:relative;z-index:5}
+.scr-label{text-align:center;font-size:12px;font-weight:800;color:#5b6473;margin-bottom:8px;letter-spacing:.04em}
+[data-theme=dark] .scr-label{color:#9aa3b2}
+
+/* ---- topbar ---- */
+.topbar{background:var(--primary);color:#fff;height:50px;display:flex;align-items:center;padding:0 12px;font-weight:700;font-size:14px;gap:8px}
+.topbar .tt{flex:1;text-align:center}
+.tb-ico{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:17px}
+
+.screen-body{padding:12px;min-height:560px;position:relative;padding-bottom:78px}
+
+/* ---- quiz top ---- */
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.qprog{font-size:13px;font-weight:800;color:var(--text-sub)}
+.timer{font-size:13px;font-weight:800;color:var(--primary);background:var(--primary-light);padding:3px 9px;border-radius:999px}
+.timer.warn{color:#fff;background:var(--danger)}
+.pbar{height:6px;border-radius:6px;background:var(--border);overflow:hidden;margin-bottom:12px}
+.pfill{height:100%;background:var(--primary)}
+
+/* ---- card / choices ---- */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
+.qhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.qbadge{display:inline-block;background:var(--primary-light);color:var(--primary-dark);
+  font-size:12px;font-weight:800;padding:3px 10px;border-radius:8px}
+.flagbtn{border:1.5px solid var(--border);background:var(--card);border-radius:999px;
+  font-size:12px;font-weight:700;color:var(--text-sub);padding:5px 11px;cursor:pointer;display:flex;gap:5px;align-items:center}
+.flagbtn.on{background:var(--warning-light);color:var(--warning);border-color:var(--warning)}
+.qtext{font-size:14px;font-weight:600;margin-bottom:12px}
+.choice{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--border);
+  border-radius:10px;padding:11px 12px;margin-bottom:8px;font-size:13px;cursor:pointer}
+.choice .cmark{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-sub)}
+.choice.sel{border-color:var(--primary);background:var(--primary-light)}
+.choice.sel .cmark{background:var(--primary);border-color:var(--primary);color:#fff}
+
+/* ---- ★ 問題ナビゲータ（新規） ---- */
+.navpal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;margin-bottom:12px}
+.navpal h4{font-size:11px;font-weight:800;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;display:flex;justify-content:space-between}
+.navgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.ncell{aspect-ratio:1;border-radius:7px;border:1.5px solid var(--border);background:var(--card);
+  font-size:11px;font-weight:700;color:var(--text-sub);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
+.ncell.answered{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ncell.current{outline:3px solid var(--warning);outline-offset:1px;z-index:1}
+.ncell.flagged::after{content:"";position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--warning);border:1.5px solid var(--card)}
+.nlegend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:10.5px;color:var(--text-sub)}
+.nlegend span{display:flex;align-items:center;gap:4px}
+.lg{width:12px;height:12px;border-radius:4px;border:1.5px solid var(--border);display:inline-block}
+.lg.a{background:var(--primary);border-color:var(--primary)}
+.lg.c{outline:2px solid var(--warning);outline-offset:0}
+.lg.f{position:relative}
+.lg.f::after{content:"";position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--warning)}
+
+/* ---- sticky bottom action ---- */
+.actionbar{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--border);
+  padding:10px 12px;display:flex;gap:8px;align-items:center}
+.btn{border:none;border-radius:10px;font-weight:800;font-size:13px;padding:11px 12px;cursor:pointer}
+.btn.ghost{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+.btn.prim{background:var(--primary);color:#fff}
+.btn.score{background:var(--warning);color:#fff;flex:1;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.2}
+.btn.score small{font-size:10px;font-weight:600;opacity:.9}
+
+/* ---- 採点前確認シート ---- */
+.sheet-dim{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end}
+.sheet{background:var(--card);width:100%;border-radius:18px 18px 0 0;padding:18px 16px 16px}
+.sheet h3{font-size:16px;margin-bottom:4px}
+.sheet .sub{font-size:12.5px;color:var(--text-sub);margin-bottom:14px}
+.warn-row{display:flex;gap:10px;margin-bottom:14px}
+.warn-pill{flex:1;border-radius:10px;padding:10px;text-align:center}
+.warn-pill .n{font-size:22px;font-weight:800}
+.warn-pill.un{background:var(--danger-light);color:var(--danger)}
+.warn-pill.fl{background:var(--warning-light);color:var(--warning)}
+.jump-label{font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:6px}
+.jump-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.jumpchip{border:1.5px solid var(--danger);color:var(--danger);background:var(--danger-light);
+  border-radius:8px;font-size:12px;font-weight:700;padding:4px 9px;cursor:pointer}
+.sheet-btns{display:flex;gap:10px}
+.sheet-btns .btn{flex:1}
+
+/* ---- 結果（スコアリング） ---- */
+.result-card{text-align:center;padding:20px 14px}
+.ring-wrap{position:relative;width:160px;height:160px;margin:4px auto 8px}
+.ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num .big{font-size:38px;font-weight:800;line-height:1}
+.ring-num .lab{font-size:11px;color:var(--text-sub);margin-top:2px}
+.pass-pill{display:inline-block;font-size:13px;font-weight:800;padding:5px 16px;border-radius:999px;margin-top:4px}
+.pass-pill.pass{background:var(--success-light);color:var(--success)}
+.pass-pill.fail{background:var(--danger-light);color:var(--danger)}
+.result-sub{font-size:13px;color:var(--text-sub);margin-top:10px}
+.sec-label{font-size:11px;font-weight:800;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.edom-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:12px}
+.dom-emoji{font-size:15px}
+.dom-name{width:78px;flex-shrink:0}
+.dom-bw{flex:1;height:8px;border-radius:8px;background:var(--border);overflow:hidden}
+.dom-bf{height:100%}
+.dom-pct{width:34px;text-align:right;font-weight:800;font-size:11px}
+
+.callout{background:var(--card);border-left:4px solid var(--primary);border-radius:8px;padding:10px 12px;font-size:12.5px;margin-top:10px}
+.callout b{color:var(--primary-dark)}
+[data-theme=dark] .callout b{color:var(--primary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>モック: 試験モードの改善案</h1>
+  <p class="lead">現状の試験モードは「← 前へ / 次へ →」の逐次移動のみ。本番(Salesforce認定)同様の<b>問題ナビゲータ・フラグ(後で見直す)・未回答警告・スコアリング表示</b>を追加する案です。既存の <code>quiz.css</code> デザイントークンに準拠。データ非接続の静的モックです。</p>
+  <div class="controls">
+    <span style="font-size:12px;font-weight:700;color:#666">テーマ:</span>
+    <button class="ctl on" id="t-light" onclick="setTheme('light')">☀️ ライト</button>
+    <button class="ctl" id="t-dark" onclick="setTheme('dark')">🌙 ダーク</button>
+  </div>
+
+  <div class="screens">
+    <!-- ===== 画面1: 出題中 + ナビゲータ ===== -->
+    <div>
+      <div class="scr-label">① 出題中：問題ナビゲータ＋フラグ</div>
+      <div class="phone">
+        <div class="topbar"><span class="tb-ico">←</span><span class="tt">試験モード</span><span class="tb-ico">🌙</span></div>
+        <div class="screen-body">
+          <div class="quiz-top"><span class="qprog">Q12 / 60</span><span class="timer">⏱ 1:21:44</span></div>
+          <div class="pbar"><div class="pfill" style="width:20%"></div></div>
+
+          <div class="card">
+            <div class="qhead">
+              <span class="qbadge">Q12</span>
+              <button class="flagbtn on">🚩 後で見直す</button>
+            </div>
+            <div class="qtext">レコードトリガフローで同一レコードの項目を高速に更新したい。最も適切な実行タイミングは？</div>
+            <div class="choice"><span class="cmark">○</span><span>保存後（after-save）</span></div>
+            <div class="choice sel"><span class="cmark">●</span><span>保存前（before-save）</span></div>
+            <div class="choice"><span class="cmark">○</span><span>スケジュールトリガ</span></div>
+            <div class="choice"><span class="cmark">○</span><span>プラットフォームイベント</span></div>
+          </div>
+
+          <div class="navpal">
+            <h4><span>問題一覧</span><span style="font-weight:700;color:var(--primary)">52 / 60 回答済</span></h4>
+            <div class="navgrid" id="grid1"></div>
+            <div class="nlegend">
+              <span><i class="lg a"></i>回答済</span>
+              <span><i class="lg"></i>未回答</span>
+              <span><i class="lg c"></i>現在</span>
+              <span><i class="lg f"></i>🚩フラグ</span>
+            </div>
+          </div>
+        </div>
+        <div class="actionbar">
+          <button class="btn ghost">← 前へ</button>
+          <button class="btn prim">次へ →</button>
+          <button class="btn score">📝 採点する<small>52/60 回答</small></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 画面2: 採点前確認 ===== -->
+    <div>
+      <div class="scr-label">② 採点前：未回答・フラグ警告</div>
+      <div class="phone">
+        <div class="topbar"><span class="tb-ico">←</span><span class="tt">試験モード</span><span class="tb-ico">🌙</span></div>
+        <div class="screen-body" style="filter:saturate(.6)">
+          <div class="quiz-top"><span class="qprog">Q12 / 60</span><span class="timer">⏱ 1:21:30</span></div>
+          <div class="pbar"><div class="pfill" style="width:20%"></div></div>
+          <div class="card"><div class="qhead"><span class="qbadge">Q12</span></div><div class="qtext" style="opacity:.4">…</div>
+            <div class="choice" style="opacity:.35"><span class="cmark">○</span><span>　</span></div>
+            <div class="choice" style="opacity:.35"><span class="cmark">○</span><span>　</span></div>
+          </div>
+          <!-- bottom sheet -->
+          <div class="sheet-dim">
+            <div class="sheet">
+              <h3>採点する前に確認</h3>
+              <p class="sub">未回答のまま採点すると不正解扱いになります。</p>
+              <div class="warn-row">
+                <div class="warn-pill un"><div class="n">8</div>問 未回答</div>
+                <div class="warn-pill fl"><div class="n">3</div>問 🚩フラグ</div>
+              </div>
+              <div class="jump-label">未回答にジャンプ（タップ）</div>
+              <div class="jump-wrap">
+                <span class="jumpchip">Q7</span><span class="jumpchip">Q15</span><span class="jumpchip">Q22</span>
+                <span class="jumpchip">Q31</span><span class="jumpchip">Q38</span><span class="jumpchip">Q44</span>
+                <span class="jumpchip">Q51</span><span class="jumpchip">Q59</span>
+              </div>
+              <div class="sheet-btns">
+                <button class="btn ghost">戻って見直す</button>
+                <button class="btn prim" style="background:var(--warning)">このまま採点する</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 画面3: 結果（スコアリング） ===== -->
+    <div>
+      <div class="scr-label">③ 結果：スコアリング＋分野別</div>
+      <div class="phone">
+        <div class="topbar"><span class="tb-ico">←</span><span class="tt">試験結果</span><span class="tb-ico">🌙</span></div>
+        <div class="screen-body" style="padding-bottom:12px">
+          <div class="card result-card">
+            <div class="ring-wrap">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="68" fill="none" stroke="var(--border)" stroke-width="14"/>
+                <circle cx="80" cy="80" r="68" fill="none" stroke="var(--success)" stroke-width="14"
+                  stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="120"
+                  transform="rotate(-90 80 80)"/>
+              </svg>
+              <div class="ring-num"><span class="big" style="color:var(--success)">72%</span><span class="lab">正答率</span></div>
+            </div>
+            <div class="pass-pill pass">合格 🎉（合格ライン 63%）</div>
+            <div class="result-sub">60問中 <b>43問</b> 正解 ・ 所要 38分</div>
+          </div>
+
+          <div class="card">
+            <div class="sec-label">📊 分野別スコア</div>
+            <div class="edom-row"><span class="dom-emoji">🏗️</span><span class="dom-name">基礎</span><div class="dom-bw"><div class="dom-bf" style="width:85%;background:var(--success)"></div></div><span class="dom-pct" style="color:var(--success)">11/13</span></div>
+            <div class="edom-row"><span class="dom-emoji">🗄️</span><span class="dom-name">データ</span><div class="dom-bw"><div class="dom-bf" style="width:77%;background:var(--success)"></div></div><span class="dom-pct" style="color:var(--success)">10/13</span></div>
+            <div class="edom-row"><span class="dom-emoji">⚙️</span><span class="dom-name">ロジック</span><div class="dom-bw"><div class="dom-bf" style="width:53%;background:var(--warning)"></div></div><span class="dom-pct" style="color:var(--warning)">9/17</span></div>
+            <div class="edom-row"><span class="dom-emoji">🎨</span><span class="dom-name">UI</span><div class="dom-bw"><div class="dom-bf" style="width:70%;background:var(--success)"></div></div><span class="dom-pct" style="color:var(--success)">7/10</span></div>
+            <div class="edom-row"><span class="dom-emoji">🚀</span><span class="dom-name">リリース</span><div class="dom-bw"><div class="dom-bf" style="width:33%;background:var(--danger)"></div></div><span class="dom-pct" style="color:var(--danger)">2/6</span></div>
+            <div class="callout">弱点は <b>ロジック・リリース</b>。<b>「弱点分野を出題」</b>でこの2分野を重点復習できます。</div>
+          </div>
+
+          <div style="display:flex;gap:10px">
+            <button class="btn prim" style="flex:1">もう一度</button>
+            <button class="btn ghost" style="flex:1">ホームへ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:18px">※ これは静的モック（クリック動作・データ連携なし）。実装時は既存 <code>quiz-engine.js</code> の <code>renderEQ()</code> / <code>finishExam()</code> に組み込みます。</p>
+</div>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'');
+  document.getElementById('t-light').classList.toggle('on',t!=='dark');
+  document.getElementById('t-dark').classList.toggle('on',t==='dark');
+}
+// 問題ナビゲータのセルを生成（モック状態）
+(function(){
+  const grid=document.getElementById('grid1');
+  const flagged=[7,15,40], unanswered=[7,15,22,31,38,44,51,59], current=12;
+  for(let i=1;i<=60;i++){
+    const c=document.createElement('div');c.className='ncell';c.textContent=i;
+    if(!unanswered.includes(i)) c.classList.add('answered');
+    if(i===current) c.classList.add('current');
+    if(flagged.includes(i)) c.classList.add('flagged');
+    grid.appendChild(c);
+  }
+})();
+</script>
+</body>
+</html>

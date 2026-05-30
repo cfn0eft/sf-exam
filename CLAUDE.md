@@ -21,7 +21,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v5）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -123,6 +123,14 @@ git push origin main
 
 - 認証は **cfn0eft** アカウント。過去に `mashi-18` の古い認証がキャッシュされて 403 になった事故あり。詰まったら `printf "protocol=https\nhost=github.com\n\n" | git credential reject` でリセット
 - **編集したら頼まれなくても commit/push コマンドを毎回出す**
+
+### キャッシュ無効化（重要）
+
+- `quiz-engine.js` / `quiz.css` / `cloud-sync.js` を更新したら **3点セットでバージョンを上げる**:
+  1. `sw.js` の `CACHE` 文字列（例 `sf-exam-v5` → `v6`）
+  2. 両シェル（`certifications/*/index.html`）のアセット参照の `?v=5` → `?v=6`
+  3. `sw.js` の `SHELL` 配列内の `?v=5` → `?v=6`
+- 理由: SW は stale-while-revalidate でキャッシュ優先のため、版数を上げないとブラウザが旧 JS/CSS を掴み続ける（実際にこの事故を確認済み）。`?v=` クエリで URL を変えることで確実に新版を取得させる。
 
 ---
 

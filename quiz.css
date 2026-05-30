@@ -672,3 +672,72 @@ body{
   .vact-3 .btn-skip{flex:0 0 70px;padding:14px 4px;font-size:12px}
 }
 
+/* ============================================================
+   試験モード改善（問題ナビゲータ／フラグ／採点前確認／スコアリング）
+   ============================================================ */
+/* 試験カードのヘッダ（バッジ＋フラグ） */
+.qhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.flagbtn{border:1.5px solid var(--border);background:var(--card);border-radius:999px;
+  font-size:12px;font-weight:700;color:var(--text-sub);padding:5px 12px;cursor:pointer;
+  white-space:nowrap;transition:all .15s}
+.flagbtn.on{background:var(--warning-light);color:var(--warning);border-color:var(--warning)}
+/* 採点ボタンの回答件数 */
+.finish-cnt{display:inline-block;font-size:11px;font-weight:600;opacity:.9;margin-left:8px}
+/* 問題ナビゲータ */
+.navpal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:12px;margin-bottom:12px}
+.navpal-head{display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;font-weight:800;color:var(--text-sub);text-transform:uppercase;
+  letter-spacing:.06em;margin-bottom:9px}
+.navpal-cnt{color:var(--primary);text-transform:none;letter-spacing:0}
+.navgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+@media (max-width:420px){.navgrid{grid-template-columns:repeat(8,1fr)}}
+.ncell{aspect-ratio:1;border-radius:7px;border:1.5px solid var(--border);background:var(--card);
+  font-size:11px;font-weight:700;color:var(--text-sub);display:flex;align-items:center;
+  justify-content:center;position:relative;cursor:pointer;padding:0;transition:all .12s}
+.ncell:hover{border-color:var(--primary)}
+.ncell.answered{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ncell.current{outline:3px solid var(--warning);outline-offset:1px;z-index:1}
+.ncell.flagged::after{content:"";position:absolute;top:-3px;right:-3px;width:9px;height:9px;
+  border-radius:50%;background:var(--warning);border:1.5px solid var(--card)}
+.navlegend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:10.5px;color:var(--text-sub)}
+.navlegend span{display:flex;align-items:center;gap:4px}
+.navlegend .lg{width:12px;height:12px;border-radius:4px;border:1.5px solid var(--border);display:inline-block;position:relative}
+.navlegend .lg.a{background:var(--primary);border-color:var(--primary)}
+.navlegend .lg.c{outline:2px solid var(--warning);outline-offset:0}
+.navlegend .lg.f::after{content:"";position:absolute;top:-3px;right:-3px;width:7px;height:7px;
+  border-radius:50%;background:var(--warning)}
+/* スコアリング（結果） */
+.ring-wrap{position:relative;width:160px;height:160px;margin:4px auto 10px}
+.ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num .big{font-size:38px;font-weight:800;line-height:1}
+.ring-num .lab{font-size:11px;color:var(--text-sub);margin-top:2px}
+/* 弱点コールアウト */
+.e-callout{background:var(--primary-light);border-radius:8px;padding:10px 12px;font-size:12.5px;
+  margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.e-callout b{color:var(--primary-dark)}
+[data-theme=dark] .e-callout b{color:var(--primary)}
+.e-callout.ok{background:var(--success-light)}
+.e-callout-btn{margin-left:auto;border:none;background:var(--primary);color:#fff;
+  border-radius:8px;font-size:12px;font-weight:700;padding:6px 12px;cursor:pointer;white-space:nowrap}
+/* 採点前確認シート */
+.e-sheet-dim{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.45);
+  display:none;align-items:flex-end;justify-content:center}
+.e-sheet-dim.open{display:flex}
+.e-sheet{background:var(--card);width:100%;max-width:680px;border-radius:18px 18px 0 0;
+  padding:18px 16px calc(18px + env(safe-area-inset-bottom));animation:sheetUp .2s ease}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.e-sheet h3{font-size:16px;margin-bottom:4px}
+.e-sheet-sub{font-size:12.5px;color:var(--text-sub);margin-bottom:14px}
+.e-sheet-pills{display:flex;gap:10px;margin-bottom:14px}
+.e-wpill{flex:1;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700}
+.e-wpill .n{display:block;font-size:22px;font-weight:800;line-height:1.1}
+.e-wpill.un{background:var(--danger-light);color:var(--danger)}
+.e-wpill.fl{background:var(--warning-light);color:var(--warning)}
+.e-jump-label{font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:6px}
+.e-jump-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.e-jumpchip{border:1.5px solid var(--danger);color:var(--danger);background:var(--danger-light);
+  border-radius:8px;font-size:12px;font-weight:700;padding:4px 10px;cursor:pointer}
+.e-sheet-btns{display:flex;gap:10px}
+.e-sheet-btns .btn{flex:1}
+
