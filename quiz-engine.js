@@ -887,20 +887,24 @@ function renderSQ(){
   bmbtn.className='bmbtn'+(isBm(q.id)?' on':'');
   const choicesEl=document.getElementById('s-choices');choicesEl.innerHTML='';
   sDisp = cshufOn() ? shuffle(q.choices.map((_,i)=>i)) : q.choices.map((_,i)=>i);
-  sDisp.forEach(oi=>{
+  sDisp.forEach((oi,di)=>{
     const ch=q.choices[oi];
-    const item=document.createElement('div');item.className='choice';item.dataset.oi=oi;
-    const mark=document.createElement('div');mark.className='cmark';mark.textContent=isM?'□':'○';
+    const item=document.createElement('div');item.className='choice';item.dataset.oi=oi;item.dataset.num=di+1;
+    item.setAttribute('role','button');item.setAttribute('aria-pressed','false');item.tabIndex=0;
+    const mark=document.createElement('div');mark.className='cmark';mark.textContent=String(di+1);
     const span=document.createElement('span');span.textContent=ch;
     item.appendChild(mark);item.appendChild(span);
     item.addEventListener('click',()=>selChoice(oi,isM));
+    item.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();selChoice(oi,isM);}});
     choicesEl.appendChild(item);
   });
   document.getElementById('s-check').disabled=true;
   const cf=document.getElementById('s-conf');if(cf)cf.classList.remove('on');
   const expEl=document.getElementById('s-exp');
-  expEl.className='exp-box';expEl.innerHTML='';
+  expEl.className='exp-box';expEl.innerHTML='';expEl.setAttribute('aria-live','polite');
   document.getElementById('s-next-row').style.display='none';
+  var _sa=document.getElementById('s-act');if(_sa)_sa.style.display='flex';
+  var _sb=document.getElementById('study-actbar');if(_sb)_sb.style.display='';
   const memo=document.getElementById('s-memo');if(memo)memo.value=(store.notes&&store.notes[q.id])||'';
   const ms=document.getElementById('memo-saved');if(ms)ms.classList.remove('on');
 }
@@ -911,7 +915,8 @@ function selChoice(idx,isM){
   document.querySelectorAll('#s-choices .choice').forEach(item=>{
     const oi=+item.dataset.oi,on=sSel.includes(oi);
     item.classList.toggle('sel',on);
-    item.querySelector('.cmark').textContent=on?(isM?'☑':'●'):(isM?'□':'○');
+    item.setAttribute('aria-pressed',on?'true':'false');
+    item.querySelector('.cmark').textContent=on?(isM?'✓':item.dataset.num):item.dataset.num;
   });
   document.getElementById('s-check').disabled=sSel.length===0;
 }
@@ -940,7 +945,8 @@ function checkAnswer(){
     if(isSel&&isAns)item.classList.add('correct');
     else if(isSel&&!isAns)item.classList.add('wrong');
     else if(!isSel&&isAns)item.classList.add('hint');
-    item.querySelector('.cmark').textContent=isAns?'✓':(isSel?'✗':(q.answers.length>1?'□':'○'));
+    item.setAttribute('aria-pressed',isSel?'true':'false');item.tabIndex=-1;
+    item.querySelector('.cmark').textContent=isAns?'✓':(isSel?'✗':item.dataset.num);
   });
   const exp=document.getElementById('s-exp');
   exp.className='exp-box show '+(isOk?'exp-ok':'exp-ng');
@@ -1003,6 +1009,7 @@ function checkAnswer(){
   }
   document.getElementById('s-check').disabled=true;
   document.getElementById('s-next-row').style.display='flex';
+  var _sa2=document.getElementById('s-act');if(_sa2)_sa2.style.display='none';
   recH(q.id,isOk,sLowConf);
   if(isOk&&sLowConf)toast('🤔 自信なし → 復習リストに追加');
   if(isOk){sOk++;setText('sess-ok-txt','✓ '+sOk);}else{sNg++;setText('sess-ng-txt','✗ '+sNg);}
@@ -1020,6 +1027,7 @@ function toggleBm(){
 function studyDone(){
   document.getElementById('s-card').style.display='none';
   document.getElementById('s-end').style.display='block';
+  var _sb2=document.getElementById('study-actbar');if(_sb2)_sb2.style.display='none';
   const total=sOk+sNg,pct=total?Math.round(sOk/total*100):0;
   setText('s-end-score',pct+'%');
   setText('s-end-sub',total+'問中 '+sOk+'問正解');
@@ -1310,6 +1318,7 @@ function startWeakDomains(){
 
 // ===== STATS =====
 function renderStats(){
+  renderStatsSummary();
   renderHeatmap();
   renderWeekly();renderDomainList();renderBadges();
   const allH=store.hist;let tc=0,tw=0;
@@ -1341,6 +1350,32 @@ function renderStats(){
     row.innerHTML='<span style="color:var(--text-sub);flex-shrink:0">Q'+q.id+(isBm(q.id)?' ★':'')+'</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(q.question.slice(0,40))+'</span><span style="color:'+(pct>=70?'var(--success)':'var(--danger)')+';font-weight:700;flex-shrink:0">'+pct+'%</span>';
     row.onclick=()=>jumpQ(q.id);qList.appendChild(row);
   });
+}
+
+/* ===== 統計：合格可能性サマリー ===== */
+function renderStatsSummary(){
+  const host=document.getElementById('stats-summary');if(!host)return;
+  const ds=domainStats().filter(d=>d.t>0);
+  if(!ds.length){host.innerHTML='';return;}
+  let g=0,y=0,r=0;
+  ds.forEach(d=>{if(d.pct>=PASS)g++;else if(d.pct>=50)y++;else r++;});
+  let tc=0,tt=0;Object.values(store.hist).forEach(h=>{tc+=h.c;tt+=h.c+h.w;});
+  const overall=tt?Math.round(tc/tt*100):0,pass=overall>=PASS;
+  const col=pass?'var(--success)':overall>=PASS-10?'var(--warning)':'var(--danger)';
+  const label=pass?'合格圏に到達':overall>=PASS-10?'合格まであと少し':'基礎固めが必要';
+  const c=2*Math.PI*19,off=c*(1-overall/100);
+  const weak=ds.filter(d=>d.pct<50).map(d=>domainDef(d.code).name);
+  host.innerHTML='<div class="card"><div class="stat-summary">'
+    +'<div class="ss-ring"><svg width="54" height="54" viewBox="0 0 54 54">'
+    +'<circle cx="27" cy="27" r="19" fill="none" stroke="var(--border)" stroke-width="6"/>'
+    +'<circle cx="27" cy="27" r="19" fill="none" stroke="'+col+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 27 27)"/>'
+    +'</svg><div class="ss-t" style="color:'+col+'">'+overall+'%</div></div>'
+    +'<div><div class="ss-lab">'+label+'</div><div class="ss-sub">総合到達度（合格ライン '+PASS+'%）</div></div></div>'
+    +'<div class="ss-pills"><div class="ss-pill g"><div class="n">'+g+'</div><div class="l">合格圏</div></div>'
+    +'<div class="ss-pill y"><div class="n">'+y+'</div><div class="l">あと一歩</div></div>'
+    +'<div class="ss-pill r"><div class="n">'+r+'</div><div class="l">要強化</div></div></div>'
+    +(weak.length?'<div class="ss-note">要強化：<b>'+escH(weak.join('・'))+'</b> <button class="dom-focus-btn" onclick="startWeakDomains()">弱点を出題 →</button></div>':'')
+    +'</div>';
 }
 
 /* ===== 分野別の習熟度 ===== */
@@ -1384,21 +1419,11 @@ function dayStreak(){
   while(daily[_fmtD(d)]){n++;d.setDate(d.getDate()-1);}
   return n;
 }
-// ホーム上部の学習ストリークバナー（連続学習日数＋直近7日）
+// ヒーロー内の学習ストリーク表示（連続学習日数）
 function renderStreakBanner(){
-  const home=document.getElementById('pg-home');if(!home)return;
   const n=dayStreak();
-  let el=document.getElementById('home-streak');
-  if(n<1){if(el)el.style.display='none';return;}
-  if(!el){el=document.createElement('div');el.id='home-streak';home.insertBefore(el,home.firstElementChild);}
-  const daily=store.daily||{},labels=['日','月','火','水','木','金','土'];
-  const d=new Date();d.setHours(0,0,0,0);let dots='';
-  for(let i=6;i>=0;i--){const dd=new Date(d);dd.setDate(d.getDate()-i);const on=!!daily[_fmtD(dd)];
-    dots+='<span style="width:15px;height:15px;border-radius:4px;font-size:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;'+(on?'background:#fff;color:#ff5e3a':'background:rgba(255,255,255,.35);color:#fff')+'">'+labels[dd.getDay()]+'</span>';}
-  el.style.cssText='display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#ff8a3d,#ff5e3a);color:#fff;border-radius:12px;padding:12px 16px;margin-bottom:12px';
-  el.innerHTML='<span style="font-size:30px">🔥</span>'
-    +'<div><div style="font-size:22px;font-weight:800;line-height:1">'+n+'日連続</div><div style="font-size:12px;opacity:.95">学習ストリーク継続中！</div></div>'
-    +'<div style="margin-left:auto;display:flex;gap:4px">'+dots+'</div>';
+  const hs=document.getElementById('hh-streak');
+  if(hs){ if(n>=1){hs.style.display='';hs.textContent='🔥 '+n+'日連続';} else hs.style.display='none'; return; }
 }
 // ===== 初回オンボーディング（3ステップ） =====
 const OB_STEPS=[
