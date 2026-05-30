@@ -1239,7 +1239,7 @@ function renderExamDomains(byd){
     row.innerHTML='<span class="dom-emoji">'+d.emoji+'</span>'
       +'<span class="dom-name">'+escH(d.name)+'</span>'
       +'<div class="dom-bw"><div class="dom-bf" style="width:'+pct+'%;background:'+col+'"></div></div>'
-      +'<span class="dom-pct" style="color:'+col+'">'+b.c+'/'+b.t+'</span>';
+      +'<span class="dom-pct" style="color:'+col+'">'+pct+'%<span class="dom-frac">'+b.c+'/'+b.t+'</span></span>';
     host.appendChild(row);
   });
 }

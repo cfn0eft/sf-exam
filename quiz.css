@@ -534,7 +534,8 @@ body{
 .dom-name .dn-sub{font-size:10px;color:var(--text-sub);font-weight:400}
 .dom-bw{flex:1.4;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
 .dom-bf{height:100%;border-radius:4px;transition:width .5s}
-.dom-pct{width:54px;text-align:right;font-weight:700;font-size:12px}
+.dom-pct{width:54px;text-align:right;font-weight:700;font-size:13px;line-height:1.15}
+.dom-frac{display:block;font-size:10px;font-weight:400;color:var(--text-sub);margin-top:1px}
 .dom-focus-btn{font-size:11px;padding:6px 12px;border-radius:999px;border:none;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
 .dom-focus-btn:hover{filter:brightness(1.06)}
 .dom-focus-btn:disabled{opacity:.4;cursor:default}
