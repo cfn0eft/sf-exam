@@ -40,12 +40,12 @@ let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
 // --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
-  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{}};
+  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},acquiredDate:''};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 // --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
-window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
+window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function recH(id,ok,low){
@@ -256,6 +256,7 @@ function homeStats(){
     if(nwk)nwk.textContent=pool||'';
   }catch(e){}
   try{renderStreakBanner();}catch(e){}
+  try{renderHomeAcq();}catch(e){}
   renderPlan();
 }
 
@@ -1234,6 +1235,7 @@ function finishExam(){
   pill.className='pass-pill '+(pass?'pass':'fail');
   renderExamDomains(byd);
   renderWeakCallout(byd);
+  renderExamAcq(pass);
   eWrongOnly=false;
   const wt=document.getElementById('e-wrong-toggle');if(wt)wt.classList.remove('on');
   renderExamResultList();
@@ -1591,8 +1593,13 @@ function renderMypage(){
   const ed=store.examDate||'',goal=store.goal||0;let planInfo='';
   if(ed){const t=new Date();t.setHours(0,0,0,0);const e=new Date(ed+'T00:00:00');const dl=Math.round((e-t)/86400000);const unans=allQ.length-answered;
     planInfo=dl>=0?('受験まで あと '+dl+'日'+(dl>0&&unans>0?' ・ 未着手 '+unans+'問 → 目安 '+Math.ceil(unans/dl)+'問/日':'')):'受験日は過ぎました';}
+  const acqHtml=store.acquiredDate
+    ? '<div class="mp-acqdone"><span class="mp-acqic">🎓</span><span class="mp-main"><div class="mp-acqt">この資格は取得済みです 🎉</div><div class="mp-osub">取得日: '+escH(store.acquiredDate)+'</div></span><button class="mp-undo" onclick="unacquireCert()">取り消し</button></div>'
+    : '<div class="mp-opt" style="border:none;padding:0"><span class="mp-ic">🎓</span><span class="mp-main">資格の取得<div class="mp-osub">本番試験に合格したら記録しましょう</div></span><button class="mp-acqbtn" onclick="acquireCert()">取得済みにする</button></div>';
   host.innerHTML=
     '<div class="card">'+accHtml+'</div>'
+    +'<div class="sec-label">資格の取得</div>'
+    +'<div class="card">'+acqHtml+'</div>'
     +'<div class="sec-label">学習の記録</div>'
     +'<div class="card"><div class="mp-sumtop"><div class="mp-ring"><svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="'+ringCol+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 32 32)"/></svg><div class="mp-rt" style="color:'+ringCol+'">'+overall+'%</div></div>'
     +'<div><div class="mp-sumlab">'+ringLab+'</div><div class="mp-sumsub">総合到達度（合格ライン '+PASS+'%）</div></div></div>'
@@ -1626,9 +1633,38 @@ function clearMyPlan(){store.examDate='';store.goal=0;save();renderPlan();render
 function setDarkMode(on){applyDark(on);try{localStorage.setItem('dark',on?'1':'0');}catch(e){}renderMypage();}
 window.__sfqOnAccount=function(){var p=document.getElementById('pg-mypage');if(p&&p.classList.contains('active'))renderMypage();};
 
+/* ===== 資格の取得（取得済みの記録と主張表示） ===== */
+function acquireCert(){
+  store.acquiredDate=_today();save();
+  homeStats();renderMypage();
+  try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(true);}catch(e){}
+  toast('🎓 取得済みにしました！おめでとうございます 🎉');
+}
+function unacquireCert(){
+  if(!confirm('「取得済み」を取り消しますか？'))return;
+  store.acquiredDate='';save();homeStats();renderMypage();
+  try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(false);}catch(e){}
+  toast('取得済みを取り消しました');
+}
+// ホームのヒーローに取得済みバッジ／リボンを反映
+function renderHomeAcq(){
+  const on=!!store.acquiredDate;
+  const badge=document.getElementById('hh-acq'),rib=document.getElementById('hh-ribbon'),hero=document.querySelector('.home-hero');
+  if(badge){ if(on){badge.style.display='';badge.textContent='🎓 取得済み・'+store.acquiredDate;} else badge.style.display='none'; }
+  if(rib)rib.style.display=on?'':'none';
+  if(hero)hero.classList.toggle('acq',on);
+}
+// 試験結果（合格時）に取得ボタン or 取得済み表示
+function renderExamAcq(pass){
+  const host=document.getElementById('e-acq');if(!host)return;
+  if(store.acquiredDate){host.innerHTML='<div class="e-acq-done">🎓 取得済み（'+escH(store.acquiredDate)+'）</div>';}
+  else if(pass){host.innerHTML='<button class="btn e-acq-btn" onclick="acquireCert()">🎓 この資格を取得済みにする</button>';}
+  else host.innerHTML='';
+}
+
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},acquiredDate:''};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
 // ===== SRS（間隔反復・SM-2簡易版）=====

@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=14">
+<link rel="stylesheet" href="../../quiz.css?v=15">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -32,6 +32,7 @@
 <div class="page active" id="pg-home">
   <!-- ヒーロー：資格名＋ストリーク＋今日の目標＋受験日 -->
   <div class="home-hero">
+    <div class="hh-ribbon" id="hh-ribbon" style="display:none">取得済</div>
     <div class="hh-top">
       <div style="flex:1;min-width:0">
         <div class="hh-name" id="cert-name"></div>
@@ -46,6 +47,7 @@
       <div class="hh-cd" id="plan-pace"></div>
     </div>
     <div class="hh-cd" id="plan-cd" style="margin-top:8px"><span class="big">受験日 未設定</span><span class="sub">⚙️ から受験日と目標を設定</span></div>
+    <span class="hh-acq" id="hh-acq" style="display:none"></span>
     <div class="plan-edit" id="plan-edit">
       <label>🎯 受験予定日</label>
       <input type="date" id="exam-date-in">
@@ -200,6 +202,7 @@
       <div class="pass-pill" id="e-pill"></div>
       <div class="result-sub" id="e-detail"></div>
     </div>
+    <div class="e-acq" id="e-acq"></div>
     <div class="card">
       <div class="sec-label" style="margin-top:0">📊 分野別スコア</div>
       <div id="e-domains"></div>
@@ -429,9 +432,9 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=14"></script>
+<script src="../../quiz-engine.js?v=15"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=14"></script>
+<script src="../../cloud-sync.js?v=15"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>

@@ -757,7 +757,14 @@ body{
 .study-actbar .conf-toggle{flex:0 0 auto}
 /* --- ホーム：ヒーロー＋主要2ボタン＋今日やる --- */
 .home-hero{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;
-  border-radius:16px;padding:16px;margin-bottom:12px}
+  border-radius:16px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.home-hero.acq{box-shadow:0 0 0 2px #f5c451 inset}
+.hh-ribbon{position:absolute;top:12px;right:-34px;transform:rotate(40deg);
+  background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00;font-weight:800;font-size:10px;
+  padding:3px 40px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.hh-acq{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ffd86b,#f0a500);
+  color:#5a3d00;font-weight:800;font-size:12px;padding:4px 11px;border-radius:999px;margin-top:10px;
+  box-shadow:0 2px 8px rgba(240,165,0,.4)}
 .hh-top{display:flex;align-items:center;gap:8px}
 .hh-name{font-size:14px;font-weight:800;flex:1;line-height:1.3;min-width:0}
 .hh-streak{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap}
@@ -845,4 +852,17 @@ body{
 .mp-seg button{border:none;background:none;padding:6px 11px;font-size:12px;font-weight:700;color:var(--text-sub);cursor:pointer}
 .mp-seg button.on{background:var(--primary);color:#fff}
 .mp-danger{background:none;border:none;color:var(--danger);font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0}
+/* 資格の取得 */
+.mp-acqbtn{border:none;border-radius:10px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;flex-shrink:0;background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00}
+.mp-acqdone{display:flex;align-items:center;gap:10px;background:#fff7e6;border:1.5px solid #f5c451;border-radius:10px;padding:12px;color:#7a5200}
+[data-theme=dark] .mp-acqdone{background:#2a2410;border-color:#6b5212;color:#f0c969}
+.mp-acqic{font-size:24px;flex-shrink:0}
+.mp-acqt{font-size:14px;font-weight:800}
+.mp-undo{background:rgba(0,0,0,.06);border:1.5px solid var(--border);color:var(--text-sub);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+[data-theme=dark] .mp-undo{background:rgba(255,255,255,.08)}
+/* 試験結果の取得ボタン */
+.e-acq{margin:12px 0}
+.e-acq-btn{width:100%;background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00}
+.e-acq-done{text-align:center;background:#fff7e6;border:1.5px solid #f5c451;border-radius:12px;padding:12px;color:#7a5200;font-weight:800}
+[data-theme=dark] .e-acq-done{background:#2a2410;border-color:#6b5212;color:#f0c969}
 
