@@ -30,6 +30,10 @@ let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false;
 let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false;
 // filters
 let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
+// 出典フィルタ（tyson=タイソンブログ / gen=生成 / all=両方）
+let srcFilter=(function(){try{const v=localStorage.getItem('sfq_src');return (v==='tyson'||v==='gen')?v:'all';}catch(e){return 'all';}})();
+function inScope(q){return srcFilter==='all'||(q&&q.source===srcFilter);}
+function scopedQ(){return allQ.filter(inScope);}
 // vocab
 let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
 
@@ -179,7 +183,9 @@ function applyFilters(){
   document.getElementById('chip-shuf').classList.toggle('on',fShuf);
   document.getElementById('chip-multi').classList.toggle('on',fMulti);
   syncCShufChip();
-  filtQ=allQ.filter(q=>{
+  syncSrcChips();
+  const scoped=scopedQ();
+  filtQ=scoped.filter(q=>{
     if(fNew&&!isUnseen(q.id))return false;
     if(fWrong&&!isWrong(q.id))return false;
     if(fLc&&!isLowConfCorrect(q.id))return false;
@@ -188,20 +194,43 @@ function applyFilters(){
     if(fKw&&!(q.keywords||[]).includes(fKw))return false;
     return true;
   });
-  const nc=allQ.filter(q=>isUnseen(q.id)).length;
+  const nc=scoped.filter(q=>isUnseen(q.id)).length;
   const ncEl=document.getElementById('new-count');
   if(ncEl)ncEl.textContent=nc?' '+nc:'';
-  const wc=allQ.filter(q=>isWrong(q.id)).length;
+  const wc=scoped.filter(q=>isWrong(q.id)).length;
   const wcEl=document.getElementById('wrong-count');
   if(wcEl)wcEl.textContent=wc?' '+wc:'';
   // 「次にやる」カード用ミラー
   const nwEl=document.getElementById('next-wrong');
   if(nwEl)nwEl.textContent=wc;
-  const lc=allQ.filter(q=>isLowConfCorrect(q.id)).length;
+  const lc=scoped.filter(q=>isLowConfCorrect(q.id)).length;
   const lcEl=document.getElementById('lc-count');
   if(lcEl)lcEl.textContent=lc?' '+lc:'';
   const el=document.getElementById('f-count');
   if(el)el.textContent='対象: '+filtQ.length+' 問';
+}
+// 出典フィルタの切替（HTMLのchipから呼ばれる）
+function setSrcFilter(v){
+  if(v!=='all'&&v!=='tyson'&&v!=='gen')v='all';
+  srcFilter=v;
+  try{localStorage.setItem('sfq_src',v);}catch(e){}
+  syncSrcChips();
+  try{applyFilters();}catch(e){}
+  try{updateSrsBtn();}catch(e){}
+  try{homeStats();}catch(e){}
+}
+function syncSrcChips(){
+  ['all','tyson','gen'].forEach(s=>{
+    const c=document.getElementById('chip-src-'+s);
+    if(c)c.classList.toggle('on',s===srcFilter);
+  });
+  // 件数表示
+  const ta=allQ.filter(q=>q.source==='tyson').length;
+  const ga=allQ.filter(q=>q.source==='gen').length;
+  const setBadge=(id,n)=>{const el=document.getElementById(id);if(el)el.textContent=n?' '+n:'';};
+  setBadge('src-all-count',allQ.length);
+  setBadge('src-tyson-count',ta);
+  setBadge('src-gen-count',ga);
 }
 function syncCShufChip(){const c=document.getElementById('chip-cshuf');if(c)c.classList.toggle('on',cshufOn());}
 function toggleCShuf(){localStorage.setItem('sfq_cshuf',cshufOn()?'0':'1');syncCShufChip();toast(cshufOn()?'🔀 選択肢順をシャッフル':'選択肢順を固定');}
@@ -219,7 +248,7 @@ function homeStats(){
   try{
     const ds=domainStats().filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct);
     const weak=ds.slice(0,3).map(d=>d.code);
-    const pool=weak.length?allQ.filter(q=>weak.includes(domainOf(q.id))).length:0;
+    const pool=weak.length?scopedQ().filter(q=>weak.includes(domainOf(q.id))).length:0;
     const nwk=document.getElementById('next-weak');
     if(nwk)nwk.textContent=pool||'';
   }catch(e){}
@@ -994,7 +1023,7 @@ function studyDone(){
 
 // ===== EXAM =====
 function startExam(){
-  if(allQ.length<EXAM_N){toast('問題数が不足しています');return;}
+  if(scopedQ().length<EXAM_N){toast('問題数が不足しています（出典フィルタを「すべて」にすると増えます）');return;}
   eQ=pickWeightedExam(EXAM_N);eCur=0;eAns={};eSecs=EXAM_MIN*60;
   eDispArr=eQ.map(q=> cshufOn()? shuffle(q.choices.map((_,i)=>i)) : q.choices.map((_,i)=>i));
   document.getElementById('e-result').style.display='none';
@@ -1003,8 +1032,9 @@ function startExam(){
 }
 // 公式出題比率（分野の weight）に沿って EXAM_N 問を抽出。不足分は全体から補填。
 function pickWeightedExam(n){
+  const universe=scopedQ();
   const byD={};DOMAIN_DEFS.forEach(d=>byD[d.code]=[]);
-  allQ.forEach(q=>{const c=domainOf(q.id);(byD[c]||(byD[c]=[])).push(q);});
+  universe.forEach(q=>{const c=domainOf(q.id);(byD[c]||(byD[c]=[])).push(q);});
   Object.keys(byD).forEach(c=>byD[c]=shuffle(byD[c]));
   const totW=DOMAIN_DEFS.reduce((s,d)=>s+d.weight,0);
   const picked=[],used=new Set();
@@ -1013,7 +1043,7 @@ function pickWeightedExam(n){
     (byD[d.code]||[]).slice(0,want).forEach(q=>{picked.push(q);used.add(q.id);});
   });
   if(picked.length<n){
-    const rest=shuffle(allQ.filter(q=>!used.has(q.id)));
+    const rest=shuffle(universe.filter(q=>!used.has(q.id)));
     for(const q of rest){if(picked.length>=n)break;picked.push(q);used.add(q.id);}
   }
   return shuffle(picked.slice(0,n));
@@ -1153,7 +1183,7 @@ function toggleExamWrong(){
 
 // ===== REVIEW =====
 function startReview(){
-  const bad=allQ.filter(q=>needsReview(q.id)||isBm(q.id));
+  const bad=scopedQ().filter(q=>needsReview(q.id)||isBm(q.id));
   if(!bad.length){toast('復習する問題がありません');return;}
   beginStudyWith(shuffle(bad));
 }
@@ -1163,7 +1193,7 @@ function startWeakDomains(){
   const ranked=ds.filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct);
   if(!ranked.length){toast('まず何問か解いてください');return;}
   const weak=ranked.slice(0,3).map(d=>d.code);
-  const pool=allQ.filter(q=>weak.includes(domainOf(q.id)));
+  const pool=scopedQ().filter(q=>weak.includes(domainOf(q.id)));
   if(!pool.length){toast('対象の問題がありません');return;}
   beginStudyWith(shuffle(pool));
   toast('🎯 弱点分野を出題: '+weak.map(c=>domainDef(c).name).join('・'));
@@ -1374,7 +1404,7 @@ function srsUpdate(id,ok,low){
   store.srs[id]=s;
 }
 function srsDue(id){const s=store.srs&&store.srs[id];if(!s)return false;return (s.due||'9999-99-99')<=_today();}
-function srsDueList(){return allQ.filter(q=>srsDue(q.id));}
+function srsDueList(){return scopedQ().filter(q=>srsDue(q.id));}
 function srsDueCount(){return srsDueList().length;}
 function updateSrsBtn(){
   const n=srsDueCount();

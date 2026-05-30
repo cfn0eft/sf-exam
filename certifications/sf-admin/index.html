@@ -93,6 +93,14 @@
   <!-- SRS件数のレガシー受け皿（エンジン互換用に非表示で残す） -->
   <span id="srs-count" style="display:none"></span>
 
+  <!-- 出典：タイソンブログ / 生成 / 全部 -->
+  <div class="sec-label">出典</div>
+  <div class="filter-bar">
+    <button type="button" class="chip on" id="chip-src-all" onclick="setSrcFilter('all')">📚 すべて<span id="src-all-count"></span></button>
+    <button type="button" class="chip" id="chip-src-tyson" onclick="setSrcFilter('tyson')">🅣 タイソンブログ<span id="src-tyson-count"></span></button>
+    <button type="button" class="chip" id="chip-src-gen" onclick="setSrcFilter('gen')">✨ 生成<span id="src-gen-count"></span></button>
+  </div>
+
   <!-- 出題対象：常時3つ、他は折りたたみ -->
   <div class="sec-label">出題対象</div>
   <div class="filter-bar">
