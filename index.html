@@ -58,6 +58,10 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 .cram-pill{position:absolute;top:12px;right:12px;background:var(--accent);color:#fff;
   font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;cursor:pointer;z-index:3}
 .cram-pill:hover{background:var(--accent-hover)}
+.acq-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#ffd86b,#f0a500);
+  color:#5a3d00;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;
+  box-shadow:0 2px 8px rgba(240,165,0,.4);z-index:3}
+.card.acq{border-color:#f5c451;box-shadow:0 0 0 1px #f5c451, var(--shadow)}
 .footer{text-align:center;color:var(--text-sub);font-size:12px;margin-top:48px}
 .footer a{color:var(--accent);text-decoration:none}
 .footer a:hover{text-decoration:underline}
@@ -94,12 +98,12 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script>
   /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） ===== */
   const CERTS = [
-    { slug:'sf-admin', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
+    { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
       desc:'2025/12改訂の公式8分野（Agentforce 8%対応）。学習・試験・SRS・教科書・用語帳・統計をフル搭載。',
-      meta:['268問','94用語','合格65%'] },
-    { slug:'app-builder', icon:'🧩', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
+      meta:['388問','94用語','合格65%'] },
+    { slug:'app-builder', storageKey:'sfqab_v1', icon:'🧩', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
       desc:'宣言的なアプリ構築・データモデル・自動化・UI・リリース。公式5分野対応。',
-      meta:['276問','5分野','合格63%'] },
+      meta:['445問','5分野','合格63%'] },
     { coming:true }, { coming:true }
   ];
   (function renderCerts(){
@@ -110,7 +114,9 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
         + '<p class="card-desc">次に追加する資格の枠です。準備中。</p>'
         + '<div class="card-meta"><span>Coming Soon</span></div></div>';
       var meta = (c.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
-      return '<a class="card" href="certifications/' + c.slug + '/index.html">'
+      var acq = '';
+      try { var raw = c.storageKey && localStorage.getItem(c.storageKey); if (raw) { var s = JSON.parse(raw); if (s && s.acquiredDate) acq = '<span class="acq-badge">🎓 取得済み</span>'; } } catch (e) {}
+      return '<a class="card' + (acq ? ' acq' : '') + '" href="certifications/' + c.slug + '/index.html">' + acq
         + '<div class="card-icon">' + (c.icon || '📘') + '</div>'
         + '<h2 class="card-title">' + c.title + '</h2>'
         + '<p class="card-desc">' + (c.desc || '') + '</p>'
@@ -132,7 +138,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="cloud-sync.js?v=15"></script>
+<script src="cloud-sync.js?v=16"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 </script>
