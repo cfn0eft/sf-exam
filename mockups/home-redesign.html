@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>モック: ホーム改善案</title>
+<style>
+:root{
+  --primary:#0176d3;--primary-dark:#014486;--primary-light:#d8edff;
+  --success:#2e844a;--success-light:#cdefc4;--danger:#ba0517;--danger-light:#fcdde0;
+  --warning:#dd7a01;--warning-light:#fef3e2;--purple:#7b5ea7;--purple-light:#f0ebf8;--teal:#0b827c;
+  --bg:#f3f3f3;--card:#fff;--text:#181818;--text-sub:#5c5c5c;
+  --border:#e0e0e0;--shadow:0 2px 8px rgba(0,0,0,.08);--radius:12px;
+}
+[data-theme=dark]{
+  --primary:#4ba3e3;--primary-dark:#1d5fa8;--primary-light:#0c2d4a;
+  --success:#3ba755;--success-light:#0e2e16;--danger:#e5404e;--warning:#f0a830;--warning-light:#3b2600;
+  --purple:#a07fd6;--purple-light:#2a1f40;--teal:#3fbfba;
+  --bg:#111;--card:#1e1e1e;--text:#f0f0f0;--text-sub:#aaa;--border:#333;--shadow:0 2px 8px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif;background:#e7e9ee;color:var(--text);padding:18px;line-height:1.5}
+[data-theme=dark] body{background:#000}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:19px;margin-bottom:4px}
+.lead{font-size:13px;color:#555;margin-bottom:16px}
+[data-theme=dark] .lead{color:#aaa}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:18px}
+.ctl{padding:7px 14px;border-radius:999px;border:1.5px solid #c7ccd6;background:#fff;cursor:pointer;font-size:12px;font-weight:700;color:#444}
+.ctl.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.screens{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start}
+.col{display:flex;flex-direction:column;align-items:center}
+.scr-label{font-size:12px;font-weight:800;color:#5b6473;margin-bottom:8px}
+[data-theme=dark] .scr-label{color:#9aa3b2}
+.phone{width:370px;background:var(--bg);border-radius:30px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.22);border:8px solid #1b1b1b}
+.topbar{background:var(--primary);color:#fff;height:50px;display:flex;align-items:center;padding:0 12px;font-weight:700;font-size:14px;gap:8px}
+.topbar .tt{flex:1;text-align:center}
+.tb-ico{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:17px}
+.body{padding:14px;min-height:640px}
+.body.old{opacity:.97}
+.sec-label{font-size:11px;font-weight:800;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px}
+
+/* ===== 旧ホーム（縮約再現） ===== */
+.cert-badge{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:var(--radius);padding:16px;margin-bottom:10px}
+.cert-badge h2{font-size:15px;font-weight:800}.cert-badge p{font-size:12px;opacity:.85}
+.streak-old{background:linear-gradient(135deg,#ff8a3d,#ff5e3a);color:#fff;border-radius:12px;padding:12px 14px;margin-bottom:10px;font-weight:800}
+.plan-old{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:14px;margin-bottom:10px;font-size:13px;color:var(--text-sub)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.stat-card{background:var(--card);border-radius:12px;padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
+.stat-num{font-size:22px;font-weight:800;color:var(--primary)}.stat-label{font-size:10px;color:var(--text-sub)}
+.next-card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:6px 10px;margin-bottom:10px}
+.next-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);font-size:13px}
+.next-row:last-child{border-bottom:none}
+.next-badge{margin-left:auto;background:var(--primary-light);color:var(--primary-dark);font-weight:800;border-radius:999px;padding:2px 9px;font-size:12px}
+.mode-btn{width:100%;padding:13px 16px;border-radius:12px;border:none;font-size:14px;font-weight:700;display:flex;gap:10px;align-items:center;margin-bottom:8px;color:#fff}
+.mode-btn .bi{font-size:20px}.mode-study{background:var(--primary)}.mode-exam{background:var(--warning)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.chip{padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--card);color:var(--text-sub);font-size:12px;font-weight:700}
+.chip.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ===== 新ホーム ===== */
+.hero{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:16px;padding:16px;margin-bottom:12px;position:relative}
+.hero-top{display:flex;align-items:center;gap:8px}
+.hero-name{font-size:14px;font-weight:800;flex:1;line-height:1.3}
+.hero-streak{background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+.hero-gear{opacity:.85;font-size:16px}
+.hero-goal{margin-top:14px}
+.hero-goal-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;opacity:.95}
+.hero-bar{height:8px;background:rgba(255,255,255,.25);border-radius:5px;overflow:hidden}
+.hero-fill{height:100%;background:#fff;border-radius:5px}
+.hero-cd{font-size:11px;opacity:.9;margin-top:8px}
+.primary2{display:flex;gap:10px;margin-bottom:12px}
+.pbtn{flex:1;border:none;border-radius:14px;padding:16px 8px;font-weight:800;font-size:15px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.pbtn .bi{font-size:26px}.pbtn .sub{font-size:10px;font-weight:600;opacity:.9}
+.pbtn.study{background:var(--primary)}.pbtn.exam{background:var(--warning)}
+.todo{background:var(--card);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px}
+.todo-h{font-size:11px;font-weight:800;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;padding:12px 14px 6px}
+.todo-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--border);cursor:pointer}
+.todo-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.todo-ico.srs{background:#e9eafe;color:#6366f1}.todo-ico.wrong{background:var(--danger-light);color:var(--danger)}.todo-ico.weak{background:var(--warning-light);color:var(--warning)}
+[data-theme=dark] .todo-ico.srs{background:#1e1b4b;color:#a5b4fc}
+.todo-main{flex:1}.todo-t{font-size:13.5px;font-weight:700}.todo-s{font-size:11px;color:var(--text-sub)}
+.todo-badge{background:var(--primary);color:#fff;font-weight:800;border-radius:999px;min-width:26px;text-align:center;padding:2px 8px;font-size:12px}
+.todo-badge.zero{background:var(--border);color:var(--text-sub)}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.scard{background:var(--card);border-radius:12px;padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
+.snum{font-size:22px;font-weight:800;color:var(--primary)}.slab{font-size:10px;color:var(--text-sub);margin-top:2px}
+.acc{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:12px 14px;font-size:13px;font-weight:700;color:var(--text-sub);display:flex;align-items:center;gap:8px}
+.acc .ar{margin-left:auto;opacity:.6}
+.note{font-size:12px;color:#777;margin-top:18px;max-width:780px}
+.cmp-tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.cmp-old{background:#fde2e2;color:#b91c1c}.cmp-new{background:#dcfce7;color:#15803d}
+[data-theme=dark] .cmp-old{background:#3b0a10;color:#fca5a5}[data-theme=dark] .cmp-new{background:#0e2e16;color:#86efac}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>モック: ホーム画面の改善案</h1>
+  <p class="lead">現状ホームは要素が縦に多く積み上がり、情報の優先度が分かりにくい。<b>「ヒーローに集約 → 主要2ボタン → 今日やる → 統計 → 出題設定は折りたたみ」</b>と階層を整理する案です。左=現状（縮約再現）／右=改善案。既存 <code>quiz.css</code> トークン準拠。</p>
+  <div class="controls">
+    <span style="font-size:12px;font-weight:700;color:#666">テーマ:</span>
+    <button class="ctl on" id="t-light" onclick="setTheme('light')">☀️ ライト</button>
+    <button class="ctl" id="t-dark" onclick="setTheme('dark')">🌙 ダーク</button>
+  </div>
+
+  <div class="screens">
+    <!-- 現状 -->
+    <div class="col">
+      <div class="scr-label">現状（縮約再現）</div>
+      <div class="phone">
+        <div class="topbar"><span class="tb-ico">🗂️</span><span class="tt">App Builder</span><span class="tb-ico">🌙</span></div>
+        <div class="body old">
+          <span class="cmp-tag cmp-old">要素が多く優先度が不明瞭</span>
+          <div class="streak-old">🔥 7日連続</div>
+          <div class="cert-badge"><h2>Salesforce 認定 App Builder</h2><p>全445問・5分野</p></div>
+          <div class="plan-old">⚙️ 受験日 未設定 ・ 今日の目標 0/0問</div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-num">312</div><div class="stat-label">解答済み</div></div>
+            <div class="stat-card"><div class="stat-num">78%</div><div class="stat-label">正答率</div></div>
+            <div class="stat-card"><div class="stat-num">41</div><div class="stat-label">習得用語</div></div>
+          </div>
+          <div class="next-card">
+            <div class="next-row">🧠 SRS復習<span class="next-badge">8</span></div>
+            <div class="next-row">🔁 間違えた問題<span class="next-badge">12</span></div>
+            <div class="next-row">🎯 弱点分野<span class="next-badge">30</span></div>
+          </div>
+          <button class="mode-btn mode-study"><span class="bi">📖</span>学習モード</button>
+          <button class="mode-btn mode-exam"><span class="bi">⏱️</span>試験モード</button>
+          <div class="sec-label">出典</div>
+          <div class="chips"><span class="chip on">📚 すべて</span><span class="chip">🅣 タイソン</span><span class="chip">✨ 生成</span></div>
+          <div class="sec-label">出題対象</div>
+          <div class="chips"><span class="chip">🆕 未回答</span><span class="chip">❌ 間違えた</span><span class="chip">★ ブックマーク</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 改善案 -->
+    <div class="col">
+      <div class="scr-label">改善案</div>
+      <div class="phone">
+        <div class="topbar"><span class="tb-ico">🗂️</span><span class="tt">App Builder</span><span class="tb-ico">🌙</span></div>
+        <div class="body">
+          <span class="cmp-tag cmp-new">ヒーロー集約＋優先度を明確化</span>
+          <!-- ヒーロー：資格名・ストリーク・今日の目標・受験日を1枚に -->
+          <div class="hero">
+            <div class="hero-top">
+              <span class="hero-name">App Builder</span>
+              <span class="hero-streak">🔥 7日連続</span>
+              <span class="hero-gear">⚙️</span>
+            </div>
+            <div class="hero-goal">
+              <div class="hero-goal-row"><span>今日の目標</span><span>12 / 20 問</span></div>
+              <div class="hero-bar"><div class="hero-fill" style="width:60%"></div></div>
+              <div class="hero-cd">🎯 受験まで あと 23日 ・ ペース順調</div>
+            </div>
+          </div>
+          <!-- 主要2アクション -->
+          <div class="primary2">
+            <button class="pbtn study"><span class="bi">📖</span>学習<span class="sub">解いて解説</span></button>
+            <button class="pbtn exam"><span class="bi">⏱️</span>試験<span class="sub">本番形式60問</span></button>
+          </div>
+          <!-- 今日やる -->
+          <div class="todo">
+            <div class="todo-h">今日やる</div>
+            <div class="todo-row"><span class="todo-ico srs">🧠</span><span class="todo-main"><div class="todo-t">SRS 復習</div><div class="todo-s">忘れる前に再出題</div></span><span class="todo-badge">8</span></div>
+            <div class="todo-row"><span class="todo-ico wrong">🔁</span><span class="todo-main"><div class="todo-t">間違えた問題</div><div class="todo-s">★ブックマーク含む</div></span><span class="todo-badge">12</span></div>
+            <div class="todo-row"><span class="todo-ico weak">🎯</span><span class="todo-main"><div class="todo-t">弱点分野</div><div class="todo-s">正答率の低い分野から</div></span><span class="todo-badge">30</span></div>
+          </div>
+          <!-- 統計（コンパクト） -->
+          <div class="stat3">
+            <div class="scard"><div class="snum">312</div><div class="slab">解答済み</div></div>
+            <div class="scard"><div class="snum">78%</div><div class="slab">正答率</div></div>
+            <div class="scard"><div class="snum">41</div><div class="slab">習得用語</div></div>
+          </div>
+          <!-- 出題設定（出典＋対象＋詳細）を1つの折りたたみに集約 -->
+          <div class="acc">⚙️ 出題設定（出典・対象・並び）<span class="ar">▾</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">※ 静的モック（動作なし）。改善案の要点: ①バラけていた「ストリーク／資格名／受験日／今日の目標」を<b>ヒーロー1枚に集約</b>、②<b>学習・試験を大きな2ボタン</b>で最優先に、③「今日やる」をアイコン付きで視認性UP、④常時表示だった<b>出典・出題対象フィルタを「⚙️出題設定」1つの折りたたみに集約</b>して初期スクロール量を削減。実装時は <code>certifications/*/index.html</code> のホームDOM＋<code>quiz.css</code> を調整（エンジンの関数IDは流用）。</p>
+</div>
+<script>
+function setTheme(t){document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'');
+  document.getElementById('t-light').classList.toggle('on',t!=='dark');
+  document.getElementById('t-dark').classList.toggle('on',t==='dark');}
+</script>
+</body>
+</html>
