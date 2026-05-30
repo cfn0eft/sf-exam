@@ -10,7 +10,7 @@
 ![PWA](https://img.shields.io/badge/PWA-offline_ready-5A0FC8?logo=pwa&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_+_Firestore-FFCA28?logo=firebase&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-deployed-222?logo=github)
-![Questions](https://img.shields.io/badge/総問題数-504-1f6feb)
+![Questions](https://img.shields.io/badge/総問題数-833-1f6feb)
 ![No Build](https://img.shields.io/badge/build_step-none-success)
 
 </div>
@@ -40,18 +40,20 @@
 | 📊 | **統計** | 分野別の習熟度・弱点分野からの出題・実績バッジ・週次レポート・学習ヒートマップ |
 | 🎯 | **受験プラン** | 受験日カウントダウンとデイリー学習目標 |
 | ☁️ | **クラウド同期** | 簡易 ID/PW でログインすると進捗を端末間で同期（任意・Firebase） |
+| 🏷️ | **出典フィルタ** | 「タイソンブログ由来」と「生成問題」を切り替え。学習・試験・SRS・復習すべてに反映 |
 | 🌙 | **その他** | ダークモード / 未回答・自信なしフィルタ / 個人メモ / 選択肢シャッフル / キーボードショートカット |
 
 ---
 
 ## 📚 収録資格
 
-| 資格 | 試験コード | 問題数 | 分野 | 用語 | 合格ライン |
-|---|---|---:|---:|---:|---:|
-| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **228 問** | 8 分野（Agentforce 含む） | 94 語 | 65% |
-| **Salesforce 認定 Platform アプリケーションビルダー** | — | **276 問** | 5 分野 | 16 語 | 63% |
+| 資格 | 試験コード | 問題数 | 内訳（出典） | 分野 | 用語 | 合格ライン |
+|---|---|---:|---|---:|---:|---:|
+| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **388 問** | タイソン 180 / 生成 208 | 8 分野（Agentforce 含む） | 94 語 | 65% |
+| **Salesforce 認定 Platform アプリケーションビルダー** | — | **445 問** | タイソン 276 / 生成 169 | 5 分野 | 16 語 | 63% |
 
 いずれも **2025/12 改訂の最新ブループリント**に準拠（アドミンは Agentforce 8% を含む 8 分野構成）。
+「出典」フィルタで、タイソンブログ由来の問題と AI 生成問題を切り替えながら学習できます。
 
 ---
 
@@ -101,7 +103,7 @@ sf-exam/
    ├─ sf-admin/
    │   ├─ index.html       # CERT_CONFIG を差し替えただけのシェル
    │   └─ data/
-   │       ├─ questions.json   # 問題（id・選択肢・正解・解説・出典・分野）
+   │       ├─ questions.json   # 問題（id・選択肢・正解・解説・出典・分野・source=tyson/gen）
    │       ├─ domains.json     # 分野定義＋公式ウェイト
    │       ├─ vocab.json       # 用語帳（定義・試験ポイント・関連問題）
    │       └─ navmap.json      # 設定画面マップ
