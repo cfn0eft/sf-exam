@@ -757,6 +757,16 @@
 
     buildUI();
 
+    // ローカル開発環境（localhost / 127.0.0.1 / file://）では、ログイン/同期を一切要求しない。
+    // Firebase の HTTP リファラー制限で localhost からは認証できないため、ローカル保存のみで素通しする。
+    // 本番（cfn0eft.github.io）はこの分岐に入らないので影響なし。
+    var _h = location.hostname;
+    if (_h === 'localhost' || _h === '127.0.0.1' || _h === '::1' || _h === '') {
+      hideOverlay();
+      try { console.info('[cloud-sync] ローカル環境のためログイン/同期をスキップ（ローカル保存のみ）'); } catch (e) {}
+      return;
+    }
+
     // Firebase 未設定/未読込のときは、サイト全体をロックしない（特に gateway）。
     // ログインできない状態で必須ゲートにすると締め出しになるため、同期なしで通す。
     if (!configOk()) {

@@ -21,7 +21,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v8）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v9）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -131,6 +131,11 @@ git push origin main
   2. 両シェル（`certifications/*/index.html`）のアセット参照の `?v=5` → `?v=6`
   3. `sw.js` の `SHELL` 配列内の `?v=5` → `?v=6`
 - 理由: SW は stale-while-revalidate でキャッシュ優先のため、版数を上げないとブラウザが旧 JS/CSS を掴み続ける（実際にこの事故を確認済み）。`?v=` クエリで URL を変えることで確実に新版を取得させる。
+
+### ローカル開発時のログインバイパス
+
+- `cloud-sync.js` に **localhost / 127.0.0.1 / file:// ではログイン・同期をスキップ**する分岐あり（Firebase のリファラー制限で localhost から認証できないため）。ローカルでは進捗は localStorage のみ。本番（github.io）は通常どおりログイン必須。
+- モック（`mockups/*.html`）は Firebase 非依存なので元々ログイン不要。
 
 ---
 
