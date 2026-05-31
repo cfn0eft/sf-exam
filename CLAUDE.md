@@ -113,7 +113,7 @@ store = {
 
 ## デプロイ
 
-ローカルで Write/Edit した変更は、ユーザーが PC の Git Bash から push しないと公開されない。
+**Claude が Bash ツールで `git add`→`commit`→`push` まで自分で実行する**（このリポジトリでは Bash から GitHub への push が通ることを確認済み）。コマンドを提示して終わりにしない。push 完了まで見届けて結果を報告する。
 
 ```bash
 cd /c/Users/Nerod/ドキュメント/sf-exam
@@ -123,7 +123,7 @@ git push origin main
 ```
 
 - 認証は **cfn0eft** アカウント。過去に `mashi-18` の古い認証がキャッシュされて 403 になった事故あり。詰まったら `printf "protocol=https\nhost=github.com\n\n" | git credential reject` でリセット
-- **編集したら頼まれなくても commit/push コマンドを毎回出す**
+- **編集したら頼まれなくても自分で commit/push まで実行する**（Bash ツールで完結。コマンド提示だけで止めない）
 
 ### キャッシュ無効化（重要）
 
