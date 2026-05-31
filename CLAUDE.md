@@ -181,15 +181,21 @@ git push origin main
 
 ---
 
-## 残タスク（2026-05-30 時点）
+## 残タスク（2026-05-31 時点）
 
 - アクティブな残タスクなし。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
 
-### 完了済み（2026-05-30）
+### 完了済み（2026-05-31）UI/機能の大型アップデート（キャッシュ v16）
 
-- App Builder 用語集（5章83語）/ 設定マップ（10件）を精査し公式（help.salesforce.com）と照合。事実誤りなし（外部ID上限7・主従関係2 など数値も公式一致）。各用語に公式リファレンスURL付与済み。
-- App Builder `_verify` 13問（id 3,8,11,36,38,69,90,114,129,141,150,152,183）を現行仕様へ補正し `_verify` を全除去。旧機能（ワークフロールール/プロセスビルダー）が正解だった設問はレコードトリガーフロー/Apexトリガーに作り直し、Twitter連携依存の id152 はモバイルのフォームファクタによるコンポーネント表示制御の設問に差し替え。445問・整合性維持。
+- **試験モード強化**: 問題ナビゲータ（`renderNavPalette`/`eJump`）・フラグ（`eFlag`/`toggleEFlag`）・採点前の未回答警告（`confirmFinishExam`）・スコアリング表示（`renderScoreRing`）・弱点コールアウト（`renderWeakCallout`）。
+- **学習モード強化**: 選択肢を番号付き（`.cmark`）＋ `role=button`/`aria-pressed`/Spaceキー選択・色状態・`aria-live`。下部スティッキー操作バー（study-actbar）。誤答だけ復習（`redoWrong`/`sLastWrong`）。
+- **ホーム再設計**: hero＋primary2＋todo＋stat3＋設定アコーディオン。ストリークバナー（`#hh-streak`）・オンボーディング（`maybeOnboard`/OB_STEPS/localStorage `sfq_onboarded`）・合格可能性サマリー（`renderStatsSummary`）。
+- **マイページ（👤）**: ヘッダーのダークトグル隣に `#btn-mypage`。`renderMypage`/学習計画（`saveMyPlan`/`clearMyPlan`）/ダーク切替（`setDarkMode`）。
+- **資格取得済み機能**: `store.acquiredDate` 新設（3資格別 localStorage＋Firestore同期）。`acquireCert`/`unacquireCert`。主張①ホームhero金バッジ＋リボン（`renderHomeAcq`/`#hh-acq`/`#hh-ribbon`/`.home-hero.acq`）、②試験合格時ボタン（`renderExamAcq`/`#e-acq`）、③トップLPカードの金バッジ（`.acq-badge`/`.card.acq`、同一オリジン localStorage で判定）。
+- **管理者ビュー拡充**（cloud-sync.js）: 全体ダッシュボード/KPI（`adminDashboardHTML`）・分野別集計バー・問題別正答率分析（折りたたみ `<details class="sfqc-itemwrap">`）・フィルタ/並べ替え強化（資格/活動/合格、'rate'/'days' ソート、休眠バッジ）。
+- **ヘッダーのアカウントバッジ重なり修正**: コンパクトpill＋ドロップダウン（`#sfqc-badge-toggle`/`#sfqc-menu`、right:56px でダークボタンを回避、client ロールでは非表示）。
+- **過去の精査済み**: App Builder 用語集（5章83語）/設定マップ（10件）を公式照合・事実誤りなし・公式URL付与。`_verify` 13問を現行仕様へ補正し全除去（WFR/PB→レコードトリガーフロー/Apexトリガー、Twitter依存 id152→フォームファクタ表示制御）。445問・整合性維持。
 
 ---
 
