@@ -22,7 +22,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v22）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v23）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -102,7 +102,7 @@ store = {
   daily: {'YYYY-MM-DD': 解答数},
   notes: {id: text},
   examDate, goal,
-  exams: [],        // 模試履歴（最新50件）。各要素 {ts,pct,ok,n,pass,byd,secsUsed}（secsUsed=使用秒・推移グラフ/ペース計測に使用）
+  exams: [],        // 模試履歴（最新50件）。各要素 {ts,pct,ok,n,pass,byd,secsUsed,custom}（n=問題数, custom=カスタム模試か。推移グラフはフル(n===examN)のみで描画）
   badges: {id: date},
   dc: {d:'YYYY-MM-DD', ids:[], done:0}, // デイリーチャレンジ（その日の10問を固定。done=1で完了）。日付が変わると再構成
   acquiredDate: ''  // 資格取得日（''=未取得）。ホーム/マイページ/試験結果で「取得済み」を主張表示
@@ -204,6 +204,13 @@ git push origin main
 
 - アクティブな残タスクなし。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
+
+### 完了済み（2026-06-01・第5弾）カスタム模試 / 網羅率 / アプリ更新（キャッシュ v23・アセット `?v=21`）
+
+- **カスタム模試**: `startExam(opts)` を拡張（`{n, weak, domains[], timed}`）。ランタイムの問題数は定数 `EXAM_N` でなく `eN`、時間は `eTimed`/`eBudget`（timed=残り減算・untimed=経過加算）。ホームに `🎛️ カスタム模試` ボタン→モーダル（`openCustomExam`/`renderCustomExam`/`startCustomExam`、`ce*` 状態）。中断・再開も可変長対応（保存に `n/timed/budget`）。標準「試験」ボタンは従来どおり60問・時間制限あり。
+- **学習カバレッジ**: 統計ページ上部に `renderCoverage`（全問の解答率＋全分野の着手率、未着手をまとめて学習 `startUnseen`）。`#coverage` を両シェルの統計に設置。
+- **アプリを更新**: マイページに `updateApp`（caches 全削除＋SW `registration.update()`→再読み込み）。版数を上げた直後でも待たず最新化。
+- 模試推移グラフはフル（`n===EXAM_N`）のみで描画し、履歴一覧はカスタムに `N問` タグを表示。`store.exams` に `n`/`custom` を記録。
 
 ### 完了済み（2026-06-01・第4弾）お知らせをLPと全ホームへ展開（キャッシュ v22・アセット `?v=20`）
 
