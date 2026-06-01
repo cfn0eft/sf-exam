@@ -73,6 +73,35 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   .grid{grid-template-columns:1fr;gap:12px}
   .card{min-height:0;padding:18px 16px}
 }
+/* アップデートのお知らせ（バナー＋モーダル） */
+.lp-news{display:flex;align-items:center;gap:13px;width:100%;cursor:pointer;text-align:left;font:inherit;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px 18px;margin:0 0 26px;
+  color:inherit;box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.lp-news:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:var(--accent)}
+.lp-news.unseen{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+.lp-news-ic{font-size:24px;flex-shrink:0}
+.lp-news-main{display:flex;flex-direction:column;flex:1;min-width:0}
+.lp-news-t{font-size:15px;font-weight:700;line-height:1.3}
+.lp-news-sub{font-size:12px;color:var(--text-sub);margin-top:3px}
+.lp-news-new{flex-shrink:0;font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;background:#ef4444;border-radius:999px;padding:3px 9px}
+.lp-news-arrow{font-size:22px;color:var(--text-sub);flex-shrink:0}
+.lp-modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.55);
+  align-items:center;justify-content:center;padding:20px}
+.lp-modal.on{display:flex}
+.lp-modal-box{width:min(94vw,480px);max-height:82vh;overflow:auto;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-hover)}
+.lp-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;
+  border-bottom:1px solid var(--border);font-weight:800;font-size:16px}
+.lp-modal-x{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-sub);line-height:1}
+.lp-modal-body{padding:6px 18px 18px}
+.lp-entry{padding:15px 0;border-bottom:1px solid var(--border)}
+.lp-entry:last-child{border-bottom:none}
+.lp-entry-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.lp-date{font-size:11px;font-weight:700;color:#fff;background:var(--muted-text);border-radius:6px;padding:2px 8px;flex-shrink:0}
+.lp-entry.latest .lp-date{background:var(--accent)}
+.lp-etitle{font-size:15px;font-weight:800}
+.lp-items{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+.lp-items li{font-size:13px;line-height:1.6;color:var(--text)}
 </style>
 </head>
 <body>
@@ -83,9 +112,28 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     <p>学習したい資格を選択してください</p>
   </header>
 
+  <!-- アップデートのお知らせ -->
+  <button class="lp-news" id="lp-news" onclick="lpOpenNews()">
+    <span class="lp-news-ic">📣</span>
+    <span class="lp-news-main">
+      <span class="lp-news-t" id="lp-news-t">アップデート情報</span>
+      <span class="lp-news-sub" id="lp-news-sub"></span>
+    </span>
+    <span class="lp-news-new" id="lp-news-new" style="display:none">NEW</span>
+    <span class="lp-news-arrow">›</span>
+  </button>
+
   <div class="sec-label">利用可能な資格</div>
   <div class="grid" id="cert-grid"></div>
 
+</div>
+
+<!-- アップデート履歴モーダル -->
+<div class="lp-modal" id="lp-modal" onclick="if(event.target===this)lpCloseNews()">
+  <div class="lp-modal-box" role="dialog" aria-modal="true" aria-label="アップデート情報">
+    <div class="lp-modal-head"><span>📣 アップデート情報</span><button class="lp-modal-x" onclick="lpCloseNews()" aria-label="閉じる">✕</button></div>
+    <div class="lp-modal-body" id="lp-modal-body"></div>
+  </div>
 </div>
 
 <!-- ============================================================
@@ -140,7 +188,36 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="cloud-sync.js?v=16"></script>
+<!-- アップデート履歴データ（LP・全資格で共有） -->
+<script src="changelog.js?v=20"></script>
+<script src="cloud-sync.js?v=20"></script>
+<script>
+  /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
+  function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
+  function lpHasUnseen(){try{return (window.SFQ_CHANGELOG||[]).length>0 && localStorage.getItem('sfq_news_seen')!==lpNewsLatest();}catch(e){return false;}}
+  function lpRenderNews(){
+    var c=window.SFQ_CHANGELOG||[],card=document.getElementById('lp-news');if(!card)return;
+    if(!c.length){card.style.display='none';return;}
+    var latest=c[0],unseen=lpHasUnseen();
+    card.classList.toggle('unseen',unseen);
+    document.getElementById('lp-news-t').textContent=unseen?('新着: '+latest.title):'アップデート情報';
+    document.getElementById('lp-news-sub').textContent=unseen?('🆕 '+latest.date+' に更新しました'):('最新 '+latest.date+' ・ 履歴を見る');
+    document.getElementById('lp-news-new').style.display=unseen?'':'none';
+  }
+  function lpBuildModal(){
+    var c=window.SFQ_CHANGELOG||[],body=document.getElementById('lp-modal-body');if(!body)return;
+    body.innerHTML=c.map(function(e,i){
+      var items=(e.items||[]).map(function(it){return '<li>'+it+'</li>';}).join('');
+      return '<div class="lp-entry'+(i===0?' latest':'')+'">'
+        +'<div class="lp-entry-head"><span class="lp-date">'+e.date+'</span><span class="lp-etitle">'+e.title+'</span>'+(i===0?'<span class="lp-news-new">NEW</span>':'')+'</div>'
+        +'<ul class="lp-items">'+items+'</ul></div>';
+    }).join('');
+  }
+  function lpOpenNews(){lpBuildModal();var m=document.getElementById('lp-modal');if(m)m.classList.add('on');try{localStorage.setItem('sfq_news_seen',lpNewsLatest());}catch(e){}lpRenderNews();}
+  function lpCloseNews(){var m=document.getElementById('lp-modal');if(m)m.classList.remove('on');}
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lpCloseNews();});
+  lpRenderNews();
+</script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 </script>

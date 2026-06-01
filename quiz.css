@@ -997,19 +997,10 @@ body[data-fs=small] .cdef{font-size:12px}
 .qk-kp{font-size:12.5px;color:var(--text-sub);line-height:1.7;margin-top:10px}
 .qk-hint{font-size:11px;color:var(--text-sub);text-align:center;margin-top:14px}
 
-/* ===== アップデートのお知らせ（ホームカード） ===== */
-.news-card{display:flex;align-items:center;gap:11px;width:100%;cursor:pointer;
-  background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);
-  padding:11px 13px;margin:0 0 12px;color:var(--text);text-align:left;transition:border-color .12s}
-.news-card:hover{border-color:var(--primary)}
-.news-card.unseen{border-color:var(--primary);background:linear-gradient(90deg,var(--primary-light),var(--card))}
-.news-ic{font-size:20px;flex-shrink:0}
-.news-main{display:flex;flex-direction:column;flex:1;min-width:0}
-.news-t{font-size:13.5px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.news-sub{font-size:11px;color:var(--text-sub);margin-top:2px}
-.news-card.unseen .news-t{color:var(--primary-dark)}
-[data-theme=dark] .news-card.unseen .news-t{color:#9cd0ff}
-.news-arrow{font-size:20px;color:var(--text-sub);flex-shrink:0}
+/* ===== アップデートのお知らせ（トップバーのベル＋未読ドット） ===== */
+.topbar-news{position:relative}
+.news-dot{position:absolute;top:9px;right:9px;width:9px;height:9px;border-radius:50%;
+  background:#ff3b30;border:2px solid var(--primary);box-shadow:0 0 0 1px rgba(255,59,48,.5)}
 .news-new{flex-shrink:0;font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;
   background:var(--danger);border-radius:999px;padding:2px 8px}
 

@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=19">
+<link rel="stylesheet" href="../../quiz.css?v=20">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -23,6 +23,7 @@
   <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
   <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
   <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
+  <button class="topbar-btn topbar-news" id="btn-news" onclick="openNews()" title="お知らせ">🔔<span class="news-dot" id="news-dot" style="display:none"></span></button>
   <button class="topbar-btn" id="btn-mypage" onclick="goTo('mypage')" title="マイページ">👤</button>
   <button class="topbar-btn" id="btn-dark" onclick="toggleDark()">🌙</button>
 </div>
@@ -62,14 +63,6 @@
 
   <!-- 中断した試験の再開バナー -->
   <div id="resume-banner"></div>
-
-  <!-- アップデートのお知らせ -->
-  <button class="news-card" id="news-card" onclick="openNews()" style="display:none">
-    <span class="news-ic">📣</span>
-    <span class="news-main"><span class="news-t" id="news-t">アップデート情報</span><span class="news-sub" id="news-sub"></span></span>
-    <span class="news-new" id="news-new" style="display:none">NEW</span>
-    <span class="news-arrow">›</span>
-  </button>
 
   <!-- 主要2アクション -->
   <div class="primary2">
@@ -493,10 +486,12 @@
   window.SFQ_PAGE_ROLE = 'client';
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
+<!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
+<script src="../../changelog.js?v=20"></script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=19"></script>
+<script src="../../quiz-engine.js?v=20"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=19"></script>
+<script src="../../cloud-sync.js?v=20"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>

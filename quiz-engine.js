@@ -2194,53 +2194,22 @@ function qkDone(){
 }
 
 /* =====================================================================
- * アップデートのお知らせ（ホームの更新履歴・全資格共通）
- * 新リリース時は CHANGELOG の先頭に1件追加するだけ。未読判定は id で行う。
+ * アップデートのお知らせ（各資格ページ＋ルートLP 共通）
+ * 履歴データは changelog.js（window.SFQ_CHANGELOG）が唯一の出典。
+ * 新リリースは changelog.js の先頭に1件追加するだけ。未読判定は id で行う。
+ * 各資格ホームではトップバーのベル(#btn-news)＋未読ドット(#news-dot)で告知。
  * ===================================================================== */
-const CHANGELOG=[
-  {id:'2026-06-01b', date:'2026-06-01', title:'試験対策を強化', items:[
-    '⏱️ 試験の時間配分コーチ（設問ごとの所要時間・かけすぎた問題を表示）',
-    '⏸️ 試験の中断・再開（途中で閉じても続きから再開）',
-    '📈 模試スコアの推移グラフ＋履歴一覧（マイページ）',
-    '⚡ 高速めくり総ざらい（問題→答えをサッと確認・前日チェック向き）',
-    '🔠 文字サイズ調整（小・標準・大）',
-    '📲 オフライン表示と「ホーム画面に追加」'
-  ]},
-  {id:'2026-06-01a', date:'2026-06-01', title:'学習がもっと便利に', items:[
-    '🔍 問題のキーワード検索（問題文・選択肢・解説を横断）',
-    '🗓️ デイリーチャレンジ（今日の10問を自動編成）',
-    '💾 進捗のバックアップ／復元（ファイル書き出し・読み込み）',
-    '⌨️ キーボードショートカット一覧（? キーで表示）',
-    '⚠️ 問題の報告ボタン（誤り・古い内容をかんたん連絡）',
-    '📱 アプリのアイコン整備・学習画面のピンチズーム対応'
-  ]},
-  {id:'2026-05-31', date:'2026-05-31', title:'画面を大きく刷新', items:[
-    '🏠 ホーム画面をリニューアル（今日やる・合格可能性サマリー）',
-    '⏱️ 試験モード強化（問題ナビ・フラグ・採点前チェック・スコア表示）',
-    '📖 学習モード強化（番号で選択・誤答だけ復習）',
-    '👤 マイページ新設（学習計画・ダークモード）',
-    '🎓 資格「取得済み」の記録、🔥 学習ストリークとオンボーディング'
-  ]},
-  {id:'2026-05-28', date:'2026-05-28〜30', title:'問題と教材を充実', items:[
-    '📝 Administrator を 388問・App Builder を 445問に拡充',
-    '📊 比較表・設定マップ・用語集を整備',
-    '🏷️ 出典フィルタ（タイソンブログ／生成）を追加',
-    '☁️ クラウド同期・PWA（オフライン学習）に対応'
-  ]}
-];
+const CHANGELOG=(typeof window!=='undefined'&&window.SFQ_CHANGELOG)||[];
 function newsLatestId(){return CHANGELOG.length?CHANGELOG[0].id:'';}
 function hasUnseenNews(){try{return !!CHANGELOG.length&&localStorage.getItem('sfq_news_seen')!==newsLatestId();}catch(e){return false;}}
 function markNewsSeen(){try{localStorage.setItem('sfq_news_seen',newsLatestId());}catch(e){}}
 function renderNews(){
-  const card=document.getElementById('news-card');if(!card)return;
-  if(!CHANGELOG.length){card.style.display='none';return;}
-  card.style.display='';
-  const latest=CHANGELOG[0],unseen=hasUnseenNews();
-  card.classList.toggle('unseen',unseen);
-  const t=document.getElementById('news-t'),sub=document.getElementById('news-sub'),nw=document.getElementById('news-new');
-  if(t)t.textContent=unseen?('新着: '+latest.title):'アップデート情報';
-  if(sub)sub.textContent=unseen?('🆕 '+latest.date+' に更新しました'):('最新 '+latest.date+' ・ 履歴を見る');
-  if(nw)nw.style.display=unseen?'':'none';
+  // 各資格ホーム：トップバーのベルに未読ドットを出す（ポップアップは openNews）
+  const has=hasUnseenNews();
+  const dot=document.getElementById('news-dot');
+  if(dot)dot.style.display=has?'':'none';
+  const bell=document.getElementById('btn-news');
+  if(bell)bell.setAttribute('title',has?'お知らせ（新着あり）':'お知らせ');
 }
 function buildNewsModal(){
   let ov=document.getElementById('news-modal');
