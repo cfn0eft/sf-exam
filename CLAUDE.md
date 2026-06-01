@@ -95,7 +95,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 ```js
 store = {
   bm: [],           // ブックマーク配列
-  hist: {id:{c,w,last}},   // 解答履歴 (last='c'|'w' = 直近の正誤)
+  hist: {id:{c,w,last,lc}}, // 解答履歴 (c=正答数,w=誤答数,last='c'|'w'=直近の正誤, lc=1:直近を「自信なし」で解答→まぐれ正解の復習判定 needsReview/isLowConfCorrect に使用)
   streak, vm, tbm,
   srs: {id:{ivl,ease,reps,due}},  // SM-2 簡易版
   daily: {'YYYY-MM-DD': 解答数},
