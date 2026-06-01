@@ -21,7 +21,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v19）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v20）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -101,7 +101,7 @@ store = {
   daily: {'YYYY-MM-DD': 解答数},
   notes: {id: text},
   examDate, goal,
-  exams: [],        // 模試履歴（最新50件）
+  exams: [],        // 模試履歴（最新50件）。各要素 {ts,pct,ok,n,pass,byd,secsUsed}（secsUsed=使用秒・推移グラフ/ペース計測に使用）
   badges: {id: date},
   dc: {d:'YYYY-MM-DD', ids:[], done:0}, // デイリーチャレンジ（その日の10問を固定。done=1で完了）。日付が変わると再構成
   acquiredDate: ''  // 資格取得日（''=未取得）。ホーム/マイページ/試験結果で「取得済み」を主張表示
@@ -187,6 +187,15 @@ git push origin main
 
 - アクティブな残タスクなし。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
+
+### 完了済み（2026-06-01・第2弾）便利機能6点追加（キャッシュ v20・アセット `?v=18`）
+
+- **試験の設問別ペース計測**: 1秒タイマーで現在問の `eQTime[i]` を加算。結果に時間管理コーチ `renderPaceCard`（使用時間／1問平均／目安ペース＝`EXAM_MIN*60/EXAM_N`、超過した上位3問へジャンプ）。結果リスト各行にも所要時間バッジ。`finishExam` が `secsUsed` を履歴へ記録。
+- **試験の中断・再開**: クラウド非同期のローカル専用キー `<storageKey>_examstate` に保存（`saveExamState` を `renderEQ`/タイマー5秒毎/`goBack` で）。ホームに再開バナー `#resume-banner`（`renderResumeBanner`/`resumeExam`/`discardExam`）。`startExam`/`finishExam` で `clearExamState`。
+- **模試スコアの推移グラフ**: マイページ「模試の記録」に `examTrendHTML`（SVG 折れ線＋合格ライン＋直近20回、履歴一覧8件）。`store.exams` を利用。
+- **文字サイズ調整**: マイページに 小/標準/大。`applyFontSize` が `body[data-fs]` を設定＋`localStorage 'sfq_fontsize'`。本文テキスト（問題・選択肢・解説・用語・高速めくり）のみ拡縮（固定バーに影響しない方式）。
+- **オフライン表示／PWA追加**: `renderOnlineState`＋`online/offline` で `#offline-bar`。`beforeinstallprompt` を捕捉し `window.__deferredInstall`、マイページに「アプリを追加」行（`installPWA`、未対応時は非表示）。
+- **高速めくり総ざらい**: 新ページ `#pg-quick`（`startQuick`/`renderQK`/`qkReveal`/`qkNav`/`setQkMode`）。問題→タップで答え＋要点表示→送り。対象=すべて/要復習/ブックマーク/弱点。ホーム `.quick-entry` から起動。要点は解説先頭行から記号・正解文の重複を除去。
 
 ### 完了済み（2026-06-01）便利機能5点追加（キャッシュ v19・アセット `?v=17`）
 
