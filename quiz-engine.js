@@ -31,7 +31,7 @@ let store=loadStore();
 // study
 let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false,sLastWrong=[];
 // exam
-let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={};
+let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={},eQTime={};
 // filters
 let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
 // 出典フィルタ（tyson=タイソンブログ / gen=生成 / all=両方）
@@ -40,6 +40,10 @@ function inScope(q){return srcFilter==='all'||(q&&q.source===srcFilter);}
 function scopedQ(){return allQ.filter(inScope);}
 // vocab
 let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
+// quick review（高速めくり総ざらい）
+let qkQueue=[],qkCur=0,qkMode='all',qkRevealed=false;
+// 試験の中断・再開用（クラウド同期対象外のローカル専用キー）
+const EXAM_SAVE_KEY=SKEY+'_examstate';
 
 // --- storage ---
 function loadStore(){
@@ -120,6 +124,8 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{renderCram();}catch(e){}
   if(typeof updateSrsBtn==='function')updateSrsBtn();
   if(localStorage.getItem('dark')==='1')applyDark(true);
+  try{applyFontSize(localStorage.getItem('sfq_fontsize')||'normal');}catch(e){}
+  try{renderOnlineState();}catch(e){}
   try{maybeOnboard();}catch(e){}
   document.addEventListener('keydown',handleKey);
   try{var _hv=(location.hash||'').replace('#','');if(['cram','textbook','vocab','stats'].indexOf(_hv)>=0)goTo(_hv);}catch(e){}
@@ -270,6 +276,7 @@ function homeStats(){
   try{renderStreakBanner();}catch(e){}
   try{renderHomeAcq();}catch(e){}
   try{renderDaily();}catch(e){}
+  try{renderResumeBanner();}catch(e){}
   renderPlan();
 }
 
@@ -295,7 +302,7 @@ function goTo(name){
   window.scrollTo(0,0);
 }
 function goBack(){
-  if(eTimer){if(!confirm('試験を中断しますか？'))return;clearInterval(eTimer);eTimer=null;}
+  if(eTimer){if(!confirm('試験を中断しますか？（あとでホームから再開できます）'))return;clearInterval(eTimer);eTimer=null;saveExamState();}
   goTo('home');
 }
 
@@ -1079,8 +1086,9 @@ function redoWrong(){if(sLastWrong&&sLastWrong.length)beginStudyWith(sLastWrong.
 // ===== EXAM =====
 function startExam(){
   if(scopedQ().length<EXAM_N){toast('問題数が不足しています（出典フィルタを「すべて」にすると増えます）');return;}
-  eQ=pickWeightedExam(EXAM_N);eCur=0;eAns={};eFlag={};eSecs=EXAM_MIN*60;
+  eQ=pickWeightedExam(EXAM_N);eCur=0;eAns={};eFlag={};eQTime={};eSecs=EXAM_MIN*60;
   eDispArr=eQ.map(q=> cshufOn()? shuffle(q.choices.map((_,i)=>i)) : q.choices.map((_,i)=>i));
+  clearExamState();
   document.getElementById('e-result').style.display='none';
   document.getElementById('e-area').style.display='block';
   goTo('exam');startTimer();renderEQ();
@@ -1106,7 +1114,12 @@ function pickWeightedExam(n){
 function startTimer(){
   if(eTimer)clearInterval(eTimer);
   tickTimer();
-  eTimer=setInterval(()=>{eSecs--;tickTimer();if(eSecs<=0){clearInterval(eTimer);eTimer=null;finishExam();}},1000);
+  eTimer=setInterval(()=>{
+    if(eQ[eCur])eQTime[eCur]=(eQTime[eCur]||0)+1;   // 設問ごとの所要時間を加算
+    eSecs--;tickTimer();
+    if(eSecs%5===0)saveExamState();                  // 中断復帰用に定期保存
+    if(eSecs<=0){clearInterval(eTimer);eTimer=null;finishExam();}
+  },1000);
 }
 function tickTimer(){
   const h=0|eSecs/3600,m=0|(eSecs%3600)/60,s=eSecs%60;
@@ -1142,6 +1155,7 @@ function renderEQ(){
   if(fb){const on=!!eFlag[eCur];fb.classList.toggle('on',on);fb.textContent=on?'🚩 見直す':'🚩 後で';}
   renderNavPalette();
   updateFinishLabel();
+  saveExamState();   // 解答・移動・フラグのたびに中断復帰用へ保存
 }
 // 解答済み問題数
 function eAnsweredCount(){let n=0;for(let i=0;i<EXAM_N;i++){if((eAns[i]||[]).length>0)n++;}return n;}
@@ -1247,8 +1261,9 @@ function finishExam(){
     recH(q.id,isOk);
   });
   const pct=Math.round(ok/EXAM_N*100),pass=pct>=PASS;
+  const secsUsed=EXAM_MIN*60-Math.max(0,eSecs);   // 使用した試験時間（秒）
   if(!store.exams)store.exams=[];
-  store.exams.push({ts:Date.now(),pct:pct,ok:ok,n:EXAM_N,pass:pass,byd:byd});
+  store.exams.push({ts:Date.now(),pct:pct,ok:ok,n:EXAM_N,pass:pass,byd:byd,secsUsed:secsUsed});
   if(store.exams.length>50)store.exams=store.exams.slice(-50);
   save();
   checkBadges();
@@ -1265,6 +1280,8 @@ function finishExam(){
   eWrongOnly=false;
   const wt=document.getElementById('e-wrong-toggle');if(wt)wt.classList.remove('on');
   renderExamResultList();
+  renderPaceCard(secsUsed);   // 時間管理コーチ
+  clearExamState();           // 完了したので中断データは破棄
 }
 function renderExamDomains(byd){
   const host=document.getElementById('e-domains');if(!host)return;host.innerHTML='';
@@ -1290,8 +1307,10 @@ function renderExamResultList(){
     shown++;
     const wrap=document.createElement('div');wrap.className='erow-wrap';
     const row=document.createElement('div');row.className='erow';
+    const _t=eQTime[i]||0;
     row.innerHTML='<span class="erow-ic">'+(isOk?'✅':'❌')+'</span>'
       +'<span class="erow-q">Q'+(i+1)+'. '+escH(q.question)+'</span>'
+      +(_t?'<span class="erow-time">'+fmtSec(_t)+'</span>':'')
       +'<span class="erow-ar">▾</span>';
     const det=document.createElement('div');det.className='erow-det';
     row.addEventListener('click',()=>{
@@ -1616,6 +1635,11 @@ function renderMypage(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
   const sf=(typeof srcFilter!=='undefined')?srcFilter:'all';
   const seg=(on,label,fn)=>'<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+label+'</button>';
+  const fs=(function(){try{return localStorage.getItem('sfq_fontsize')||'normal';}catch(e){return 'normal';}})();
+  const installRow=window.__deferredInstall
+    ? '<div class="mp-opt"><span class="mp-ic">📲</span><span class="mp-main">アプリを追加<div class="mp-osub">ホーム画面に追加してすばやく起動</div></span><span class="mp-seg"><button onclick="installPWA()">追加</button></span></div>'
+    : '';
+  const trendHtml=(typeof examTrendHTML==='function')?examTrendHTML():'';
   const ed=store.examDate||'',goal=store.goal||0;let planInfo='';
   if(ed){const t=new Date();t.setHours(0,0,0,0);const e=new Date(ed+'T00:00:00');const dl=Math.round((e-t)/86400000);const unans=allQ.length-answered;
     planInfo=dl>=0?('受験まで あと '+dl+'日'+(dl>0&&unans>0?' ・ 未着手 '+unans+'問 → 目安 '+Math.ceil(unans/dl)+'問/日':'')):'受験日は過ぎました';}
@@ -1637,6 +1661,7 @@ function renderMypage(){
     +'<div class="mp-mini"><div class="n">'+(exams.length?best+'%':'—')+'</div><div class="l">試験ベスト</div></div>'
     +'<div class="mp-mini"><div class="n">'+passed+'</div><div class="l">合格回数</div></div>'
     +'</div></div>'
+    +(trendHtml?('<div class="sec-label">模試の記録</div>'+trendHtml):'')
     +'<div class="sec-label">学習計画</div>'
     +'<div class="card"><div class="mp-field"><label>🎯 受験予定日</label><input type="date" id="mp-exam" value="'+escH(ed)+'"></div>'
     +'<div class="mp-field"><label>📅 1日の目標問題数</label><input type="number" id="mp-goal" min="0" max="999" value="'+(goal||'')+'" placeholder="例: 20"></div>'
@@ -1645,10 +1670,12 @@ function renderMypage(){
     +'<div class="sec-label">表示・データ</div>'
     +'<div class="card">'
     +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
+    +'<div class="mp-opt"><span class="mp-ic">🔠</span><span class="mp-main">文字サイズ<div class="mp-osub">問題・選択肢・解説などの本文</div></span><span class="mp-seg">'+seg(fs==='small','小',"applyFontSize('small');renderMypage()")+seg(fs==='normal','標準',"applyFontSize('normal');renderMypage()")+seg(fs==='large','大',"applyFontSize('large');renderMypage()")+'</span></div>'
     +'<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+seg(sf==='tyson',"タイソン","setSrcFilter('tyson');renderMypage()")+seg(sf==='gen',"生成","setSrcFilter('gen');renderMypage()")+'</span></div>'
     +'<div class="mp-opt"><span class="mp-ic">⌨️</span><span class="mp-main">キーボード操作<div class="mp-osub">PCショートカット一覧（<b>?</b> キーでも開く）</div></span><span class="mp-seg"><button onclick="toggleShortcutHelp(true)">表示</button></span></div>'
     +'<div class="mp-opt"><span class="mp-ic">💾</span><span class="mp-main">バックアップ<div class="mp-osub">進捗をファイルに保存／復元（端末移行・消失対策）</div></span><span class="mp-seg"><button onclick="exportProgress()">書出</button><button onclick="document.getElementById(\'mp-import\').click()">読込</button></span></div>'
     +'<input type="file" id="mp-import" accept="application/json,.json" style="display:none" onchange="importProgress(this)">'
+    +installRow
     +'<div class="mp-opt"><span class="mp-ic">🗑️</span><span class="mp-main">進捗データ<div class="mp-osub">この資格の履歴・設定を初期化</div></span><button class="mp-danger" onclick="resetAll()">リセット</button></div>'
     +'</div>';
 }
@@ -1944,5 +1971,221 @@ function renderDaily(){
     if(badge)badge.textContent=n;
     if(row)row.classList.remove('dc-done');
   }
+}
+
+/* =====================================================================
+ * 追加機能(第2弾)：試験ペース計測 / 中断・再開 / 模試推移グラフ /
+ *                  文字サイズ / オフライン・インストール / 高速めくり
+ * ===================================================================== */
+
+// 秒を読みやすく整形
+function fmtSec(s){s=Math.max(0,Math.round(s));if(s<60)return s+'秒';const m=Math.floor(s/60),x=s%60;return m+':'+String(x).padStart(2,'0');}
+
+// ----- 1) 試験の時間管理コーチ（結果画面） -----
+function renderPaceCard(secsUsed){
+  const host=document.getElementById('e-pace');if(!host)return;
+  const used=secsUsed||0;
+  const target=EXAM_MIN*60/EXAM_N;     // 1問あたりの目安秒
+  const avg=used/EXAM_N;
+  const within=avg<=target;
+  const col=within?'var(--success)':avg<=target*1.2?'var(--warning)':'var(--danger)';
+  const times=[];for(let i=0;i<EXAM_N;i++){if(eQTime[i])times.push({i:i,t:eQTime[i],q:eQ[i]});}
+  const slow=times.slice().sort((a,b)=>b.t-a.t).slice(0,3).filter(x=>x.t>target&&x.q);
+  let h='<div class="sec-label" style="margin-top:0">⏱️ 時間の使い方</div>'
+    +'<div class="pace-grid">'
+    +'<div class="pace-cell"><div class="pace-n">'+fmtSec(used)+'</div><div class="pace-l">使用時間</div></div>'
+    +'<div class="pace-cell"><div class="pace-n" style="color:'+col+'">'+fmtSec(avg)+'</div><div class="pace-l">1問平均</div></div>'
+    +'<div class="pace-cell"><div class="pace-n">'+fmtSec(target)+'</div><div class="pace-l">目安ペース</div></div>'
+    +'</div>'
+    +'<div class="pace-msg '+(within?'ok':'warn')+'">'+(within
+      ?'✅ 目安ペース内。本番でも時間に余裕を持てそうです。'
+      :'⏳ 目安よりやや時間がかかっています。本番は1問 '+fmtSec(target)+' 目安で。')+'</div>';
+  if(slow.length){
+    h+='<div class="pace-slow-h">時間をかけすぎた問題（タップで学習）</div>';
+    slow.forEach(x=>{
+      const ok=arrEq((eAns[x.i]||[]).map(idx=>x.q.choices[idx]).slice().sort(),x.q.answers.slice().sort());
+      h+='<button type="button" class="pace-slow" onclick="jumpQ('+x.q.id+')">'
+        +'<span class="pace-slow-ic">'+(ok?'✅':'❌')+'</span>'
+        +'<span class="pace-slow-q">Q'+(x.i+1)+'. '+escH(x.q.question.slice(0,38))+'…</span>'
+        +'<span class="pace-slow-t">'+fmtSec(x.t)+'</span></button>';
+    });
+  }
+  host.innerHTML=h;
+}
+
+// ----- 2) 試験の中断・再開（クラウド非同期のローカル専用保存） -----
+function saveExamState(){
+  if(!(eQ&&eQ.length))return;
+  try{localStorage.setItem(EXAM_SAVE_KEY,JSON.stringify({v:1,ids:eQ.map(q=>q.id),ans:eAns,flag:eFlag,cur:eCur,secs:eSecs,disp:eDispArr,qt:eQTime,ts:Date.now()}));}catch(e){}
+}
+function clearExamState(){try{localStorage.removeItem(EXAM_SAVE_KEY);}catch(e){}}
+function loadExamState(){try{const r=localStorage.getItem(EXAM_SAVE_KEY);if(r)return JSON.parse(r);}catch(e){}return null;}
+function hasResumableExam(){
+  const st=loadExamState();
+  if(!st||!Array.isArray(st.ids)||st.ids.length!==EXAM_N||!(st.secs>0))return false;
+  return st.ids.every(id=>allQ.some(q=>q.id===id));
+}
+function resumeExam(){
+  const st=loadExamState();
+  if(!st){toast('再開できる試験がありません');return;}
+  const qs=st.ids.map(id=>allQ.find(q=>q.id===id)).filter(Boolean);
+  if(qs.length!==EXAM_N){toast('問題が変わったため再開できません');clearExamState();renderResumeBanner();return;}
+  eQ=qs;eAns=st.ans||{};eFlag=st.flag||{};eCur=Math.min(EXAM_N-1,Math.max(0,st.cur||0));
+  eSecs=Math.max(1,st.secs||0);eQTime=st.qt||{};
+  eDispArr=(Array.isArray(st.disp)&&st.disp.length===EXAM_N)?st.disp:eQ.map(q=>cshufOn()?shuffle(q.choices.map((_,i)=>i)):q.choices.map((_,i)=>i));
+  eWrongOnly=false;
+  document.getElementById('e-result').style.display='none';
+  document.getElementById('e-area').style.display='block';
+  goTo('exam');startTimer();renderEQ();
+  toast('▶ 試験を再開しました');
+}
+function discardExam(){if(!confirm('中断した試験を破棄しますか？'))return;clearExamState();renderResumeBanner();toast('中断した試験を破棄しました');}
+function renderResumeBanner(){
+  const host=document.getElementById('resume-banner');if(!host)return;
+  if(!hasResumableExam()){host.innerHTML='';return;}
+  const st=loadExamState();
+  const ans=Object.keys(st.ans||{}).filter(k=>(st.ans[k]||[]).length).length;
+  const mm=Math.max(1,Math.round((st.secs||0)/60));
+  host.innerHTML='<div class="resume-card"><div class="resume-main"><div class="resume-t">⏸️ 中断した試験があります</div>'
+    +'<div class="resume-sub">'+ans+' / '+EXAM_N+'問 回答済 ・ 残り約 '+mm+'分</div></div>'
+    +'<div class="resume-btns"><button type="button" class="resume-go" onclick="resumeExam()">再開</button>'
+    +'<button type="button" class="resume-x" onclick="discardExam()">破棄</button></div></div>';
+}
+
+// ----- 3) 模試スコアの推移グラフ＋履歴一覧（マイページに描画） -----
+function examTrendHTML(){
+  const ex=(store.exams||[]).filter(e=>e&&typeof e.pct==='number');
+  if(!ex.length)return '';
+  const data=ex.slice(-20),n=data.length;
+  const W=300,H=120,padX=8,padY=12;
+  const X=i=> n<=1? W/2 : padX+i*(W-2*padX)/(n-1);
+  const Y=p=> H-padY-(p/100)*(H-2*padY);
+  const passY=Y(PASS).toFixed(1);
+  const line=data.map((e,i)=>X(i).toFixed(1)+','+Y(e.pct).toFixed(1)).join(' ');
+  let dots='';data.forEach((e,i)=>{dots+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(e.pct).toFixed(1)+'" r="3.2" fill="'+(e.pass?'var(--success)':'var(--danger)')+'"/>';});
+  const best=Math.max.apply(null,ex.map(e=>e.pct));
+  const svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="120" preserveAspectRatio="none" style="overflow:visible">'
+    +'<line x1="'+padX+'" y1="'+passY+'" x2="'+(W-padX)+'" y2="'+passY+'" stroke="var(--text-sub)" stroke-width="1" stroke-dasharray="4 3" opacity=".6"/>'
+    +'<text x="'+(W-padX)+'" y="'+(Y(PASS)-4).toFixed(1)+'" font-size="9" fill="var(--text-sub)" text-anchor="end">合格 '+PASS+'%</text>'
+    +'<polyline points="'+line+'" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+    +dots+'</svg>';
+  let rows='';
+  ex.slice().reverse().slice(0,8).forEach(e=>{
+    const d=new Date(e.ts||0),ds=(d.getMonth()+1)+'/'+d.getDate();
+    const col=e.pass?'var(--success)':'var(--danger)';
+    rows+='<div class="extrow"><span class="extr-d">'+ds+'</span>'
+      +'<span class="extr-bar"><span class="extr-bf" style="width:'+e.pct+'%;background:'+col+'"></span></span>'
+      +'<span class="extr-p" style="color:'+col+'">'+e.pct+'%</span>'
+      +'<span class="extr-badge '+(e.pass?'p':'f')+'">'+(e.pass?'合格':'不合格')+'</span></div>';
+  });
+  return '<div class="card"><div class="ext-top">'
+    +'<div><div class="ext-n">'+ex.length+'</div><div class="ext-l">受験回数</div></div>'
+    +'<div><div class="ext-n">'+best+'%</div><div class="ext-l">ベスト</div></div>'
+    +'<div><div class="ext-n">'+ex.filter(e=>e.pass).length+'</div><div class="ext-l">合格回数</div></div></div>'
+    +'<div class="ext-graph">'+svg+'</div><div class="ext-list">'+rows+'</div></div>';
+}
+
+// ----- 4) 文字サイズ -----
+function applyFontSize(size){
+  if(size!=='small'&&size!=='large')size='normal';
+  if(document.body)document.body.setAttribute('data-fs',size);
+  try{localStorage.setItem('sfq_fontsize',size);}catch(e){}
+}
+
+// ----- 5) オフライン表示 / PWAインストール促進 -----
+function renderOnlineState(){
+  let bar=document.getElementById('offline-bar');
+  const off=(typeof navigator!=='undefined')&&navigator.onLine===false;
+  if(off){
+    if(!bar){bar=document.createElement('div');bar.id='offline-bar';bar.className='offline-bar';bar.textContent='📴 オフライン — 保存済みデータで学習できます';document.body.appendChild(bar);}
+    bar.classList.add('on');
+  }else if(bar){bar.classList.remove('on');}
+}
+function installPWA(){
+  const dp=window.__deferredInstall;
+  if(!dp){toast('この環境では追加できません（対応ブラウザのメニューからホーム画面に追加してください）');return;}
+  dp.prompt();
+  if(dp.userChoice&&dp.userChoice.then){dp.userChoice.then(function(){window.__deferredInstall=null;try{renderMypage();}catch(e){}});}
+  else window.__deferredInstall=null;
+}
+if(typeof window!=='undefined'){
+  window.addEventListener('online',function(){try{renderOnlineState();}catch(e){}});
+  window.addEventListener('offline',function(){try{renderOnlineState();}catch(e){}});
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__deferredInstall=e;try{var p=document.getElementById('pg-mypage');if(p&&p.classList.contains('active'))renderMypage();}catch(_){}});
+  window.addEventListener('appinstalled',function(){window.__deferredInstall=null;try{renderMypage();}catch(_){}try{toast('✅ アプリを追加しました');}catch(_){}});
+}
+
+// ----- 6) 高速めくり総ざらい（クイックレビュー） -----
+function qkPool(mode){
+  const s=scopedQ();
+  if(mode==='bm')return s.filter(q=>isBm(q.id));
+  if(mode==='wrong')return s.filter(q=>needsReview(q.id));
+  if(mode==='weak'){
+    const ds=domainStats().filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct).slice(0,3).map(d=>d.code);
+    if(!ds.length)return s;
+    return s.filter(q=>ds.includes(domainOf(q.id)));
+  }
+  return s;
+}
+function startQuick(mode){
+  qkMode=(mode==='bm'||mode==='wrong'||mode==='weak')?mode:'all';
+  const pool=qkPool(qkMode);
+  if(!pool.length){toast('対象の問題がありません');return;}
+  qkQueue=shuffle(pool);qkCur=0;qkRevealed=false;
+  const d=document.getElementById('qk-done');if(d)d.style.display='none';
+  const c=document.getElementById('qk-card');if(c)c.style.display='';
+  goTo('quick');renderQK();
+}
+function setQkMode(m){startQuick(m);}
+function syncQkChips(){['all','wrong','bm','weak'].forEach(m=>{const e=document.getElementById('qk-f-'+m);if(e)e.classList.toggle('on',m===qkMode);});}
+function renderQK(){
+  syncQkChips();
+  const ab=document.getElementById('qk-actbar');if(ab)ab.style.display='';
+  if(qkCur>=qkQueue.length){qkDone();return;}
+  const q=qkQueue[qkCur];qkRevealed=false;
+  const isM=q.answers.length>1;
+  setText('qk-prog',(qkCur+1)+' / '+qkQueue.length);
+  const pf=document.getElementById('qk-pfill');if(pf)pf.style.width=(qkCur/qkQueue.length*100)+'%';
+  const badge=document.getElementById('qk-badge');
+  if(badge){badge.textContent='Q'+q.id+' '+domainDef(domainOf(q.id)).emoji+(isM?' ★ '+q.answers.length+'つ':'');badge.className='qbadge'+(isM?' mbadge':'');}
+  setText('qk-q',q.question);
+  const ansEl=document.getElementById('qk-ans');if(ansEl){ansEl.innerHTML='';ansEl.classList.remove('show');}
+  setText('qk-hint','タップで答えを表示 👆');
+  const b=document.getElementById('qk-bm');if(b){const on=isBm(q.id);b.textContent=on?'★':'☆';b.className='bmbtn'+(on?' on':'');}
+}
+function qkReveal(){
+  if(qkCur>=qkQueue.length)return;
+  if(qkRevealed){qkNav(1);return;}
+  qkRevealed=true;
+  const q=qkQueue[qkCur];
+  const ansEl=document.getElementById('qk-ans');if(!ansEl)return;
+  let h='<div class="qk-correct">'+q.answers.map(a=>'<span class="qk-c">✓ '+escH(a)+'</span>').join('')+'</div>';
+  // 要点 = 解説の先頭行。選択肢記号や「正解文の重複」を取り除いて読みやすく
+  let kp=(q.explanation||'').split('\n').map(s=>s.trim()).filter(Boolean)[0]||'';
+  kp=kp.replace(/^[\s□○◯●✓✔✗✘・\-\*]+/,'');
+  q.answers.forEach(a=>{if(a&&kp.indexOf(a)===0)kp=kp.slice(a.length).replace(/^[\s　:：]+/,'');});
+  if(kp)h+='<div class="qk-kp">'+escH(kp.slice(0,180))+(kp.length>180?'…':'')+'</div>';
+  if(q.reference_url)h+='<a class="reflink" href="'+q.reference_url+'" target="_blank" onclick="event.stopPropagation()">🔗 ヘルプ</a>';
+  ansEl.innerHTML=h;ansEl.classList.add('show');
+  setText('qk-hint','タップで次へ →');
+}
+function qkNav(d){
+  if(!qkQueue.length)return;
+  qkCur=qkCur+d;
+  if(qkCur<0)qkCur=0;
+  if(qkCur>=qkQueue.length){qkDone();return;}
+  renderQK();window.scrollTo({top:0,behavior:'smooth'});
+}
+function qkToggleBm(){
+  const q=qkQueue[qkCur];if(!q)return;
+  togBm(q.id);const on=isBm(q.id);
+  const b=document.getElementById('qk-bm');if(b){b.textContent=on?'★':'☆';b.className='bmbtn'+(on?' on':'');}
+  toast(on?'★ ブックマークに追加':'☆ ブックマーク解除');
+}
+function qkDone(){
+  const c=document.getElementById('qk-card');if(c)c.style.display='none';
+  const ab=document.getElementById('qk-actbar');if(ab)ab.style.display='none';
+  const d=document.getElementById('qk-done');if(d)d.style.display='block';
+  setText('qk-done-sub','全 '+qkQueue.length+' 問を見終えました');
 }
 

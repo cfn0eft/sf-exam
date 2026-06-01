@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=17">
+<link rel="stylesheet" href="../../quiz.css?v=18">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -60,6 +60,9 @@
     </div>
   </div>
 
+  <!-- 中断した試験の再開バナー -->
+  <div id="resume-banner"></div>
+
   <!-- 主要2アクション -->
   <div class="primary2">
     <button class="pbtn study" onclick="startStudy()"><span class="bi">📖</span>学習<span class="psub">解いて解説</span></button>
@@ -91,6 +94,9 @@
       <span class="next-badge" id="next-weak"></span>
     </button>
   </div>
+
+  <!-- 高速めくり総ざらい -->
+  <button class="quick-entry" onclick="startQuick('all')"><span class="qe-ic">⚡</span><span class="qe-main"><span class="qe-t">高速めくりで総ざらい</span><span class="qe-sub">問題→答えをサッと確認（前日チェック向き）</span></span><span class="qe-arrow">›</span></button>
 
   <!-- 統計 -->
   <div class="stats-grid">
@@ -221,6 +227,7 @@
       <div id="e-domains"></div>
       <div id="e-weak-callout"></div>
     </div>
+    <div class="card" id="e-pace"></div>
     <details class="exam-rlist-details">
       <summary>問題ごとの結果を見る</summary>
       <div class="card" style="margin-top:8px">
@@ -420,6 +427,40 @@
   <div id="mypage-body"></div>
 </div>
 
+<!-- ===== QUICK REVIEW（高速めくり総ざらい） ===== -->
+<div class="page has-actbar" id="pg-quick">
+  <div class="filter-bar" style="margin-bottom:8px">
+    <button class="chip on" id="qk-f-all" onclick="setQkMode('all')">すべて</button>
+    <button class="chip" id="qk-f-wrong" onclick="setQkMode('wrong')">❌ 要復習</button>
+    <button class="chip" id="qk-f-bm" onclick="setQkMode('bm')">★ ブックマーク</button>
+    <button class="chip" id="qk-f-weak" onclick="setQkMode('weak')">🎯 弱点分野</button>
+  </div>
+  <div class="quiz-top">
+    <span class="qprog" id="qk-prog">0 / 0</span>
+    <button class="bmbtn" id="qk-bm" onclick="qkToggleBm()">☆</button>
+  </div>
+  <div class="pbar"><div class="pfill" id="qk-pfill"></div></div>
+  <div class="card qk-card" id="qk-card" onclick="qkReveal()">
+    <div class="qbadge" id="qk-badge">Q1</div>
+    <div class="qtext" id="qk-q"></div>
+    <div class="qk-ans" id="qk-ans"></div>
+    <div class="qk-hint" id="qk-hint">タップで答えを表示 👆</div>
+  </div>
+  <div id="qk-done" class="vdone" style="display:none">
+    <div style="font-size:52px;margin-bottom:14px">⚡</div>
+    <div class="result-label">総ざらい完了！</div>
+    <div class="result-sub" id="qk-done-sub" style="margin:6px 0 20px"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn bt" onclick="startQuick(qkMode)">もう一度</button>
+      <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+    </div>
+  </div>
+  <div class="study-actbar" id="qk-actbar"><div class="inner">
+    <button class="btn bg" style="flex:0 0 auto" onclick="qkNav(-1)">← 前</button>
+    <button class="btn bp" onclick="qkReveal()">答えを見る / 次へ →</button>
+  </div></div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nb-home" onclick="goTo('home')"><span class="nav-icon">🏠</span>ホーム</button>
@@ -445,9 +486,9 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=17"></script>
+<script src="../../quiz-engine.js?v=18"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=17"></script>
+<script src="../../cloud-sync.js?v=18"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>
