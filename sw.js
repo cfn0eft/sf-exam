@@ -3,7 +3,7 @@
  * 方針: 同一オリジン = キャッシュ優先＋裏で更新 / クロスオリジン(Firebase等) = ネットワーク優先。
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
  */
-const CACHE = 'sf-exam-v16';
+const CACHE = 'sf-exam-v17';
 const SHELL = [
   './',
   './index.html',
