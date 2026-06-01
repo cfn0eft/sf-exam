@@ -96,14 +96,16 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
 <script>
-  /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） ===== */
+  /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
+     meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
+     現状: sf-admin=388問/94用語, app-builder=445問/83用語。 */
   const CERTS = [
     { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
       desc:'2025/12改訂の公式8分野（Agentforce 8%対応）。学習・試験・SRS・教科書・用語帳・統計をフル搭載。',
       meta:['388問','94用語','合格65%'] },
     { slug:'app-builder', storageKey:'sfqab_v1', icon:'🧩', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
       desc:'宣言的なアプリ構築・データモデル・自動化・UI・リリース。公式5分野対応。',
-      meta:['445問','5分野','合格63%'] },
+      meta:['445問','83用語','合格63%'] },
     { coming:true }, { coming:true }
   ];
   (function renderCerts(){

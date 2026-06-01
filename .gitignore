@@ -1,2 +1,4 @@
 .claude/
-.claude/
+
+# 編集前バックアップは配信・追跡しない
+*.before.json

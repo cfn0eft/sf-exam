@@ -21,7 +21,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v16）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v18）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -132,6 +132,7 @@ git push origin main
   2. 両シェル（`certifications/*/index.html`）のアセット参照の `?v=5` → `?v=6`
   3. `sw.js` の `SHELL` 配列内の `?v=5` → `?v=6`
 - 理由: SW は stale-while-revalidate でキャッシュ優先のため、版数を上げないとブラウザが旧 JS/CSS を掴み続ける（実際にこの事故を確認済み）。`?v=` クエリで URL を変えることで確実に新版を取得させる。
+- 学習データ `certifications/*/data/*.json` も v18 から `SHELL` でプリキャッシュ（初回訪問からオフライン学習可）。データ更新は stale-while-revalidate で2回目読込から自動反映される。初回配信から即時反映したいときだけ CACHE 版数を上げる。
 
 ### ローカル開発時のログインバイパス
 

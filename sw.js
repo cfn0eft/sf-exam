@@ -3,7 +3,7 @@
  * 方針: 同一オリジン = キャッシュ優先＋裏で更新 / クロスオリジン(Firebase等) = ネットワーク優先。
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
  */
-const CACHE = 'sf-exam-v17';
+const CACHE = 'sf-exam-v18';
 const SHELL = [
   './',
   './index.html',
@@ -14,6 +14,19 @@ const SHELL = [
   './cloud-sync.js?v=16',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
+  // 学習データ：初回訪問からオフラインで学べるようプリキャッシュ（allSettledなので失敗してもinstallは継続）
+  './certifications/sf-admin/data/questions.json',
+  './certifications/sf-admin/data/domains.json',
+  './certifications/sf-admin/data/vocab.json',
+  './certifications/sf-admin/data/navmap.json',
+  './certifications/sf-admin/data/cram.json',
+  './certifications/sf-admin/data/compare.json',
+  './certifications/app-builder/data/questions.json',
+  './certifications/app-builder/data/domains.json',
+  './certifications/app-builder/data/vocab.json',
+  './certifications/app-builder/data/navmap.json',
+  './certifications/app-builder/data/cram.json',
+  './certifications/app-builder/data/compare.json',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
