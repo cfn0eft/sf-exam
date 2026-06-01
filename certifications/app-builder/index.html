@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=18">
+<link rel="stylesheet" href="../../quiz.css?v=19">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -62,6 +62,14 @@
 
   <!-- 中断した試験の再開バナー -->
   <div id="resume-banner"></div>
+
+  <!-- アップデートのお知らせ -->
+  <button class="news-card" id="news-card" onclick="openNews()" style="display:none">
+    <span class="news-ic">📣</span>
+    <span class="news-main"><span class="news-t" id="news-t">アップデート情報</span><span class="news-sub" id="news-sub"></span></span>
+    <span class="news-new" id="news-new" style="display:none">NEW</span>
+    <span class="news-arrow">›</span>
+  </button>
 
   <!-- 主要2アクション -->
   <div class="primary2">
@@ -486,9 +494,9 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=18"></script>
+<script src="../../quiz-engine.js?v=19"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=18"></script>
+<script src="../../cloud-sync.js?v=19"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>

@@ -138,7 +138,10 @@ function handleKey(e){
   if(tag==='input'||tag==='textarea'||tag==='select')return;
   // ? でショートカット一覧、Esc で閉じる（全モード共通）
   if(e.key==='?'){toggleShortcutHelp();e.preventDefault();return;}
-  if(e.key==='Escape'){const _h=document.getElementById('sc-help');if(_h&&_h.classList.contains('on')){toggleShortcutHelp(false);e.preventDefault();return;}}
+  if(e.key==='Escape'){
+    const _n=document.getElementById('news-modal');if(_n&&_n.classList.contains('on')){closeNews();e.preventDefault();return;}
+    const _h=document.getElementById('sc-help');if(_h&&_h.classList.contains('on')){toggleShortcutHelp(false);e.preventDefault();return;}
+  }
   const studyActive=document.getElementById('pg-study').classList.contains('active');
   const examActive=document.getElementById('pg-exam').classList.contains('active');
   if(studyActive){
@@ -277,6 +280,7 @@ function homeStats(){
   try{renderHomeAcq();}catch(e){}
   try{renderDaily();}catch(e){}
   try{renderResumeBanner();}catch(e){}
+  try{renderNews();}catch(e){}
   renderPlan();
 }
 
@@ -2188,4 +2192,78 @@ function qkDone(){
   const d=document.getElementById('qk-done');if(d)d.style.display='block';
   setText('qk-done-sub','全 '+qkQueue.length+' 問を見終えました');
 }
+
+/* =====================================================================
+ * アップデートのお知らせ（ホームの更新履歴・全資格共通）
+ * 新リリース時は CHANGELOG の先頭に1件追加するだけ。未読判定は id で行う。
+ * ===================================================================== */
+const CHANGELOG=[
+  {id:'2026-06-01b', date:'2026-06-01', title:'試験対策を強化', items:[
+    '⏱️ 試験の時間配分コーチ（設問ごとの所要時間・かけすぎた問題を表示）',
+    '⏸️ 試験の中断・再開（途中で閉じても続きから再開）',
+    '📈 模試スコアの推移グラフ＋履歴一覧（マイページ）',
+    '⚡ 高速めくり総ざらい（問題→答えをサッと確認・前日チェック向き）',
+    '🔠 文字サイズ調整（小・標準・大）',
+    '📲 オフライン表示と「ホーム画面に追加」'
+  ]},
+  {id:'2026-06-01a', date:'2026-06-01', title:'学習がもっと便利に', items:[
+    '🔍 問題のキーワード検索（問題文・選択肢・解説を横断）',
+    '🗓️ デイリーチャレンジ（今日の10問を自動編成）',
+    '💾 進捗のバックアップ／復元（ファイル書き出し・読み込み）',
+    '⌨️ キーボードショートカット一覧（? キーで表示）',
+    '⚠️ 問題の報告ボタン（誤り・古い内容をかんたん連絡）',
+    '📱 アプリのアイコン整備・学習画面のピンチズーム対応'
+  ]},
+  {id:'2026-05-31', date:'2026-05-31', title:'画面を大きく刷新', items:[
+    '🏠 ホーム画面をリニューアル（今日やる・合格可能性サマリー）',
+    '⏱️ 試験モード強化（問題ナビ・フラグ・採点前チェック・スコア表示）',
+    '📖 学習モード強化（番号で選択・誤答だけ復習）',
+    '👤 マイページ新設（学習計画・ダークモード）',
+    '🎓 資格「取得済み」の記録、🔥 学習ストリークとオンボーディング'
+  ]},
+  {id:'2026-05-28', date:'2026-05-28〜30', title:'問題と教材を充実', items:[
+    '📝 Administrator を 388問・App Builder を 445問に拡充',
+    '📊 比較表・設定マップ・用語集を整備',
+    '🏷️ 出典フィルタ（タイソンブログ／生成）を追加',
+    '☁️ クラウド同期・PWA（オフライン学習）に対応'
+  ]}
+];
+function newsLatestId(){return CHANGELOG.length?CHANGELOG[0].id:'';}
+function hasUnseenNews(){try{return !!CHANGELOG.length&&localStorage.getItem('sfq_news_seen')!==newsLatestId();}catch(e){return false;}}
+function markNewsSeen(){try{localStorage.setItem('sfq_news_seen',newsLatestId());}catch(e){}}
+function renderNews(){
+  const card=document.getElementById('news-card');if(!card)return;
+  if(!CHANGELOG.length){card.style.display='none';return;}
+  card.style.display='';
+  const latest=CHANGELOG[0],unseen=hasUnseenNews();
+  card.classList.toggle('unseen',unseen);
+  const t=document.getElementById('news-t'),sub=document.getElementById('news-sub'),nw=document.getElementById('news-new');
+  if(t)t.textContent=unseen?('新着: '+latest.title):'アップデート情報';
+  if(sub)sub.textContent=unseen?('🆕 '+latest.date+' に更新しました'):('最新 '+latest.date+' ・ 履歴を見る');
+  if(nw)nw.style.display=unseen?'':'none';
+}
+function buildNewsModal(){
+  let ov=document.getElementById('news-modal');
+  if(ov)return ov;
+  ov=document.createElement('div');ov.id='news-modal';ov.className='sc-help';
+  let body='';
+  CHANGELOG.forEach((e,i)=>{
+    body+='<div class="news-entry'+(i===0?' latest':'')+'">'
+      +'<div class="news-entry-head"><span class="news-date">'+escH(e.date)+'</span><span class="news-etitle">'+escH(e.title)+'</span>'+(i===0?'<span class="news-new">NEW</span>':'')+'</div>'
+      +'<ul class="news-items">'+e.items.map(it=>'<li>'+escH(it)+'</li>').join('')+'</ul></div>';
+  });
+  ov.innerHTML='<div class="sc-box news-box" role="dialog" aria-modal="true" aria-label="アップデート情報">'
+    +'<div class="sc-head"><span>📣 アップデート情報</span><button class="sc-close" type="button" onclick="closeNews()" aria-label="閉じる">✕</button></div>'
+    +'<div class="sc-body news-body">'+body+'</div></div>';
+  ov.addEventListener('click',function(e){if(e.target===ov)closeNews();});
+  document.body.appendChild(ov);
+  return ov;
+}
+function openNews(){
+  buildNewsModal();
+  const ov=document.getElementById('news-modal');if(ov)ov.classList.add('on');
+  markNewsSeen();renderNews();
+}
+function closeNews(){const ov=document.getElementById('news-modal');if(ov)ov.classList.remove('on');}
+
 
