@@ -15,13 +15,14 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 
 ```
 sf-exam/
-├── index.html            # LP (gateway)。資格カードは末尾の CERTS 配列から自動生成
+├── index.html            # LP (gateway)。資格カードは末尾の CERTS 配列から自動生成。お知らせバナー＋モーダルも持つ
 ├── quiz-engine.js        # 全資格共通の単一エンジン（約1230行）
 ├── quiz.css              # 全資格共通
+├── changelog.js          # アップデート履歴データ window.SFQ_CHANGELOG（LP・全資格で共有・唯一の出典）
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v21）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v22）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -188,11 +189,19 @@ git push origin main
 - アクティブな残タスクなし。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
 
+### 完了済み（2026-06-01・第4弾）お知らせをLPと全ホームへ展開（キャッシュ v22・アセット `?v=20`）
+
+- **履歴データを `changelog.js`（`window.SFQ_CHANGELOG`）に集約**＝唯一の出典。LP・両資格シェルが `quiz-engine.js` より先に読み込む。
+- **ルートLP**: ヒーロー直下に目立つお知らせバナー `#lp-news`＋モーダル（LP内に自己完結の `lp*` 関数群／LP配色に合わせたCSS）。未読時「NEW」、開封で既読化。
+- **各資格ホーム**: ホーム本体のカードを廃止し、トップバーに**ベル `#btn-news`＋未読ドット `#news-dot`**を新設。押すと既存モーダルがポップアップ。`renderNews` はベルのドット表示のみ担当。
+- 既読キー `localStorage 'sfq_news_seen'` は同一オリジンでLP/資格ページ共有（どちらかで開けば双方既読）。
+- **新リリースの告知手順（最新）**: `changelog.js` の `window.SFQ_CHANGELOG` 先頭に `{id,date,title,items[]}` を1件足すだけ（id は一意に）。LP・全ホームに自動でNEWが出る。
+
 ### 完了済み（2026-06-01・第3弾）ホームにアップデートのお知らせ（キャッシュ v21・アセット `?v=19`）
 
 - **更新履歴のお知らせ**: エンジンの `CHANGELOG`（全資格共通・過去4リリース掲載）をホームのカード `#news-card`＋一覧モーダル（`buildNewsModal`/`openNews`/`closeNews`）で表示。未読時のみ「NEW」を出し、開封で既読化。
 - 未読判定は `localStorage 'sfq_news_seen'` と `CHANGELOG[0].id` の不一致で行う（同期対象外・端末ローカル）。`renderNews` を `homeStats` から呼ぶ。`Esc`／背景クリックで閉じる（`handleKey` が news/ショートカット両モーダルに対応）。
-- **新リリースの告知手順**: `quiz-engine.js` の `CHANGELOG` 先頭に `{id,date,title,items[]}` を1件足すだけ（id は一意に）。これで既存ユーザー全員に NEW が出る。
+- **新リリースの告知手順**（※第4弾で更新）: 当初は `quiz-engine.js` 内 `CHANGELOG`＋ホームカード `#news-card`。現在は **`changelog.js` に集約＋トップバーのベル**方式（第4弾参照）。
 
 ### 完了済み（2026-06-01・第2弾）便利機能6点追加（キャッシュ v20・アセット `?v=18`）
 
