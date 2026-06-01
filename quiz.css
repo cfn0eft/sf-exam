@@ -1016,3 +1016,36 @@ body[data-fs=small] .cdef{font-size:12px}
 .news-items{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
 .news-items li{font-size:12.5px;line-height:1.6;color:var(--text);padding-left:2px}
 
+/* ===== カスタム模試（ホーム入口＋設定モーダル） ===== */
+.exam-custom-btn{display:block;width:100%;margin:-4px 0 14px;padding:11px;cursor:pointer;
+  background:var(--card);border:1px dashed var(--border);border-radius:12px;color:var(--text-sub);
+  font-size:13px;font-weight:700;transition:border-color .12s,color .12s}
+.exam-custom-btn:hover{border-color:var(--primary);color:var(--primary)}
+.ce-label{font-size:11px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px}
+.ce-label:first-child{margin-top:4px}
+.ce-row{display:flex;gap:7px;flex-wrap:wrap}
+.ce-chip{border:1.5px solid var(--border);background:var(--card);color:var(--text);border-radius:999px;
+  padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .12s}
+.ce-chip.on{border-color:var(--primary);background:var(--primary);color:#fff}
+.ce-doms{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ce-dom{text-align:left;border:1.5px solid var(--border);background:var(--card);color:var(--text);
+  border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:all .12s}
+.ce-dom.on{border-color:var(--teal);background:var(--teal-light);color:var(--teal)}
+.ce-avail{font-size:12px;color:var(--text-sub);margin:14px 0 8px;text-align:center}
+.ce-start{width:100%}
+.ce-start:disabled{opacity:.5;cursor:default}
+
+/* ===== 学習カバレッジ（網羅率） ===== */
+.cov-row{display:flex;align-items:center;gap:10px}
+.cov-lab{flex-shrink:0;width:34px;font-size:12px;font-weight:700;color:var(--text-sub)}
+.cov-bar{flex:1;height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
+.cov-fill{height:100%;border-radius:5px;background:var(--primary);transition:width .4s}
+.cov-fill.teal{background:var(--teal)}
+.cov-val{flex-shrink:0;font-size:13px;font-weight:800;min-width:42px;text-align:right}
+.cov-sub{font-size:11px;color:var(--text-sub);margin:4px 0 0;padding-left:44px}
+.cov-btn{width:100%;margin-top:12px}
+
+/* 模試履歴のカスタム問題数タグ */
+.extr-tag{flex-shrink:0;font-size:10px;font-weight:700;color:var(--text-sub);background:var(--bg);
+  border:1px solid var(--border);border-radius:5px;padding:1px 6px}
+

@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=20">
+<link rel="stylesheet" href="../../quiz.css?v=21">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -69,6 +69,7 @@
     <button class="pbtn study" onclick="startStudy()"><span class="bi">📖</span>学習<span class="psub">解いて解説</span></button>
     <button class="pbtn exam" onclick="startExam()"><span class="bi">⏱️</span>試験<span class="psub">本番形式60問</span></button>
   </div>
+  <button class="exam-custom-btn" onclick="openCustomExam()">🎛️ カスタム模試（分野・問題数・時間を選ぶ）</button>
   <span id="srs-count" style="display:none"></span>
 
   <!-- 今日やる：復習・SRS・弱点を1枚に集約 -->
@@ -374,6 +375,7 @@
 <!-- ===== STATS ===== -->
 <div class="page" id="pg-stats">
   <div id="stats-summary"></div>
+  <div id="coverage"></div>
   <button class="btn bd" onclick="goTo('cram')" style="width:100%;margin-bottom:14px">📋 直前まとめを開く</button>
   <div class="stats-grid" style="margin-bottom:14px">
     <div class="stat-card"><div class="stat-num" id="st2-total">0</div><div class="stat-label">総解答数</div></div>
@@ -487,11 +489,11 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
-<script src="../../changelog.js?v=20"></script>
+<script src="../../changelog.js?v=21"></script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=20"></script>
+<script src="../../quiz-engine.js?v=21"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=20"></script>
+<script src="../../cloud-sync.js?v=21"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>
