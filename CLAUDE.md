@@ -21,7 +21,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v20）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v21）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -187,6 +187,12 @@ git push origin main
 
 - アクティブな残タスクなし。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
+
+### 完了済み（2026-06-01・第3弾）ホームにアップデートのお知らせ（キャッシュ v21・アセット `?v=19`）
+
+- **更新履歴のお知らせ**: エンジンの `CHANGELOG`（全資格共通・過去4リリース掲載）をホームのカード `#news-card`＋一覧モーダル（`buildNewsModal`/`openNews`/`closeNews`）で表示。未読時のみ「NEW」を出し、開封で既読化。
+- 未読判定は `localStorage 'sfq_news_seen'` と `CHANGELOG[0].id` の不一致で行う（同期対象外・端末ローカル）。`renderNews` を `homeStats` から呼ぶ。`Esc`／背景クリックで閉じる（`handleKey` が news/ショートカット両モーダルに対応）。
+- **新リリースの告知手順**: `quiz-engine.js` の `CHANGELOG` 先頭に `{id,date,title,items[]}` を1件足すだけ（id は一意に）。これで既存ユーザー全員に NEW が出る。
 
 ### 完了済み（2026-06-01・第2弾）便利機能6点追加（キャッシュ v20・アセット `?v=18`）
 
