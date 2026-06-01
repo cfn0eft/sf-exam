@@ -21,7 +21,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v18）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v19）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -103,6 +103,7 @@ store = {
   examDate, goal,
   exams: [],        // 模試履歴（最新50件）
   badges: {id: date},
+  dc: {d:'YYYY-MM-DD', ids:[], done:0}, // デイリーチャレンジ（その日の10問を固定。done=1で完了）。日付が変わると再構成
   acquiredDate: ''  // 資格取得日（''=未取得）。ホーム/マイページ/試験結果で「取得済み」を主張表示
 }
 ```
@@ -182,10 +183,19 @@ git push origin main
 
 ---
 
-## 残タスク（2026-05-31 時点）
+## 残タスク（2026-06-01 時点）
 
 - アクティブな残タスクなし。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
+
+### 完了済み（2026-06-01）便利機能5点追加（キャッシュ v19・アセット `?v=17`）
+
+- **問題フリーワード検索**（ホーム）: `applyFilters` に `fText` を統合（問題文・選択肢・解説・キーワード・問題IDを横断）。検索バー `#f-text`＋`onQSearch`/`clearQSearch`。ヒット数付き「学習 N問」ボタン（0件は無効）。既存の出題フィルタと AND 結合。
+- **デイリーチャレンジ**（ホーム「今日やる」先頭 `.dc-row`）: その日の10問を `store.dc{d,ids,done}` に固定（SRS期日→要復習→弱点→未着手→補填の順で構成）。`buildDailySet`/`startDaily`/`renderDaily`。完走で `dcActive`→`studyDone` が `done=1` をマーク、ホームに「✓ 完了」表示。日付が変わると再構成。
+- **キーボードショートカット一覧**: `?` キー（`handleKey`）またはマイページから `toggleShortcutHelp` で `.sc-help` モーダル表示。`Esc`／背景クリックで閉じる。
+- **進捗JSONバックアップ**（マイページ）: `exportProgress`（`sfquiz-<slug>-YYYY-MM-DD.json` を DL）／`importProgress`（`__setStore`＋`save` で復元・クラウドにも反映、不正データは拒否）。ローカル専用ユーザーの端末移行・消失対策。
+- **問題報告ボタン**: 学習の解説欄に `.report-link`。`reportQuestion` が GitHub Issue をプリフィル起票（`REPO_URL`=`https://github.com/cfn0eft/sf-exam`、`CERT_CONFIG.repoUrl` で上書き可）。
+- store に `dc` 追加に伴い `loadStore`/`__setStore`/`resetAll` の3箇所へ既定・正規化を反映済み。両資格（sf-admin/app-builder）で動作・コンソールエラーなしを localhost で検証。
 
 ### 完了済み（2026-05-31）UI/機能の大型アップデート（キャッシュ v16）
 
