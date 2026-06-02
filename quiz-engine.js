@@ -174,6 +174,7 @@ function handleKey(e){
   if(e.key==='Escape'){
     const _nb=document.getElementById('nb-ov');if(_nb&&_nb.classList.contains('show')){closeNotebook();e.preventDefault();return;}
     const _cs=document.getElementById('cs-ov');if(_cs&&_cs.classList.contains('show')){closeCases();e.preventDefault();return;}
+    const _gd=document.getElementById('guide-ov');if(_gd&&_gd.classList.contains('show')){closeGuide();e.preventDefault();return;}
     const _f=document.getElementById('fig-lb');if(_f&&_f.classList.contains('show')){closeFig();e.preventDefault();return;}
     const _n=document.getElementById('news-modal');if(_n&&_n.classList.contains('on')){closeNews();e.preventDefault();return;}
     const _h=document.getElementById('sc-help');if(_h&&_h.classList.contains('on')){toggleShortcutHelp(false);e.preventDefault();return;}
@@ -1408,6 +1409,88 @@ function beginCase(id){
   beginStudyWith(qs);
 }
 
+// ===== 使い方ガイド（全機能カタログ・チュートリアル） =====
+// 新規ユーザーが全機能を把握できる常設リファレンス。act があれば「開く」で実際に試せる。
+const GUIDE=[
+  {cat:'📖 学習する', items:[
+    {ic:'📖',name:'学習モード',desc:'1問ずつ解いて、選択肢ごとの解説をその場で確認。間違いは自動で復習キューへ。',act:'study'},
+    {ic:'💡',name:'段階的ヒント',desc:'解答前に「分野→明らかな誤りを薄く」の順にヒント。学習中の「ヒントを見る」かHキーで。'},
+    {ic:'🧷',name:'選択肢ごとの解説',desc:'解答後、各選択肢の下に「なぜ正解／不正解か」を表示します。'},
+    {ic:'🧠',name:'自分の言葉で説明',desc:'解答後に要点を書くと間違いノートに残り、記憶に定着（Feynman 効果）。'},
+    {ic:'⚡',name:'高速めくり総ざらい',desc:'問題→答えをサッと確認。試験前日のチェックに最適。',act:'quick'},
+    {ic:'🔍',name:'キーワード検索',desc:'問題文・選択肢・解説を横断検索して、ヒットした問題をそのまま学習。',act:'search'},
+    {ic:'📚',name:'教科書',desc:'用語集・設定マップ・比較表。図解つきで体系的に理解。',act:'textbook'},
+    {ic:'🔤',name:'用語帳',desc:'フラッシュカードで重要用語を暗記。覚えた／苦手で仕分け。',act:'vocab'}
+  ]},
+  {cat:'🔁 復習する', items:[
+    {ic:'🗓️',name:'デイリーチャレンジ',desc:'毎日10問を自動編成。まずはこれで学習を習慣化。',act:'daily'},
+    {ic:'🔁',name:'間違えた問題を復習',desc:'誤答とブックマークをまとめて復習（ホームの「今日やる」から）。'},
+    {ic:'🧠',name:'SRS 復習',desc:'忘れる頃に再出題する間隔反復。期日が来た問題を出題（「今日やる」から）。'},
+    {ic:'🔂',name:'重点ループ',desc:'何度もつまずく問題を、2連続正解するまで反復して確実に潰す（「今日やる」から）。'},
+    {ic:'📓',name:'間違いノート',desc:'誤答・自信なし問題＋理由・要約・メモを1冊に集約。直前の見直しに。',act:'notebook'},
+    {ic:'❌',name:'誤答理由タグ',desc:'間違えた理由（知らなかった／ケアレス／迷った）を記録すると傾向を分析できます。'}
+  ]},
+  {cat:'⏱️ 実力を測る', items:[
+    {ic:'⏱️',name:'試験モード',desc:'本番形式60問・時間制限つき。ナビ・フラグ・採点・弱点表示。',act:'exam'},
+    {ic:'🎛️',name:'カスタム模試',desc:'分野・問題数・時間制限を選んで自分専用の模試。',act:'custom'},
+    {ic:'📋',name:'ケーススタディ',desc:'実務シナリオで関連問題を連続で解く実戦形式。',act:'cases'},
+    {ic:'🟢',name:'難易度（易/標準/難）',desc:'問題ごとに難易度を表示。出題設定で難易度のしぼり込みもできます。'}
+  ]},
+  {cat:'📊 分析する（統計）', items:[
+    {ic:'🎯',name:'合格可能性・推移',desc:'総合到達度と、合格確度の伸びを折れ線グラフで確認。',act:'stats'},
+    {ic:'🔎',name:'弱点の根本原因',desc:'つまずき方・最も弱い分野・時間のかかる分野を診断して助言。'},
+    {ic:'🧮',name:'分野×難易度ヒート',desc:'どの分野・難易度で取りこぼしているか一目で。'},
+    {ic:'⏱️',name:'学習時間・時間帯',desc:'分野別の学習時間と、正答率の高い「好調な時間帯」。'},
+    {ic:'📚',name:'学習カバレッジ',desc:'全問・全分野の網羅率。未着手をまとめて学習できます。'},
+    {ic:'📅',name:'学習カレンダー',desc:'日々の学習量をヒートマップで可視化。'}
+  ]},
+  {cat:'🎮 続ける仕組み', items:[
+    {ic:'🎮',name:'XP・レベル',desc:'解くほど経験値がたまりレベルアップ（ホームに表示）。'},
+    {ic:'🎯',name:'今週のミッション',desc:'週ごとの目標を達成してXP獲得。達成時は紙吹雪でお祝い。'},
+    {ic:'🔥',name:'ストリーク・目標',desc:'連続学習日数と1日の目標問題数。達成でお祝い演出。'},
+    {ic:'🏅',name:'実績バッジ',desc:'条件を満たすとバッジを獲得（統計ページで一覧）。',act:'stats'},
+    {ic:'🎓',name:'資格取得の記録',desc:'本番に合格したらマイページで「取得済み」に。',act:'mypage'}
+  ]},
+  {cat:'⚙️ 設定・データ', items:[
+    {ic:'🌓',name:'テーマ・文字サイズ',desc:'マイページで配色（ライト/ダーク）と本文サイズを調整。',act:'mypage'},
+    {ic:'💾',name:'バックアップ',desc:'進捗をファイルに書き出し／読み込み（端末の移行・消失対策）。',act:'mypage'},
+    {ic:'⌨️',name:'キーボード操作',desc:'PCのショートカット一覧（? キーでも開きます）。',act:'shortcut'},
+    {ic:'🔔',name:'お知らせ',desc:'新機能の更新履歴をいつでも確認。',act:'news'},
+    {ic:'📲',name:'オフライン／アプリ追加',desc:'圏外でも学習でき、ホーム画面にアプリとして追加できます。'}
+  ]}
+];
+function openGuide(){
+  var ov=document.getElementById('guide-ov');
+  if(!ov){ov=document.createElement('div');ov.id='guide-ov';ov.className='nb-ov';ov.addEventListener('click',function(e){if(e.target===ov)closeGuide();});document.body.appendChild(ov);}
+  var body=GUIDE.map(function(g){
+    return '<div class="gd-cat">'+g.cat+'</div>'+g.items.map(function(it){
+      return '<div class="gd-item"><span class="gd-ic">'+it.ic+'</span><div class="gd-main"><div class="gd-name">'+escH(it.name)+'</div><div class="gd-desc">'+escH(it.desc)+'</div></div>'+(it.act?'<button class="gd-go" onclick="guideAct(\''+it.act+'\')">開く</button>':'')+'</div>';
+    }).join('');
+  }).join('');
+  ov.innerHTML='<div class="nb-card"><div class="nb-head"><span>❓ 使い方ガイド</span><button class="nb-close" onclick="closeGuide()">✕</button></div><div class="nb-scroll"><div class="gd-intro">このアプリでできることの一覧です。「開く」を押すと実際に試せます。</div>'+body+'</div></div>';
+  ov.classList.add('show');
+}
+function closeGuide(){var ov=document.getElementById('guide-ov');if(ov)ov.classList.remove('show');}
+function guideAct(a){
+  closeGuide();
+  try{
+    if(a==='study')startStudy();
+    else if(a==='quick')startQuick('all');
+    else if(a==='search'){goTo('home');setTimeout(function(){var i=document.getElementById('f-text');if(i)i.focus();},80);}
+    else if(a==='textbook')goTo('textbook');
+    else if(a==='vocab')goTo('vocab');
+    else if(a==='daily')startDaily();
+    else if(a==='notebook')openNotebook();
+    else if(a==='exam')startExam();
+    else if(a==='custom')openCustomExam();
+    else if(a==='cases')openCases();
+    else if(a==='stats')goTo('stats');
+    else if(a==='mypage')goTo('mypage');
+    else if(a==='shortcut')toggleShortcutHelp(true);
+    else if(a==='news')openNews();
+  }catch(e){}
+}
+
 // ===== EXAM =====
 // 標準（引数なし）=本番形式60問・時間制限あり。opts でカスタム模試。
 //   opts = { n:問題数, weak:true(弱点3分野), domains:[code…], timed:false(時間無制限) }
@@ -1937,6 +2020,7 @@ function obRender(){
     +'<div style="font-size:17px;font-weight:800;margin-bottom:8px">'+escH(s.t)+'</div>'
     +'<div style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:18px">'+escH(s.d)+'</div>'
     +'<div style="display:flex;gap:6px;justify-content:center;margin-bottom:18px">'+dots+'</div>'
+    +(last?'<div style="font-size:11.5px;color:var(--text-sub);line-height:1.6;margin-bottom:16px">ℹ️ すべての機能は、上部の <b>❓</b> やマイページの「使い方ガイド」でいつでも確認できます。</div>':'')
     +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'
     +'<button onclick="obClose()" style="background:none;border:none;color:var(--text-sub);font-size:13px;cursor:pointer">スキップ</button>'
     +'<button onclick="obNext()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px 20px;cursor:pointer">'+(last?'はじめる 🚀':'次へ →')+'</button>'
@@ -2083,6 +2167,7 @@ function renderMypage(){
     : '<div class="mp-opt" style="border:none;padding:0"><span class="mp-ic">🎓</span><span class="mp-main">資格の取得<div class="mp-osub">本番試験に合格したら記録しましょう</div></span><button class="mp-acqbtn" onclick="acquireCert()">取得済みにする</button></div>';
   host.innerHTML=
     '<div class="card">'+accHtml+'</div>'
+    +'<button class="mp-guidebtn" onclick="openGuide()">❓ 使い方ガイド（すべての機能の説明）</button>'
     +'<div class="sec-label">資格の取得</div>'
     +'<div class="card">'+acqHtml+'</div>'
     +'<div class="sec-label">学習の記録</div>'
