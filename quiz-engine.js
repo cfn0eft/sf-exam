@@ -16,6 +16,21 @@ let QDOMAIN={};
 let DOMAIN_BY={};
 function domainOf(id){return QDOMAIN[id]||(DOMAIN_DEFS[0]?DOMAIN_DEFS[0].code:'');}
 function domainDef(code){return DOMAIN_BY[code]||DOMAIN_BY[(DOMAIN_DEFS[0]||{}).code]||(DOMAIN_DEFS[0]||{code:'',name:'',weight:1,emoji:''});}
+/* 難易度（#21）: 1=易 2=標準 3=難。questions.json の diff を優先、無ければ自分の正答率から推定。 */
+const DIFF_LABEL={1:'易',2:'標準',3:'難'};
+let fDiffSet={1:false,2:false,3:false};
+function qDiff(q){
+  if(!q)return 2;
+  var d=q.diff;
+  if(d===1||d===2||d===3)return d;
+  if(typeof d==='string'){var m={'1':1,'2':2,'3':3,easy:1,'易':1,normal:2,'標準':2,std:2,hard:3,'難':3}[d];if(m)return m;}
+  var h=store.hist[q.id];if(h){var t=(h.c||0)+(h.w||0);if(t>=2){var p=h.c/t;if(p>=0.8)return 1;if(p<0.5)return 3;return 2;}}
+  return 2;
+}
+function qDiffData(q){var d=q&&q.diff;return d===1||d===2||d===3||(typeof d==='string'&&/^(1|2|3|easy|易|normal|標準|std|hard|難)$/.test(d));}
+function diffPillHTML(q){var d=qDiff(q);return ' <span class="dpill d'+d+'"'+(qDiffData(q)?'':' title="推定（データ未設定）"')+'>'+DIFF_LABEL[d]+(qDiffData(q)?'':'?')+'</span>';}
+function fDiffActive(){return fDiffSet[1]||fDiffSet[2]||fDiffSet[3];}
+function toggleDiffFilter(n){fDiffSet[n]=!fDiffSet[n];try{applyFilters();}catch(e){}}
 /* 追加機能の状態 */
 let sDisp=[], eDispArr=[], sLowConf=false;
 function cshufOn(){return localStorage.getItem('sfq_cshuf')!=='0';}
@@ -222,6 +237,7 @@ function applyFilters(){
   document.getElementById('chip-multi').classList.toggle('on',fMulti);
   syncCShufChip();
   syncSrcChips();
+  [1,2,3].forEach(function(n){var c=document.getElementById('chip-d'+n);if(c)c.classList.toggle('on',fDiffSet[n]);});
   const scoped=scopedQ();
   filtQ=scoped.filter(q=>{
     if(fNew&&!isUnseen(q.id))return false;
@@ -229,6 +245,7 @@ function applyFilters(){
     if(fLc&&!isLowConfCorrect(q.id))return false;
     if(fBm&&!isBm(q.id))return false;
     if(fMulti&&q.answers.length<2)return false;
+    if(fDiffActive()&&!fDiffSet[qDiff(q)])return false;
     if(fKw&&!(q.keywords||[]).includes(fKw))return false;
     if(fText){
       const hay=(q.question+' '+(q.choices||[]).join(' ')+' '+(q.explanation||'')+' '+(q.keywords||[]).join(' ')+' q'+q.id).toLowerCase();
@@ -248,6 +265,7 @@ function applyFilters(){
   const lc=scoped.filter(q=>isLowConfCorrect(q.id)).length;
   const lcEl=document.getElementById('lc-count');
   if(lcEl)lcEl.textContent=lc?' '+lc:'';
+  [1,2,3].forEach(function(n){var el=document.getElementById('d'+n+'-count');if(el){var cc=scoped.filter(function(q){return qDiff(q)===n;}).length;el.textContent=cc?' '+cc:'';}});
   const el=document.getElementById('f-count');
   if(el)el.textContent='対象: '+filtQ.length+' 問';
 }
@@ -959,6 +977,7 @@ function renderSQ(){
   const badge=document.getElementById('s-badge');
   badge.textContent='Q'+q.id+' '+domainDef(domainOf(q.id)).emoji+(isM?' ★ '+q.answers.length+'つ選択':'');
   badge.className='qbadge'+(isM?' mbadge':'');
+  badge.insertAdjacentHTML('beforeend',diffPillHTML(q));
   setText('s-qtext',q.question);
   setFig('s-qfig',q.fig);
   const bmbtn=document.getElementById('s-bmbtn');
@@ -1591,7 +1610,7 @@ function renderStats(){
 /* ===== 学習分析：根本原因(#20)・学習時間(#18)・キャリブレーション(#7) ===== */
 function renderAnalysis(){
   const host=document.getElementById('analysis');if(!host)return;
-  const html=rootCauseHTML()+timeHTML()+calibHTML();
+  const html=rootCauseHTML()+diffHeatHTML()+timeHTML()+calibHTML();
   host.innerHTML=html;
 }
 // #20 弱点の根本原因：誤答理由タグ＋最弱分野＋時間のかかる分野を統合した助言
@@ -1654,6 +1673,19 @@ function calibHTML(){
     +bar('😎 自信あり',py,ty,py>=70?'var(--success)':'var(--danger)')
     +bar('🤔 自信なし',pn,tn,'var(--warning)')
     +'<div class="an-note">'+diag+'</div></div>';
+}
+// #19 分野×難易度ヒートマップ：あなたの正答率を 分野×難易度 のマトリクスで
+function diffHeatHTML(){
+  const agg={};let any=false;
+  scopedQ().forEach(function(q){const h=store.hist[q.id];if(!h)return;const t=(h.c||0)+(h.w||0);if(!t)return;any=true;const dom=domainOf(q.id),b=qDiff(q);agg[dom]=agg[dom]||{};agg[dom][b]=agg[dom][b]||{c:0,w:0};agg[dom][b].c+=h.c||0;agg[dom][b].w+=h.w||0;});
+  if(!any)return '';
+  const cell=function(o){if(!o||(o.c+o.w)===0)return '<td class="dh-cell dh-na">—</td>';const p=Math.round(o.c/(o.c+o.w)*100);const col=p>=80?'var(--success)':p>=60?'var(--warning)':'var(--danger)';return '<td class="dh-cell" style="background:'+col+'">'+p+'</td>';};
+  let rows='';
+  DOMAIN_DEFS.forEach(function(d){const a=agg[d.code];if(!a)return;rows+='<tr><td class="dh-dom">'+escH(d.emoji+' '+d.name)+'</td>'+cell(a[1])+cell(a[2])+cell(a[3])+'</tr>';});
+  if(!rows)return '';
+  return '<div class="card"><div class="sec-label" style="margin-top:0">🧮 分野×難易度（正答率）</div>'
+    +'<table class="dh-table"><thead><tr><th></th><th>易</th><th>標準</th><th>難</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div class="an-note">セル＝その分野・難易度での正答率。難で苦戦＝理解不足、易で取りこぼし＝注意不足のサイン。難易度はデータ設定値（未設定は正答率から推定）。</div></div>';
 }
 
 /* ===== 統計：合格可能性サマリー ===== */

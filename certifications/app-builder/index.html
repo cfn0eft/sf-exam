@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=25">
+<link rel="stylesheet" href="../../quiz.css?v=26">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -138,6 +138,9 @@
         <label class="chip" id="chip-bm"><input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク</label>
         <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span></label>
         <label class="chip" id="chip-multi"><input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ</label>
+        <button type="button" class="chip" id="chip-d1" onclick="toggleDiffFilter(1)">🟢 易<span id="d1-count"></span></button>
+        <button type="button" class="chip" id="chip-d2" onclick="toggleDiffFilter(2)">🟡 標準<span id="d2-count"></span></button>
+        <button type="button" class="chip" id="chip-d3" onclick="toggleDiffFilter(3)">🔴 難<span id="d3-count"></span></button>
         <label class="chip on" id="chip-shuf"><input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順</label>
         <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCShuf()">🔀 選択肢順</button>
       </div>
@@ -503,13 +506,13 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
-<script src="../../changelog.js?v=25"></script>
+<script src="../../changelog.js?v=26"></script>
 <!-- 図解データ（インラインSVG・エンジンより先に読み込む） -->
-<script src="../../figures.js?v=25"></script>
+<script src="../../figures.js?v=26"></script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=25"></script>
+<script src="../../quiz-engine.js?v=26"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=25"></script>
+<script src="../../cloud-sync.js?v=26"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>
