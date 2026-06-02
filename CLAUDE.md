@@ -23,12 +23,12 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v24）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v30）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
         └── data/
-            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig（設問図）/ expFig（解説図）に figures.js の図名を指定
+            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig/expFig（figures.js図名）／diff（難易度1=易2=標準3=難）／case+scenario（ケーススタディ束ね）。選択肢別の誤り解説は解説本文(□形式)を実行時解析して表示（データ不要）
             ├── domains.json     # {domains:[{code,name,weight,emoji}], map?}
             ├── vocab.json       # 章配列 {chapter,terms:[{title,jaName,enName,definition,examPoints[],questions[],fullContent}]}
             └── navmap.json      # [{title,content}] 設定マップ
@@ -97,7 +97,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 ```js
 store = {
   bm: [],           // ブックマーク配列
-  hist: {id:{c,w,last,lc}}, // 解答履歴 (c=正答数,w=誤答数,last='c'|'w'=直近の正誤, lc=1:直近を「自信なし」で解答→まぐれ正解の復習判定 needsReview/isLowConfCorrect に使用)
+  hist: {id:{c,w,last,lc,wr}}, // 解答履歴 (c=正答数,w=誤答数,last='c'|'w'=直近の正誤, lc=1:直近「自信なし」→まぐれ正解の復習判定, wr='unknown'|'careless'|'narrow'=誤答理由タグ#1)
   streak, vm, tbm,
   srs: {id:{ivl,ease,reps,due}},  // SM-2 簡易版
   daily: {'YYYY-MM-DD': 解答数},
@@ -106,7 +106,12 @@ store = {
   exams: [],        // 模試履歴（最新50件）。各要素 {ts,pct,ok,n,pass,byd,secsUsed,custom}（n=問題数, custom=カスタム模試か。推移グラフはフル(n===examN)のみで描画）
   badges: {id: date},
   dc: {d:'YYYY-MM-DD', ids:[], done:0}, // デイリーチャレンジ（その日の10問を固定。done=1で完了）。日付が変わると再構成
-  acquiredDate: ''  // 資格取得日（''=未取得）。ホーム/マイページ/試験結果で「取得済み」を主張表示
+  acquiredDate: '', // 資格取得日（''=未取得）。ホーム/マイページ/試験結果で「取得済み」を主張表示
+  time: {tot, dom:{code:{sec,n}}, hour:{h:{c,w,sec}}}, // 学習時間 総/分野別/時間帯別 #18
+  sum: {id: text},  // 自分の言葉で説明（Feynman）#6
+  xp: 0,            // 経験値。レベルは levelInfo() で算出 #12
+  missions: {wk:'YYYY-MM-DD', claimed:{id:1}}, // 週ミッション（日曜はじまり・claimedはXP付与済み）#16
+  rdz: [{d:'YYYY-MM-DD', p:pct}] // 合格確度の日次スナップショット（推移グラフ）#17
 }
 ```
 
@@ -206,6 +211,18 @@ git push origin main
 - アクティブな残タスクなし。
 - （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig` に図名を入れるだけ。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
+- （バックログ）ケーススタディ（#25）の拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現状は各資格2件の種）。
+
+### 完了済み（2026-06-02・第7弾）学習を深める18機能（キャッシュ v30・アセット `?v=28`）
+
+5フェーズ＝各1コミット。ロジックは `quiz-engine.js` 1本＋両シェル＋`quiz.css`＋`changelog.js`＋データ。
+
+- **Phase1 つまずき分析**: 誤答理由タグ（`hist.wr`=unknown/careless/narrow・解説欄で選択）／学習時間（`store.time`＝総/分野別{sec,n}/時間帯別{c,w,sec}、`recStudyTime` を `checkAnswer` で計測）／自信キャリブレーション（lc×正誤）／弱点の根本原因レポート。統計に `#analysis`（`renderAnalysis`）新設。
+- **Phase2 学習・復習体験**: 段階的ヒント（`showHint`・分野→誤答を薄く、Hキー）／類題リンク（`relatedQuestions`）／Feynman要約（`store.sum`）／間違いノート（`openNotebook`）／重点ループ（`startLeech`・`isLeech`=w≥2、`beginStudyWith{loop}` で2連続正解まで再投入）。
+- **Phase3 難易度**: `qDiff`（データ`diff`優先→未設定は正答率推定）／`diffPillHTML`（学習バッジ）／難易度フィルタ（`fDiffSet`・チップ）／分野×難易度ヒート（`diffHeatHTML`）。
+- **Phase4 ゲーミフィケーション**: XP・レベル（`store.xp`・`levelInfo`・`recH`で付与）／獲得演出（`celebrate` 紙吹雪）／デイリーゴール祝い（`maybeGoalCheer`）／週ミッション（`weeklyMissions`/`checkMissions`・`store.missions`）／合格確度トレンド（`snapReadiness`・`store.rdz`・`readinessTrendHTML`）。ホームに `#gamecard`（`renderGame`）。
+- **Phase5 コンテンツ**: 選択肢別の誤り解説＝既存解説(□形式)を実行時解析（`perChoiceWhy`）し各選択肢下に表示（全問・**事実の新規生成なし**・解析不可は全文へフォールバック。解析可: sf-admin98%/app-builder95%）／全833問に`diff`を構造ヒューリスティックで付与（易28/標準47/難25%）／ケーススタディ（`case`+`scenario`・`openCases`/`beginCase`、既存の同一企業×分野問題を束ねた種を各資格2件）。
+- store 追加（time/sum/xp/missions/rdz、hist.wr）は `loadStore`/`__setStore`/`resetAll` の3箇所へ反映済み。両資格でローカル実機検証・コンソールエラーなし。
 
 ### 完了済み（2026-06-02・第6弾）図解・図つき解説／教科書にも図（キャッシュ v25・アセット `?v=23`）
 
