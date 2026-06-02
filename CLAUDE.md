@@ -23,7 +23,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v31／アセット ?v=29）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v32／アセット ?v=30）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -213,9 +213,10 @@ git push origin main
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
 - （バックログ）ケーススタディ（#25）の拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現状は各資格2件の種）。
 
-### 完了済み（2026-06-02・第7弾）学習を深める18機能＋使い方ガイド（キャッシュ v31・アセット `?v=29`）
+### 完了済み（2026-06-02・第7弾）学習を深める18機能＋使い方ガイド＋オンボーディング刷新（キャッシュ v32・アセット `?v=30`）
 
 - **使い方ガイド（機能カタログ・チュートリアル）**: 全機能を分類別に説明＋`act` で「開く」即試行できる常設オーバーレイ（`GUIDE` 配列／`openGuide`/`guideAct`、`.gd-*` CSS）。導線は **トップバー❓（`#btn-guide`）・マイページの大ボタン・初回オンボーディング末尾の案内** の3点。機能追加時は `GUIDE` 配列に1行足すだけ。
+- **オンボーディング刷新**: `OB_STEPS` を3→5ステップ（ようこそ→学ぶ→測る→復習→続ける＋ガイド誘導）に刷新。`OB_VERSION`（現 '2'）を導入し、内容更新時に上げると `sfq_onboarded` 不一致で**全ユーザーに一度だけ再表示**。最終ステップに使い方ガイドボタン、`replayOnboarding()` をガイド先頭の「🎬 かんたんツアー」から再生可能。
 
 
 5フェーズ＝各1コミット。ロジックは `quiz-engine.js` 1本＋両シェル＋`quiz.css`＋`changelog.js`＋データ。
