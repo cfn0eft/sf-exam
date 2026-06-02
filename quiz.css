@@ -1108,3 +1108,20 @@ body[data-fs=small] .cdef{font-size:12px}
 .figlb .qfig{cursor:zoom-out;max-width:920px;width:100%;margin:0;background:var(--card);
   padding:8px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
 
+/* ===== 学習分析（つまずき分析：誤答理由・時間・キャリブレーション） ===== */
+.wr-pick{margin-top:12px;padding:10px 11px;border:1px dashed var(--warning);border-radius:10px;background:var(--warning-light)}
+.wr-q{font-size:12px;font-weight:700;color:var(--text-sub);margin-bottom:8px}
+.wr-row{display:flex;gap:7px;flex-wrap:wrap}
+.wr-b{flex:1 1 96px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;padding:8px 6px;font-size:12px;font-weight:700;cursor:pointer}
+.wr-b.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.an-row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12px}
+.an-lab{flex:0 0 44%;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.an-n{color:var(--text-sub);font-weight:400}
+.an-bw{flex:1;height:8px;background:var(--border);border-radius:5px;overflow:hidden}
+.an-bf{height:100%;border-radius:5px;transition:width .4s}
+.an-pct{flex:0 0 auto;font-weight:700;min-width:44px;text-align:right;color:var(--text-sub)}
+.an-note{font-size:12px;color:var(--text-sub);line-height:1.6;margin-top:9px}
+.an-ins{margin:4px 0 0;padding-left:18px;font-size:12.5px;line-height:1.7;color:var(--text)}
+.an-ins li{margin-bottom:8px}
+.an-act{display:inline-block;margin-left:4px;background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer}
+

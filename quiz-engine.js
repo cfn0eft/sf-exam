@@ -29,7 +29,7 @@ let allQ=[], filtQ=[];
 let certName=CFG.certName||'';
 let store=loadStore();
 // study
-let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false,sLastWrong=[];
+let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false,sLastWrong=[],sQStart=0;
 // exam
 let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={},eQTime={};
 // カスタム模試：eN=今回の問題数 / eTimed=時間制限あり / eBudget=持ち時間(秒,timed時)
@@ -50,12 +50,12 @@ const EXAM_SAVE_KEY=SKEY+'_examstate';
 // --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
-  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:''};
+  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}}};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 // --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
-window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
+window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function recH(id,ok,low){
@@ -68,6 +68,17 @@ function recH(id,ok,low){
   bumpDaily();
   save();
   if(typeof checkBadges==='function')checkBadges();
+}
+// 学習時間・時間帯の記録（#18）。sec は checkAnswer で算出（上限300秒でアイドル除外）。
+function recStudyTime(domain,ok,sec){
+  if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}};
+  if(!store.time.dom)store.time.dom={};if(!store.time.hour)store.time.hour={};
+  sec=Math.max(0,Math.min(300,sec||0));
+  store.time.tot=(store.time.tot||0)+sec;
+  if(domain){const d=store.time.dom[domain]||(store.time.dom[domain]={sec:0,n:0});d.sec+=sec;d.n++;}
+  const h=new Date().getHours();
+  const hb=store.time.hour[h]||(store.time.hour[h]={c:0,w:0,sec:0});
+  hb.sec+=sec;if(ok)hb.c++;else hb.w++;
 }
 // 直近の解答が不正解か（=復習対象）。正解すると自動で外れる。
 // last 未記録の旧データは w>0 をフォールバック判定。
@@ -936,7 +947,7 @@ function startStudy(){
 }
 function renderSQ(){
   if(sCur>=sQueue.length){studyDone();return;}
-  const q=sQueue[sCur];sSel=[];sRevealed=false;sLowConf=false;
+  const q=sQueue[sCur];sSel=[];sRevealed=false;sLowConf=false;sQStart=Date.now();
   const isM=q.answers.length>1;
   setText('s-prog',(sCur+1)+' / '+sQueue.length);
   document.getElementById('s-pfill').style.width=(sCur/sQueue.length*100)+'%';
@@ -1017,6 +1028,19 @@ function checkAnswer(){
     +'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
   if(q.expFig)exp.innerHTML+=figHTML(q.expFig);
   if(q.reference_url){exp.innerHTML+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';}
+  // 誤答理由タグ（#1・任意・根本原因レポートに集計）
+  if(!isOk){
+    const wrDiv=document.createElement('div');wrDiv.className='wr-pick';
+    wrDiv.innerHTML='<div class="wr-q">なぜ間違えた？（任意・分析に使います）</div>';
+    const wrow=document.createElement('div');wrow.className='wr-row';
+    [['unknown','🤔 知らなかった'],['careless','😵 ケアレスミス'],['narrow','🔀 2択で迷った']].forEach(pair=>{
+      const b=document.createElement('button');b.type='button';b.className='wr-b';b.textContent=pair[1];
+      if((store.hist[q.id]||{}).wr===pair[0])b.classList.add('on');
+      b.onclick=function(){ if(!store.hist[q.id])store.hist[q.id]={c:0,w:0}; store.hist[q.id].wr=pair[0]; save(); wrow.querySelectorAll('.wr-b').forEach(x=>x.classList.toggle('on',x===b)); toast('記録しました'); };
+      wrow.appendChild(b);
+    });
+    wrDiv.appendChild(wrow);exp.appendChild(wrDiv);
+  }
   // related terms（vocab に一致した用語）
   const rel=[];
   (q.keywords||[]).forEach(kw=>{
@@ -1079,6 +1103,8 @@ function checkAnswer(){
   document.getElementById('s-check').disabled=true;
   document.getElementById('s-next-row').style.display='flex';
   var _sa2=document.getElementById('s-act');if(_sa2)_sa2.style.display='none';
+  const _sec=Math.round((Date.now()-(sQStart||Date.now()))/1000);
+  recStudyTime(domainOf(q.id),isOk,_sec);
   recH(q.id,isOk,sLowConf);
   if(isOk&&sLowConf)toast('🤔 自信なし → 復習リストに追加');
   if(isOk){sOk++;setText('sess-ok-txt','✓ '+sOk);}else{sNg++;setText('sess-ng-txt','✗ '+sNg);}
@@ -1434,6 +1460,7 @@ function startWeakDomains(){
 function renderStats(){
   renderStatsSummary();
   renderCoverage();
+  renderAnalysis();
   renderHeatmap();
   renderWeekly();renderDomainList();renderBadges();
   const allH=store.hist;let tc=0,tw=0;
@@ -1465,6 +1492,74 @@ function renderStats(){
     row.innerHTML='<span style="color:var(--text-sub);flex-shrink:0">Q'+q.id+(isBm(q.id)?' ★':'')+'</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(q.question.slice(0,40))+'</span><span style="color:'+(pct>=70?'var(--success)':'var(--danger)')+';font-weight:700;flex-shrink:0">'+pct+'%</span>';
     row.onclick=()=>jumpQ(q.id);qList.appendChild(row);
   });
+}
+
+/* ===== 学習分析：根本原因(#20)・学習時間(#18)・キャリブレーション(#7) ===== */
+function renderAnalysis(){
+  const host=document.getElementById('analysis');if(!host)return;
+  const html=rootCauseHTML()+timeHTML()+calibHTML();
+  host.innerHTML=html;
+}
+// #20 弱点の根本原因：誤答理由タグ＋最弱分野＋時間のかかる分野を統合した助言
+function rootCauseHTML(){
+  const insights=[];
+  const reasons={unknown:0,careless:0,narrow:0};let rTot=0;
+  Object.values(store.hist).forEach(h=>{ if(h&&h.wr&&h.last==='w'){reasons[h.wr]=(reasons[h.wr]||0)+1;rTot++;} });
+  if(rTot>=3){
+    const top=Object.entries(reasons).sort((a,b)=>b[1]-a[1])[0];
+    const lab={unknown:'知らなかった',careless:'ケアレスミス',narrow:'2択で迷った'};
+    const adv={unknown:'まず教科書・用語集で基礎を固めましょう。',careless:'解答前に設問の条件（最上級・否定・複数選択）を一呼吸おいて確認を。',narrow:'迷った論点は「違いの一言」を間違いノートに残すと定着します。'};
+    if(top[1]>0)insights.push('❌ 誤答の傾向: <b>'+lab[top[0]]+'</b> が最多（'+top[1]+'件）。'+adv[top[0]]);
+  }
+  const ds=domainStats().filter(d=>d.t>=3).sort((a,b)=>a.pct-b.pct);
+  if(ds.length){const w=ds[0];if(w.pct<70)insights.push('🎯 最も弱い分野: <b>'+escH(domainDef(w.code).name)+'</b>（'+w.pct+'%）。<button class="an-act" onclick="startWeakDomains()">弱点を出題 →</button>');}
+  const t=store.time||{};
+  if(t.dom){
+    const per=[];Object.entries(t.dom).forEach(([code,v])=>{if(v&&v.n>=3)per.push({code,avg:v.sec/v.n});});
+    if(per.length>=2){per.sort((a,b)=>b.avg-a.avg);const s=per[0];if(s.avg>=25)insights.push('🐢 時間がかかる分野: <b>'+escH(domainDef(s.code).name)+'</b>（1問平均 '+Math.round(s.avg)+'秒）。反射的に解けるよう反復を。');}
+  }
+  if(!insights.length)return '';
+  return '<div class="card"><div class="sec-label" style="margin-top:0">🔎 弱点の根本原因</div><ul class="an-ins">'+insights.map(i=>'<li>'+i+'</li>').join('')+'</ul></div>';
+}
+// #18 学習時間：総時間・分野別の投下時間・時間帯別の正答率
+function timeHTML(){
+  const t=store.time||{tot:0,dom:{},hour:{}};
+  if(!t.tot)return '';
+  const fmtM=s=>{s=Math.round(s||0);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h?(h+'時間'+m+'分'):(m?(m+'分'):(s+'秒'));};
+  const doms=Object.entries(t.dom||{}).map(([code,v])=>[code,(v&&v.sec)||0]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxD=doms.length?doms[0][1]:1;let domBars='';
+  doms.forEach(pair=>{const def=domainDef(pair[0]);domBars+='<div class="an-row"><span class="an-lab">'+escH(def.emoji+' '+def.name)+'</span><div class="an-bw"><div class="an-bf" style="width:'+Math.round(pair[1]/maxD*100)+'%;background:var(--primary)"></div></div><span class="an-pct">'+fmtM(pair[1])+'</span></div>';});
+  const hours=Object.entries(t.hour||{}).map(e=>({h:+e[0],c:e[1].c||0,w:e[1].w||0})).map(x=>({h:x.h,c:x.c,w:x.w,t:x.c+x.w})).filter(x=>x.t>=3);
+  let hourNote='';
+  if(hours.length>=2){
+    hours.forEach(x=>x.pct=Math.round(x.c/x.t*100));
+    const best=hours.slice().sort((a,b)=>b.pct-a.pct)[0],worst=hours.slice().sort((a,b)=>a.pct-b.pct)[0];
+    if(best.h!==worst.h)hourNote='⏰ 好調な時間帯: <b>'+best.h+'時台</b>（'+best.pct+'%）／不調: '+worst.h+'時台（'+worst.pct+'%）';
+  }
+  return '<div class="card"><div class="sec-label" style="margin-top:0">⏱️ 学習時間（総 '+fmtM(t.tot)+'）</div>'
+    +(domBars||'<div class="an-note">分野別の学習時間がここに表示されます。</div>')
+    +(hourNote?'<div class="an-note">'+hourNote+'</div>':'')+'</div>';
+}
+// #7 自信と正答のキャリブレーション（直近の解答ベース：lc=自信なしフラグ）
+function calibHTML(){
+  let cy={c:0,w:0},cn={c:0,w:0};
+  Object.values(store.hist).forEach(h=>{
+    if(!h||!h.last)return;const ok=h.last==='c';
+    if(h.lc===1){if(ok)cn.c++;else cn.w++;}else{if(ok)cy.c++;else cy.w++;}
+  });
+  const ty=cy.c+cy.w,tn=cn.c+cn.w;
+  if(ty+tn===0)return '';
+  const py=ty?Math.round(cy.c/ty*100):0,pn=tn?Math.round(cn.c/tn*100):0;
+  const bar=(label,p,tt,col)=>'<div class="an-row"><span class="an-lab">'+label+' <span class="an-n">'+tt+'問</span></span><div class="an-bw"><div class="an-bf" style="width:'+(tt?p:0)+'%;background:'+col+'"></div></div><span class="an-pct" style="color:'+col+'">'+(tt?p+'%':'—')+'</span></div>';
+  let diag;
+  if(ty>=5&&py<70)diag='⚠️ 「自信あり」でも正答率が'+py+'%。思い込みに注意し根拠まで確認を（過信ぎみ）。';
+  else if(tn>=5&&pn>=80)diag='💡 「自信なし」でも'+pn+'%正解。知識は付いています、自信を持ってOK（過小評価ぎみ）。';
+  else if(ty>=5&&tn>=5&&(py-pn)>=25)diag='✅ 自信と正答がよく一致。自己評価は正確です。';
+  else diag='自信あり／なしで正答率を比べ、自己評価のズレを見ます（直近の解答ベース）。';
+  return '<div class="card"><div class="sec-label" style="margin-top:0">🎯 自信と正答（キャリブレーション）</div>'
+    +bar('😎 自信あり',py,ty,py>=70?'var(--success)':'var(--danger)')
+    +bar('🤔 自信なし',pn,tn,'var(--warning)')
+    +'<div class="an-note">'+diag+'</div></div>';
 }
 
 /* ===== 統計：合格可能性サマリー ===== */
@@ -1788,7 +1883,7 @@ function renderExamAcq(pass){
 
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:''};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
 // ===== SRS（間隔反復・SM-2簡易版）=====
