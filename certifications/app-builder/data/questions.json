@@ -23,7 +23,10 @@
       "商談",
       "自動化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2,
+    "case": "uc-logic",
+    "scenario": "Universal Containers の自動化要件に対し、できるだけ宣言的な機能で実装する方針を検討します。次の要件に対応してください。"
   },
   {
     "id": 17,
@@ -48,7 +51,8 @@
       "アクセス権",
       "セキュリティ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 1,
@@ -74,7 +78,8 @@
       "オブジェクト",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 2,
@@ -98,7 +103,8 @@
       "レポート",
       "主オブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 4,
@@ -122,7 +128,8 @@
       "アップグレード",
       "リリース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 8,
@@ -147,7 +154,8 @@
       "自動化",
       "項目自動更新"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 22,
@@ -173,7 +181,8 @@
       "アクセス拡張",
       "セキュリティ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 6,
@@ -197,7 +206,8 @@
       "データ型",
       "カスタム項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 5,
@@ -222,7 +232,8 @@
       "ページレイアウト",
       "商談"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 10,
@@ -247,7 +258,8 @@
       "ISCHANGED",
       "ISBLANK"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 42,
@@ -273,7 +285,8 @@
       "公開グループ",
       "組織の共有設定"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 9,
@@ -298,7 +311,8 @@
       "カスタム項目",
       "データ損失"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 11,
@@ -323,7 +337,8 @@
       "レコードトリガーフロー",
       "ガバナ制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 20,
@@ -348,7 +363,8 @@
       "名前空間",
       "リリース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 7,
@@ -373,7 +389,8 @@
       "ページレイアウト",
       "埋め込み"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 47,
@@ -401,7 +418,8 @@
       "共有ルール",
       "ロール階層"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 12,
@@ -429,7 +447,8 @@
       "メールアラート",
       "送信メッセージ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 16,
@@ -454,7 +473,8 @@
       "共有",
       "レコード"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 50,
@@ -482,7 +502,8 @@
       "ロール",
       "非公開"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 13,
@@ -507,7 +528,10 @@
       "Closed Won",
       "検証"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2,
+    "case": "uc-logic",
+    "scenario": "Universal Containers の自動化要件に対し、できるだけ宣言的な機能で実装する方針を検討します。次の要件に対応してください。"
   },
   {
     "id": 18,
@@ -533,7 +557,8 @@
       "積み上げ集計",
       "関係変更"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 19,
@@ -559,7 +584,8 @@
       "リリース済み",
       "アクセス権"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 14,
@@ -585,7 +611,8 @@
       "商談",
       "割り当てルール"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 71,
@@ -610,7 +637,8 @@
       "手動共有",
       "非公開"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 27,
@@ -635,7 +663,10 @@
       "ケース",
       "動的テキスト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2,
+    "case": "uc-data",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、データモデル（オブジェクト・項目・リレーション）の設計に関する次の要件に対応します。"
   },
   {
     "id": 24,
@@ -660,7 +691,8 @@
       "Partial Copy",
       "リリース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 21,
@@ -686,7 +718,8 @@
       "Visualforce",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 15,
@@ -711,7 +744,8 @@
       "承認",
       "自動化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 77,
@@ -736,7 +770,8 @@
       "コミュニティ",
       "レコードアクセス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 30,
@@ -764,7 +799,8 @@
       "カスケード削除",
       "リレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 25,
@@ -789,7 +825,10 @@
       "見積書",
       "自動化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2,
+    "case": "uc-logic",
+    "scenario": "Universal Containers の自動化要件に対し、できるだけ宣言的な機能で実装する方針を検討します。次の要件に対応してください。"
   },
   {
     "id": 23,
@@ -817,7 +856,8 @@
       "リストビュー",
       "個人取引先"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 80,
@@ -843,7 +883,8 @@
       "権限セット",
       "すべて表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 26,
@@ -868,7 +909,8 @@
       "商談",
       "アクセス権"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 35,
@@ -893,7 +935,10 @@
       "データ型",
       "カスタム項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2,
+    "case": "uc-data",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、データモデル（オブジェクト・項目・リレーション）の設計に関する次の要件に対応します。"
   },
   {
     "id": 32,
@@ -918,7 +963,8 @@
       "バージョン",
       "リリース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 102,
@@ -943,7 +989,8 @@
       "プロファイル",
       "参照のみ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 34,
@@ -968,7 +1015,8 @@
       "郵便番号",
       "検証"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 28,
@@ -994,7 +1042,8 @@
       "マトリックス",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 37,
@@ -1020,7 +1069,8 @@
       "マスター選択リスト",
       "選択リスト値"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 36,
@@ -1045,7 +1095,9 @@
       "再帰",
       "ガバナ制限",
       "項目自動更新"
-    ],    "source": "tyson"
+    ],
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 105,
@@ -1071,7 +1123,8 @@
       "組織の共有設定",
       "レコードアクセス拡張"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 39,
@@ -1096,7 +1149,8 @@
       "取引先",
       "数式項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 29,
@@ -1121,7 +1175,8 @@
       "コンポーネント",
       "レポート"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 1
   },
   {
     "id": 38,
@@ -1147,7 +1202,8 @@
       "Apexトリガー",
       "新規ユーザー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 41,
@@ -1172,7 +1228,8 @@
       "負荷テスト",
       "パフォーマンステスト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 112,
@@ -1197,7 +1254,8 @@
       "グループ権限",
       "外部ユーザー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 43,
@@ -1223,7 +1281,10 @@
       "テキスト項目",
       "データバックアップ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3,
+    "case": "uc-data",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、データモデル（オブジェクト・項目・リレーション）の設計に関する次の要件に対応します。"
   },
   {
     "id": 49,
@@ -1248,7 +1309,8 @@
       "必須項目",
       "データ整合性"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 122,
@@ -1276,7 +1338,8 @@
       "オブジェクト権限",
       "トラブルシューティング"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 31,
@@ -1301,7 +1364,8 @@
       "Chatter",
       "取引先責任者"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 65,
@@ -1327,7 +1391,8 @@
       "承認ステップ",
       "条件設定"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 45,
@@ -1353,7 +1418,8 @@
       "参照関係",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 126,
@@ -1378,7 +1444,8 @@
       "招待制",
       "プライバシー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 59,
@@ -1403,7 +1470,8 @@
       "アプリケーションライフサイクル",
       "変更管理"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 66,
@@ -1428,7 +1496,8 @@
       "数式関数",
       "値の変更制御"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 33,
@@ -1456,7 +1525,8 @@
       "Webタブ",
       "タブ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 46,
@@ -1482,7 +1552,8 @@
       "通貨ISOコード",
       "データインポート"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 181,
@@ -1507,7 +1578,8 @@
       "非公開共有設定",
       "最小権限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 69,
@@ -1531,7 +1603,9 @@
       "ワークフロールール",
       "処理順序",
       "項目更新"
-    ],    "source": "tyson"
+    ],
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 48,
@@ -1556,7 +1630,8 @@
       "日付計算",
       "プロセスビルダー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 40,
@@ -1581,7 +1656,8 @@
       "絞り込み",
       "ID項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 70,
@@ -1606,7 +1682,8 @@
       "外部連携",
       "SOAP"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 185,
@@ -1631,7 +1708,8 @@
       "組織の共有設定",
       "作成権限制御"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 82,
@@ -1656,7 +1734,8 @@
       "デプロイ",
       "本番環境"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 51,
@@ -1681,7 +1760,8 @@
       "親レコードに連動",
       "参照関係"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 85,
@@ -1706,7 +1786,8 @@
       "商談",
       "外部通知"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 204,
@@ -1733,7 +1814,8 @@
       "プロファイル",
       "アクセス制御"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 44,
@@ -1758,7 +1840,8 @@
       "Lightningアプリ",
       "コンポーネント"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 90,
@@ -1782,7 +1865,9 @@
       "自動化",
       "フロー",
       "商談"
-    ],    "source": "tyson"
+    ],
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 52,
@@ -1807,7 +1892,8 @@
       "データインポートウィザード",
       "件数制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 209,
@@ -1832,7 +1918,8 @@
       "項目非公開",
       "アクセス制御"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 93,
@@ -1857,7 +1944,8 @@
       "参照関係",
       "ケース数集計"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 54,
@@ -1883,7 +1971,8 @@
       "検索結果列",
       "取引先"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 53,
@@ -1908,7 +1997,8 @@
       "商談",
       "親子参照"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 87,
@@ -1933,7 +2023,8 @@
       "テンプレート",
       "テスト環境"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 222,
@@ -1958,7 +2049,8 @@
       "組織全体のデフォルト",
       "編集アクセス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 100,
@@ -1983,7 +2075,8 @@
       "ケース作成",
       "フォーム"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 58,
@@ -2008,7 +2101,8 @@
       "自動入力",
       "取引先"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 55,
@@ -2035,7 +2129,8 @@
       "積み上げ集計",
       "宣言的"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 103,
@@ -2061,7 +2156,8 @@
       "自動化",
       "利用率評価"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 226,
@@ -2086,7 +2182,8 @@
       "項目レベルセキュリティ",
       "レコードアクセス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 89,
@@ -2112,7 +2209,8 @@
       "ロールバック",
       "本番環境"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 107,
@@ -2137,7 +2235,8 @@
       "Chatterでの承認",
       "モバイル承認"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 56,
@@ -2163,7 +2262,8 @@
       "間接参照関係",
       "リレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 239,
@@ -2188,7 +2288,8 @@
       "ロール共有",
       "レコードアクセス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 61,
@@ -2214,7 +2315,8 @@
       "標準コンポーネント",
       "Lightningアプリケーションビルダー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 114,
@@ -2241,7 +2343,8 @@
       "承認申請",
       "Apex"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 57,
@@ -2266,7 +2369,8 @@
       "選択リスト",
       "クロスオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 252,
@@ -2291,7 +2395,8 @@
       "項目参照制御",
       "アクセス制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 129,
@@ -2315,7 +2420,9 @@
       "再帰的起動",
       "項目変更後再評価",
       "ワークフロー制限"
-    ],    "source": "tyson"
+    ],
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 62,
@@ -2340,7 +2447,8 @@
       "投資収益率",
       "ROI"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 60,
@@ -2365,7 +2473,8 @@
       "親子オブジェクト",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 255,
@@ -2391,7 +2500,8 @@
       "非公開",
       "VIP制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 132,
@@ -2416,7 +2526,8 @@
       "ISCHANGED",
       "UserRole"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 95,
@@ -2441,7 +2552,8 @@
       "データ移行",
       "Sandbox"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 63,
@@ -2467,7 +2579,8 @@
       "レスポンシブデザイン",
       "デバイス対応"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 64,
@@ -2492,7 +2605,8 @@
       "クロスオブジェクト",
       "テキスト抽出"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 261,
@@ -2517,7 +2631,8 @@
       "ロール階層",
       "所有者共有"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 141,
@@ -2543,7 +2658,8 @@
       "アクション統合",
       "自動化制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 145,
@@ -2568,7 +2684,8 @@
       "レコードタイプ",
       "データ品質"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 262,
@@ -2596,7 +2713,8 @@
       "公開グループ",
       "レコードアクセス差異"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 67,
@@ -2621,7 +2739,8 @@
       "TEXT関数",
       "数式項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 72,
@@ -2646,7 +2765,8 @@
       "必須項目",
       "自動化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 117,
@@ -2671,7 +2791,8 @@
       "コスト効率",
       "開発環境"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 147,
@@ -2696,7 +2817,8 @@
       "通知メール",
       "タスク割り当て"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 275,
@@ -2722,7 +2844,8 @@
       "非公開",
       "レコードタイプ共有"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 68,
@@ -2749,7 +2872,8 @@
       "リレーション変換",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 74,
@@ -2775,7 +2899,8 @@
       "設定",
       "コンポーネント一覧"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 150,
@@ -2799,7 +2924,9 @@
       "画面フロー",
       "ポップアップ",
       "スクリーン要素"
-    ],    "source": "tyson"
+    ],
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 277,
@@ -2825,7 +2952,8 @@
       "ユーザー管理",
       "権限管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 73,
@@ -2850,7 +2978,8 @@
       "項目追加",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 157,
@@ -2875,7 +3004,8 @@
       "リードの設定",
       "検証"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 134,
@@ -2900,7 +3030,8 @@
       "アップデート",
       "バージョン管理"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 76,
@@ -2925,7 +3056,8 @@
       "アクションボタン",
       "条件表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 278,
@@ -2949,7 +3081,8 @@
       "ユーザー管理",
       "権限管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 175,
@@ -2977,7 +3110,8 @@
       "ルールエントリ",
       "アクティブルール1つ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 75,
@@ -3002,7 +3136,8 @@
       "数式項目",
       "リレーション参照"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 1
   },
   {
     "id": 279,
@@ -3026,7 +3161,8 @@
       "権限セット",
       "権限管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 183,
@@ -3052,7 +3188,8 @@
       "実行順序保証",
       "ビジネスロジック標準化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 78,
@@ -3077,7 +3214,8 @@
       "値の共有",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 81,
@@ -3102,7 +3240,8 @@
       "レポート",
       "変更不可"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 186,
@@ -3127,7 +3266,8 @@
       "情報収集",
       "対話形式入力"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 280,
@@ -3151,7 +3291,8 @@
       "プロファイル",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 79,
@@ -3176,7 +3317,8 @@
       "リード",
       "データ管理"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 139,
@@ -3201,7 +3343,8 @@
       "データ型変更",
       "サンドボックス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 86,
@@ -3226,7 +3369,8 @@
       "項目変更",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 189,
@@ -3251,7 +3395,8 @@
       "編集不可",
       "申請提出"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 281,
@@ -3275,7 +3420,8 @@
       "権限セットグループ",
       "権限管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 83,
@@ -3300,7 +3446,8 @@
       "255文字",
       "切り捨て"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 195,
@@ -3325,7 +3472,8 @@
       "ケース管理",
       "自動化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 88,
@@ -3350,7 +3498,8 @@
       "レコードページ",
       "互換性"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 282,
@@ -3374,7 +3523,8 @@
       "共有設定",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 196,
@@ -3399,7 +3549,8 @@
       "ISPICKVAL",
       "ISBLANK"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 84,
@@ -3425,7 +3576,8 @@
       "データインポート",
       "数値・テキスト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 148,
@@ -3454,7 +3606,8 @@
       "Apexクラス",
       "移行"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 283,
@@ -3478,7 +3631,8 @@
       "OWD",
       "公開グループ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 199,
@@ -3503,7 +3657,8 @@
       "削除制御",
       "リアルタイム承認"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 92,
@@ -3528,7 +3683,8 @@
       "取引先階層",
       "クイックアクション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 91,
@@ -3553,7 +3709,8 @@
       "最大値",
       "リレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 208,
@@ -3578,7 +3735,8 @@
       "郵便番号形式",
       "ユースケース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 284,
@@ -3603,7 +3761,8 @@
       "OWD",
       "レコードアクセス"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 96,
@@ -3628,7 +3787,8 @@
       "ケース",
       "作成制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 94,
@@ -3653,7 +3813,8 @@
       "ドキュメントアクセス",
       "リンク"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 214,
@@ -3678,7 +3839,8 @@
       "APIの有効化",
       "承認コメント"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 155,
@@ -3703,7 +3865,8 @@
       "更新間隔",
       "Sandbox"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 285,
@@ -3728,7 +3891,8 @@
       "共有ルール",
       "ロール階層"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 97,
@@ -3754,7 +3918,8 @@
       "成立フラグ",
       "完了予定日"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 216,
@@ -3779,7 +3944,8 @@
       "承認ルート",
       "部門メンバー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 99,
@@ -3804,7 +3970,8 @@
       "関連レコードの有無",
       "WITHOUT"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 286,
@@ -3828,7 +3995,8 @@
       "手動共有",
       "共有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 237,
@@ -3853,7 +4021,8 @@
       "関連レコード",
       "フロー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 98,
@@ -3878,7 +4047,8 @@
       "子レコード参照",
       "親子関係"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 287,
@@ -3903,7 +4073,8 @@
       "共有ルール",
       "共有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 169,
@@ -3928,7 +4099,8 @@
       "機密オブジェクト除外",
       "更新間隔"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 241,
@@ -3953,7 +4125,8 @@
       "条件付き必須",
       "検証"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 104,
@@ -3978,7 +4151,8 @@
       "Lightningレコードページ",
       "ガイダンス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 101,
@@ -4003,7 +4177,8 @@
       "経過日数",
       "色分け表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 288,
@@ -4027,7 +4202,8 @@
       "共有",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 242,
@@ -4052,7 +4228,8 @@
       "カウント",
       "自動化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 108,
@@ -4077,7 +4254,8 @@
       "日付計算",
       "経過日数"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 106,
@@ -4106,7 +4284,8 @@
       "ページの有効化",
       "アクセス権"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 244,
@@ -4131,7 +4310,8 @@
       "参照関係",
       "ノーコード"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 289,
@@ -4156,7 +4336,8 @@
       "ロール",
       "共有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 171,
@@ -4181,7 +4362,8 @@
       "5GB",
       "週次更新"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 109,
@@ -4206,7 +4388,8 @@
       "カスタム項目",
       "リード"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 245,
@@ -4231,7 +4414,8 @@
       "チェックボックス数式",
       "日付計算"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 290,
@@ -4255,7 +4439,8 @@
       "ロール階層",
       "共有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 111,
@@ -4280,7 +4465,8 @@
       "Lightningレコードページ",
       "可視性制御"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 246,
@@ -4305,7 +4491,8 @@
       "ISBLANK",
       "条件付き必須"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 110,
@@ -4330,7 +4517,8 @@
       "オブジェクトリレーション",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 291,
@@ -4354,7 +4542,8 @@
       "キュー",
       "共有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 247,
@@ -4380,7 +4569,8 @@
       "値引き承認",
       "条件表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 113,
@@ -4405,7 +4595,8 @@
       "Lightningコンポーネント",
       "レコードページ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 118,
@@ -4430,7 +4621,8 @@
       "主従関係",
       "商談"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 180,
@@ -4455,7 +4647,8 @@
       "アクセス権限なし",
       "外部メール防止"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 292,
@@ -4480,7 +4673,8 @@
       "プロファイル",
       "権限セット"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 256,
@@ -4505,7 +4699,8 @@
       "不在対応",
       "承認フロー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 115,
@@ -4531,7 +4726,8 @@
       "コンポーネントタグ付け",
       "AppExchange"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 119,
@@ -4556,7 +4752,8 @@
       "カスタムオブジェクト",
       "レコード削除"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 258,
@@ -4581,7 +4778,8 @@
       "無料部品",
       "ディレクター承認"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 293,
@@ -4605,7 +4803,8 @@
       "プロファイル",
       "権限セット"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 206,
@@ -4630,7 +4829,8 @@
       "短期導入",
       "開発リソース不足"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 273,
@@ -4655,7 +4855,8 @@
       "クロスオブジェクト参照",
       "データ整合性"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 120,
@@ -4683,7 +4884,8 @@
       "連動項目",
       "複数選択リスト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 294,
@@ -4707,7 +4909,8 @@
       "レポート",
       "リストビュー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 116,
@@ -4733,7 +4936,8 @@
       "私のドメイン",
       "アプリケーション公開"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 315,
@@ -4757,7 +4961,8 @@
       "フロー",
       "Flow Builder"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 123,
@@ -4782,7 +4987,8 @@
       "カスタム項目",
       "画像リンク"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 295,
@@ -4807,7 +5013,8 @@
       "ページレイアウト",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 316,
@@ -4832,7 +5039,8 @@
       "フロー",
       "Flow Builder"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 121,
@@ -4857,7 +5065,8 @@
       "商談",
       "ガイダンス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 124,
@@ -4882,7 +5091,8 @@
       "データ移行",
       "データ型変更"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 296,
@@ -4906,7 +5116,8 @@
       "無効化",
       "ユーザー管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 317,
@@ -4930,7 +5141,8 @@
       "フロー",
       "コレクション"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 207,
@@ -4955,7 +5167,8 @@
       "本番デプロイ",
       "リリース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 127,
@@ -4981,7 +5194,8 @@
       "アンケート",
       "フィードバック収集"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 125,
@@ -5007,7 +5221,8 @@
       "データアーカイブ",
       "ストレージ削減"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 297,
@@ -5031,7 +5246,8 @@
       "ユーザー管理",
       "レコード所有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 318,
@@ -5055,7 +5271,8 @@
       "フロー",
       "Flow Builder"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 319,
@@ -5079,7 +5296,8 @@
       "DML",
       "ガバナ制限"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 298,
@@ -5103,7 +5321,8 @@
       "無効化",
       "ユーザー管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 128,
@@ -5130,7 +5349,8 @@
       "フェーズ",
       "売上予測分類"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 135,
@@ -5155,7 +5375,8 @@
       "集計",
       "ケース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 218,
@@ -5180,7 +5401,8 @@
       "再デプロイ",
       "サンドボックス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 320,
@@ -5205,7 +5427,8 @@
       "レコードトリガフロー",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 299,
@@ -5229,7 +5452,8 @@
       "ライセンス",
       "ユーザー管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 130,
@@ -5254,7 +5478,8 @@
       "選択リスト",
       "リアルタイム参照"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 137,
@@ -5279,7 +5504,8 @@
       "モバイル",
       "取引先責任者"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 321,
@@ -5305,7 +5531,8 @@
       "レコードトリガフロー",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 300,
@@ -5329,7 +5556,8 @@
       "プロファイル",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 131,
@@ -5354,7 +5582,8 @@
       "データモデリング",
       "リレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 322,
@@ -5378,7 +5607,8 @@
       "レコードトリガフロー",
       "数式"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 230,
@@ -5403,7 +5633,8 @@
       "可視性",
       "プロファイル"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 138,
@@ -5429,7 +5660,8 @@
       "レコードタイプ",
       "最近参照したデータ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 301,
@@ -5453,7 +5685,8 @@
       "プロファイル",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 323,
@@ -5477,7 +5710,8 @@
       "実行順序",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 133,
@@ -5502,7 +5736,8 @@
       "リレーションシップ",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 302,
@@ -5526,7 +5761,8 @@
       "SSO",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 324,
@@ -5552,7 +5788,8 @@
       "クイックアクション",
       "ユーティリティバー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 136,
@@ -5577,7 +5814,8 @@
       "外部オブジェクト",
       "データストレージ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 140,
@@ -5602,7 +5840,8 @@
       "フィルター",
       "Chatter"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 325,
@@ -5626,7 +5865,8 @@
       "必須項目",
       "Flow Builder"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 303,
@@ -5650,7 +5890,8 @@
       "管理パッケージ",
       "リリース"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 142,
@@ -5675,7 +5916,8 @@
       "外部オブジェクト",
       "間接ルックアップ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 233,
@@ -5700,7 +5942,8 @@
       "未整理公開レポート",
       "フォルダー移動"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 143,
@@ -5725,7 +5968,8 @@
       "入力一貫性",
       "ガイダンス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 326,
@@ -5750,7 +5994,8 @@
       "レコードトリガフロー",
       "フロー組合せ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 304,
@@ -5774,7 +6019,8 @@
       "インストール",
       "パッケージ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 144,
@@ -5799,7 +6045,8 @@
       "数式項目",
       "レコードID"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 327,
@@ -5823,7 +6070,8 @@
       "フロー",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 146,
@@ -5849,7 +6097,8 @@
       "投稿アクション",
       "コラボレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 305,
@@ -5873,7 +6122,8 @@
       "管理パッケージ",
       "アップグレード"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 328,
@@ -5897,7 +6147,8 @@
       "自律フロー",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 149,
@@ -5922,7 +6173,8 @@
       "主従関係",
       "データモデル"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 260,
@@ -5947,7 +6199,8 @@
       "競合防止",
       "パッケージ設定"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 306,
@@ -5971,7 +6224,8 @@
       "レコードタイプ",
       "ライセンス"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 329,
@@ -5995,7 +6249,8 @@
       "フロー",
       "再利用"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 151,
@@ -6020,7 +6275,8 @@
       "セールスプロセス",
       "ヘルプガイド"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 153,
@@ -6045,7 +6301,8 @@
       "API参照名",
       "連結"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 330,
@@ -6070,7 +6327,8 @@
       "Apex",
       "REST API"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 307,
@@ -6094,7 +6352,8 @@
       "カスタムオブジェクト",
       "ライセンス"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 156,
@@ -6120,7 +6379,8 @@
       "ヘルプテキスト",
       "データモデル"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 152,
@@ -6146,7 +6406,8 @@
       "モバイル",
       "Lightningアプリケーションビルダー"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 331,
@@ -6171,7 +6432,8 @@
       "項目更新",
       "メールアラート"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 266,
@@ -6196,7 +6458,8 @@
       "事前構築リソース",
       "Classic"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 308,
@@ -6221,7 +6484,8 @@
       "エディション",
       "ライセンス"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 158,
@@ -6246,7 +6510,8 @@
       "多対多",
       "削除"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 332,
@@ -6271,7 +6536,8 @@
       "レコードロック",
       "ロック"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 309,
@@ -6295,7 +6561,8 @@
       "データ管理",
       "監査"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 154,
@@ -6320,7 +6587,8 @@
       "自動作成",
       "レポート"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 333,
@@ -6345,7 +6613,8 @@
       "動的承認",
       "承認ステップ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 159,
@@ -6373,7 +6642,8 @@
       "通貨",
       "集計"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 310,
@@ -6397,7 +6667,8 @@
       "データ保持",
       "監査"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 427,
@@ -6422,7 +6693,8 @@
       "リリース接続",
       "アウトバウンド"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 334,
@@ -6446,7 +6718,8 @@
       "数式関数",
       "選択リスト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 163,
@@ -6472,7 +6745,8 @@
       "サマリー形式",
       "表形式"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 160,
@@ -6498,7 +6772,8 @@
       "クロスオブジェクト項目更新",
       "積み上げ集計"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 311,
@@ -6522,7 +6797,8 @@
       "オブジェクトマネージャ",
       "データ管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 335,
@@ -6546,7 +6822,8 @@
       "ISNULL",
       "数式関数"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 161,
@@ -6571,7 +6848,8 @@
       "データ挿入",
       "スプレッドシート"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 165,
@@ -6599,7 +6877,8 @@
       "グローバルアクション",
       "数式項目削減"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 336,
@@ -6623,7 +6902,8 @@
       "ISNEW",
       "入力規則"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 312,
@@ -6647,7 +6927,8 @@
       "コンソール",
       "UI"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 428,
@@ -6671,7 +6952,8 @@
       "メタデータ",
       "データ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 162,
@@ -6697,7 +6979,8 @@
       "重複ルール",
       "共有ルールをスキップ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 337,
@@ -6721,7 +7004,8 @@
       "保存前フロー",
       "Migrate to Flow"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 313,
@@ -6745,7 +7029,8 @@
       "Lightningアプリ",
       "UI"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 170,
@@ -6773,7 +7058,8 @@
       "読み込み中ページ",
       "ヘッダー色"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 338,
@@ -6798,7 +7084,8 @@
       "保存前フロー",
       "入力規則"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 164,
@@ -6823,7 +7110,8 @@
       "フィルタ条件",
       "状況項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 314,
@@ -6847,7 +7135,8 @@
       "Lightningアプリ",
       "UI"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 339,
@@ -6871,7 +7160,8 @@
       "承認プロセス",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 173,
@@ -6896,7 +7186,8 @@
       "レコード編集",
       "項目入力"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 166,
@@ -6921,7 +7212,8 @@
       "外部ID",
       "レコード照合"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 429,
@@ -6945,7 +7237,8 @@
       "参照解決",
       "依存関係"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 340,
@@ -6969,7 +7262,8 @@
       "取引先責任者",
       "標準オブジェクト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 379,
@@ -6993,7 +7287,8 @@
       "Assignment",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 174,
@@ -7018,7 +7313,8 @@
       "条件付き書式",
       "データ可視化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 167,
@@ -7044,7 +7340,8 @@
       "商談フェーズ",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 380,
@@ -7068,7 +7365,8 @@
       "アウトカム",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 341,
@@ -7094,7 +7392,8 @@
       "取引先",
       "標準オブジェクト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 430,
@@ -7118,7 +7417,8 @@
       "検証",
       "Validate"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 381,
@@ -7142,7 +7442,8 @@
       "コレクション",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 168,
@@ -7168,7 +7469,8 @@
       "項目データ削除",
       "レコード更新"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 342,
@@ -7192,7 +7494,8 @@
       "Person Account",
       "標準オブジェクト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 176,
@@ -7217,7 +7520,8 @@
       "Lightningアプリケーション",
       "メニューカスタマイズ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 382,
@@ -7241,7 +7545,8 @@
       "Get Records",
       "ガバナ制限"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 172,
@@ -7266,7 +7571,8 @@
       "ユーザーグループ別表示",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 343,
@@ -7291,7 +7597,8 @@
       "IsWon",
       "標準オブジェクト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 383,
@@ -7315,7 +7622,8 @@
       "InvocableMethod",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 178,
@@ -7341,7 +7649,8 @@
       "Salesforceモバイルアプリ",
       "AppExchange"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 177,
@@ -7366,7 +7675,8 @@
       "作業指示品目",
       "標準オブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 344,
@@ -7391,7 +7701,8 @@
       "割り当てルール",
       "標準オブジェクト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 384,
@@ -7415,7 +7726,8 @@
       "画面フロー",
       "コンポーネント"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 431,
@@ -7440,7 +7752,8 @@
       "Apexテスト",
       "カバレッジ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 179,
@@ -7465,7 +7778,8 @@
       "自動投稿",
       "項目変更追跡"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 184,
@@ -7491,7 +7805,8 @@
       "取引先責任者",
       "オブジェクト関連付け"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 345,
@@ -7515,7 +7830,8 @@
       "キャンペーンメンバー",
       "標準オブジェクト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 385,
@@ -7539,7 +7855,8 @@
       "一時停止",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 386,
@@ -7563,7 +7880,8 @@
       "Fault Path",
       "エラーハンドリング"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 346,
@@ -7587,7 +7905,8 @@
       "Salesforce Classic",
       "Lightning Experience"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 187,
@@ -7613,7 +7932,8 @@
       "リッチテキストエリア",
       "データ損失"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 182,
@@ -7638,7 +7958,8 @@
       "取引先責任者",
       "リード"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 432,
@@ -7662,7 +7983,8 @@
       "ロールバック",
       "リリース管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 387,
@@ -7686,7 +8008,8 @@
       "&",
       "数式"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 347,
@@ -7711,7 +8034,8 @@
       "Classic",
       "アプリランチャー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 192,
@@ -7736,7 +8060,8 @@
       "レポート追跡",
       "CSM割り当て"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 188,
@@ -7764,7 +8089,8 @@
       "検索条件",
       "バケット項目"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 388,
@@ -7788,7 +8114,8 @@
       "CASE",
       "数式関数"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 348,
@@ -7812,7 +8139,8 @@
       "Lightning Experience",
       "クイックアクション"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 194,
@@ -7838,7 +8166,8 @@
       "積み上げ集計",
       "オブジェクトリレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 389,
@@ -7862,7 +8191,8 @@
       "VALUE",
       "数式関数"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 433,
@@ -7886,7 +8216,8 @@
       "unlocked",
       "managed"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 190,
@@ -7914,7 +8245,8 @@
       "レコードの詳細",
       "リッチテキスト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 349,
@@ -7938,7 +8270,8 @@
       "試用版",
       "管理パッケージ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 390,
@@ -7962,7 +8295,8 @@
       "NOW",
       "日付関数"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 197,
@@ -7987,7 +8321,8 @@
       "多対多",
       "参照アクセス"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 350,
@@ -8011,7 +8346,8 @@
       "管理パッケージ",
       "AppExchange"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 391,
@@ -8035,7 +8371,8 @@
       "数式関数",
       "UI"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 200,
@@ -8061,7 +8398,8 @@
       "リードソース",
       "種別"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 191,
@@ -8086,7 +8424,8 @@
       "ナビゲーション",
       "共有不可"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 392,
@@ -8110,7 +8449,8 @@
       "論理演算",
       "数式関数"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 351,
@@ -8134,7 +8474,8 @@
       "AppExchange",
       "ISV"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 202,
@@ -8161,7 +8502,8 @@
       "テキスト",
       "データ損失"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 434,
@@ -8186,7 +8528,8 @@
       "Dev Hub",
       "名前空間"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 193,
@@ -8211,7 +8554,8 @@
       "条件付き表示",
       "項目表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 393,
@@ -8235,7 +8579,8 @@
       "数式関数",
       "NULL"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 352,
@@ -8259,7 +8604,8 @@
       "Multiple Currencies",
       "通貨設定"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 203,
@@ -8284,7 +8630,8 @@
       "主従関係",
       "SUM/MIN/MAX/COUNT"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 394,
@@ -8308,7 +8655,8 @@
       "入力規則",
       "数式関数"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 198,
@@ -8334,7 +8682,8 @@
       "項目レベルセキュリティ",
       "データ型制限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 353,
@@ -8358,7 +8707,8 @@
       "為替レート",
       "通貨設定"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 395,
@@ -8382,7 +8732,8 @@
       "SOQL",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 210,
@@ -8408,7 +8759,8 @@
       "上限25",
       "オブジェクト集約"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 435,
@@ -8432,7 +8784,8 @@
       "2GP",
       "移行"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 354,
@@ -8456,7 +8809,8 @@
       "多言語",
       "ローカライズ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 396,
@@ -8481,7 +8835,8 @@
       "フロー",
       "バルク"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 201,
@@ -8507,7 +8862,8 @@
       "入力規則",
       "デフォルト値"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 211,
@@ -8533,7 +8889,8 @@
       "Upsert",
       "データインポート"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 397,
@@ -8558,7 +8915,8 @@
       "フロー",
       "ガバナ制限"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 355,
@@ -8582,7 +8940,8 @@
       "公開グループ",
       "非公開グループ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 213,
@@ -8605,7 +8964,8 @@
       "外部ID",
       "外部データソース"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 1
   },
   {
     "id": 205,
@@ -8630,7 +8990,8 @@
       "メールマーケティング",
       "送信数上限"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 398,
@@ -8654,7 +9015,8 @@
       "ガバナ制限",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 436,
@@ -8678,7 +9040,8 @@
       "テンプレート",
       "リリース"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 356,
@@ -8702,7 +9065,8 @@
       "ハッシュタグ",
       "メンション"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 215,
@@ -8728,7 +9092,8 @@
       "参照関係変更",
       "プライマリ昇格"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 399,
@@ -8753,7 +9118,8 @@
       "ワークフロー",
       "プロセスビルダー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 212,
@@ -8778,7 +9144,8 @@
       "ページあたり上限2",
       "埋め込みグラフ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 357,
@@ -8802,7 +9169,8 @@
       "フィード追跡",
       "変更追跡"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 400,
@@ -8826,7 +9194,8 @@
       "ワークフロー移行",
       "項目更新"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 217,
@@ -8851,7 +9220,8 @@
       "子オブジェクト",
       "移動防止"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 358,
@@ -8876,7 +9246,8 @@
       "活動",
       "Activities"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 437,
@@ -8900,7 +9271,8 @@
       "プロファイル",
       "権限"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 401,
@@ -8924,7 +9296,8 @@
       "スケジュール済みパス",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 220,
@@ -8949,7 +9322,8 @@
       "クイックアクション",
       "レコードページ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 219,
@@ -8974,7 +9348,8 @@
       "ページレイアウト制限",
       "リレーション表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 359,
@@ -8999,7 +9374,8 @@
       "名前項目",
       "Activities"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 402,
@@ -9023,7 +9399,8 @@
       "ワークフロー無効化",
       "移行"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 221,
@@ -9048,7 +9425,8 @@
       "参照アクセス",
       "結合オブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 223,
@@ -9073,7 +9451,8 @@
       "ターゲットタグ",
       "メタデータ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 403,
@@ -9097,7 +9476,8 @@
       "Migrate to Flow",
       "保存後フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 360,
@@ -9121,7 +9501,8 @@
       "ToDo",
       "活動"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 438,
@@ -9145,7 +9526,8 @@
       "sf",
       "デプロイ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 224,
@@ -9171,7 +9553,8 @@
       "主従関係上限2",
       "リレーション変更"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 404,
@@ -9195,7 +9578,8 @@
       "スケジュール済みパス",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 361,
@@ -9219,7 +9603,8 @@
       "添付ファイル",
       "Attachments"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 227,
@@ -9244,7 +9629,8 @@
       "モバイル",
       "メール送信"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 405,
@@ -9268,7 +9654,8 @@
       "サンドボックス",
       "テスト"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 225,
@@ -9293,7 +9680,8 @@
       "データモデル",
       "可視化"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 362,
@@ -9317,7 +9705,8 @@
       "ストレージ",
       "ファイル管理"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 406,
@@ -9341,7 +9730,8 @@
       "保存後フロー",
       "レコードを更新"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 229,
@@ -9367,7 +9757,8 @@
       "カスタムボタン",
       "JavaScript"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 228,
@@ -9393,7 +9784,8 @@
       "データ損失",
       "リッチテキスト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 439,
@@ -9417,7 +9809,8 @@
       "package.xml",
       "CLI"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 363,
@@ -9441,7 +9834,8 @@
       "Enhanced Notes",
       "Notes"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 407,
@@ -9465,7 +9859,8 @@
       "Apex",
       "ガバナ制限"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 235,
@@ -9490,7 +9885,8 @@
       "コンポーネント",
       "項目整理"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 231,
@@ -9515,7 +9911,8 @@
       "非アクティブ値",
       "項目管理"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 408,
@@ -9539,7 +9936,8 @@
       "DML",
       "Apex"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 364,
@@ -9563,7 +9961,8 @@
       "オブジェクト固有アクション",
       "クイックアクション"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 440,
@@ -9587,7 +9986,8 @@
       "Scratch Org",
       "Dev Hub"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 409,
@@ -9611,7 +10011,8 @@
       "SOQL",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 232,
@@ -9636,7 +10037,8 @@
       "自動作成",
       "親子オブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 365,
@@ -9661,7 +10063,8 @@
       "画面フロー",
       "レコード作成"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 240,
@@ -9686,7 +10089,8 @@
       "リッチテキスト",
       "条件表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 410,
@@ -9710,7 +10114,8 @@
       "保存後フロー",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 234,
@@ -9735,7 +10140,8 @@
       "集計",
       "件数"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 366,
@@ -9759,7 +10165,8 @@
       "ページレイアウト",
       "オブジェクト固有"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 411,
@@ -9783,7 +10190,8 @@
       "エラー",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 243,
@@ -9809,7 +10217,8 @@
       "定義済み項目値",
       "レイアウト指定"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 236,
@@ -9834,7 +10243,8 @@
       "リード取込",
       "一致条件"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 367,
@@ -9858,7 +10268,8 @@
       "管理者権限",
       "FLS"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 412,
@@ -9882,7 +10293,8 @@
       "フォールトパス",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 441,
@@ -9906,7 +10318,8 @@
       "認証",
       "sf org"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 251,
@@ -9931,7 +10344,8 @@
       "重要項目表示",
       "ハイライト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 238,
@@ -9957,7 +10371,8 @@
       "データインポートウィザード",
       "リード重複"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 368,
@@ -9981,7 +10396,8 @@
       "管理者権限",
       "OWD"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 413,
@@ -10005,7 +10421,8 @@
       "エラーハンドリング",
       "データ品質"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 414,
@@ -10029,7 +10446,8 @@
       "割り当て",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 369,
@@ -10053,7 +10471,8 @@
       "API",
       "ユーザー権限"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 248,
@@ -10078,7 +10497,8 @@
       "リレーション選択",
       "カスタムオブジェクト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 253,
@@ -10104,7 +10524,8 @@
       "アプリ内通知",
       "レコード詳細"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 442,
@@ -10129,7 +10550,8 @@
       "Dev Hub",
       "Salesforce DX"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 415,
@@ -10153,7 +10575,8 @@
       "リソース時間",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 370,
@@ -10178,7 +10601,8 @@
       "プロファイル",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 249,
@@ -10203,7 +10627,8 @@
       "1対多",
       "ページレイアウト"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 257,
@@ -10228,7 +10653,8 @@
       "インライン編集",
       "商談から取引先"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 416,
@@ -10252,7 +10678,8 @@
       "Pause",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 2
   },
   {
     "id": 371,
@@ -10276,7 +10703,8 @@
       "プロファイル",
       "セルフリセット"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 250,
@@ -10301,7 +10729,8 @@
       "親レコード参照権限",
       "アクセス影響"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 417,
@@ -10326,7 +10755,8 @@
       "Pause",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 443,
@@ -10350,7 +10780,8 @@
       "Scratch Org",
       "Salesforce DX"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 259,
@@ -10375,7 +10806,8 @@
       "モバイル限定",
       "Lightningページ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 372,
@@ -10400,7 +10832,8 @@
       "Login History",
       "監査"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 418,
@@ -10424,7 +10857,8 @@
       "フロー",
       "設定値"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 254,
@@ -10449,7 +10883,8 @@
       "項目設定",
       "レポート"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 373,
@@ -10473,7 +10908,8 @@
       "データ保持",
       "監査"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 419,
@@ -10497,7 +10933,8 @@
       "設定値",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 264,
@@ -10522,7 +10959,8 @@
       "項目作成",
       "リレーション"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 263,
@@ -10547,7 +10985,8 @@
       "条件表示",
       "動的表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 420,
@@ -10571,7 +11010,8 @@
       "デプロイ",
       "リリース"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 374,
@@ -10595,7 +11035,8 @@
       "設定変更履歴",
       "監査"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 267,
@@ -10621,7 +11062,8 @@
       "クロスオブジェクト数式",
       "NOW関数"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 444,
@@ -10645,7 +11087,8 @@
       "サンドボックス",
       "本番"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 265,
@@ -10670,7 +11113,8 @@
       "コンポーネント追加",
       "Lightningアプリ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 421,
@@ -10694,7 +11138,8 @@
       "リード",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 375,
@@ -10718,7 +11163,8 @@
       "データ保持",
       "CSV"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 268,
@@ -10743,7 +11189,8 @@
       "名刺自動入力",
       "データ品質"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 422,
@@ -10767,7 +11214,8 @@
       "割り当てルール",
       "ケース"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 271,
@@ -10792,7 +11240,8 @@
       "レポート項目追加",
       "未管理パッケージ"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 376,
@@ -10816,7 +11265,8 @@
       "多要素認証",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 423,
@@ -10840,7 +11290,8 @@
       "ケース",
       "初回応答"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 269,
@@ -10865,7 +11316,8 @@
       "多対多",
       "従側から作成"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 445,
@@ -10889,7 +11341,8 @@
       "Salesforce DX",
       "リリース"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 377,
@@ -10914,7 +11367,8 @@
       "セッションセキュリティ",
       "セキュリティ"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 3
   },
   {
     "id": 424,
@@ -10938,7 +11392,8 @@
       "評価順序",
       "自動化"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 272,
@@ -10963,7 +11418,8 @@
       "全項目表示",
       "コンポーネント"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 2
   },
   {
     "id": 270,
@@ -10988,7 +11444,8 @@
       "リレーション設定",
       "親変更不可"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 425,
@@ -11012,7 +11469,8 @@
       "変数",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 378,
@@ -11036,7 +11494,8 @@
       "セッションセキュリティ",
       "MFA"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   },
   {
     "id": 276,
@@ -11062,7 +11521,8 @@
       "件数集計",
       "ノーコード"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 274,
@@ -11088,7 +11548,8 @@
       "Lightningページ",
       "コンパクト表示"
     ],
-    "source": "tyson"
+    "source": "tyson",
+    "diff": 3
   },
   {
     "id": 426,
@@ -11112,6 +11573,7 @@
       "ガバナ制限",
       "フロー"
     ],
-    "source": "gen"
+    "source": "gen",
+    "diff": 1
   }
 ]

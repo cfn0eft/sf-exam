@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=27">
+<link rel="stylesheet" href="../../quiz.css?v=28">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -108,6 +108,7 @@
   <!-- 高速めくり総ざらい -->
   <button class="quick-entry" onclick="startQuick('all')"><span class="qe-ic">⚡</span><span class="qe-main"><span class="qe-t">高速めくりで総ざらい</span><span class="qe-sub">問題→答えをサッと確認（前日チェック向き）</span></span><span class="qe-arrow">›</span></button>
   <button class="quick-entry" onclick="openNotebook()"><span class="qe-ic">📓</span><span class="qe-main"><span class="qe-t">間違いノート</span><span class="qe-sub">誤答・自信なし＋理由・メモを1冊に</span></span><span class="qe-arrow">›</span></button>
+  <button class="quick-entry" onclick="openCases()"><span class="qe-ic">📋</span><span class="qe-main"><span class="qe-t">ケーススタディ</span><span class="qe-sub">実務シナリオで関連問題を連続で解く</span></span><span class="qe-arrow">›</span></button>
 
   <!-- 統計 -->
   <div class="stats-grid">
@@ -170,6 +171,7 @@
   <div class="pbar"><div class="pfill" id="s-pfill"></div></div>
   <div class="card" id="s-card">
     <div class="qbadge" id="s-badge">Q1</div>
+    <div id="s-scenario" class="scenario-box" style="display:none"></div>
     <div class="qtext" id="s-qtext"></div>
     <div id="s-qfig" style="display:none"></div>
     <div class="choices" id="s-choices"></div>
@@ -509,13 +511,13 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
-<script src="../../changelog.js?v=27"></script>
+<script src="../../changelog.js?v=28"></script>
 <!-- 図解データ（インラインSVG・エンジンより先に読み込む） -->
-<script src="../../figures.js?v=27"></script>
+<script src="../../figures.js?v=28"></script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=27"></script>
+<script src="../../quiz-engine.js?v=28"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=27"></script>
+<script src="../../cloud-sync.js?v=28"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>

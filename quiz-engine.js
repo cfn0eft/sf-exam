@@ -173,6 +173,7 @@ function handleKey(e){
   if(e.key==='?'){toggleShortcutHelp();e.preventDefault();return;}
   if(e.key==='Escape'){
     const _nb=document.getElementById('nb-ov');if(_nb&&_nb.classList.contains('show')){closeNotebook();e.preventDefault();return;}
+    const _cs=document.getElementById('cs-ov');if(_cs&&_cs.classList.contains('show')){closeCases();e.preventDefault();return;}
     const _f=document.getElementById('fig-lb');if(_f&&_f.classList.contains('show')){closeFig();e.preventDefault();return;}
     const _n=document.getElementById('news-modal');if(_n&&_n.classList.contains('on')){closeNews();e.preventDefault();return;}
     const _h=document.getElementById('sc-help');if(_h&&_h.classList.contains('on')){toggleShortcutHelp(false);e.preventDefault();return;}
@@ -984,6 +985,8 @@ function renderSQ(){
   badge.className='qbadge'+(isM?' mbadge':'');
   badge.insertAdjacentHTML('beforeend',diffPillHTML(q));
   setText('s-qtext',q.question);
+  var _scn=document.getElementById('s-scenario');
+  if(_scn){if(q.scenario){_scn.style.display='';_scn.innerHTML='<div class="scn-tag">📋 ケーススタディ</div>'+escH(q.scenario);}else{_scn.style.display='none';_scn.innerHTML='';}}
   setFig('s-qfig',q.fig);
   const bmbtn=document.getElementById('s-bmbtn');
   bmbtn.textContent=isBm(q.id)?'★':'☆';
@@ -1040,12 +1043,32 @@ function onMemoInput(){
   clearTimeout(_memoT);
   _memoT=setTimeout(()=>{save();const ms=document.getElementById('memo-saved');if(ms){ms.classList.add('on');setTimeout(()=>ms.classList.remove('on'),1200);}},600);
 }
+// #5 選択肢別の誤り解説：既存の検証済み解説（□ <選択肢> これは正解/不正解です。…）を
+//    実行時に解析し、選択肢ごとに表示する（事実の新規生成はしない＝公式ソース第一を維持）。
+function perChoiceWhy(q){
+  var ex=(q&&q.explanation)||'';var box='□';
+  if(ex.indexOf(box)<0)return null;
+  var parts=ex.split(box);parts.shift();
+  if(parts.length!==q.choices.length)return null;
+  var items=[];
+  for(var i=0;i<parts.length;i++){
+    var seg=parts[i];
+    var m=seg.match(/これは(正解|不正解)です[。\.]?/);
+    if(!m)return null;
+    var reason=seg.slice(m.index+m[0].length).replace(/[\n\s]*(参考|補足)[：:][\s\S]*$/,'').trim();
+    if(!reason)return null;
+    items.push({ok:m[1]==='正解',reason:reason});
+  }
+  var nm=ex.match(/補足[：:]([\s\S]*)$/);
+  return {items:items,note:nm?nm[1].trim():''};
+}
 function checkAnswer(){
   if(sRevealed)return;sRevealed=true;
   var _sh=document.getElementById('s-hint');if(_sh)_sh.style.display='none';
   const q=sQueue[sCur];
   const selTx=sSel.map(i=>q.choices[i]);
   const isOk=arrEq(selTx.slice().sort(),q.answers.slice().sort());
+  const pcw=perChoiceWhy(q);
   document.querySelectorAll('#s-choices .choice').forEach(item=>{
     item.classList.add('done');
     const oi=+item.dataset.oi,ch=q.choices[oi],isSel=sSel.includes(oi),isAns=q.answers.includes(ch);
@@ -1054,11 +1077,13 @@ function checkAnswer(){
     else if(!isSel&&isAns)item.classList.add('hint');
     item.setAttribute('aria-pressed',isSel?'true':'false');item.tabIndex=-1;
     item.querySelector('.cmark').textContent=isAns?'✓':(isSel?'✗':item.dataset.num);
+    if(pcw&&pcw.items[oi]){var cwd=document.createElement('div');cwd.className='choice-why '+(pcw.items[oi].ok?'cw-ok':'cw-ng');cwd.textContent=(pcw.items[oi].ok?'✓ ':'✗ ')+pcw.items[oi].reason;item.appendChild(cwd);}
   });
   const exp=document.getElementById('s-exp');
   exp.className='exp-box show '+(isOk?'exp-ok':'exp-ng');
-  exp.innerHTML='<div class="exp-head"><span>'+(isOk?'✅':'❌')+'</span><span>'+(isOk?'正解！':'不正解')+'</span></div>'
-    +'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
+  var _eh='<div class="exp-head"><span>'+(isOk?'✅':'❌')+'</span><span>'+(isOk?'正解！':'不正解')+'</span></div>';
+  if(pcw){exp.innerHTML=_eh+(pcw.note?'<div style="white-space:pre-wrap">補足：'+escH(pcw.note)+'</div>':'<div class="exp-note-sm">各選択肢の下に「なぜ正解／不正解か」を表示しています。</div>');}
+  else{exp.innerHTML=_eh+'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';}
   if(q.expFig)exp.innerHTML+=figHTML(q.expFig);
   if(q.reference_url){exp.innerHTML+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';}
   // 誤答理由タグ（#1・任意・根本原因レポートに集計）
@@ -1357,6 +1382,30 @@ function readinessTrendHTML(){
     +'<line x1="0" y1="'+passY+'" x2="'+W+'" y2="'+passY+'" class="rdz-pass"/>'
     +'<path d="'+d+'" class="rdz-line"/></svg>'
     +'<div class="an-note">直近 '+rz.length+' 点。現在 <b>'+last+'%</b>（合格ライン '+PASS+'%）'+(diff>=0?'・期間 +'+diff+'pt':'・期間 '+diff+'pt')+'。横線＝合格ライン。</div></div>';
+}
+
+// ===== Phase5: ケーススタディ（同一シナリオの関連問題を連続提示） =====
+function caseList(){
+  var map={},order=[];
+  scopedQ().forEach(function(q){if(q.case){if(!map[q.case]){map[q.case]={id:q.case,scenario:q.scenario||'',qs:[]};order.push(q.case);}map[q.case].qs.push(q);}});
+  return order.map(function(id){return map[id];});
+}
+function openCases(){
+  var cs=caseList();
+  var ov=document.getElementById('cs-ov');
+  if(!ov){ov=document.createElement('div');ov.id='cs-ov';ov.className='nb-ov';ov.addEventListener('click',function(e){if(e.target===ov)closeCases();});document.body.appendChild(ov);}
+  var body;
+  if(!cs.length){body='<div class="nb-empty">ケーススタディはまだありません。</div>';}
+  else{body=cs.map(function(c){return '<div class="nb-item"><div class="scn-tag">📋 ケーススタディ（'+c.qs.length+'問）</div><div class="nb-q" style="font-weight:500">'+escH(c.scenario)+'</div><button class="btn bp" style="width:100%;margin-top:8px" onclick="beginCase(\''+c.id+'\')">この設定で'+c.qs.length+'問に挑戦 →</button></div>';}).join('');}
+  ov.innerHTML='<div class="nb-card"><div class="nb-head"><span>📋 ケーススタディ</span><button class="nb-close" onclick="closeCases()">✕</button></div><div class="nb-scroll">'+body+'</div></div>';
+  ov.classList.add('show');
+}
+function closeCases(){var ov=document.getElementById('cs-ov');if(ov)ov.classList.remove('show');}
+function beginCase(id){
+  var qs=scopedQ().filter(function(q){return q.case===id;});
+  if(!qs.length){toast('問題が見つかりません');return;}
+  closeCases();
+  beginStudyWith(qs);
 }
 
 // ===== EXAM =====
