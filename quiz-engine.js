@@ -1467,7 +1467,7 @@ function openGuide(){
       return '<div class="gd-item"><span class="gd-ic">'+it.ic+'</span><div class="gd-main"><div class="gd-name">'+escH(it.name)+'</div><div class="gd-desc">'+escH(it.desc)+'</div></div>'+(it.act?'<button class="gd-go" onclick="guideAct(\''+it.act+'\')">開く</button>':'')+'</div>';
     }).join('');
   }).join('');
-  ov.innerHTML='<div class="nb-card"><div class="nb-head"><span>❓ 使い方ガイド</span><button class="nb-close" onclick="closeGuide()">✕</button></div><div class="nb-scroll"><div class="gd-intro">このアプリでできることの一覧です。「開く」を押すと実際に試せます。</div>'+body+'</div></div>';
+  ov.innerHTML='<div class="nb-card"><div class="nb-head"><span>❓ 使い方ガイド</span><button class="nb-close" onclick="closeGuide()">✕</button></div><div class="nb-scroll"><div class="gd-intro">このアプリでできることの一覧です。「開く」を押すと実際に試せます。</div><button class="gd-tour" onclick="closeGuide();replayOnboarding()">🎬 はじめての方へ：かんたんツアーを見る</button>'+body+'</div></div>';
   ov.classList.add('show');
 }
 function closeGuide(){var ov=document.getElementById('guide-ov');if(ov)ov.classList.remove('show');}
@@ -1991,17 +1991,22 @@ function renderStreakBanner(){
   const hs=document.getElementById('hh-streak');
   if(hs){ if(n>=1){hs.style.display='';hs.textContent='🔥 '+n+'日連続';} else hs.style.display='none'; return; }
 }
-// ===== 初回オンボーディング（3ステップ） =====
+// ===== 初回オンボーディング（5ステップ・かんたんツアー） =====
+// 内容を変えたら OB_VERSION を上げると、全ユーザーに一度だけ再表示される。
+const OB_VERSION='2';
 const OB_STEPS=[
-  {ic:'📖',t:'学習モードで解く',d:'1問ずつ解いて、選択肢ごとの解説をその場で確認。間違えた問題は自動で復習キューに入ります。'},
-  {ic:'⏱️',t:'試験モードで実力チェック',d:'公式の出題比率で本番形式60問。問題ナビゲータ・🚩フラグ・採点で弱点が分かります。'},
-  {ic:'🔁',t:'復習で定着させる',d:'ホームの「今日やる」から、間違えた問題・SRS・弱点分野をワンタップで復習できます。'}
+  {ic:'🎉',t:'ようこそ！',d:'このアプリひとつで合格まで。「学ぶ → 実力を測る → 復習で定着 → 続ける」をまるごとサポートします。まずは流れを30秒で。'},
+  {ic:'📖',t:'学ぶ',d:'学習モードは1問ずつ解いて、選択肢ごとに「なぜ正解／不正解か」を確認。迷ったらヒント、教科書・用語帳・高速めくりも使えます。'},
+  {ic:'⏱️',t:'実力を測る',d:'本番形式の試験、分野や問題数を選ぶカスタム模試、実務シナリオのケーススタディで合格力をチェックできます。'},
+  {ic:'🔁',t:'復習で定着',d:'間違えた問題は自動で復習キューへ。間違いノート・重点ループ・SRS・デイリーチャレンジで、間違えるほど賢くなります。'},
+  {ic:'🎮',t:'続ける＆ぜんぶ見る',d:'XP・レベルや今週のミッションで楽しく継続。統計で弱点も丸わかり。すべての機能は「使い方ガイド」でいつでも確認できます。'}
 ];
 let _obI=0;
 function maybeOnboard(){
-  try{if(localStorage.getItem('sfq_onboarded')==='1')return;}catch(e){return;}
+  try{if(localStorage.getItem('sfq_onboarded')===OB_VERSION)return;}catch(e){return;}
   _obI=0;showOnboard();
 }
+function replayOnboarding(){_obI=0;showOnboard();}
 function showOnboard(){
   let dim=document.getElementById('ob-dim');
   if(!dim){
@@ -2020,14 +2025,14 @@ function obRender(){
     +'<div style="font-size:17px;font-weight:800;margin-bottom:8px">'+escH(s.t)+'</div>'
     +'<div style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:18px">'+escH(s.d)+'</div>'
     +'<div style="display:flex;gap:6px;justify-content:center;margin-bottom:18px">'+dots+'</div>'
-    +(last?'<div style="font-size:11.5px;color:var(--text-sub);line-height:1.6;margin-bottom:16px">ℹ️ すべての機能は、上部の <b>❓</b> やマイページの「使い方ガイド」でいつでも確認できます。</div>':'')
+    +(last?'<button onclick="obClose();openGuide()" style="width:100%;background:var(--primary-light);color:var(--primary-dark);border:1px solid var(--primary);border-radius:8px;font-size:13px;font-weight:700;padding:10px;cursor:pointer;margin-bottom:12px">📖 使い方ガイドで全機能を見る</button>':'')
     +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'
     +'<button onclick="obClose()" style="background:none;border:none;color:var(--text-sub);font-size:13px;cursor:pointer">スキップ</button>'
     +'<button onclick="obNext()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px 20px;cursor:pointer">'+(last?'はじめる 🚀':'次へ →')+'</button>'
     +'</div>';
 }
 function obNext(){if(_obI<OB_STEPS.length-1){_obI++;obRender();}else obClose();}
-function obClose(){try{localStorage.setItem('sfq_onboarded','1');}catch(e){}const d=document.getElementById('ob-dim');if(d)d.remove();}
+function obClose(){try{localStorage.setItem('sfq_onboarded',OB_VERSION);}catch(e){}const d=document.getElementById('ob-dim');if(d)d.remove();}
 function renderWeekly(){
   const host=document.getElementById('weekly');if(!host)return;
   const daily=store.daily||{};
