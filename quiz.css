@@ -1125,3 +1125,31 @@ body[data-fs=small] .cdef{font-size:12px}
 .an-ins li{margin-bottom:8px}
 .an-act{display:inline-block;margin-left:4px;background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer}
 
+/* ===== 学習・復習体験（ヒント・類題・Feynman・間違いノート） ===== */
+#s-hint{margin:10px 0 0}
+.hint-btn{background:var(--warning-light);color:var(--warning);border:1px solid var(--warning);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.hint-list{margin-top:8px}
+.hint-it{font-size:12px;color:var(--text);background:var(--warning-light);border-radius:8px;padding:7px 10px;margin-top:6px;line-height:1.6}
+.choice.elim{opacity:.38}
+.relq{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:12px;margin-top:5px;cursor:pointer}
+.relq:active{border-color:var(--primary)}
+.fey-wrap{margin-top:12px}
+.fey-q{font-size:12px;font-weight:700;color:var(--text-sub);margin-bottom:6px}
+.fey-box{width:100%;min-height:54px;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--card);color:var(--text);font-family:inherit;resize:vertical;box-sizing:border-box}
+.nb-ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center}
+.nb-ov.show{display:flex}
+.nb-card{background:var(--card);color:var(--text);width:100%;max-width:560px;max-height:88vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,.35)}
+.nb-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);font-weight:800;font-size:15px}
+.nb-close{background:none;border:none;font-size:20px;color:var(--text-sub);cursor:pointer;line-height:1}
+.nb-scroll{overflow-y:auto;padding:12px 16px;flex:1}
+.nb-empty{color:var(--text-sub);font-size:13px;text-align:center;padding:36px 12px;line-height:1.7}
+.nb-item{border:1px solid var(--border);border-radius:10px;padding:11px 12px;margin-bottom:10px}
+.nb-q{font-size:13px;font-weight:700;line-height:1.55;margin-bottom:6px}
+.nb-a{font-size:12.5px;color:var(--success);font-weight:700;margin-bottom:5px}
+.nb-tag{display:inline-block;font-size:11px;background:var(--warning-light);color:var(--warning);border-radius:6px;padding:2px 8px;margin-bottom:5px}
+.nb-exp{font-size:12px;color:var(--text-sub);line-height:1.6;margin:4px 0;white-space:pre-wrap}
+.nb-sum{font-size:12px;color:var(--purple);background:var(--purple-light);border-radius:7px;padding:6px 9px;margin:4px 0;line-height:1.55}
+.nb-note{font-size:12px;color:var(--text);background:var(--bg);border-radius:7px;padding:6px 9px;margin:4px 0;line-height:1.55}
+.nb-go{margin-top:6px;background:none;border:none;color:var(--primary);font-size:12px;font-weight:700;cursor:pointer;padding:0}
+.nb-foot{padding:12px 16px;border-top:1px solid var(--border)}
+

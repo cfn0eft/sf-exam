@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=24">
+<link rel="stylesheet" href="../../quiz.css?v=25">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -95,10 +95,16 @@
       <span class="next-main"><span class="next-title">弱点分野を出題</span><span class="next-sub">正答率の低い分野から</span></span>
       <span class="next-badge" id="next-weak"></span>
     </button>
+    <button class="next-row" onclick="startLeech()">
+      <span class="todo-ico" style="background:var(--purple-light);color:var(--purple)">🔂</span>
+      <span class="next-main"><span class="next-title">重点ループ</span><span class="next-sub">つまずく問題を2連続正解まで</span></span>
+      <span class="next-badge" id="next-leech"></span>
+    </button>
   </div>
 
   <!-- 高速めくり総ざらい -->
   <button class="quick-entry" onclick="startQuick('all')"><span class="qe-ic">⚡</span><span class="qe-main"><span class="qe-t">高速めくりで総ざらい</span><span class="qe-sub">問題→答えをサッと確認（前日チェック向き）</span></span><span class="qe-arrow">›</span></button>
+  <button class="quick-entry" onclick="openNotebook()"><span class="qe-ic">📓</span><span class="qe-main"><span class="qe-t">間違いノート</span><span class="qe-sub">誤答・自信なし＋理由・メモを1冊に</span></span><span class="qe-arrow">›</span></button>
 
   <!-- 統計 -->
   <div class="stats-grid">
@@ -161,7 +167,8 @@
     <div class="qtext" id="s-qtext"></div>
     <div id="s-qfig" style="display:none"></div>
     <div class="choices" id="s-choices"></div>
-    <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>Enter</kbd> で解答・次へ　/　<kbd>0</kbd> で自信なし切替</div>
+    <div id="s-hint"></div>
+    <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>Enter</kbd> で解答・次へ　/　<kbd>0</kbd> で自信なし　/　<kbd>H</kbd> でヒント</div>
     <div class="exp-box" id="s-exp"></div>
     <details class="memo-details">
       <summary>📝 メモ <span class="memo-saved" id="memo-saved">✓ 保存</span></summary>
@@ -496,13 +503,13 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
-<script src="../../changelog.js?v=24"></script>
+<script src="../../changelog.js?v=25"></script>
 <!-- 図解データ（インラインSVG・エンジンより先に読み込む） -->
-<script src="../../figures.js?v=24"></script>
+<script src="../../figures.js?v=25"></script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=24"></script>
+<script src="../../quiz-engine.js?v=25"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=24"></script>
+<script src="../../cloud-sync.js?v=25"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>
