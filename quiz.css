@@ -1049,3 +1049,62 @@ body[data-fs=small] .cdef{font-size:12px}
 .extr-tag{flex-shrink:0;font-size:10px;font-weight:700;color:var(--text-sub);background:var(--bg);
   border:1px solid var(--border);border-radius:5px;padding:1px 6px}
 
+/* ============================================================
+   図解（インラインSVG）— 色は全部ここで管理し、図ファイル(figures.js)には
+   色を書かない。インライン展開された SVG が [data-theme] に追従する。
+   ============================================================ */
+.qfig{margin:12px 0;border-radius:12px;overflow:hidden;cursor:zoom-in}
+.qfig svg{display:block;width:100%;height:auto;
+  --f-fig:#f8fafc;--f-figbd:#e2e8f0;--f-ink:#0f172a;--f-sub:#475569;--f-ln:#94a3b8;
+  --f-card:#ffffff;--f-cardbd:#cbd5e1;
+  --f-blue-bg:#e8f3ff;--f-blue-bd:#0176d3;--f-blue-tx:#0176d3;
+  --f-indigo-bg:#e3eefe;--f-indigo-bd:#3b66d3;--f-indigo-tx:#3b66d3;
+  --f-teal-bg:#d6f5f2;--f-teal-bd:#0b827c;--f-teal-tx:#0b827c;
+  --f-purple-bg:#f0ebf8;--f-purple-bd:#7b5ea7;--f-purple-tx:#6b4e96;
+  --f-amber-bg:#fef3e2;--f-amber-bd:#dd7a01;--f-amber-tx:#c25e00;
+  --f-slate-bg:#eef2f7;--f-slate-bd:#94a3b8;
+  --f-green:#2e844a;--f-red:#ba0517}
+[data-theme=dark] .qfig svg{
+  --f-fig:#191919;--f-figbd:#333;--f-ink:#f0f0f0;--f-sub:#bbb;--f-ln:#666;
+  --f-card:#262626;--f-cardbd:#555;
+  --f-blue-bg:#0c2d4a;--f-blue-bd:#4ba3e3;--f-blue-tx:#5fb0ec;
+  --f-indigo-bg:#142a4a;--f-indigo-bd:#5b86d3;--f-indigo-tx:#7da3e0;
+  --f-teal-bg:#0a2e2d;--f-teal-bd:#3fbfba;--f-teal-tx:#48cfc9;
+  --f-purple-bg:#2a1f40;--f-purple-bd:#a07fd6;--f-purple-tx:#b89ce0;
+  --f-amber-bg:#3b2600;--f-amber-bd:#f0a830;--f-amber-tx:#f0b048;
+  --f-slate-bg:#2b2b2b;--f-slate-bd:#7b8696;
+  --f-green:#3ba755;--f-red:#e5404e}
+.qfig svg .fig{fill:var(--f-fig);stroke:var(--f-figbd);stroke-width:1}
+.qfig svg .card{fill:var(--f-card);stroke:var(--f-figbd);stroke-width:1.5}
+.qfig svg .box{fill:var(--f-card);stroke:var(--f-cardbd);stroke-width:1.5}
+.qfig svg .b-blue{fill:var(--f-blue-bg);stroke:var(--f-blue-bd);stroke-width:1.6}
+.qfig svg .b-indigo{fill:var(--f-indigo-bg);stroke:var(--f-indigo-bd);stroke-width:1.6}
+.qfig svg .b-teal{fill:var(--f-teal-bg);stroke:var(--f-teal-bd);stroke-width:1.6}
+.qfig svg .b-purple{fill:var(--f-purple-bg);stroke:var(--f-purple-bd);stroke-width:1.6}
+.qfig svg .b-amber{fill:var(--f-amber-bg);stroke:var(--f-amber-bd);stroke-width:1.6}
+.qfig svg .b-slate{fill:var(--f-slate-bg);stroke:var(--f-slate-bd);stroke-width:1.6}
+.qfig svg .ink{fill:var(--f-ink)}
+.qfig svg .sub{fill:var(--f-sub)}
+.qfig svg .ttl{fill:var(--f-ink);font-weight:700}
+.qfig svg .t-blue{fill:var(--f-blue-tx);font-weight:700}
+.qfig svg .t-indigo{fill:var(--f-indigo-tx);font-weight:700}
+.qfig svg .t-teal{fill:var(--f-teal-tx);font-weight:700}
+.qfig svg .t-purple{fill:var(--f-purple-tx);font-weight:700}
+.qfig svg .t-amber{fill:var(--f-amber-tx);font-weight:700}
+.qfig svg .t-green{fill:var(--f-green);font-weight:700}
+.qfig svg .t-red{fill:var(--f-red);font-weight:700}
+.qfig svg .ln{stroke:var(--f-ln);fill:none}
+.qfig svg .ln-green{stroke:var(--f-green);fill:none}
+.qfig svg .ln-teal{stroke:var(--f-teal-bd);fill:none}
+.qfig svg .ar{fill:var(--f-ln)}
+.qfig svg .g-blue{stop-color:var(--f-blue-bd)}
+.qfig svg .g-amber{stop-color:var(--f-amber-bd)}
+.qfig svg text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
+.qfig figcaption{font-size:11px;color:var(--text-sub);text-align:center;padding:6px 8px 0}
+/* 拡大表示（ライトボックス） */
+.figlb{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1200;display:none;
+  align-items:center;justify-content:center;padding:14px}
+.figlb.show{display:flex}
+.figlb .qfig{cursor:zoom-out;max-width:920px;width:100%;margin:0;background:var(--card);
+  padding:8px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+

@@ -19,15 +19,16 @@ sf-exam/
 ├── quiz-engine.js        # 全資格共通の単一エンジン（約1230行）
 ├── quiz.css              # 全資格共通
 ├── changelog.js          # アップデート履歴データ window.SFQ_CHANGELOG（LP・全資格で共有・唯一の出典）
+├── figures.js            # 図解データ window.SFQ_FIGURES（全資格共有・唯一の出典。色は持たずクラス＋幾何のみのインラインSVG）
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v23）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v24）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
         └── data/
-            ├── questions.json   # 各問 domain・multi 内蔵に正規化
+            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig（設問図）/ expFig（解説図）に figures.js の図名を指定
             ├── domains.json     # {domains:[{code,name,weight,emoji}], map?}
             ├── vocab.json       # 章配列 {chapter,terms:[{title,jaName,enName,definition,examPoints[],questions[],fullContent}]}
             └── navmap.json      # [{title,content}] 設定マップ
@@ -200,10 +201,24 @@ git push origin main
 
 ---
 
-## 残タスク（2026-06-01 時点）
+## 残タスク（2026-06-02 時点）
 
 - アクティブな残タスクなし。
+- （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig` に図名を入れるだけ。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
+
+### 完了済み（2026-06-02・第6弾）図解・図つき解説（キャッシュ v24・アセット `?v=22`）
+
+- **図解アセット `figures.js`（`window.SFQ_FIGURES`）を新設＝全資格共通の唯一の出典**。キーは `"<slug>/<name>"`、値は**色を持たない**インラインSVG文字列（クラス＋幾何情報のみ）。LP は読み込まない（資格シェルのみ、`changelog.js` と同様にエンジンより先に読む）。
+- **テーマはアプリの `[data-theme=dark]` に追従**（OS の `prefers-color-scheme` ではない＝当アプリのダークは手動トグルのため）。色は `quiz.css` の `.qfig svg` パレット（ライト＋`[data-theme=dark]`）で一括定義。**インライン展開なので CSS 変数が継承され**正しく切り替わる。`<img>`/`<object>` だと追従しないため必ずインライン。
+- **エンジン配線**: `figHTML(name)`/`setFig(elId,name)`/`openFig(figEl,ev)`/`closeFig()`（`escH` 直後）。描画先＝学習解説（`checkAnswer`）・設問（`renderSQ`#s-qfig）・試験設問（`renderEQ`#e-qfig）・試験見直し（`examReviewHTML`）・高速めくり（`qkReveal`）。図はタップで拡大（ライトボックス `#fig-lb`、`handleKey` の Esc で閉じる）。
+- **データ**: `questions.json` の各問に任意キー `expFig`（解説図・基本こちら／答えを誘導しない）か `fig`（設問図）。図名は資格内で `figures.js` の `<name>` を指す。今回 **sf-admin 19問・app-builder 21問**へ `expFig` を付与（公式事実と図の整合を1問ずつ確認。入力規則/View All 等の不一致は付与しない）。
+- **収録図 17点**（色なしクラス制御・整形式検証済・両資格＋ライト/ダークで実機確認）:
+  - sf-admin(9): record-access / security-layers / relationships / lead-conversion / role-hierarchy / profile-permset / automation-tools / report-formats / sandbox-types
+  - app-builder(8): relationships / record-triggered-flow / app-builder-regions / rollup-summary / deployment / flow-types / declarative-vs-code / page-assignment
+- **図を増やす手順**: ①`figures.js` に `"<slug>/<name>": '<svg ...>…</svg>'`（既存の標準クラス `fig/box/card/ink/sub/ttl/b-*/t-*/ln*/ar` だけを使う。新色が要るときだけ `quiz.css` の `.qfig svg` パレットに変数追加）②対象問題の `questions.json` に `expFig`/`fig` を追加 ③キャッシュ版数繰り上げ。
+- 旧 `certifications/*/img/*.svg`（第6弾前半でファイル生成した10点）は `figures.js` に統合し**削除済み**（テーマが media-query 依存で当アプリのトグルに追従しなかったため）。
+- 確認用 `_diagram-gallery.html`（`figures.js`＋`quiz.css` で全図をライト/ダーク表示）はローカル専用・**未コミット**。
 
 ### 完了済み（2026-06-01・第5弾）カスタム模試 / 網羅率 / アプリ更新（キャッシュ v23・アセット `?v=21`）
 

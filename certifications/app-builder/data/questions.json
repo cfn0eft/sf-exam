@@ -1,6 +1,7 @@
 [
   {
     "id": 3,
+    "expFig": "declarative-vs-code",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice3",
     "question": "Universal Containers社は、今後30日以内にどれだけの商談が終了するかを追跡するために、取引先に項目が必要です。何を使用すればよいでしょうか。",
     "choices": [
@@ -510,6 +511,7 @@
   },
   {
     "id": 18,
+    "expFig": "relationships",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice18",
     "question": "Northern Trail Outfitters社は、取引先とカスタムオブジェクトParkの主従関係を参照関係に変更しようとしていますが、変更できません。この原因として考えられるものはどれですか。",
     "choices": [
@@ -1329,6 +1331,7 @@
   },
   {
     "id": 45,
+    "expFig": "rollup-summary",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice45",
     "question": "Ursa Major Solar社では、カスタムオブジェクトGalaxy__cとカスタムオブジェクトStar__cの間に参照関係があります。アプリケーションビルダーは、各Galaxy__cレコードに関連するStar__cレコードの総数をカウントする積み上げ集計項目を作成したいと考えています。現在の設定がこの要件の実現にどのような影響を与えるか、正しいものを選択してください。",
     "choices": [
@@ -2009,6 +2012,7 @@
   },
   {
     "id": 55,
+    "expFig": "declarative-vs-code",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice55",
     "question": "Cloud Kicks社は、標準オブジェクトの子オブジェクトから集計を計算するという新しい要件を受けました。チームは宣言的に解決する方法を希望しています。アプリケーションビルダーが評価すべき考慮事項はどれですか。 2つ選びなさい。",
     "choices": [
@@ -2188,6 +2192,7 @@
   },
   {
     "id": 61,
+    "expFig": "app-builder-regions",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice61",
     "question": "Universal Containers社のアプリケーションビルダーは、カスタムオブジェクトのレコードページにChatterフィードを追加するよう依頼されました。アプリケーションビルダーはどの方法を使用すべきでしょうか。",
     "choices": [
@@ -2440,6 +2445,7 @@
   },
   {
     "id": 63,
+    "expFig": "app-builder-regions",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice63",
     "question": "アプリケーションビルダーが新しいLightningレコードページのテンプレートを選択する際に考慮すべきことは何ですか。",
     "choices": [
@@ -2720,6 +2726,7 @@
   },
   {
     "id": 68,
+    "expFig": "relationships",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice68",
     "question": "Universal Containers(UC)社は、カスタムの請求書(Invoice)オブジェクトと請求書明細(Invoice Line Item)オブジェクトを使用しています。請求書明細オブジェクトは、請求書オブジェクトに対して参照関係を持っています。UC社は、この参照関係を主従関係に変更したいと考えていますが、変更ができません。この関係の変換を妨げている可能性がある理由として正しいものはどれですか。2つ選びなさい。",
     "choices": [
@@ -3422,6 +3429,7 @@
   },
   {
     "id": 148,
+    "expFig": "deployment",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice148",
     "question": "Universal Containers社では、Sandboxのリリーススケジュールと要件が複雑なため、環境間の移行には可能な限り変更セットの使用が推奨されています。アプリケーションビルダーが変更セットを使用して移行できる一般的な項目はどれですか。3つ選びなさい。",
     "choices": [
@@ -3724,6 +3732,7 @@
   },
   {
     "id": 97,
+    "expFig": "rollup-summary",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice97",
     "question": "Cloud Kicks社は過去5年間の販売データを持っており、顧客が最初に購入した日を追跡したいと考えています。この要件を満たすために、アプリケーションビルダーはどのように積み上げ集計を使用すべきですか。",
     "choices": [
@@ -4072,6 +4081,7 @@
   },
   {
     "id": 106,
+    "expFig": "page-assignment",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice106",
     "question": "Lightning アプリケーションビルダーを使用してLightning ページにアクセス権を割り当てる際に利用可能なオプションはどれですか。3つ選びなさい。",
     "choices": [
@@ -5174,6 +5184,7 @@
   },
   {
     "id": 320,
+    "expFig": "record-triggered-flow",
     "url": "claude-generated",
     "question": "保存前(Before-Save)レコードトリガフローで実行できる代表的な処理はどれですか。",
     "choices": [
@@ -5272,6 +5283,7 @@
   },
   {
     "id": 321,
+    "expFig": "record-triggered-flow",
     "url": "claude-generated",
     "question": "保存後(After-Save)レコードトリガフローで可能だが、保存前フローでは制限される処理を2つ選びなさい。",
     "choices": [
@@ -5518,6 +5530,7 @@
   },
   {
     "id": 324,
+    "expFig": "flow-types",
     "url": "claude-generated",
     "question": "画面フロー(Screen Flow)を起動できる場所として正しいものを2つ選びなさい。",
     "choices": [
@@ -5716,6 +5729,7 @@
   },
   {
     "id": 326,
+    "expFig": "flow-types",
     "url": "claude-generated",
     "question": "画面フローとレコードトリガフローを組み合わせる場合の典型パターンはどれですか。",
     "choices": [
@@ -6110,6 +6124,7 @@
   },
   {
     "id": 152,
+    "expFig": "page-assignment",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice152",
     "question": "あるコンポーネントを Salesforce モバイルアプリでのみ表示し、デスクトップでは非表示にしたいと考えています。アプリケーションビルダーは Lightning アプリケーションビルダーでどのように設定すべきですか。",
     "choices": [
@@ -6309,6 +6324,7 @@
   },
   {
     "id": 333,
+    "expFig": "declarative-vs-code",
     "url": "claude-generated",
     "question": "金額や部門で承認ルートを変える「動的な承認ルート」を宣言的に実装する方法はどれですか。",
     "choices": [
@@ -6385,6 +6401,7 @@
   },
   {
     "id": 427,
+    "expFig": "deployment",
     "url": "claude-generated",
     "question": "アウトバウンド変更セット(Outbound Change Set)を送るために、組織間で必要な準備はどれですか。",
     "choices": [
@@ -6760,6 +6777,7 @@
   },
   {
     "id": 338,
+    "expFig": "record-triggered-flow",
     "url": "claude-generated",
     "question": "レコード保存時、保存前(Before-Save)レコードトリガフローと入力規則の実行順序はどちらが先ですか。",
     "choices": [
@@ -7401,6 +7419,7 @@
   },
   {
     "id": 431,
+    "expFig": "deployment",
     "url": "claude-generated",
     "question": "本番に変更セットをリリース(Deploy)する時、Apexテストの実行はどう扱われますか。",
     "choices": [
@@ -8687,6 +8706,7 @@
   },
   {
     "id": 215,
+    "expFig": "relationships",
     "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice215",
     "question": "Universal Containers社には、請求書という連結オブジェクトがあり、取引先とのプライマリ主従関係と、注文とのセカンダリ主従関係があります。アプリケーションビルダーは、プライマリの主従関係を参照関係に変更する要件があります。注文とのセカンダリの主従関係はどうなりますか。",
     "choices": [
@@ -10285,6 +10305,7 @@
   },
   {
     "id": 417,
+    "expFig": "flow-types",
     "url": "claude-generated",
     "question": "フローでプラットフォームイベント(Platform Event)を待つにはどうしますか。",
     "choices": [

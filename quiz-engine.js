@@ -141,6 +141,7 @@ function handleKey(e){
   // ? でショートカット一覧、Esc で閉じる（全モード共通）
   if(e.key==='?'){toggleShortcutHelp();e.preventDefault();return;}
   if(e.key==='Escape'){
+    const _f=document.getElementById('fig-lb');if(_f&&_f.classList.contains('show')){closeFig();e.preventDefault();return;}
     const _n=document.getElementById('news-modal');if(_n&&_n.classList.contains('on')){closeNews();e.preventDefault();return;}
     const _h=document.getElementById('sc-help');if(_h&&_h.classList.contains('on')){toggleShortcutHelp(false);e.preventDefault();return;}
   }
@@ -627,6 +628,33 @@ function renderTextbook(){
   renderChapNav();
 }
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ===== 図解（インラインSVG・テーマ追従） =====
+ * 図データは figures.js（window.SFQ_FIGURES）が唯一の出典。キーは "<slug>/<name>"。
+ * 問題データの fig（設問図）/ expFig（解説図）にこの <name> を入れると表示される。
+ * インライン展開なので quiz.css のパレットで [data-theme] に自動追従。タップで拡大。 */
+const FIGS=(typeof window!=='undefined'&&window.SFQ_FIGURES)||{};
+function figMarkup(name){if(!name)return '';return FIGS[(CFG.slug||'')+'/'+name]||FIGS[name]||'';}
+function figHTML(name,cap){
+  const m=figMarkup(name);if(!m)return '';
+  return '<figure class="qfig" onclick="openFig(this,event)" title="タップで拡大">'+m
+    +(cap?'<figcaption>'+escH(cap)+'</figcaption>':'')+'</figure>';
+}
+function setFig(elId,name){
+  const el=document.getElementById(elId);if(!el)return;
+  const h=figHTML(name);el.innerHTML=h;el.style.display=h?'':'none';
+}
+function openFig(figEl,ev){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  const svg=figEl&&figEl.querySelector('svg');if(!svg)return;
+  let lb=document.getElementById('fig-lb');
+  if(!lb){lb=document.createElement('div');lb.id='fig-lb';lb.className='figlb';
+    lb.addEventListener('click',closeFig);document.body.appendChild(lb);}
+  lb.innerHTML='<div class="qfig">'+svg.outerHTML+'</div>';
+  lb.classList.add('show');
+}
+function closeFig(){const lb=document.getElementById('fig-lb');if(lb)lb.classList.remove('show');}
+
 function renderNavMap(){
   const el=document.getElementById('tb-nav');el.innerHTML='';
   NAVDATA.forEach((sec,si)=>{
@@ -910,6 +938,7 @@ function renderSQ(){
   badge.textContent='Q'+q.id+' '+domainDef(domainOf(q.id)).emoji+(isM?' ★ '+q.answers.length+'つ選択':'');
   badge.className='qbadge'+(isM?' mbadge':'');
   setText('s-qtext',q.question);
+  setFig('s-qfig',q.fig);
   const bmbtn=document.getElementById('s-bmbtn');
   bmbtn.textContent=isBm(q.id)?'★':'☆';
   bmbtn.className='bmbtn'+(isBm(q.id)?' on':'');
@@ -980,6 +1009,7 @@ function checkAnswer(){
   exp.className='exp-box show '+(isOk?'exp-ok':'exp-ng');
   exp.innerHTML='<div class="exp-head"><span>'+(isOk?'✅':'❌')+'</span><span>'+(isOk?'正解！':'不正解')+'</span></div>'
     +'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
+  if(q.expFig)exp.innerHTML+=figHTML(q.expFig);
   if(q.reference_url){exp.innerHTML+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';}
   // related terms（vocab に一致した用語）
   const rel=[];
@@ -1164,6 +1194,7 @@ function renderEQ(){
   badge.textContent='Q'+(eCur+1)+(isM?' ★ '+q.answers.length+'つ選択':'');
   badge.className='qbadge'+(isM?' mbadge':'');
   setText('e-qtext',q.question);
+  setFig('e-qfig',q.fig);
   const saved=eAns[eCur]||[];
   const order=eDispArr[eCur]||q.choices.map((_,i)=>i);
   const cel=document.getElementById('e-choices');cel.innerHTML='';
@@ -1363,6 +1394,7 @@ function examReviewHTML(q,i,isOk){
   });
   h+='</div>';
   h+='<div class="erev-exp '+(isOk?'exp-ok':'exp-ng')+'"><div class="exp-head"><span>'+(isOk?'✅':'❌')+'</span><span>'+(isOk?'正解':'不正解')+'</span></div><div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
+  if(q.expFig||q.fig)h+=figHTML(q.expFig||q.fig);
   if(q.reference_url)h+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';
   h+='<div style="margin-top:10px"><button class="btn bg btn-sm" style="width:auto" onclick="event.stopPropagation();jumpQ('+q.id+')">この問題を学習 →</button></div>';
   h+='</div>';
@@ -2207,6 +2239,7 @@ function qkReveal(){
   kp=kp.replace(/^[\s□○◯●✓✔✗✘・\-\*]+/,'');
   q.answers.forEach(a=>{if(a&&kp.indexOf(a)===0)kp=kp.slice(a.length).replace(/^[\s　:：]+/,'');});
   if(kp)h+='<div class="qk-kp">'+escH(kp.slice(0,180))+(kp.length>180?'…':'')+'</div>';
+  if(q.expFig||q.fig)h+=figHTML(q.expFig||q.fig);
   if(q.reference_url)h+='<a class="reflink" href="'+q.reference_url+'" target="_blank" onclick="event.stopPropagation()">🔗 ヘルプ</a>';
   ansEl.innerHTML=h;ansEl.classList.add('show');
   setText('qk-hint','タップで次へ →');

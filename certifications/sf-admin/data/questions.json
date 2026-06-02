@@ -1032,6 +1032,7 @@
   },
   {
     "id": 40,
+    "expFig": "automation-tools",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice40",
     "question": "管理者は、取引先責任者を更新するレコードトリガフローを作成しました。管理者は、フローが実行されているアクティブレコードの値をどのように参照すればよいですか。",
     "choices": [
@@ -1111,6 +1112,7 @@
   },
   {
     "id": 43,
+    "expFig": "role-hierarchy",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice43",
     "question": "Cloud Kicks社は、靴オブジェクトの組織全体のデフォルトを非公開に設定しています。営業マネージャーは、チーム内の営業担当者全員の靴のレコードを含むレポートを表示できる必要があります。レポートへの適切なアクセスを提供するために、管理者が構成すべき項目はどれですか。3つ選びなさい。",
     "choices": [
@@ -1324,6 +1326,7 @@
   },
   {
     "id": 51,
+    "expFig": "security-layers",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice51",
     "question": "管理者が、Universal Containers社の新入社員10名分の新規ユーザーを作成しました。これらのユーザーがSalesforce組織の取引先オブジェクトにアクセスできないのはなぜですか。",
     "choices": [
@@ -1560,6 +1563,7 @@
   },
   {
     "id": 60,
+    "expFig": "automation-tools",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice60",
     "question": "Cloud Kicks社の管理者は、休暇申請の承認プロセスを作成しました。承認プロセスの一部として追加可能な自動アクションはどれですか。2つ選びなさい。",
     "choices": [
@@ -1822,6 +1826,7 @@
   },
   {
     "id": 70,
+    "expFig": "lead-conversion",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice70",
     "question": "Universal Containers社では、リードに商品カテゴリというカスタム項目があります。管理者は、リードの変換時にこの情報を商談の一部にしたいと考えています。この要求を満たすために、管理者はどのようなアクションを取るべきですか。",
     "choices": [
@@ -2294,6 +2299,7 @@
   },
   {
     "id": 89,
+    "expFig": "relationships",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice89",
     "question": "Ursa Major Solar社の管理者は、作業項目とプロジェクトというカスタムオブジェクトのリレーションシップを主従関係から参照関係に変更するよう求められました。管理者がこの要件を満たすことを妨げる可能性のあるシナリオはどれですか。",
     "choices": [
@@ -2743,6 +2749,7 @@
   },
   {
     "id": 106,
+    "expFig": "record-access",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice106",
     "question": "Universal Containers社は、商談の非公開の共有モデルを持ち、商談チームを使用しています。条件に基づく共有ルールは使用していません。Universal Containers社の営業担当者が退職し、そのユーザーレコードが無効化されました。後日、その担当者が同じ職場で再雇用されました。Salesforce管理者は、古いユーザレコードを有効化します。そのユーザーは、同じデフォルトの商談チームに追加されますが、退職前にそのユーザーが担当していたのと同じレコードを見ることができなくなります。考えられる原因は何ですか。",
     "choices": [
@@ -2926,6 +2933,7 @@
   },
   {
     "id": 113,
+    "expFig": "profile-permset",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice113",
     "question": "管理者が、権限セットグループを含む管理パッケージをインストールしました。インストールされた権限セットグループには、いくつかのオブジェクトの削除権限が含まれておりますが、管理者は権限セットグループのユーザーがレコードを削除できないようにする必要があります。管理者は、削除権限を制御するために何をすべきでしょうか。",
     "choices": [
@@ -3421,6 +3429,7 @@
   },
   {
     "id": 132,
+    "expFig": "automation-tools",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice132",
     "question": "DreamHouse Realty社(DR)には承認プロセスがあります。管理者がレコードを承認しようとしましたが、エラーが表示されました。この要求をトラブルシューティングするために、管理者は何を確認すべきですか。",
     "choices": [
@@ -4186,6 +4195,7 @@
   },
   {
     "id": 161,
+    "expFig": "relationships",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice161",
     "question": "DreamHouse Realty社(DR)チームは、オープンハウスを主オブジェクト、訪問者を従オブジェクトとする主従関係を設定しています。訪問者数を追跡するために、管理者はどのようなデータ型の項目をオープンハウスオブジェクトに追加すべきでしょうか。",
     "choices": [
@@ -4264,6 +4274,7 @@
   },
   {
     "id": 164,
+    "expFig": "lead-conversion",
     "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice164",
     "question": "DreamHouse Realty社(DR)のイベントマネージャーは、オープンハウスを成功させたホットリードを、関連する商談の取引先責任者にする必要があります。関連するキャンペーンメンバーの履歴を保持したまま、キャンペーンからどのようにこれを達成すべきでしょうか。",
     "choices": [
@@ -5106,6 +5117,7 @@
   },
   {
     "id": 197,
+    "expFig": "relationships",
     "url": "",
     "question": "「取引先」（主）と「請求書」（従）が主従関係にあります。管理者はコードを使わずに、各取引先に紐づく請求書の合計金額を取引先レコードに表示したいと考えています。最も適切な方法はどれですか。",
     "choices": [
@@ -5246,6 +5258,7 @@
   },
   {
     "id": 204,
+    "expFig": "record-access",
     "url": "",
     "question": "ある カスタムオブジェクトの組織全体のデフォルト（OWD）は「非公開」です。管理者は、特定のロールのユーザー全員が、別の特定の公開グループが所有するレコードを参照できるようにしたいと考えています。レコード所有者を変えずに、最小限の追加アクセスを与える方法はどれですか。",
     "choices": [
@@ -5266,6 +5279,7 @@
   },
   {
     "id": 205,
+    "expFig": "profile-permset",
     "url": "",
     "question": "管理者は、複数の権限セットをまとめた権限セットグループをユーザーに割り当てていますが、そのグループに含まれる1つの危険な権限だけを、グループのメンバーに対して無効化したいと考えています。何を使うべきですか。",
     "choices": [
@@ -5788,6 +5802,7 @@
   },
   {
     "id": 231,
+    "expFig": "security-layers",
     "url": "",
     "question": "管理者が取引先に「社会保障番号」項目を作成しました。詳細ページのレイアウトからこの項目を削除したにもかかわらず、一部のユーザーがレポート・API・データエクスポートでこの項目の値を参照できてしまいます。すべての参照経路でこの項目を確実に非表示にするには、管理者は何をすべきですか。",
     "choices": [
@@ -5808,6 +5823,7 @@
   },
   {
     "id": 232,
+    "expFig": "profile-permset",
     "url": "",
     "question": "あるユーザーのプロファイルでは商談オブジェクトの「削除」権限が付与されていません。一方、このユーザーに割り当てられた権限セットでは商談の「削除」が有効になっています。権限の組み合わせに関する説明として正しいものを2つ選びなさい。",
     "choices": [
@@ -6152,6 +6168,7 @@
   },
   {
     "id": 249,
+    "expFig": "report-formats",
     "url": "",
     "question": "管理者は、行に「商品カテゴリ」、列に「四半期」を取り、その交差セルに売上合計を表示する二次元のクロス集計レポートを作成したいと考えています。どのレポート形式を使うべきですか。",
     "choices": [
@@ -6844,6 +6861,7 @@
   },
   {
     "id": 281,
+    "expFig": "report-formats",
     "url": "claude-generated",
     "question": "結合レポート(Joined Report)に関する制約として正しいものはどれですか。",
     "choices": [
@@ -8514,6 +8532,7 @@
   },
   {
     "id": 350,
+    "expFig": "sandbox-types",
     "url": "claude-generated",
     "question": "AW Computing社で、設定変更の差分検証のため Developer Pro と Partial Copy のどちらを使うべきか相談されました。Partial Copy が向くシナリオはどれですか。",
     "choices": [
