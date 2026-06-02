@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" role="img" aria-label="参照関係と主従関係の違い">
+<style>
+ svg{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif}
+ .fig{fill:#f8fafc;stroke:#e2e8f0}
+ .card{fill:#ffffff;stroke:#e2e8f0;stroke-width:1.5}
+ .box{fill:#e8f3ff;stroke:#0176d3;stroke-width:1.5}
+ .boxc{fill:#eef2f7;stroke:#94a3b8;stroke-width:1.5}
+ .boxm{fill:#d6f5f2;stroke:#0b827c;stroke-width:1.5}
+ .boxd{fill:#e7f7f5;stroke:#0b827c;stroke-width:1.5}
+ .ink{fill:#0f172a}.sub{fill:#475569}.ttl{fill:#0f172a;font-weight:700}
+ .ln{stroke:#94a3b8;stroke-width:2;fill:none}.head{fill:#0176d3;font-weight:700}.headm{fill:#0b827c;font-weight:700}
+ @media (prefers-color-scheme:dark){
+  .fig{fill:#191919;stroke:#333}.card{fill:#222;stroke:#3a3a3a}
+  .box{fill:#0c2d4a;stroke:#4ba3e3}.boxc{fill:#2b2b2b;stroke:#666}
+  .boxm{fill:#0a2e2d;stroke:#3fbfba}.boxd{fill:#0c2e2c;stroke:#3fbfba}
+  .ink{fill:#f0f0f0}.sub{fill:#bbb}.ttl{fill:#f0f0f0}.ln{stroke:#666}
+  .head{fill:#4ba3e3}.headm{fill:#3fbfba}
+ }
+</style>
+<rect class="fig" x="1" y="1" width="698" height="378" rx="14"/>
+<text class="ttl" x="24" y="36" font-size="19">参照関係 と 主従関係</text>
+
+<rect class="card" x="22" y="56" width="324" height="300" rx="12"/>
+<text class="head" x="44" y="86" font-size="15">参照関係（Lookup）</text>
+<rect class="box" x="60" y="104" width="110" height="46" rx="9"/><text class="ink" x="115" y="132" font-size="13" text-anchor="middle">親</text>
+<rect class="boxc" x="200" y="104" width="110" height="46" rx="9"/><text class="ink" x="255" y="132" font-size="13" text-anchor="middle">子</text>
+<line class="ln" x1="170" y1="127" x2="200" y2="127"/><circle cx="186" cy="127" r="6" fill="none" class="ln"/>
+<text class="ink" x="44" y="186" font-size="12.5">・ ゆるい結びつき（任意でも可）</text>
+<text class="ink" x="44" y="210" font-size="12.5">・ 親を削除しても子は残せる</text>
+<text class="ink" x="44" y="234" font-size="12.5">・ 子は独自の所有者・共有を持つ</text>
+<text class="ink" x="44" y="258" font-size="12.5">・ 積み上げ集計は使えない</text>
+<text class="sub" x="44" y="296" font-size="11.5">例：取引先 ←参照— ケース、商品 ←参照— …</text>
+<text class="sub" x="44" y="320" font-size="11.5">関連先が無くてもレコードを作れる</text>
+
+<rect class="card" x="354" y="56" width="324" height="300" rx="12"/>
+<text class="headm" x="376" y="86" font-size="15">主従関係（Master-Detail）</text>
+<rect class="boxm" x="392" y="104" width="110" height="46" rx="9"/><text class="ink" x="447" y="132" font-size="13" text-anchor="middle">主（Master）</text>
+<rect class="boxd" x="532" y="104" width="110" height="46" rx="9"/><text class="ink" x="587" y="132" font-size="13" text-anchor="middle">従（Detail）</text>
+<line class="ln" x1="502" y1="127" x2="532" y2="127"/><path d="M512,121 l10,6 l-10,6 z" class="ln" fill="#0b827c"/>
+<text class="ink" x="376" y="186" font-size="12.5">・ 強い結びつき（必須）</text>
+<text class="ink" x="376" y="210" font-size="12.5">・ 親を削除すると子も削除（連動）</text>
+<text class="ink" x="376" y="234" font-size="12.5">・ 子の所有者・共有は親に従う</text>
+<text class="ink" x="376" y="258" font-size="12.5">・ 積み上げ集計（ROLLUP）が使える</text>
+<text class="sub" x="376" y="296" font-size="11.5">例：商談 —主従→ 商談商品</text>
+<text class="sub" x="376" y="320" font-size="11.5">作成時に親が必須・あとで参照へ変更可（条件付）</text>
+</svg>

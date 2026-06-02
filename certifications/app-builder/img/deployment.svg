@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" role="img" aria-label="本番へのリリース経路">
+<style>
+ svg{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif}
+ .fig{fill:#f8fafc;stroke:#e2e8f0}
+ .sand{fill:#f0ebf8;stroke:#7b5ea7;stroke-width:1.6}
+ .mid{fill:#e8f3ff;stroke:#0176d3;stroke-width:1.6}
+ .prod{fill:#d6f5f2;stroke:#0b827c;stroke-width:1.6}
+ .ink{fill:#0f172a}.sub{fill:#475569}.ttl{fill:#0f172a;font-weight:700}.ar{fill:#94a3b8}
+ @media (prefers-color-scheme:dark){
+  .fig{fill:#191919;stroke:#333}
+  .sand{fill:#2a1f40;stroke:#a07fd6}.mid{fill:#0c2d4a;stroke:#4ba3e3}.prod{fill:#0a2e2d;stroke:#3fbfba}
+  .ink{fill:#f0f0f0}.sub{fill:#bbb}.ttl{fill:#f0f0f0}.ar{fill:#666}
+ }
+</style>
+<defs><marker id="a" markerWidth="11" markerHeight="11" refX="6" refY="5.5" orient="auto"><path d="M0,0 L11,5.5 L0,11 Z" class="ar"/></marker></defs>
+<rect class="fig" x="1" y="1" width="698" height="318" rx="14"/>
+<text class="ttl" x="24" y="38" font-size="19">本番組織へのリリース</text>
+<text class="sub" x="24" y="60" font-size="13">サンドボックスで開発・検証 → 変更セット／パッケージで本番へ運ぶ</text>
+
+<rect class="sand" x="34" y="104" width="170" height="110" rx="12"/>
+<text class="ink" x="119" y="138" font-size="15" font-weight="700" text-anchor="middle">サンドボックス</text>
+<text class="sub" x="119" y="162" font-size="11.5" text-anchor="middle">本番のコピー環境</text>
+<text class="sub" x="119" y="182" font-size="11.5" text-anchor="middle">開発・テストを行う</text>
+
+<rect class="mid" x="266" y="104" width="170" height="110" rx="12"/>
+<text class="ink" x="351" y="132" font-size="14.5" font-weight="700" text-anchor="middle">変更セット</text>
+<text class="sub" x="351" y="154" font-size="11" text-anchor="middle">/ パッケージ</text>
+<text class="sub" x="351" y="178" font-size="11" text-anchor="middle">運ぶ構成要素を選んで</text>
+<text class="sub" x="351" y="194" font-size="11" text-anchor="middle">送信→受信</text>
+
+<rect class="prod" x="498" y="104" width="170" height="110" rx="12"/>
+<text class="ink" x="583" y="138" font-size="15" font-weight="700" text-anchor="middle">本番組織</text>
+<text class="sub" x="583" y="162" font-size="11.5" text-anchor="middle">利用者が使う環境</text>
+<text class="sub" x="583" y="182" font-size="11.5" text-anchor="middle">検証して反映</text>
+
+<line x1="206" y1="159" x2="262" y2="159" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="438" y1="159" x2="494" y2="159" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#a)"/>
+
+<text class="sub" x="350" y="262" font-size="12" text-anchor="middle">変更セットは「組織間」で送る（アウトバウンド＝送信 / インバウンド＝受信）。</text>
+<text class="sub" x="350" y="284" font-size="12" text-anchor="middle">本番に直接作らず、まずサンドボックスで作って検証するのが基本。</text>
+</svg>
