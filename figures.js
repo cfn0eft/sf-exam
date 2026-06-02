@@ -458,3 +458,6 @@ window.SFQ_FIGURES = {
 +'</svg>'
 
 };
+
+/* 資格をまたいで使い回す図（同一SVGを別名で参照。教科書で app-builder「サンドボックス種別」に流用） */
+window.SFQ_FIGURES['app-builder/sandbox-types'] = window.SFQ_FIGURES['sf-admin/sandbox-types'];

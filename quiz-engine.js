@@ -800,6 +800,12 @@ function showTD(ci,ti){
   setText('td-title',t.jaName||t.title);
   setText('td-en',t.enName?'( '+t.enName+' )':'');
   document.getElementById('td-def').innerHTML=mdBlock(t.definition)||'—';
+  // 図解（用語に fig 指定があれば定義の下に表示）
+  const tdFigBlk=document.getElementById('td-fig-blk');
+  if(t.fig&&figMarkup(t.fig)){
+    document.getElementById('td-fig').innerHTML=figHTML(t.fig);
+    if(tdFigBlk)tdFigBlk.style.display='';
+  }else if(tdFigBlk){tdFigBlk.style.display='none';}
   const ep=document.getElementById('td-ep');ep.innerHTML='';
   if(t.examPoints&&t.examPoints.length){
     t.examPoints.forEach(p=>{

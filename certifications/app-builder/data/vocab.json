@@ -287,6 +287,7 @@
     "terms": [
       {
         "title": "参照関係",
+    "fig": "relationships",
         "jaName": "参照関係",
         "enName": "Lookup Relationship",
         "definition": "2 つのオブジェクトを緩やかに結びつけるリレーション。親レコードを削除しても子レコードは残る（任意の関連）。",
@@ -313,6 +314,7 @@
       },
       {
         "title": "主従関係",
+    "fig": "relationships",
         "jaName": "主従関係",
         "enName": "Master-Detail Relationship",
         "definition": "親（主）に子（従）が強く依存するリレーション。親を削除すると子も削除され、子は親の共有・所有者設定を継承する。積み上げ集計項目の前提となる。",
@@ -339,6 +341,7 @@
       },
       {
         "title": "積み上げ集計項目",
+    "fig": "rollup-summary",
         "jaName": "積み上げ集計項目",
         "enName": "Roll-Up Summary Field",
         "definition": "主従関係の親側に置き、子レコードの件数・合計・最小・最大を集計する項目。",
@@ -493,6 +496,7 @@
       },
       {
         "title": "連結オブジェクト（接合オブジェクト）",
+    "fig": "relationships",
         "jaName": "連結オブジェクト",
         "enName": "Junction Object",
         "definition": "2 つの主従関係を持たせて多対多リレーションを表現するための中間カスタムオブジェクト。両親の和集合で共有・所有を継承する。",
@@ -519,6 +523,7 @@
       },
       {
         "title": "多対多リレーション",
+    "fig": "relationships",
         "jaName": "多対多",
         "enName": "Many-to-Many Relationship",
         "definition": "2 つのオブジェクトを連結オブジェクト経由で結ぶリレーション設計。両側からもう一方を関連リストで参照できる。",
@@ -903,6 +908,7 @@
       },
       {
         "title": "フロー",
+    "fig": "flow-types",
         "jaName": "フロー",
         "enName": "Flow / Flow Builder",
         "definition": "Flow Builder で作る宣言的な自動化。画面フロー（ユーザー操作）と自動起動フローがあり、ワークフロールール／プロセスビルダーの後継。",
@@ -929,6 +935,7 @@
       },
       {
         "title": "レコードトリガフロー",
+    "fig": "record-triggered-flow",
         "jaName": "レコードトリガフロー",
         "enName": "Record-Triggered Flow",
         "definition": "レコードの作成・更新・削除をきっかけに自動起動するフロー。保存前（fast field update）と保存後の実行タイミングを選べる。",
@@ -976,6 +983,7 @@
       },
       {
         "title": "レコードトリガフロー（保存前）",
+    "fig": "record-triggered-flow",
         "jaName": "保存前フロー",
         "enName": "Before-Save Record-Triggered Flow",
         "definition": "レコードが DB に保存される直前に同じレコードの項目を更新するフロー。同オブジェクト更新は高速で、ワークフロー項目更新の置き換え。",
@@ -996,6 +1004,7 @@
       },
       {
         "title": "レコードトリガフロー（保存後）",
+    "fig": "record-triggered-flow",
         "jaName": "保存後フロー",
         "enName": "After-Save Record-Triggered Flow",
         "definition": "レコード保存後に動くフロー。関連レコードの作成・更新、外部呼び出し、メール送信などに使う。",
@@ -1158,6 +1167,7 @@
       },
       {
         "title": "Apex",
+    "fig": "declarative-vs-code",
         "jaName": "Apex",
         "enName": "Apex",
         "definition": "Salesforce 独自のサーバーサイドプログラミング言語。**宣言的（フロー / 数式 / 入力規則）で実現できないとき**に使う最後の手段。",
@@ -1323,6 +1333,7 @@
     "terms": [
       {
         "title": "Lightning アプリケーションビルダー",
+    "fig": "app-builder-regions",
         "jaName": "Lightning アプリケーションビルダー",
         "enName": "Lightning App Builder",
         "definition": "ドラッグ&ドロップで Lightning ページ（レコードページ・アプリページ・ホームページ）を組み立てるツール。",
@@ -1417,6 +1428,7 @@
       },
       {
         "title": "Lightning レコードページ",
+    "fig": "app-builder-regions",
         "jaName": "Lightning レコードページ",
         "enName": "Lightning Record Page",
         "definition": "オブジェクトの詳細画面を Lightning アプリケーションビルダーで構成したページ。標準コンポーネント・カスタム LWC・動的フォーム要素を配置できる。",
@@ -1680,6 +1692,7 @@
       },
       {
         "title": "Lightning アプリケーションビルダーの有効化",
+    "fig": "page-assignment",
         "jaName": "ページ有効化",
         "enName": "Activate Lightning Page",
         "definition": "Lightning レコードページ / ホームページ / アプリページを「組織 / アプリ / アプリ＋レコードタイプ＋プロファイル / フォームファクタ」に割り当てて配信する操作。",
@@ -1707,6 +1720,7 @@
     "terms": [
       {
         "title": "変更セット",
+    "fig": "deployment",
         "jaName": "変更セット",
         "enName": "Change Set",
         "definition": "接続済み組織（例: Sandbox → 本番）間でメタデータ（カスタム項目・オブジェクト等）を移送する宣言的な手段。",
@@ -1810,6 +1824,7 @@
       },
       {
         "title": "サンドボックス種別",
+    "fig": "sandbox-types",
         "jaName": "サンドボックス種別",
         "enName": "Sandbox Types",
         "definition": "Developer / Developer Pro / Partial Copy / Full の 4 種類。本番からのデータコピー量・更新間隔・ストレージが異なる。",
@@ -1871,6 +1886,7 @@
       },
       {
         "title": "デプロイ方式の選び方",
+    "fig": "deployment",
         "jaName": "デプロイ方式",
         "enName": "Deployment Options",
         "definition": "変更セット / 管理パッケージ / 未管理パッケージ / Salesforce CLI（メタデータ API）の 4 系統。チーム規模・自動化要件・バージョン管理の有無で選ぶ。",
