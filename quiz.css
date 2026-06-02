@@ -1165,3 +1165,27 @@ body[data-fs=small] .cdef{font-size:12px}
 .dh-cell{text-align:center;color:#fff;font-weight:700;border-radius:5px;padding:5px 0;min-width:36px}
 .dh-cell.dh-na{background:var(--border);color:var(--text-sub)}
 
+/* ===== ゲーミフィケーション（紙吹雪・レベル/XP・ミッション・合格確度推移） ===== */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:1500;overflow:hidden}
+.confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;animation:cfall linear forwards}
+@keyframes cfall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(104vh) rotate(900deg);opacity:.65}}
+.gc-lv{display:flex;align-items:center;gap:12px}
+.gc-lvbadge{flex:0 0 auto;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.gc-lvmain{flex:1;min-width:0}
+.gc-lvtop{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:5px}
+.gc-xp{color:var(--text-sub);font-weight:600}
+.gc-bar{height:9px;background:var(--border);border-radius:6px;overflow:hidden}
+.gc-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--purple));border-radius:6px;transition:width .5s}
+.gc-tot{font-size:11px;color:var(--text-sub);margin-top:4px}
+.gc-mtitle{font-size:12px;font-weight:700;color:var(--text-sub);margin:14px 0 8px}
+.gc-m{display:flex;align-items:center;gap:8px;font-size:12px;margin:7px 0}
+.gc-mic{flex:0 0 auto}
+.gc-mlab{flex:0 0 38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gc-mbw{flex:1;height:7px;background:var(--border);border-radius:5px;overflow:hidden}
+.gc-mbf{height:100%;background:var(--success);border-radius:5px}
+.gc-mc{flex:0 0 auto;font-weight:700;color:var(--text-sub);min-width:34px;text-align:right}
+.gc-m.done .gc-mlab{color:var(--success);font-weight:700}
+.rdz-svg{width:100%;height:78px;display:block;margin:2px 0}
+.rdz-line{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.rdz-pass{stroke:var(--success);stroke-width:1.5;stroke-dasharray:4 3;opacity:.8}
+

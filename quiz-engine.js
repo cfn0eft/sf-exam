@@ -66,12 +66,12 @@ const EXAM_SAVE_KEY=SKEY+'_examstate';
 // --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
-  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{}};
+  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[]};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 // --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
-window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
+window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function recH(id,ok,low){
@@ -82,8 +82,12 @@ function recH(id,ok,low){
   store.hist[id].lc=low?1:0;
   srsUpdate(id,ok,low);
   bumpDaily();
+  store.xp=(store.xp||0)+(ok?(low?6:10):3);   // #12 XP（正解10/自信なし正解6/不正解も努力3）
+  try{snapReadiness();}catch(e){}              // #17 合格確度スナップショット
   save();
   if(typeof checkBadges==='function')checkBadges();
+  try{maybeGoalCheer();}catch(e){}             // #15 デイリーゴール達成のお祝い
+  try{checkMissions();}catch(e){}              // #16 週ミッション判定
 }
 // 学習時間・時間帯の記録（#18）。sec は checkAnswer で算出（上限300秒でアイドル除外）。
 function recStudyTime(domain,ok,sec){
@@ -318,6 +322,7 @@ function homeStats(){
   try{renderDaily();}catch(e){}
   try{renderResumeBanner();}catch(e){}
   try{renderNews();}catch(e){}
+  try{renderGame();}catch(e){}
   renderPlan();
 }
 
@@ -1264,6 +1269,96 @@ function closeNotebook(){const ov=document.getElementById('nb-ov');if(ov)ov.clas
 function nbStudy(id){closeNotebook();const q=allQ.find(function(x){return x.id===id;});if(q)beginStudyWith([q]);}
 function nbReviewAll(){const ls=scopedQ().filter(function(q){return needsReview(q.id);});closeNotebook();beginStudyWith(shuffle(ls));}
 
+// ===== Phase4: XP・レベル / お祝い演出 / 週ミッション / 合格確度トレンド =====
+// 紙吹雪エフェクト（バッジ・目標・ミッション・合格時）
+function celebrate(){
+  try{
+    var c=document.createElement('div');c.className='confetti';
+    var cols=['#0176d3','#2e844a','#dd7a01','#ba0517','#7b5ea7','#0b827c'];
+    for(var i=0;i<64;i++){var p=document.createElement('i');p.style.left=(Math.random()*100)+'%';p.style.background=cols[i%cols.length];p.style.animationDelay=(Math.random()*0.6).toFixed(2)+'s';p.style.animationDuration=(1.8+Math.random()*1.2).toFixed(2)+'s';c.appendChild(p);}
+    document.body.appendChild(c);
+    setTimeout(function(){if(c&&c.parentNode)c.parentNode.removeChild(c);},2800);
+  }catch(e){}
+}
+// #12 レベル：XPからレベル・進捗を算出（上がるほど必要XP増）
+function levelInfo(){
+  var xp=store.xp||0,lvl=1,need=200,acc=0;
+  while(xp>=acc+need&&lvl<99){acc+=need;lvl++;need=200+(lvl-1)*60;}
+  return {lvl:lvl,cur:xp-acc,need:need,total:xp};
+}
+// #17 合格確度（総合到達度）を1日1点スナップショット
+function snapReadiness(){
+  var tc=0,tt=0;Object.values(store.hist).forEach(function(h){tc+=h.c||0;tt+=(h.c||0)+(h.w||0);});
+  if(!tt)return;var p=Math.round(tc/tt*100),d=_today();
+  if(!Array.isArray(store.rdz))store.rdz=[];
+  var last=store.rdz[store.rdz.length-1];
+  if(last&&last.d===d)last.p=p;else{store.rdz.push({d:d,p:p});if(store.rdz.length>180)store.rdz.shift();}
+}
+// #15 デイリーゴール達成のお祝い（1日1回）
+function maybeGoalCheer(){
+  var goal=store.goal||0;if(goal<=0)return;
+  var today=_today(),todayN=(store.daily&&store.daily[today])||0;
+  if(todayN<goal)return;
+  try{if(localStorage.getItem('sfq_goalcheer')===today)return;localStorage.setItem('sfq_goalcheer',today);}catch(e){}
+  store.xp=(store.xp||0)+20;save();celebrate();toast('🎉 今日の目標達成！ +20XP');
+}
+// #16 週ミッション（日曜はじまり）
+function _weekStart(){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return d;}
+function weekKey(){return _fmtD(_weekStart());}
+function weeklyMissions(){
+  var ws=_weekStart(),wsMs=ws.getTime(),daily=store.daily||{},ans=0,days=0;
+  for(var i=0;i<7;i++){var dd=new Date(ws);dd.setDate(ws.getDate()+i);var v=daily[_fmtD(dd)]||0;if(v>0){days++;ans+=v;}}
+  var exN=(store.exams||[]).filter(function(e){return e.ts&&e.ts>=wsMs;}).length;
+  return [
+    {id:'m1',ic:'📝',label:'今週 40問 解く',cur:Math.min(ans,40),tgt:40},
+    {id:'m2',ic:'📅',label:'今週 3日 学習する',cur:Math.min(days,3),tgt:3},
+    {id:'m3',ic:'⏱️',label:'今週 模試を1回受ける',cur:Math.min(exN,1),tgt:1}
+  ];
+}
+function checkMissions(){
+  if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}};
+  if(!store.missions.claimed)store.missions.claimed={};
+  var wk=weekKey();
+  if(store.missions.wk!==wk){store.missions.wk=wk;store.missions.claimed={};}
+  var newly=null;
+  weeklyMissions().forEach(function(m){if(m.cur>=m.tgt&&!store.missions.claimed[m.id]){store.missions.claimed[m.id]=1;store.xp=(store.xp||0)+50;newly=m;}});
+  if(newly){save();celebrate();toast('🏅 ミッション達成！「'+newly.label+'」+50XP');}
+}
+// ホームのゲーミフィケーションカード：レベル/XP・今週のミッション
+function renderGame(){
+  var host=document.getElementById('gamecard');if(!host)return;
+  var li=levelInfo(),ms=weeklyMissions(),lvPct=Math.round(li.cur/li.need*100);
+  var html='<div class="card game-card"><div class="gc-lv"><div class="gc-lvbadge">Lv.'+li.lvl+'</div>'
+    +'<div class="gc-lvmain"><div class="gc-lvtop"><span>レベル '+li.lvl+'</span><span class="gc-xp">'+li.cur+' / '+li.need+' XP</span></div>'
+    +'<div class="gc-bar"><div class="gc-fill" style="width:'+lvPct+'%"></div></div>'
+    +'<div class="gc-tot">累計 '+li.total+' XP</div></div></div>';
+  html+='<div class="gc-mtitle">🎯 今週のミッション</div>';
+  ms.forEach(function(m){var done=m.cur>=m.tgt,p=Math.round(m.cur/m.tgt*100);
+    html+='<div class="gc-m'+(done?' done':'')+'"><span class="gc-mic">'+(done?'✅':m.ic)+'</span><span class="gc-mlab">'+escH(m.label)+'</span>'
+      +'<div class="gc-mbw"><div class="gc-mbf" style="width:'+p+'%"></div></div><span class="gc-mc">'+m.cur+'/'+m.tgt+'</span></div>';});
+  html+='</div>';
+  host.innerHTML=html;
+}
+// #17 合格確度の推移（折れ線・直近30点）
+function readinessTrendHTML(){
+  var rz=(store.rdz||[]).slice(-30);
+  if(rz.length<2)return '';
+  var W=300,H=70,pad=5;
+  var ps=rz.map(function(x){return x.p;});
+  var min=Math.min.apply(null,ps),max=Math.max.apply(null,ps);
+  min=Math.max(0,Math.min(min,PASS-5));max=Math.min(100,Math.max(max,PASS+5));
+  if(max-min<10)max=min+10;
+  var xs=function(i){return pad+i*(W-2*pad)/(rz.length-1);};
+  var ys=function(p){return pad+(H-2*pad)*(1-(p-min)/(max-min));};
+  var d=rz.map(function(x,i){return (i?'L':'M')+xs(i).toFixed(1)+' '+ys(x.p).toFixed(1);}).join(' ');
+  var passY=ys(PASS).toFixed(1),last=rz[rz.length-1].p,first=rz[0].p,diff=last-first;
+  return '<div class="card"><div class="sec-label" style="margin-top:0">📈 合格確度の推移</div>'
+    +'<svg viewBox="0 0 '+W+' '+H+'" class="rdz-svg" preserveAspectRatio="none">'
+    +'<line x1="0" y1="'+passY+'" x2="'+W+'" y2="'+passY+'" class="rdz-pass"/>'
+    +'<path d="'+d+'" class="rdz-line"/></svg>'
+    +'<div class="an-note">直近 '+rz.length+' 点。現在 <b>'+last+'%</b>（合格ライン '+PASS+'%）'+(diff>=0?'・期間 +'+diff+'pt':'・期間 '+diff+'pt')+'。横線＝合格ライン。</div></div>';
+}
+
 // ===== EXAM =====
 // 標準（引数なし）=本番形式60問・時間制限あり。opts でカスタム模試。
 //   opts = { n:問題数, weak:true(弱点3分野), domains:[code…], timed:false(時間無制限) }
@@ -1469,8 +1564,11 @@ function finishExam(){
   if(!store.exams)store.exams=[];
   store.exams.push({ts:Date.now(),pct:pct,ok:ok,n:eN,pass:pass,byd:byd,secsUsed:secsUsed,custom:(eN!==EXAM_N||!eTimed)});
   if(store.exams.length>50)store.exams=store.exams.slice(-50);
+  store.xp=(store.xp||0)+30+(pass?100:0);   // #12 模試完了+合格ボーナス
   save();
   checkBadges();
+  try{checkMissions();}catch(e){}
+  if(pass)try{celebrate();}catch(e){}
   document.getElementById('e-area').style.display='none';
   document.getElementById('e-result').style.display='block';
   renderScoreRing(pct,pass);
@@ -1610,7 +1708,7 @@ function renderStats(){
 /* ===== 学習分析：根本原因(#20)・学習時間(#18)・キャリブレーション(#7) ===== */
 function renderAnalysis(){
   const host=document.getElementById('analysis');if(!host)return;
-  const html=rootCauseHTML()+diffHeatHTML()+timeHTML()+calibHTML();
+  const html=readinessTrendHTML()+rootCauseHTML()+diffHeatHTML()+timeHTML()+calibHTML();
   host.innerHTML=html;
 }
 // #20 弱点の根本原因：誤答理由タグ＋最弱分野＋時間のかかる分野を統合した助言
@@ -1838,8 +1936,8 @@ function accStats(){let c=0,w=0;Object.values(store.hist).forEach(h=>{c+=h.c||0;
 function safeTest(b){try{return b.test(store);}catch(e){return false;}}
 function checkBadges(){
   if(!store.badges)store.badges={};let last=null;
-  BADGES.forEach(b=>{if(!store.badges[b.id]&&safeTest(b)){store.badges[b.id]=_today();last=b;}});
-  if(last){save();toast('🏅 バッジ獲得: '+last.title);}
+  BADGES.forEach(b=>{if(!store.badges[b.id]&&safeTest(b)){store.badges[b.id]=_today();last=b;store.xp=(store.xp||0)+30;}});
+  if(last){save();try{celebrate();}catch(e){}toast('🏅 バッジ獲得: '+last.title+' +30XP');}
 }
 function renderBadges(){
   const host=document.getElementById('badge-grid');if(!host)return;host.innerHTML='';
@@ -2009,7 +2107,7 @@ function renderExamAcq(pass){
 
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[]};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
 // ===== SRS（間隔反復・SM-2簡易版）=====
