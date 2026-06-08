@@ -23,7 +23,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v33／アセット ?v=31）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v34／アセット ?v=32）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
@@ -64,7 +64,8 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 ## クラウド同期 (Firebase Auth + Firestore)
 
 - 簡易ID＋パスワード方式（内部で `ID@sfquiz.local` に変換）
-- Firestore は `progress/{uid}` に保存。doc 構造は `{ stores: { '<slug>': store, ... }, name, email, updated }`（資格別名前空間。複数資格が同じ uid を共有しても上書きされない）
+- Firestore は `progress/{uid}` に保存。doc 構造は `{ stores: { '<slug>': store, ... }, name, email, updated, feedback:[] }`（資格別名前空間。複数資格が同じ uid を共有しても上書きされない）
+- `feedback` は不具合報告/ご意見の配列（**doc 直下・各 store とは別**）。本人 doc への `arrayUnion` で追加（既存ルールのまま＝本人は自 doc 書込可、ルール変更不要）。未ログイン時は localStorage `sfq_feedback_pending` に退避し、次回ログインで `flushPendingFeedback()` が一括送信
 - 保存は `doc.update(new FieldPath('stores',CERT_KEY), st, ...)` で当該資格のサブストアを丸ごと置換（deep-merge 回避）
 - 保存は 0.8秒デバウンス。`save()` が `window.__cloudSave()` をフック
 
@@ -78,6 +79,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 - 管理者ID = `admin` (`SFQ_ADMIN_IDS=["admin"]`)
 - 全アカウント一覧・リセット・削除・CSV書き出し可
+- フィードバック/不具合報告も全 doc から集約表示（資格・種類で絞り込み／JSON・CSV書き出し＝Claudeに渡す用／各件「対応済み（削除）」で報告者 doc から `arrayRemove`）
 - 管理者ID変更時は `firebase-config.js` の `SFQ_ADMIN_IDS` と Firestore ルールのメール両方を変える
 
 ---
@@ -212,6 +214,14 @@ git push origin main
 - （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig` に図名を入れるだけ。
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
 - （バックログ）ケーススタディ（#25）の拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現状は各資格2件の種）。
+
+### 完了済み（2026-06-08b）アプリ内フィードバック（不具合報告）→クラウド蓄積→管理者ビュー（キャッシュ v34・アセット `?v=32`）
+
+- **GitHub Issue 起票を廃止し、アプリ内フォームに置換**。`reportQuestion(id)` は `openFeedback({qid})` を開くだけに変更。一般のご意見はマイページ「サポート」・使い方ガイド（`GUIDE` の `act:'feedback'`）からも起動。
+- **エンジン**（`quiz-engine.js`）: `openFeedback/renderFeedback/submitFeedback`＋`FB_CATS`（種類7択：不具合/正解誤り/解説誤り/選択肢/日本語/要望/その他）。報告オブジェクト `{fid,ts,cert,qid,cat,msg,qtext,ref,ua,ver,url}`。モーダルは `.sc-box` 流用＋`.fb-*` CSS（テーマ追従）。Esc（`handleKey` に `fb-modal`）/背景クリックで閉じる。
+- **保存経路**: ログイン中は `window.__cloudSubmitFeedback(report)`（cloud-sync）が本人 `progress/{uid}` の **doc 直下 `feedback[]` へ `arrayUnion`**（Firestore ルール変更不要）。未ログイン/ローカルは `localStorage 'sfq_feedback_pending'` に退避→`flushPendingFeedback()` が次回ログインで一括送信。
+- **管理者ビュー**（`cloud-sync.js`）: `loadAdmin` が全 doc の `feedback` を集約（`adminFeedback`）。上部に一覧セクション（`feedbackSectionHTML`・資格/種類で絞り込み・`⬇JSON`/`⬇CSV` 書き出し・各件「対応済み（削除）」＝報告者 doc から `arrayRemove`）。管理者の全 doc 書込は既存 reset/delete と同じ権限。
+- 両資格・ライト/ダークでローカル実機確認。`node --check`（cloud-sync/engine/changelog）通過。
 
 ### 完了済み（2026-06-08）選択肢別の誤り解説を廃止（キャッシュ v33・アセット `?v=31`）
 

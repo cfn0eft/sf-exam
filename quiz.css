@@ -1027,6 +1027,22 @@ body[data-fs=small] .cdef{font-size:12px}
 .ce-chip{border:1.5px solid var(--border);background:var(--card);color:var(--text);border-radius:999px;
   padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .12s}
 .ce-chip.on{border-color:var(--primary);background:var(--primary);color:#fff}
+/* 不具合・ご意見の報告フォーム（.sc-box 内） */
+.fb-box{width:min(94vw,460px);color:var(--text)}
+.fb-ctx{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text-sub);margin:2px 0 4px}
+.fb-ctx b{color:var(--text)}
+.fb-qx{margin-top:4px;color:var(--text);font-size:12px;line-height:1.5}
+.fb-label{font-size:11px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px}
+.fb-chips{display:flex;gap:7px;flex-wrap:wrap}
+.fb-chip{border:1.5px solid var(--border);background:var(--card);color:var(--text);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .12s}
+.fb-chip.on{border-color:var(--primary);background:var(--primary);color:#fff}
+.fb-ta{width:100%;box-sizing:border-box;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;line-height:1.55;background:var(--card);color:var(--text);resize:vertical;outline:none}
+.fb-ta:focus{border-color:var(--primary)}
+.fb-note{font-size:11.5px;color:var(--text-sub);margin-top:8px;line-height:1.5}
+.fb-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.fb-cancel{border:1.5px solid var(--border);background:var(--card);color:var(--text);border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer}
+.fb-submit{border:none;background:var(--primary);color:#fff;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:800;cursor:pointer}
+.fb-foot{font-size:10.5px;color:var(--text-sub);margin-top:10px;line-height:1.5}
 .ce-doms{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .ce-dom{text-align:left;border:1.5px solid var(--border);background:var(--card);color:var(--text);
   border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:all .12s}

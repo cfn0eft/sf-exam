@@ -177,6 +177,7 @@ function handleKey(e){
     const _gd=document.getElementById('guide-ov');if(_gd&&_gd.classList.contains('show')){closeGuide();e.preventDefault();return;}
     const _f=document.getElementById('fig-lb');if(_f&&_f.classList.contains('show')){closeFig();e.preventDefault();return;}
     const _n=document.getElementById('news-modal');if(_n&&_n.classList.contains('on')){closeNews();e.preventDefault();return;}
+    const _fb=document.getElementById('fb-modal');if(_fb&&_fb.classList.contains('on')){closeFeedback();e.preventDefault();return;}
     const _h=document.getElementById('sc-help');if(_h&&_h.classList.contains('on')){toggleShortcutHelp(false);e.preventDefault();return;}
   }
   const studyActive=document.getElementById('pg-study').classList.contains('active');
@@ -1433,6 +1434,7 @@ const GUIDE=[
     {ic:'💾',name:'バックアップ',desc:'進捗をファイルに書き出し／読み込み（端末の移行・消失対策）。',act:'mypage'},
     {ic:'⌨️',name:'キーボード操作',desc:'PCのショートカット一覧（? キーでも開きます）。',act:'shortcut'},
     {ic:'🔔',name:'お知らせ',desc:'新機能の更新履歴をいつでも確認。',act:'news'},
+    {ic:'🛠️',name:'不具合・ご意見の報告',desc:'問題の誤りや不具合、要望をアプリ内から送信できます（GitHub不要）。',act:'feedback'},
     {ic:'📲',name:'オフライン／アプリ追加',desc:'圏外でも学習でき、ホーム画面にアプリとして追加できます。'}
   ]}
 ];
@@ -1465,6 +1467,7 @@ function guideAct(a){
     else if(a==='mypage')goTo('mypage');
     else if(a==='shortcut')toggleShortcutHelp(true);
     else if(a==='news')openNews();
+    else if(a==='feedback')openFeedback();
   }catch(e){}
 }
 
@@ -2169,6 +2172,8 @@ function renderMypage(){
     +'<div class="mp-field"><label>📅 1日の目標問題数</label><input type="number" id="mp-goal" min="0" max="999" value="'+(goal||'')+'" placeholder="例: 20"></div>'
     +(planInfo?'<div class="mp-planinfo">'+escH(planInfo)+'</div>':'')
     +'<div class="mp-saverow"><button class="mp-b mp-save" onclick="saveMyPlan()">保存</button><button class="mp-b mp-clear" onclick="clearMyPlan()">クリア</button></div></div>'
+    +'<div class="sec-label">サポート</div>'
+    +'<div class="card"><div class="mp-opt"><span class="mp-ic">🛠️</span><span class="mp-main">不具合・ご意見を報告<div class="mp-osub">問題の誤り・バグ・要望をアプリ内から送信（運営が確認します）</div></span><span class="mp-seg"><button onclick="openFeedback()">報告</button></span></div></div>'
     +'<div class="sec-label">表示・データ</div>'
     +'<div class="card">'
     +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
@@ -2365,34 +2370,93 @@ function toggleShortcutHelp(force){
   ov.classList.toggle('on',open);
 }
 
-// ----- 問題の報告（GitHub Issue をプリフィルで起票）-----
-function reportQuestion(id){
-  const q=allQ.find(x=>x.id===id)||sQueue[sCur];
-  if(!q){toast('問題が見つかりません');return;}
-  const cert=CFG.shortName||CFG.certName||CFG.slug||'';
-  const title='[問題報告] '+(CFG.slug||'')+' Q'+id;
-  const body=[
-    '## 対象問題',
-    '- 資格: '+cert,
-    '- 問題ID: Q'+id,
-    (q.reference_url?'- 参照: '+q.reference_url:''),
-    '',
-    '## 問題文',
-    (q.question||'').slice(0,500),
-    '',
-    '## 気になった点（当てはまるものに x、補足を歓迎）',
-    '- [ ] 正解が誤り',
-    '- [ ] 解説が誤り／古い',
-    '- [ ] 選択肢の不備',
-    '- [ ] 日本語が不自然',
-    '- [ ] その他',
-    '',
-    '### 補足',
-    ''
-  ].filter(l=>l!==null&&l!==undefined).join('\n');
-  const url=REPO_URL+'/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
-  try{window.open(url,'_blank','noopener');toast('📝 報告フォームを開きました');}
-  catch(e){toast('ブラウザで開けませんでした');}
+// ----- 問題の報告（アプリ内フォームを開く。送信先はクラウド→管理者ビュー）-----
+function reportQuestion(id){ openFeedback({qid:id}); }
+
+/* ===== 不具合・ご意見の報告（アプリ内フォーム → クラウド蓄積 → 管理者ビュー） =====
+   ・ログイン中: cloud-sync の __cloudSubmitFeedback が本人docへ即送信。
+   ・未ログイン/ローカル: localStorage 'sfq_feedback_pending' に退避し、次回ログイン時に自動送信。
+   ・GitHub Issue は使わない（運営が管理者ビューで一覧→JSON/CSVで書き出してClaudeに渡す想定）。 */
+const FB_CATS=[
+  {k:'bug',label:'🐞 不具合・バグ'},
+  {k:'answer',label:'❌ 正解が誤り'},
+  {k:'exp',label:'📝 解説が誤り・古い'},
+  {k:'choice',label:'🔀 選択肢の不備'},
+  {k:'japanese',label:'🗾 日本語が不自然'},
+  {k:'request',label:'💡 機能の要望'},
+  {k:'other',label:'＊ その他'}
+];
+let fbQid='', fbCat='bug', fbBusy=false;
+function openFeedback(opts){
+  opts=opts||{};
+  fbQid=opts.qid?String(opts.qid):'';
+  fbCat=fbQid?'answer':'bug'; // 問題からは「正解が誤り」、一般は「不具合」を初期選択
+  let ov=document.getElementById('fb-modal');
+  if(!ov){
+    ov=document.createElement('div');ov.id='fb-modal';ov.className='sc-help';
+    ov.addEventListener('click',function(e){if(e.target===ov)closeFeedback();});
+    document.body.appendChild(ov);
+  }
+  var _old=document.getElementById('fb-msg');if(_old)_old.value=''; // 開くたびに新規入力（再描画の保持と区別）
+  ov.classList.add('on');renderFeedback();
+  setTimeout(function(){var t=document.getElementById('fb-msg');if(t)t.focus();},60);
+}
+function closeFeedback(){const ov=document.getElementById('fb-modal');if(ov)ov.classList.remove('on');}
+function fbSetCat(k){fbCat=k;renderFeedback();}
+function renderFeedback(){
+  const ov=document.getElementById('fb-modal');if(!ov)return;
+  const acc=(typeof window.__sfqAccount==='function')?window.__sfqAccount():{loggedIn:false,local:true};
+  let ctx='';
+  if(fbQid){
+    const q=allQ.find(x=>String(x.id)===fbQid);
+    ctx='<div class="fb-ctx">対象: <b>'+escH(CFG.shortName||CFG.slug||'')+'</b> ・ Q'+escH(fbQid)
+      +(q?'<div class="fb-qx">'+escH((q.question||'').slice(0,90))+(q.question&&q.question.length>90?'…':'')+'</div>':'')+'</div>';
+  }
+  const chips=FB_CATS.map(c=>'<button type="button" class="fb-chip'+(fbCat===c.k?' on':'')+'" onclick="fbSetCat(\''+c.k+'\')">'+c.label+'</button>').join('');
+  const prev=(document.getElementById('fb-msg')||{}).value||''; // 再描画でも入力中テキストを保持
+  let note='';
+  if(acc.local)note='<div class="fb-note">💻 ローカルモードのため、いまは端末に保存され、ログイン時にまとめて送信されます。</div>';
+  else if(!acc.loggedIn)note='<div class="fb-note">未ログインのため、いったん端末に保存し、ログイン後に自動送信します。</div>';
+  ov.innerHTML='<div class="sc-box fb-box" role="dialog" aria-modal="true" aria-label="不具合・ご意見の報告">'
+    +'<div class="sc-head"><span>🛠️ 不具合・ご意見の報告</span><button class="sc-close" type="button" onclick="closeFeedback()" aria-label="閉じる">✕</button></div>'
+    +'<div class="sc-body">'
+    +ctx
+    +'<div class="fb-label">種類</div><div class="fb-chips">'+chips+'</div>'
+    +'<div class="fb-label">内容</div>'
+    +'<textarea id="fb-msg" class="fb-ta" rows="5" placeholder="気づいた点・再現手順・期待する動作などをご記入ください。">'+escH(prev)+'</textarea>'
+    +note
+    +'<div class="fb-actions"><button type="button" class="fb-cancel" onclick="closeFeedback()">キャンセル</button>'
+    +'<button type="button" class="fb-submit" onclick="submitFeedback()">送信する</button></div>'
+    +'<div class="fb-foot">送信内容は改善のため運営（管理者）が確認します。お名前と環境情報が一緒に送られます。</div>'
+    +'</div></div>';
+}
+function fbAppVer(){try{var s=document.querySelector('script[src*="quiz-engine.js"]');var m=s&&s.src.match(/[?&]v=([^&]+)/);return m?('?v='+m[1]):'';}catch(e){return '';}}
+function submitFeedback(){
+  if(fbBusy)return;
+  const ta=document.getElementById('fb-msg');
+  const msg=((ta&&ta.value)||'').trim();
+  if(!msg){toast('内容を入力してください');if(ta)ta.focus();return;}
+  let qtext='',ref='';
+  if(fbQid){const q=allQ.find(x=>String(x.id)===fbQid);if(q){qtext=(q.question||'').slice(0,300);ref=q.reference_url||'';}}
+  const report={
+    fid:'f'+Date.now()+'-'+Math.random().toString(36).slice(2,8),
+    ts:Date.now(),
+    cert:CFG.slug||'',
+    qid:fbQid||'',
+    cat:fbCat,
+    msg:msg.slice(0,2000),
+    qtext:qtext,
+    ref:ref,
+    ua:(navigator.userAgent||'').slice(0,300),
+    ver:fbAppVer(),
+    url:(location.href||'').slice(0,300)
+  };
+  fbBusy=true;
+  function stashLocal(){try{var a=JSON.parse(localStorage.getItem('sfq_feedback_pending')||'[]');a.push(report);localStorage.setItem('sfq_feedback_pending',JSON.stringify(a));}catch(e){}}
+  function done(cloud){fbBusy=false;closeFeedback();toast(cloud?'📨 送信しました。ご協力ありがとうございます！':'📝 保存しました。ログイン後に送信されます。');}
+  const res=(typeof window.__cloudSubmitFeedback==='function')?window.__cloudSubmitFeedback(report):false;
+  if(res&&typeof res.then==='function'){res.then(function(){done(true);}).catch(function(){stashLocal();done(false);});}
+  else{stashLocal();done(false);}
 }
 
 // ----- 進捗のバックアップ（書き出し／読み込み）-----

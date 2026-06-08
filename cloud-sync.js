@@ -177,6 +177,27 @@
       'body.dark .sfqc-v{color:#f1f5f9}' +
       'body.dark .sfqc-meta code{background:#1e293b;color:#cbd5e1}' +
       '.sfqc-empty{color:#94a3b8;font-size:13px;text-align:center;padding:30px}' +
+      /* フィードバック / 不具合報告 */
+      '.sfqc-fb-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:2px 0 10px}' +
+      '.sfqc-fb-count{font-size:12px;color:#64748b;font-weight:700}' +
+      '.sfqc-fb-dl{display:flex;gap:6px}' +
+      '.sfqc-mini.fb-dl{background:#0ea5e9;color:#fff}' +
+      '.sfqc-fb-list{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow:auto;padding:2px}' +
+      '.sfqc-fb-item{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px}' +
+      '.sfqc-fb-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}' +
+      '.sfqc-fb-cat{font-size:11px;font-weight:800;background:#eef2ff;color:#4338ca;border-radius:999px;padding:2px 9px;white-space:nowrap}' +
+      '.sfqc-fb-meta{font-size:11px;color:#64748b;flex:1;min-width:120px}' +
+      '.sfqc-fb-done{border:none;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;background:#dcfce7;color:#15803d}' +
+      '.sfqc-fb-msg{font-size:13px;color:#1e293b;white-space:pre-wrap;line-height:1.55;word-break:break-word}' +
+      '.sfqc-fb-qx{font-size:11px;color:#64748b;margin-top:6px;background:#f8fafc;border-radius:6px;padding:5px 8px;word-break:break-word}' +
+      '.sfqc-fb-ref{font-size:11px;margin-top:5px}.sfqc-fb-ref a{color:#2563eb}' +
+      '.sfqc-divider{height:1px;background:#e2e8f0;margin:14px 0}' +
+      'body.dark .sfqc-fb-item{background:#1e293b;border-color:#334155}' +
+      'body.dark .sfqc-fb-cat{background:#312e81;color:#c7d2fe}' +
+      'body.dark .sfqc-fb-msg{color:#e2e8f0}' +
+      'body.dark .sfqc-fb-qx{background:#0f172a;color:#94a3b8}' +
+      'body.dark .sfqc-fb-done{background:#14532d;color:#bbf7d0}' +
+      'body.dark .sfqc-divider{background:#334155}' +
       'body.dark .sfqc-card{background:#1e293b;color:#e2e8f0}' +
       'body.dark .sfqc-field{background:#0f172a;border-color:#334155;color:#e2e8f0}' +
       'body.dark .sfqc-btn-ghost{background:#334155;color:#cbd5e1}' +
@@ -437,6 +458,7 @@
     isAdmin = ADMIN_IDS.indexOf(sanitizeId(currentName)) >= 0;
     setBadge(currentName); showAdminBtn(isAdmin);
     busy(false);
+    flushPendingFeedback(); // 未ログイン中に退避した報告があれば送信
 
     // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
     // 認証とアカウント管理（管理者ビュー）のみ。進捗の読込/移行は各クイズページ側に任せる。
@@ -491,9 +513,37 @@
     }, 800);
   };
 
+  /* ---------------- フィードバック / 不具合報告（自docの feedback 配列へ蓄積） ----------------
+     ・ログイン中: 本人docに arrayUnion で1件追加（既存ルール「本人は自doc書込可」で許可）。
+     ・未ログイン/ローカル: エンジン側が localStorage 'sfq_feedback_pending' に退避し、
+       次回ログイン時に flushPendingFeedback() でまとめて送信する。
+     ・管理者は全docを読めるため、loadAdmin で各docの feedback を集約して一覧表示する。 */
+  window.__cloudSubmitFeedback = function (report) {
+    if (!currentUser || !db) return false; // 呼び出し側（エンジン）がローカル退避する
+    var FV = firebase.firestore.FieldValue;
+    return db.collection(COLLECTION).doc(currentUser.uid).set({
+      feedback: FV.arrayUnion(report),
+      name: currentName, email: currentEmail, updated: Date.now()
+    }, { merge: true });
+  };
+  function flushPendingFeedback() {
+    if (!currentUser || !db) return;
+    var a; try { a = JSON.parse(localStorage.getItem('sfq_feedback_pending') || '[]'); } catch (e) { a = []; }
+    if (!a || !a.length) return;
+    var FV = firebase.firestore.FieldValue;
+    db.collection(COLLECTION).doc(currentUser.uid).set({
+      feedback: FV.arrayUnion.apply(FV, a),
+      name: currentName, email: currentEmail, updated: Date.now()
+    }, { merge: true }).then(function () {
+      try { localStorage.removeItem('sfq_feedback_pending'); } catch (e) {}
+    }).catch(function () {});
+  }
+
   /* ---------------- 管理者ビュー ---------------- */
   var adminRows = [];   // 旧：CSV/詳細互換用に1cert=1行も保持
   var adminUsers = [];  // 新：uid単位でグルーピング { uid, name, email, updated, certs:[{cert,store,stats}], agg }
+  var adminFeedback = [];// フィードバック集約 [{uid,name,email,fb}]（fbは各docの feedback 配列要素そのもの）
+  var fbFilterCert = 'all', fbFilterCat = 'all'; // フィードバックの絞り込み
   var adminFilter = ''; // 名前/メール検索
   var adminSort = 'updated'; // 'updated'|'answered'|'rate'|'days'|'name'
   var adminCert = 'all';     // 資格フィルタ
@@ -598,11 +648,15 @@
     body.innerHTML = '<div class="sfqc-empty">読み込み中…</div>';
     db.collection(COLLECTION).get().then(function (snap) {
       adminRows = [];
+      adminFeedback = [];
       var byUid = {};
       snap.forEach(function (d) {
         var data = d.data() || {};
         var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
         var email = data.email || '';
+        if (Array.isArray(data.feedback)) {
+          data.feedback.forEach(function (fb) { if (fb && typeof fb === 'object') adminFeedback.push({ uid: d.id, name: nm, email: email, fb: fb }); });
+        }
         var entry = byUid[d.id] || (byUid[d.id] = { uid: d.id, name: nm, email: email, updated: data.updated || 0, certs: [] });
         var stores = data.stores;
         if (stores && typeof stores === 'object' && Object.keys(stores).length) {
@@ -629,6 +683,7 @@
         u.certs.sort(function (a, b) { return b.stats.attempts - a.stats.attempts; });
         return u;
       });
+      adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
       renderAdmin();
     }).catch(function (e) {
       body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
@@ -674,7 +729,8 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
 
-    var html = adminDashboardHTML();
+    var html = feedbackSectionHTML();
+    html += adminDashboardHTML();
     html += '<div class="sfqc-sec">ユーザー</div>';
     html += '<div class="sfqc-toolbar">' +
         '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
@@ -745,6 +801,18 @@
     });
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
+    });
+    // フィードバック：ダウンロード・絞り込み・対応済み
+    var fbJson = document.getElementById('sfqc-fb-json'); if (fbJson) fbJson.addEventListener('click', exportFeedbackJson);
+    var fbCsv = document.getElementById('sfqc-fb-csv'); if (fbCsv) fbCsv.addEventListener('click', exportFeedbackCsv);
+    body.querySelectorAll('[data-fbcert]').forEach(function (b) {
+      b.addEventListener('click', function () { fbFilterCert = b.getAttribute('data-fbcert'); renderAdmin(); });
+    });
+    body.querySelectorAll('[data-fbcat]').forEach(function (b) {
+      b.addEventListener('click', function () { fbFilterCat = b.getAttribute('data-fbcat'); renderAdmin(); });
+    });
+    body.querySelectorAll('.sfqc-fb-done').forEach(function (b) {
+      b.addEventListener('click', function () { adminResolveFeedback(+b.getAttribute('data-fi')); });
     });
   }
 
@@ -856,6 +924,89 @@
       : ref.update(new FP('stores', cert), FV.delete(), 'updated', Date.now());
     p.then(function () { toastSafe('「' + name + '」［' + cert + '］を削除しました'); loadAdmin(); })
      .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
+  }
+
+  /* ---------------- フィードバック一覧（管理者ビュー上部） ---------------- */
+  function fbCatLabel(k) {
+    var m = { bug: '🐞 不具合', answer: '❌ 正解誤り', exp: '📝 解説誤り', choice: '🔀 選択肢', japanese: '🗾 日本語', request: '💡 要望', other: '＊ その他' };
+    return m[k] || k || '—';
+  }
+  function feedbackSectionHTML() {
+    var all = adminFeedback;
+    var head = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">🛠 フィードバック / 不具合報告 <span class="sfqc-fb-count">' + all.length + '件</span></div>' +
+      '<div class="sfqc-fb-dl"><button class="sfqc-mini fb-dl" id="sfqc-fb-json">⬇ JSON</button><button class="sfqc-mini fb-dl" id="sfqc-fb-csv">⬇ CSV</button></div></div>';
+    if (!all.length) return head + '<div class="sfqc-empty">まだ報告はありません。</div><div class="sfqc-divider"></div>';
+
+    var list = all.filter(function (r) {
+      if (fbFilterCert !== 'all' && (r.fb.cert || '') !== fbFilterCert) return false;
+      if (fbFilterCat !== 'all' && (r.fb.cat || '') !== fbFilterCat) return false;
+      return true;
+    });
+    var certSet = {}, catSet = {};
+    all.forEach(function (r) { if (r.fb.cert) certSet[r.fb.cert] = 1; if (r.fb.cat) catSet[r.fb.cat] = 1; });
+    var certChips = '<button class="sfqc-fchip' + (fbFilterCert === 'all' ? ' on' : '') + '" data-fbcert="all">すべて</button>';
+    Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (fbFilterCert === ck ? ' on' : '') + '" data-fbcert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
+    var catChips = '<button class="sfqc-fchip' + (fbFilterCat === 'all' ? ' on' : '') + '" data-fbcat="all">すべて</button>';
+    Object.keys(catSet).forEach(function (ck) { catChips += '<button class="sfqc-fchip' + (fbFilterCat === ck ? ' on' : '') + '" data-fbcat="' + esc(ck) + '">' + esc(fbCatLabel(ck)) + '</button>'; });
+    var bar = '<div class="sfqc-toolbar sfqc-toolbar2"><span class="sfqc-sort-label">資格:</span>' + certChips +
+      '<span class="sfqc-sort-label">種類:</span>' + catChips +
+      '<span class="sfqc-count">' + list.length + ' / ' + all.length + '件</span></div>';
+
+    var items = list.map(function (r) {
+      var fb = r.fb;
+      var idx = adminFeedback.indexOf(r);
+      var qref = fb.qid ? ('Q' + esc(String(fb.qid))) : '（全般）';
+      return '<div class="sfqc-fb-item">' +
+        '<div class="sfqc-fb-top">' +
+          '<span class="sfqc-fb-cat">' + esc(fbCatLabel(fb.cat)) + '</span>' +
+          '<span class="sfqc-fb-meta">' + esc(fmtDate(fb.ts)) + ' ・ 👤' + esc(r.name || '?') + ' ・ ' + esc(fb.cert || '-') + ' ' + qref + '</span>' +
+          '<button class="sfqc-fb-done" data-fi="' + idx + '">対応済み（削除）</button>' +
+        '</div>' +
+        '<div class="sfqc-fb-msg">' + esc(fb.msg || '') + '</div>' +
+        (fb.qtext ? '<div class="sfqc-fb-qx">問題: ' + esc(fb.qtext) + '</div>' : '') +
+        (fb.ref ? '<div class="sfqc-fb-ref"><a href="' + esc(fb.ref) + '" target="_blank" rel="noopener">参照リンク</a></div>' : '') +
+        '</div>';
+    }).join('');
+    return head + bar + '<div class="sfqc-fb-list">' + (items || '<div class="sfqc-empty">条件に合う報告がありません。</div>') + '</div><div class="sfqc-divider"></div>';
+  }
+  function adminResolveFeedback(fi) {
+    if (!isAdmin || !db) return;
+    var r = adminFeedback[fi]; if (!r) return;
+    if (!confirm('この報告を「対応済み」にして削除します。よろしいですか？\n（報告者のデータから取り除かれます）')) return;
+    var FV = firebase.firestore.FieldValue;
+    db.collection(COLLECTION).doc(r.uid).update('feedback', FV.arrayRemove(r.fb))
+      .then(function () { toastSafe('対応済みにしました'); loadAdmin(); })
+      .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
+  }
+  function feedbackRows() {
+    return adminFeedback.map(function (r) {
+      var fb = r.fb;
+      return { date: fmtDate(fb.ts), ts: fb.ts || 0, name: r.name || '', uid: r.uid, email: r.email || '',
+               cert: fb.cert || '', qid: fb.qid || '', category: fb.cat || '', message: fb.msg || '',
+               question: fb.qtext || '', ref: fb.ref || '', ver: fb.ver || '', ua: fb.ua || '', url: fb.url || '' };
+    });
+  }
+  function dlBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+  function exportFeedbackJson() {
+    if (!adminFeedback.length) { alert('書き出すデータがありません。'); return; }
+    var blob = new Blob([JSON.stringify(feedbackRows(), null, 2)], { type: 'application/json;charset=utf-8;' });
+    dlBlob(blob, 'sfquiz-feedback-' + new Date().toISOString().slice(0, 10) + '.json');
+  }
+  function exportFeedbackCsv() {
+    if (!adminFeedback.length) { alert('書き出すデータがありません。'); return; }
+    var head = ['日時', '名前', 'UID', '資格', '問題ID', '種類', '内容', '問題文', '参照', '版', 'UA', 'URL'];
+    var lines = [head.join(',')];
+    feedbackRows().forEach(function (r) {
+      var row = [r.date, r.name, r.uid, r.cert, r.qid, r.category, r.message, r.question, r.ref, r.ver, r.ua, r.url];
+      lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+    });
+    var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    dlBlob(blob, 'sfquiz-feedback-' + new Date().toISOString().slice(0, 10) + '.csv');
   }
 
   function exportCsv() {
