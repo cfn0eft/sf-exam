@@ -23,12 +23,12 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v32／アセット ?v=30）
+├── sw.js                 # Service Worker（更新時は CACHE 文字列を上げる。現在 v33／アセット ?v=31）
 └── certifications/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
         └── data/
-            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig/expFig（figures.js図名）／diff（難易度1=易2=標準3=難）／case+scenario（ケーススタディ束ね）。選択肢別の誤り解説は解説本文(□形式)を実行時解析して表示（データ不要）
+            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig/expFig（figures.js図名）／diff（難易度1=易2=標準3=難）／case+scenario（ケーススタディ束ね）。解説は解答後に全文をまとめて表示
             ├── domains.json     # {domains:[{code,name,weight,emoji}], map?}
             ├── vocab.json       # 章配列 {chapter,terms:[{title,jaName,enName,definition,examPoints[],questions[],fullContent}]}
             └── navmap.json      # [{title,content}] 設定マップ
@@ -213,6 +213,12 @@ git push origin main
 - （バックログ）3資格目（Developer 等）の立ち上げ ＝「4JSON＋シェル複製＋LP CERTS に1行追加」だけ。着手は別途相談。
 - （バックログ）ケーススタディ（#25）の拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現状は各資格2件の種）。
 
+### 完了済み（2026-06-08）選択肢別の誤り解説を廃止（キャッシュ v33・アセット `?v=31`）
+
+- 第7弾の「選択肢ごとの誤り解説」を**機能ごと撤去**。`quiz-engine.js` から `perChoiceWhy` 関数を削除し、`checkAnswer` は常に解説全文を解説ボックスにまとめて表示（第7弾以前の挙動に復帰）。
+- 連動して削除/修正: `quiz.css` の `.choice-why`/`.cw-ok`/`.cw-ng`/`.exp-note-sm`/`.choice.done{flex-wrap}`、GUIDE の専用項目と学習モード説明、オンボーディング「学ぶ」文言、README の機能表、`changelog.js` に廃止告知を1件追加。
+- ローカル実機で □形式問題を解答し、選択肢下解説ゼロ・全文インライン表示・コンソールエラーなしを確認。
+
 ### 完了済み（2026-06-02・第7弾）学習を深める18機能＋使い方ガイド＋オンボーディング刷新（キャッシュ v32・アセット `?v=30`）
 
 - **使い方ガイド（機能カタログ・チュートリアル）**: 全機能を分類別に説明＋`act` で「開く」即試行できる常設オーバーレイ（`GUIDE` 配列／`openGuide`/`guideAct`、`.gd-*` CSS）。導線は **トップバー❓（`#btn-guide`）・マイページの大ボタン・初回オンボーディング末尾の案内** の3点。機能追加時は `GUIDE` 配列に1行足すだけ。
@@ -225,7 +231,7 @@ git push origin main
 - **Phase2 学習・復習体験**: 段階的ヒント（`showHint`・分野→誤答を薄く、Hキー）／類題リンク（`relatedQuestions`）／Feynman要約（`store.sum`）／間違いノート（`openNotebook`）／重点ループ（`startLeech`・`isLeech`=w≥2、`beginStudyWith{loop}` で2連続正解まで再投入）。
 - **Phase3 難易度**: `qDiff`（データ`diff`優先→未設定は正答率推定）／`diffPillHTML`（学習バッジ）／難易度フィルタ（`fDiffSet`・チップ）／分野×難易度ヒート（`diffHeatHTML`）。
 - **Phase4 ゲーミフィケーション**: XP・レベル（`store.xp`・`levelInfo`・`recH`で付与）／獲得演出（`celebrate` 紙吹雪）／デイリーゴール祝い（`maybeGoalCheer`）／週ミッション（`weeklyMissions`/`checkMissions`・`store.missions`）／合格確度トレンド（`snapReadiness`・`store.rdz`・`readinessTrendHTML`）。ホームに `#gamecard`（`renderGame`）。
-- **Phase5 コンテンツ**: 選択肢別の誤り解説＝既存解説(□形式)を実行時解析（`perChoiceWhy`）し各選択肢下に表示（全問・**事実の新規生成なし**・解析不可は全文へフォールバック。解析可: sf-admin98%/app-builder95%）／全833問に`diff`を構造ヒューリスティックで付与（易28/標準47/難25%）／ケーススタディ（`case`+`scenario`・`openCases`/`beginCase`、既存の同一企業×分野問題を束ねた種を各資格2件）。
+- **Phase5 コンテンツ**: 選択肢別の誤り解説＝既存解説(□形式)を実行時解析（`perChoiceWhy`）し各選択肢下に表示（**※2026-06-08 に廃止。`perChoiceWhy` 削除・解説は常に全文をまとめて表示に戻した**）／全833問に`diff`を構造ヒューリスティックで付与（易28/標準47/難25%）／ケーススタディ（`case`+`scenario`・`openCases`/`beginCase`、既存の同一企業×分野問題を束ねた種を各資格2件）。
 - store 追加（time/sum/xp/missions/rdz、hist.wr）は `loadStore`/`__setStore`/`resetAll` の3箇所へ反映済み。両資格でローカル実機検証・コンソールエラーなし。
 
 ### 完了済み（2026-06-02・第6弾）図解・図つき解説／教科書にも図（キャッシュ v25・アセット `?v=23`）

@@ -1044,32 +1044,12 @@ function onMemoInput(){
   clearTimeout(_memoT);
   _memoT=setTimeout(()=>{save();const ms=document.getElementById('memo-saved');if(ms){ms.classList.add('on');setTimeout(()=>ms.classList.remove('on'),1200);}},600);
 }
-// #5 選択肢別の誤り解説：既存の検証済み解説（□ <選択肢> これは正解/不正解です。…）を
-//    実行時に解析し、選択肢ごとに表示する（事実の新規生成はしない＝公式ソース第一を維持）。
-function perChoiceWhy(q){
-  var ex=(q&&q.explanation)||'';var box='□';
-  if(ex.indexOf(box)<0)return null;
-  var parts=ex.split(box);parts.shift();
-  if(parts.length!==q.choices.length)return null;
-  var items=[];
-  for(var i=0;i<parts.length;i++){
-    var seg=parts[i];
-    var m=seg.match(/これは(正解|不正解)です[。\.]?/);
-    if(!m)return null;
-    var reason=seg.slice(m.index+m[0].length).replace(/[\n\s]*(参考|補足)[：:][\s\S]*$/,'').trim();
-    if(!reason)return null;
-    items.push({ok:m[1]==='正解',reason:reason});
-  }
-  var nm=ex.match(/補足[：:]([\s\S]*)$/);
-  return {items:items,note:nm?nm[1].trim():''};
-}
 function checkAnswer(){
   if(sRevealed)return;sRevealed=true;
   var _sh=document.getElementById('s-hint');if(_sh)_sh.style.display='none';
   const q=sQueue[sCur];
   const selTx=sSel.map(i=>q.choices[i]);
   const isOk=arrEq(selTx.slice().sort(),q.answers.slice().sort());
-  const pcw=perChoiceWhy(q);
   document.querySelectorAll('#s-choices .choice').forEach(item=>{
     item.classList.add('done');
     const oi=+item.dataset.oi,ch=q.choices[oi],isSel=sSel.includes(oi),isAns=q.answers.includes(ch);
@@ -1078,13 +1058,11 @@ function checkAnswer(){
     else if(!isSel&&isAns)item.classList.add('hint');
     item.setAttribute('aria-pressed',isSel?'true':'false');item.tabIndex=-1;
     item.querySelector('.cmark').textContent=isAns?'✓':(isSel?'✗':item.dataset.num);
-    if(pcw&&pcw.items[oi]){var cwd=document.createElement('div');cwd.className='choice-why '+(pcw.items[oi].ok?'cw-ok':'cw-ng');cwd.textContent=(pcw.items[oi].ok?'✓ ':'✗ ')+pcw.items[oi].reason;item.appendChild(cwd);}
   });
   const exp=document.getElementById('s-exp');
   exp.className='exp-box show '+(isOk?'exp-ok':'exp-ng');
   var _eh='<div class="exp-head"><span>'+(isOk?'✅':'❌')+'</span><span>'+(isOk?'正解！':'不正解')+'</span></div>';
-  if(pcw){exp.innerHTML=_eh+(pcw.note?'<div style="white-space:pre-wrap">補足：'+escH(pcw.note)+'</div>':'<div class="exp-note-sm">各選択肢の下に「なぜ正解／不正解か」を表示しています。</div>');}
-  else{exp.innerHTML=_eh+'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';}
+  exp.innerHTML=_eh+'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
   if(q.expFig)exp.innerHTML+=figHTML(q.expFig);
   if(q.reference_url){exp.innerHTML+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';}
   // 誤答理由タグ（#1・任意・根本原因レポートに集計）
@@ -1413,9 +1391,8 @@ function beginCase(id){
 // 新規ユーザーが全機能を把握できる常設リファレンス。act があれば「開く」で実際に試せる。
 const GUIDE=[
   {cat:'📖 学習する', items:[
-    {ic:'📖',name:'学習モード',desc:'1問ずつ解いて、選択肢ごとの解説をその場で確認。間違いは自動で復習キューへ。',act:'study'},
+    {ic:'📖',name:'学習モード',desc:'1問ずつ解いて、解説をその場で確認。間違いは自動で復習キューへ。',act:'study'},
     {ic:'💡',name:'段階的ヒント',desc:'解答前に「分野→明らかな誤りを薄く」の順にヒント。学習中の「ヒントを見る」かHキーで。'},
-    {ic:'🧷',name:'選択肢ごとの解説',desc:'解答後、各選択肢の下に「なぜ正解／不正解か」を表示します。'},
     {ic:'🧠',name:'自分の言葉で説明',desc:'解答後に要点を書くと間違いノートに残り、記憶に定着（Feynman 効果）。'},
     {ic:'⚡',name:'高速めくり総ざらい',desc:'問題→答えをサッと確認。試験前日のチェックに最適。',act:'quick'},
     {ic:'🔍',name:'キーワード検索',desc:'問題文・選択肢・解説を横断検索して、ヒットした問題をそのまま学習。',act:'search'},
@@ -1996,7 +1973,7 @@ function renderStreakBanner(){
 const OB_VERSION='2';
 const OB_STEPS=[
   {ic:'🎉',t:'ようこそ！',d:'このアプリひとつで合格まで。「学ぶ → 実力を測る → 復習で定着 → 続ける」をまるごとサポートします。まずは流れを30秒で。'},
-  {ic:'📖',t:'学ぶ',d:'学習モードは1問ずつ解いて、選択肢ごとに「なぜ正解／不正解か」を確認。迷ったらヒント、教科書・用語帳・高速めくりも使えます。'},
+  {ic:'📖',t:'学ぶ',d:'学習モードは1問ずつ解いて、解説で「なぜ正解／不正解か」を確認。迷ったらヒント、教科書・用語帳・高速めくりも使えます。'},
   {ic:'⏱️',t:'実力を測る',d:'本番形式の試験、分野や問題数を選ぶカスタム模試、実務シナリオのケーススタディで合格力をチェックできます。'},
   {ic:'🔁',t:'復習で定着',d:'間違えた問題は自動で復習キューへ。間違いノート・重点ループ・SRS・デイリーチャレンジで、間違えるほど賢くなります。'},
   {ic:'🎮',t:'続ける＆ぜんぶ見る',d:'XP・レベルや今週のミッションで楽しく継続。統計で弱点も丸わかり。すべての機能は「使い方ガイド」でいつでも確認できます。'}
