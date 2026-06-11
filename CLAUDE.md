@@ -23,7 +23,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新は tools/bump-version.js で。現在 v35／アセット ?v=33）
+├── sw.js                 # Service Worker（更新は tools/bump-version.js で。現在 v36／アセット ?v=34）
 ├── tools/                # 開発ツール（下記「開発ツール・CI」参照。サイト配信には含まれない）
 ├── .github/workflows/ci.yml  # push/PR 毎に validate-data + test-engine を実行
 ├── docs/HISTORY.md       # 過去リリースの実装メモ（CLAUDE.md から退避したアーカイブ）
@@ -51,6 +51,9 @@ sf-exam/
 |---|---|---|---|---|---|---|
 | Administrator | sf-admin | 60 | 105 | 65 | sfq_v4 | 8 (cfg/obj/auto/data/sales/service/prod/agf) |
 | App Builder | app-builder | 60 | 105 | 63 | sfqab_v1 | 5 (fund/data/logic/ui/deploy) |
+| Developer ※骨組みのみ | developer | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
+
+Developer は 2026-06-11 にシェル＋domains.json（公式4分野: 基礎23/自動化とロジック30/UI25/テスト・リリース22）まで作成済み。**問題が0問のため LP の `CERTS` には未掲載**（公開は問題バッチ追加後に LP へ1行足すだけ）。
 
 Admin 8分野の公式ブループリント (2025/12/15改訂): Configuration15/ObjectManager&LightningAppBuilder15/Automation15/Data&Analytics17/Sales&Marketing10/Service&Support10/Productivity&Collaboration10/Agentforce8。
 
@@ -74,8 +77,9 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 - `node tools/test-engine.js` — エンジン純粋ロジックのスモークテスト（SRS・難易度推定・復習判定・XP/レベル・模試抽出・store 正規化・重複回避・逆算ペース）。DOMスタブ＋vm でエンジンを丸ごと読み込んで検証。**quiz-engine.js を編集したら必ず実行**
 - `node tools/bump-version.js` — キャッシュ無効化3点セット（sw.js CACHE / SHELL の ?v= / 各HTMLの ?v=）を一括繰り上げ。`--dry` で確認のみ。**手作業での版数更新は廃止**
 - `node tools/feedback-to-tasks.js <json>` — 管理者ビューで⬇JSONしたフィードバックを、対応優先度順の Markdown チェックリストに変換（Claude に貼って修正作業を依頼する用）
+- `node tools/check-links.js` — 全問題の `reference_url` の死活チェック（404/410 のみエラー。help.salesforce.com の 403 はボット対策なので警告扱い）
 
-`.github/workflows/ci.yml` が push / PR 毎に validate-data + test-engine を自動実行する。
+`.github/workflows/ci.yml` が push / PR 毎に validate-data + test-engine を自動実行する。`check-links.yml` は週1（月曜 6:00 JST）＋手動実行。
 
 ---
 
@@ -227,9 +231,8 @@ git push origin main
 
 ## 残タスク（2026-06-11 時点）
 
-- アクティブな残タスクなし。
+- **Developer の問題作成**：骨組み（シェル＋4分野）は完成済み。残りは questions/vocab/navmap 等のコンテンツを公式ソース第一で分野ごとにバッチ作成し、完成後 LP の `CERTS` に1行追加して公開。
 - （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig`（または `vocab.json` の `fig`）に図名を入れ、`validate-data.js` で参照確認するだけ（現在22点＋エイリアス2）。
-- （バックログ）3資格目（Developer 等）の立ち上げ ＝「JSON一式＋シェル複製＋LP CERTS に1行追加」だけ。問題作成は公式ソース第一の品質基準があるため着手は別途相談。
 - （バックログ）ケーススタディ（#25）のさらなる拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現在 sf-admin 6件・app-builder 5件）。
 
 ### 完了済み（2026-06-11）開発基盤＋学習機能＋コンテンツ拡充（キャッシュ v35・アセット `?v=33`）
@@ -240,6 +243,14 @@ git push origin main
 - **ケーススタディ +7件**: sf-admin に ck-obj/uc-sales/ck-auto/dh-data（計6件）、app-builder に ck-data/uc-ui/uc-deploy（計5件）。既存問題への `case`+`scenario` 付与のみ。
 - **図解 +4点**: sf-admin/import-tools・sf-admin/case-automation・app-builder/order-of-execution・app-builder/external-objects（＋app-builder/import-tools エイリアス）。問題16問・教科書用語8語に付与（公式事実と整合確認済み）。
 - **CLAUDE.md 棚卸し**: 過去リリースの実装メモを `docs/HISTORY.md` へ退避。エンジン行数・データ構成（cram/compare）・キャッシュ手順の記述を現状に同期。
+
+### 完了済み（2026-06-11 第2弾）問題品質監査＋PWA＋Developer骨組み（キャッシュ v36・アセット `?v=34`）
+
+- **選択肢の文長バランス監査**: 「正解だけ突出して長い」73問（sf-admin 55・app-builder 18）の不正解選択肢を、実在する隣接概念ベースの誤答にリライトして文長を揃えた（正解文は不変・解説の該当行も連動更新）。再発防止として `validate-data.js` に文長バランス警告（正解が不正解の1.8倍超かつ40字超）を追加。app-builder #1/#156 の問題文完全一致は #1 をシナリオ形式に差別化して解消。
+- **reference_url 死活チェック**: `tools/check-links.js`＋`.github/workflows/check-links.yml`（週1cron＋手動）。404/410 のみ失敗、help.salesforce.com の 403（ボット対策）は警告扱い。
+- **PWAショートカット**: manifest に `shortcuts` 4件（Admin/AB × デイリー/模試）。エンジンに `handleLaunchShortcut()`（`?go=daily|exam` を解釈し、`history.replaceState` で再発火防止）。
+- **Developer 骨組み**: `certifications/developer/`（シェル＋公式4分野 domains.json＋空データ5本、pass 68%・storageKey `sfqdev_v1`）。問題0問のため LP 未掲載。
+- **エンジンテスト拡充**: 14→17件（finishExam 採点・週ミッション達成/XP・ショートカット起動）。DOMスタブを要素返却型に強化。
 
 過去のリリース履歴（2026-05-31〜2026-06-08）の実装メモは **`docs/HISTORY.md`** を参照。
 

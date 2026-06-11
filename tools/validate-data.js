@@ -90,6 +90,13 @@ function validateCert(slug, figKeys) {
       if (q[k] && !figKeys.has(slug + '/' + q[k])) err(tag + ' ' + k + ' の図が figures.js にない: ' + slug + '/' + q[k]);
     });
     if (!!q.case !== !!q.scenario) err(tag + ' case と scenario は両方セットで指定する');
+    // Distractor 品質: 正解だけ突出して長いと長さで答えがバレる（運用ルール「全選択肢を同程度の文長に」）
+    const wrongs = q.choices.filter((c) => !q.answers.includes(c));
+    if (wrongs.length && Array.isArray(q.answers) && q.answers.every((a) => typeof a === 'string')) {
+      const aLen = Math.max(...q.answers.map((a) => a.length));
+      const wMax = Math.max(...wrongs.map((w) => w.length));
+      if (aLen > wMax * 1.8 && aLen > 40) warn(tag + ' 正解が不正解より突出して長い（' + aLen + '字 vs 最長' + wMax + '字）');
+    }
     if (q.case) {
       const g = caseGroups[q.case] || (caseGroups[q.case] = { n: 0, scenarios: new Set() });
       g.n++; g.scenarios.add(q.scenario);

@@ -168,7 +168,18 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{maybeOnboard();}catch(e){}
   document.addEventListener('keydown',handleKey);
   try{var _hv=(location.hash||'').replace('#','');if(['cram','textbook','vocab','stats'].indexOf(_hv)>=0)goTo(_hv);}catch(e){}
+  try{handleLaunchShortcut();}catch(e){}
 });
+
+// PWAショートカット起動（manifest の shortcuts → ?go=daily|exam で着地。再読み込みでの再発火は防ぐ）
+function handleLaunchShortcut(){
+  var go=null;
+  try{go=new URLSearchParams(location.search).get('go');}catch(e){}
+  if(!go)return;
+  try{history.replaceState(null,'',location.pathname+location.hash);}catch(e){}
+  if(go==='daily')startDaily();
+  else if(go==='exam')startExam();
+}
 
 // --- キーボード操作 ---
 function handleKey(e){
