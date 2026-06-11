@@ -17,13 +17,20 @@ const vm = require('vm');
 
 /* ---- DOM / ブラウザ API スタブ ---- */
 function makeElement() {
-  return {
+  const el = {
     style: {}, dataset: {}, children: [], innerHTML: '', textContent: '', value: '',
+    className: '', disabled: false,
     classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
-    setAttribute() {}, getAttribute: () => null, appendChild() {}, addEventListener() {},
-    querySelector: () => null, querySelectorAll: () => [], focus() {}, remove() {},
+    setAttribute() {}, getAttribute: () => null, addEventListener() {},
+    appendChild() {}, removeChild() {}, insertBefore() {}, remove() {}, focus() {},
+    querySelector: () => null, querySelectorAll: () => [],
   };
+  el.parentNode = { insertBefore() {}, appendChild() {}, removeChild() {} };
+  return el;
 }
+// getElementById は同じ id に同じスタブ要素を返す（DOM を触る関数も丸ごとテストできるように）
+const elements = new Map();
+const byId = (id) => { if (!elements.has(id)) elements.set(id, makeElement()); return elements.get(id); };
 const storage = new Map();
 const sandbox = {
   console,
@@ -33,12 +40,13 @@ const sandbox = {
     removeItem: (k) => storage.delete(k),
   },
   document: {
-    addEventListener() {}, getElementById: () => null,
+    addEventListener() {}, getElementById: byId,
     querySelector: () => null, querySelectorAll: () => [],
     createElement: makeElement, documentElement: makeElement(), body: makeElement(),
   },
   navigator: { onLine: true, userAgent: 'test', language: 'ja' },
-  location: { href: 'http://localhost/', origin: 'http://localhost', hostname: 'localhost' },
+  location: { href: 'http://localhost/', origin: 'http://localhost', hostname: 'localhost', pathname: '/', search: '', hash: '' },
+  history: { replaceState() {} },
   fetch: () => Promise.reject(new Error('no network in test')),
   setTimeout, clearTimeout, setInterval: () => 0, clearInterval() {},
   confirm: () => true, alert() {},
@@ -192,6 +200,42 @@ t('逆算ペース: 残り問題数と日数から1日ノルマを算出', () =>
   const r = run('paceReco(10)');   // 200問÷10日
   eq(r.remain, 200);
   eq(r.perDay, 20);
+});
+
+t('finishExam: 採点・履歴保存・重複回避への記録', () => {
+  run(`
+    store.hist={};store.exams=[];localStorage.removeItem(EXAM_RECENT_KEY);
+    eQ=allQ.slice(0,10);eN=10;eTimed=true;eBudget=600;eSecs=300;eCur=0;eFlag={};eQTime={};eTimer=null;
+    eAns={};for(var i=0;i<10;i++){eAns[i]=i<7?[0]:[1];}   // choices=['x','y'], answers=['x'] → 7問正解
+    finishExam();
+  `);
+  const ex = run('store.exams[store.exams.length-1]');
+  eq(ex.ok, 7, '正解数');
+  eq(ex.pct, 70, '正答率');
+  eq(ex.pass, true, '合格判定（PASS=65）');
+  eq(ex.custom, true, '10問はカスタム扱い');
+  eq(run('recentExamIds().size'), 10, '出題IDが重複回避キーに記録される');
+});
+
+t('weeklyMissions / checkMissions: 週ミッションの達成とXP付与', () => {
+  run('store.daily={};store.exams=[];store.missions={wk:"",claimed:{}};store.xp=0');
+  run(`(function(){
+    var ws=_weekStart();
+    for(var i=0;i<3;i++){var d=new Date(ws);d.setDate(ws.getDate()+i);store.daily[_fmtD(d)]=14;}   // 3日×14問=42問
+    store.exams.push({ts:Date.now(),pct:80,ok:48,n:60,pass:true});
+  })()`);
+  const ms = run('weeklyMissions()');
+  ok(ms.every((m) => m.cur >= m.tgt), '全ミッション達成のはず: ' + JSON.stringify(ms));
+  run('checkMissions()');
+  eq(run('Object.keys(store.missions.claimed).length'), 3, '3件とも達成記録');
+  ok(run('store.xp') >= 150, 'ミッション報酬 50XP×3 が付与される');
+});
+
+t('PWAショートカット: 不明な ?go= は何もしない', () => {
+  run('location.search="?go=unknown"');
+  run('handleLaunchShortcut()');   // 例外にならず無視されること
+  run('location.search=""');
+  run('handleLaunchShortcut()');
 });
 
 console.log('\n' + (fail ? '❌ 失敗 ' + fail + '件 / 成功 ' + pass + '件' : '✅ 全 ' + pass + '件成功'));
