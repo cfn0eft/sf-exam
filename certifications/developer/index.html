@@ -121,7 +121,7 @@
   <!-- 問題のフリーワード検索 -->
   <div class="qsearch">
     <span class="qsearch-ic">🔍</span>
-    <input class="qsearch-in" id="f-text" type="text" placeholder="問題をキーワード検索（例: 権限セット）" oninput="onQSearch()" enterkeyhint="search" aria-label="問題をキーワード検索">
+    <input class="qsearch-in" id="f-text" type="text" placeholder="問題をキーワード検索（例: 数式項目）" oninput="onQSearch()" enterkeyhint="search" aria-label="問題をキーワード検索">
     <button class="qsearch-clear" id="f-text-clear" onclick="clearQSearch()" style="display:none" aria-label="クリア">✕</button>
     <button class="qsearch-go" id="f-text-go" onclick="startStudy()" style="display:none">学習</button>
   </div>
@@ -498,14 +498,14 @@
 <!-- ===== 資格設定（このファイル固有・ここだけ編集すればよい） ===== -->
 <script>
   window.CERT_CONFIG = {
-    "slug": "sf-admin",
-    "certName": "Salesforce 認定 Platform アドミニストレーター",
-    "shortName": "SF アドミニストレーター",
-    "examCode": "ADM-201",
+    "slug": "developer",
+    "certName": "Salesforce 認定 Platform デベロッパー",
+    "shortName": "Developer",
+    "examCode": "Platform Developer I",
     "examN": 60,
     "examMin": 105,
-    "pass": 65,
-    "storageKey": "sfq_v4",
+    "pass": 68,
+    "storageKey": "sfqdev_v1",
     "dataDir": "data/"
   };
   window.SFQ_PAGE_ROLE = 'client';

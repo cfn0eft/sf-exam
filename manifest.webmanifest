@@ -14,5 +14,31 @@
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Admin デイリーチャレンジ",
+      "short_name": "Adminデイリー",
+      "url": "./certifications/sf-admin/index.html?go=daily",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Admin 模試（本番形式）",
+      "short_name": "Admin模試",
+      "url": "./certifications/sf-admin/index.html?go=exam",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "App Builder デイリーチャレンジ",
+      "short_name": "ABデイリー",
+      "url": "./certifications/app-builder/index.html?go=daily",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "App Builder 模試（本番形式）",
+      "short_name": "AB模試",
+      "url": "./certifications/app-builder/index.html?go=exam",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
   ]
 }
