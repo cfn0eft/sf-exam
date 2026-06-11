@@ -287,7 +287,7 @@
     "terms": [
       {
         "title": "参照関係",
-    "fig": "relationships",
+        "fig": "relationships",
         "jaName": "参照関係",
         "enName": "Lookup Relationship",
         "definition": "2 つのオブジェクトを緩やかに結びつけるリレーション。親レコードを削除しても子レコードは残る（任意の関連）。",
@@ -314,7 +314,7 @@
       },
       {
         "title": "主従関係",
-    "fig": "relationships",
+        "fig": "relationships",
         "jaName": "主従関係",
         "enName": "Master-Detail Relationship",
         "definition": "親（主）に子（従）が強く依存するリレーション。親を削除すると子も削除され、子は親の共有・所有者設定を継承する。積み上げ集計項目の前提となる。",
@@ -341,7 +341,7 @@
       },
       {
         "title": "積み上げ集計項目",
-    "fig": "rollup-summary",
+        "fig": "rollup-summary",
         "jaName": "積み上げ集計項目",
         "enName": "Roll-Up Summary Field",
         "definition": "主従関係の親側に置き、子レコードの件数・合計・最小・最大を集計する項目。",
@@ -496,7 +496,7 @@
       },
       {
         "title": "連結オブジェクト（接合オブジェクト）",
-    "fig": "relationships",
+        "fig": "relationships",
         "jaName": "連結オブジェクト",
         "enName": "Junction Object",
         "definition": "2 つの主従関係を持たせて多対多リレーションを表現するための中間カスタムオブジェクト。両親の和集合で共有・所有を継承する。",
@@ -523,7 +523,7 @@
       },
       {
         "title": "多対多リレーション",
-    "fig": "relationships",
+        "fig": "relationships",
         "jaName": "多対多",
         "enName": "Many-to-Many Relationship",
         "definition": "2 つのオブジェクトを連結オブジェクト経由で結ぶリレーション設計。両側からもう一方を関連リストで参照できる。",
@@ -568,7 +568,8 @@
           213,
           248
         ],
-        "fullContent": "**定義**\n\nSalesforce Connect で外部システムのデータをコピーせずにオンデマンドで参照するためのオブジェクト。API 参照名の末尾に __x が付く。\n\n**試験のポイント**\n\n- データはオンデマンド取得（組織のストレージは消費しない）\n- 間接参照関係 / 外部参照関係で標準オブジェクトと結合できる\n- OData / クロス組織アダプタなどで接続する\n\n**公式リファレンス**\n\n- https://help.salesforce.com/s/articleView?id=sf.platform_connect_about.htm&type=5"
+        "fullContent": "**定義**\n\nSalesforce Connect で外部システムのデータをコピーせずにオンデマンドで参照するためのオブジェクト。API 参照名の末尾に __x が付く。\n\n**試験のポイント**\n\n- データはオンデマンド取得（組織のストレージは消費しない）\n- 間接参照関係 / 外部参照関係で標準オブジェクトと結合できる\n- OData / クロス組織アダプタなどで接続する\n\n**公式リファレンス**\n\n- https://help.salesforce.com/s/articleView?id=sf.platform_connect_about.htm&type=5",
+        "fig": "external-objects"
       },
       {
         "title": "外部ID",
@@ -668,7 +669,8 @@
           238,
           266
         ],
-        "fullContent": "**定義**\n\nブラウザから取引先・取引先責任者・リード・ソリューション・カスタムオブジェクトをインポート / 更新する標準ツール。最大 5 万件まで。\n\n**試験のポイント**\n\n- 最大 5 万件 / 回（取引先・取引先責任者・リード・ソリューション・カスタムオブジェクト）\n- 重複ルール・割り当てルール・ワークフローを実行するかを選べる\n- それ以上やオブジェクト未対応ならデータローダー\n\n**公式リファレンス**\n\n- https://help.salesforce.com/s/articleView?id=sf.data_import_wizard.htm&type=5"
+        "fullContent": "**定義**\n\nブラウザから取引先・取引先責任者・リード・ソリューション・カスタムオブジェクトをインポート / 更新する標準ツール。最大 5 万件まで。\n\n**試験のポイント**\n\n- 最大 5 万件 / 回（取引先・取引先責任者・リード・ソリューション・カスタムオブジェクト）\n- 重複ルール・割り当てルール・ワークフローを実行するかを選べる\n- それ以上やオブジェクト未対応ならデータローダー\n\n**公式リファレンス**\n\n- https://help.salesforce.com/s/articleView?id=sf.data_import_wizard.htm&type=5",
+        "fig": "import-tools"
       },
       {
         "title": "データローダー",
@@ -691,7 +693,8 @@
           236,
           238
         ],
-        "fullContent": "**定義**\n\nデスクトップアプリ（または CLI）で大量データを挿入・更新・upsert・削除する公式ツール。最大 500 万件 / 回まで扱える。\n\n**試験のポイント**\n\n- 最大 500 万件 / 回（バッチサイズ既定 200）\n- **すべてのカスタムオブジェクト・標準オブジェクト**が対象（ウィザード非対応も含む）\n- upsert で外部 ID を使えば既存レコードに自動マージできる\n\n**公式リファレンス**\n\n- https://help.salesforce.com/s/articleView?id=sf.data_loader.htm&type=5"
+        "fullContent": "**定義**\n\nデスクトップアプリ（または CLI）で大量データを挿入・更新・upsert・削除する公式ツール。最大 500 万件 / 回まで扱える。\n\n**試験のポイント**\n\n- 最大 500 万件 / 回（バッチサイズ既定 200）\n- **すべてのカスタムオブジェクト・標準オブジェクト**が対象（ウィザード非対応も含む）\n- upsert で外部 ID を使えば既存レコードに自動マージできる\n\n**公式リファレンス**\n\n- https://help.salesforce.com/s/articleView?id=sf.data_loader.htm&type=5",
+        "fig": "import-tools"
       },
       {
         "title": "レコードタイプ",
@@ -908,7 +911,7 @@
       },
       {
         "title": "フロー",
-    "fig": "flow-types",
+        "fig": "flow-types",
         "jaName": "フロー",
         "enName": "Flow / Flow Builder",
         "definition": "Flow Builder で作る宣言的な自動化。画面フロー（ユーザー操作）と自動起動フローがあり、ワークフロールール／プロセスビルダーの後継。",
@@ -935,7 +938,7 @@
       },
       {
         "title": "レコードトリガフロー",
-    "fig": "record-triggered-flow",
+        "fig": "record-triggered-flow",
         "jaName": "レコードトリガフロー",
         "enName": "Record-Triggered Flow",
         "definition": "レコードの作成・更新・削除をきっかけに自動起動するフロー。保存前（fast field update）と保存後の実行タイミングを選べる。",
@@ -983,7 +986,7 @@
       },
       {
         "title": "レコードトリガフロー（保存前）",
-    "fig": "record-triggered-flow",
+        "fig": "record-triggered-flow",
         "jaName": "保存前フロー",
         "enName": "Before-Save Record-Triggered Flow",
         "definition": "レコードが DB に保存される直前に同じレコードの項目を更新するフロー。同オブジェクト更新は高速で、ワークフロー項目更新の置き換え。",
@@ -1004,7 +1007,7 @@
       },
       {
         "title": "レコードトリガフロー（保存後）",
-    "fig": "record-triggered-flow",
+        "fig": "record-triggered-flow",
         "jaName": "保存後フロー",
         "enName": "After-Save Record-Triggered Flow",
         "definition": "レコード保存後に動くフロー。関連レコードの作成・更新、外部呼び出し、メール送信などに使う。",
@@ -1167,7 +1170,7 @@
       },
       {
         "title": "Apex",
-    "fig": "declarative-vs-code",
+        "fig": "declarative-vs-code",
         "jaName": "Apex",
         "enName": "Apex",
         "definition": "Salesforce 独自のサーバーサイドプログラミング言語。**宣言的（フロー / 数式 / 入力規則）で実現できないとき**に使う最後の手段。",
@@ -1282,7 +1285,8 @@
         "questions": [
           183
         ],
-        "fullContent": "**定義**\n\n保存ボタン押下から DB コミットまでに走る処理の順番。「システム検証 → 保存前トリガ → 入力規則 → 保存後トリガ → 割り当て / 自動応答 → 承認プロセス → コミット」が大枠。\n\n**試験のポイント**\n\n- **入力規則は保存前フロー / トリガの後**\n- **重複ルールは入力規則の前後でフェーズが違う**（API 経由は再評価が走ることに注意）\n- ワークフロー項目更新による再帰呼び出しが旧来の落とし穴（フローでも保存後フローの連鎖に注意）\n\n**公式リファレンス**\n\n- https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers_order_of_execution.htm"
+        "fullContent": "**定義**\n\n保存ボタン押下から DB コミットまでに走る処理の順番。「システム検証 → 保存前トリガ → 入力規則 → 保存後トリガ → 割り当て / 自動応答 → 承認プロセス → コミット」が大枠。\n\n**試験のポイント**\n\n- **入力規則は保存前フロー / トリガの後**\n- **重複ルールは入力規則の前後でフェーズが違う**（API 経由は再評価が走ることに注意）\n- ワークフロー項目更新による再帰呼び出しが旧来の落とし穴（フローでも保存後フローの連鎖に注意）\n\n**公式リファレンス**\n\n- https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers_order_of_execution.htm",
+        "fig": "order-of-execution"
       },
       {
         "title": "数式関数（日付・文字列・論理）",
@@ -1333,7 +1337,7 @@
     "terms": [
       {
         "title": "Lightning アプリケーションビルダー",
-    "fig": "app-builder-regions",
+        "fig": "app-builder-regions",
         "jaName": "Lightning アプリケーションビルダー",
         "enName": "Lightning App Builder",
         "definition": "ドラッグ&ドロップで Lightning ページ（レコードページ・アプリページ・ホームページ）を組み立てるツール。",
@@ -1428,7 +1432,7 @@
       },
       {
         "title": "Lightning レコードページ",
-    "fig": "app-builder-regions",
+        "fig": "app-builder-regions",
         "jaName": "Lightning レコードページ",
         "enName": "Lightning Record Page",
         "definition": "オブジェクトの詳細画面を Lightning アプリケーションビルダーで構成したページ。標準コンポーネント・カスタム LWC・動的フォーム要素を配置できる。",
@@ -1692,7 +1696,7 @@
       },
       {
         "title": "Lightning アプリケーションビルダーの有効化",
-    "fig": "page-assignment",
+        "fig": "page-assignment",
         "jaName": "ページ有効化",
         "enName": "Activate Lightning Page",
         "definition": "Lightning レコードページ / ホームページ / アプリページを「組織 / アプリ / アプリ＋レコードタイプ＋プロファイル / フォームファクタ」に割り当てて配信する操作。",
@@ -1720,7 +1724,7 @@
     "terms": [
       {
         "title": "変更セット",
-    "fig": "deployment",
+        "fig": "deployment",
         "jaName": "変更セット",
         "enName": "Change Set",
         "definition": "接続済み組織（例: Sandbox → 本番）間でメタデータ（カスタム項目・オブジェクト等）を移送する宣言的な手段。",
@@ -1824,7 +1828,7 @@
       },
       {
         "title": "サンドボックス種別",
-    "fig": "sandbox-types",
+        "fig": "sandbox-types",
         "jaName": "サンドボックス種別",
         "enName": "Sandbox Types",
         "definition": "Developer / Developer Pro / Partial Copy / Full の 4 種類。本番からのデータコピー量・更新間隔・ストレージが異なる。",
@@ -1886,7 +1890,7 @@
       },
       {
         "title": "デプロイ方式の選び方",
-    "fig": "deployment",
+        "fig": "deployment",
         "jaName": "デプロイ方式",
         "enName": "Deployment Options",
         "definition": "変更セット / 管理パッケージ / 未管理パッケージ / Salesforce CLI（メタデータ API）の 4 系統。チーム規模・自動化要件・バージョン管理の有無で選ぶ。",
