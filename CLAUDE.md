@@ -23,7 +23,7 @@ sf-exam/
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
 ├── manifest.webmanifest  # PWA
-├── sw.js                 # Service Worker（更新は tools/bump-version.js で。現在 v36／アセット ?v=34）
+├── sw.js                 # Service Worker（更新は tools/bump-version.js で。現在 v37／アセット ?v=35）
 ├── tools/                # 開発ツール（下記「開発ツール・CI」参照。サイト配信には含まれない）
 ├── .github/workflows/ci.yml  # push/PR 毎に validate-data + test-engine を実行
 ├── docs/HISTORY.md       # 過去リリースの実装メモ（CLAUDE.md から退避したアーカイブ）
@@ -232,7 +232,7 @@ git push origin main
 ## 残タスク（2026-06-11 時点）
 
 - **Developer の問題作成**：骨組み（シェル＋4分野）は完成済み。残りは questions/vocab/navmap 等のコンテンツを公式ソース第一で分野ごとにバッチ作成し、完成後 LP の `CERTS` に1行追加して公開。
-- （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig`（または `vocab.json` の `fig`）に図名を入れ、`validate-data.js` で参照確認するだけ（現在22点＋エイリアス2）。
+- （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig`（または `vocab.json` の `fig`）に図名を入れ、`validate-data.js` で参照確認するだけ（現在23点＋エイリアス5）。
 - （バックログ）ケーススタディ（#25）のさらなる拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現在 sf-admin 6件・app-builder 5件）。
 
 ### 完了済み（2026-06-11）開発基盤＋学習機能＋コンテンツ拡充（キャッシュ v35・アセット `?v=33`）
@@ -251,6 +251,12 @@ git push origin main
 - **PWAショートカット**: manifest に `shortcuts` 4件（Admin/AB × デイリー/模試）。エンジンに `handleLaunchShortcut()`（`?go=daily|exam` を解釈し、`history.replaceState` で再発火防止）。
 - **Developer 骨組み**: `certifications/developer/`（シェル＋公式4分野 domains.json＋空データ5本、pass 68%・storageKey `sfqdev_v1`）。問題0問のため LP 未掲載。
 - **エンジンテスト拡充**: 14→17件（finishExam 採点・週ミッション達成/XP・ショートカット起動）。DOMスタブを要素返却型に強化。
+
+### 完了済み（2026-06-11 第3弾）検索キーワード補完＋図解2点＋解説増補（キャッシュ v37・アセット `?v=35`）
+
+- **キーワード絞り込みの欠落解消**: sf-admin の生成問題78問（id192-269）に `keywords` を付与（既存語彙を優先再利用）。全833問がキーワード絞り込みに登場するようになった。
+- **図解 +2点**: sf-admin/approval-process（承認プロセスのしくみ。エントリ条件→申請ロック→ステップ→4タイミングの自動アクション）／app-builder/governor-limits（主なガバナ制限とループ外一括処理の定石）。相互エイリアス3本（ab/approval-process・sf/governor-limits・sf/order-of-execution）。問題23問・用語3語に付与（1問ずつ整合確認済み）。
+- **解説増補**: app-builder #171（サンドボックス選択）に各選択肢の不正解理由（容量・本番データ有無・リフレッシュ間隔）を追記し `sandbox-types` 図を付与。
 
 過去のリリース履歴（2026-05-31〜2026-06-08）の実装メモは **`docs/HISTORY.md`** を参照。
 
