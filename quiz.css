@@ -774,6 +774,12 @@ body{
 .hh-bar{height:8px;background:rgba(255,255,255,.25);border-radius:5px;overflow:hidden}
 .hh-fill{height:100%;background:#fff;border-radius:5px;transition:width .4s}
 .hh-cd{font-size:11px;opacity:.92;margin-top:8px}
+/* 逆算ペース（受験日からの1日ノルマ。renderPlan が plan-cd の直後に生成） */
+.plan-reco{font-size:11px;opacity:.95;margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.plan-reco b{font-size:13px}
+.plan-reco-btn{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);color:inherit;
+  border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.plan-reco-btn:active{transform:scale(.96)}
 .primary2{display:flex;gap:10px;margin-bottom:12px}
 .pbtn{flex:1;border:none;border-radius:14px;padding:16px 8px;font-weight:800;font-size:15px;color:#fff;
   display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:filter .12s,transform .08s}

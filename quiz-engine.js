@@ -62,6 +62,12 @@ let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
 let qkQueue=[],qkCur=0,qkMode='all',qkRevealed=false;
 // 試験の中断・再開用（クラウド同期対象外のローカル専用キー）
 const EXAM_SAVE_KEY=SKEY+'_examstate';
+// 模試の出題重複回避：直近2回の模試に出た問題IDを保持（ローカル専用・同期対象外）
+const EXAM_RECENT_KEY=SKEY+'_recentexam';
+function recentExamIds(){try{const a=JSON.parse(localStorage.getItem(EXAM_RECENT_KEY)||'[]');return new Set([].concat.apply([],Array.isArray(a)?a:[]));}catch(e){return new Set();}}
+function pushRecentExam(ids){try{let a=JSON.parse(localStorage.getItem(EXAM_RECENT_KEY)||'[]');if(!Array.isArray(a))a=[];a.push(ids||[]);localStorage.setItem(EXAM_RECENT_KEY,JSON.stringify(a.slice(-2)));}catch(e){}}
+// シャッフルしつつ「直近の模試に出ていない問題」を前に並べる（抽出時の優先度付け）
+function freshFirst(list){const rec=recentExamIds();if(!rec.size)return shuffle(list);const a=[],b=[];shuffle(list).forEach(q=>(rec.has(q.id)?b:a).push(q));return a.concat(b);}
 
 // --- storage ---
 function loadStore(){
@@ -1409,7 +1415,7 @@ const GUIDE=[
     {ic:'❌',name:'誤答理由タグ',desc:'間違えた理由（知らなかった／ケアレス／迷った）を記録すると傾向を分析できます。'}
   ]},
   {cat:'⏱️ 実力を測る', items:[
-    {ic:'⏱️',name:'試験モード',desc:'本番形式60問・時間制限つき。ナビ・フラグ・採点・弱点表示。',act:'exam'},
+    {ic:'⏱️',name:'試験モード',desc:'本番形式60問・時間制限つき。ナビ・フラグ・採点・弱点表示。直近2回の模試に出た問題は出にくくなります。',act:'exam'},
     {ic:'🎛️',name:'カスタム模試',desc:'分野・問題数・時間制限を選んで自分専用の模試。',act:'custom'},
     {ic:'📋',name:'ケーススタディ',desc:'実務シナリオで関連問題を連続で解く実戦形式。',act:'cases'},
     {ic:'🟢',name:'難易度（易/標準/難）',desc:'問題ごとに難易度を表示。出題設定で難易度のしぼり込みもできます。'}
@@ -1425,7 +1431,7 @@ const GUIDE=[
   {cat:'🎮 続ける仕組み', items:[
     {ic:'🎮',name:'XP・レベル',desc:'解くほど経験値がたまりレベルアップ（ホームに表示）。'},
     {ic:'🎯',name:'今週のミッション',desc:'週ごとの目標を達成してXP獲得。達成時は紙吹雪でお祝い。'},
-    {ic:'🔥',name:'ストリーク・目標',desc:'連続学習日数と1日の目標問題数。達成でお祝い演出。'},
+    {ic:'🔥',name:'ストリーク・目標',desc:'連続学習日数と1日の目標問題数。受験日を設定すると逆算ペース（1日ノルマ）も提案。達成でお祝い演出。'},
     {ic:'🏅',name:'実績バッジ',desc:'条件を満たすとバッジを獲得（統計ページで一覧）。',act:'stats'},
     {ic:'🎓',name:'資格取得の記録',desc:'本番に合格したらマイページで「取得済み」に。',act:'mypage'}
   ]},
@@ -1489,8 +1495,9 @@ function startExam(opts){
   const want=opts.n||EXAM_N;
   eN=Math.min(want,universe.length);
   eTimed=opts.timed!==false;
-  // 分野を絞ったときはその範囲からシャッフル抽出。標準は公式比率で重み付け抽出。
-  eQ=(opts.weak||(opts.domains&&opts.domains.length))?shuffle(universe).slice(0,eN):pickWeightedExam(eN);
+  // 分野を絞ったときはその範囲から抽出。標準は公式比率で重み付け抽出。
+  // いずれも直近2回の模試に出た問題を後回しにする（重複回避）。
+  eQ=(opts.weak||(opts.domains&&opts.domains.length))?freshFirst(universe).slice(0,eN):pickWeightedExam(eN);
   eCur=0;eAns={};eFlag={};eQTime={};
   eBudget=Math.max(60,Math.round(EXAM_MIN*60*eN/EXAM_N));   // 標準と同じ1問ペース
   eSecs=eTimed?eBudget:0;                                    // timed=残り / untimed=経過
@@ -1505,7 +1512,7 @@ function pickWeightedExam(n){
   const universe=scopedQ();
   const byD={};DOMAIN_DEFS.forEach(d=>byD[d.code]=[]);
   universe.forEach(q=>{const c=domainOf(q.id);(byD[c]||(byD[c]=[])).push(q);});
-  Object.keys(byD).forEach(c=>byD[c]=shuffle(byD[c]));
+  Object.keys(byD).forEach(c=>byD[c]=freshFirst(byD[c]));   // 直近の模試に出た問題は後回し
   const totW=DOMAIN_DEFS.reduce((s,d)=>s+d.weight,0);
   const picked=[],used=new Set();
   DOMAIN_DEFS.forEach(d=>{
@@ -1513,7 +1520,7 @@ function pickWeightedExam(n){
     (byD[d.code]||[]).slice(0,want).forEach(q=>{picked.push(q);used.add(q.id);});
   });
   if(picked.length<n){
-    const rest=shuffle(universe.filter(q=>!used.has(q.id)));
+    const rest=freshFirst(universe.filter(q=>!used.has(q.id)));
     for(const q of rest){if(picked.length>=n)break;picked.push(q);used.add(q.id);}
   }
   return shuffle(picked.slice(0,n));
@@ -1676,6 +1683,7 @@ function finishExam(){
   if(!store.exams)store.exams=[];
   store.exams.push({ts:Date.now(),pct:pct,ok:ok,n:eN,pass:pass,byd:byd,secsUsed:secsUsed,custom:(eN!==EXAM_N||!eTimed)});
   if(store.exams.length>50)store.exams=store.exams.slice(-50);
+  try{pushRecentExam(eQ.map(q=>q.id));}catch(e){}   // 次回の模試で同じ問題を後回しにする
   store.xp=(store.xp||0)+30+(pass?100:0);   // #12 模試完了+合格ボーナス
   save();
   checkBadges();
@@ -2073,6 +2081,18 @@ function renderBadges(){
 }
 
 /* ===== 学習計画（受験日カウントダウン＋デイリー目標） ===== */
+// 逆算ペース：受験日までに「未着手＋要復習」を消化するための1日ノルマ（#逆算プラン）
+function paceReco(daysLeft){
+  const pool=scopedQ();
+  const remain=pool.filter(q=>isUnseen(q.id)||needsReview(q.id)).length;
+  return {remain:remain,perDay:(daysLeft>0&&remain>0)?Math.ceil(remain/daysLeft):0};
+}
+function adoptPace(n){
+  if(!(n>0))return;
+  store.goal=n;save();
+  renderPlan();try{renderMypage();}catch(e){}
+  toast('🎯 1日の目標を '+n+'問 に設定しました');
+}
 function renderPlan(){
   const cd=document.getElementById('plan-cd');if(!cd)return;
   const goalWrap=document.getElementById('plan-goal');
@@ -2086,11 +2106,20 @@ function renderPlan(){
     goalWrap.style.display='block';
     setText('goal-txt',todayN+' / '+goal+' 問'+(todayN>=goal?' ✅':''));
     document.getElementById('goal-fill').style.width=Math.min(100,Math.round(todayN/goal*100))+'%';
-    let pace='今日の残り '+Math.max(0,goal-todayN)+'問';
-    const unans=allQ.length-answeredCount();
-    if(ed&&daysLeft>0&&unans>0)pace='未着手 '+unans+'問　目安 '+Math.ceil(unans/daysLeft)+'問/日で全問完了';
-    setText('plan-pace',pace);
+    setText('plan-pace','今日の残り '+Math.max(0,goal-todayN)+'問');
   }else goalWrap.style.display='none';
+  // 逆算ペース（受験日があるときだけ表示。目標未設定ならワンタップで採用できる）
+  let reco=document.getElementById('plan-reco');
+  if(!reco){reco=document.createElement('div');reco.id='plan-reco';reco.className='plan-reco';cd.parentNode.insertBefore(reco,cd.nextSibling);}
+  let html='';
+  if(ed&&daysLeft>0){
+    const pr=paceReco(daysLeft);
+    if(pr.remain>0){
+      html='📐 逆算ペース：残り'+pr.remain+'問 ÷ '+daysLeft+'日 ＝ <b>1日'+pr.perDay+'問</b>'
+        +(goal===pr.perDay?'':' <button class="plan-reco-btn" type="button" onclick="adoptPace('+pr.perDay+')">目標にする</button>');
+    }else html='📐 未着手・要復習は0問。仕上げの模試と総ざらいへ 🎉';
+  }
+  reco.innerHTML=html;reco.style.display=html?'':'none';
 }
 function togglePlanEdit(){
   const e=document.getElementById('plan-edit');if(!e)return;e.classList.toggle('on');

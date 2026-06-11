@@ -233,7 +233,9 @@
       "商談"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-ui",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、ページレイアウトとユーザー操作性の改善に関する次の要件に対応します。"
   },
   {
     "id": 10,
@@ -312,7 +314,9 @@
       "データ損失"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "ck-data",
+    "scenario": "Cloud Kicks のアプリケーションビルダーとして、データモデルと項目設計に関する次の要件に対応します。"
   },
   {
     "id": 11,
@@ -1365,7 +1369,9 @@
       "取引先責任者"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-ui",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、ページレイアウトとユーザー操作性の改善に関する次の要件に対応します。"
   },
   {
     "id": 65,
@@ -1683,7 +1689,8 @@
       "SOAP"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "order-of-execution"
   },
   {
     "id": 185,
@@ -1893,7 +1900,9 @@
       "件数制限"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "ck-data",
+    "scenario": "Cloud Kicks のアプリケーションビルダーとして、データモデルと項目設計に関する次の要件に対応します。"
   },
   {
     "id": 209,
@@ -1972,7 +1981,9 @@
       "取引先"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "case": "uc-ui",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、ページレイアウトとユーザー操作性の改善に関する次の要件に対応します。"
   },
   {
     "id": 53,
@@ -2102,7 +2113,9 @@
       "取引先"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-ui",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、ページレイアウトとユーザー操作性の改善に関する次の要件に対応します。"
   },
   {
     "id": 55,
@@ -2130,7 +2143,9 @@
       "宣言的"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "case": "ck-data",
+    "scenario": "Cloud Kicks のアプリケーションビルダーとして、データモデルと項目設計に関する次の要件に対応します。"
   },
   {
     "id": 103,
@@ -2316,7 +2331,9 @@
       "Lightningアプリケーションビルダー"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-ui",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、ページレイアウトとユーザー操作性の改善に関する次の要件に対応します。"
   },
   {
     "id": 114,
@@ -2979,7 +2996,9 @@
       "カスタムオブジェクト"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "ck-data",
+    "scenario": "Cloud Kicks のアプリケーションビルダーとして、データモデルと項目設計に関する次の要件に対応します。"
   },
   {
     "id": 157,
@@ -3447,7 +3466,9 @@
       "切り捨て"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "ck-data",
+    "scenario": "Cloud Kicks のアプリケーションビルダーとして、データモデルと項目設計に関する次の要件に対応します。"
   },
   {
     "id": 195,
@@ -3607,7 +3628,9 @@
       "移行"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "case": "uc-deploy",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。"
   },
   {
     "id": 283,
@@ -3866,7 +3889,9 @@
       "Sandbox"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-deploy",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。"
   },
   {
     "id": 285,
@@ -4363,7 +4388,9 @@
       "週次更新"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-deploy",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。"
   },
   {
     "id": 109,
@@ -4648,7 +4675,9 @@
       "外部メール防止"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-deploy",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。"
   },
   {
     "id": 292,
@@ -4830,7 +4859,9 @@
       "開発リソース不足"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "case": "uc-deploy",
+    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。"
   },
   {
     "id": 273,
@@ -5815,7 +5846,8 @@
       "データストレージ"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "external-objects"
   },
   {
     "id": 140,
@@ -7005,7 +7037,8 @@
       "Migrate to Flow"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "order-of-execution"
   },
   {
     "id": 313,
@@ -7161,7 +7194,8 @@
       "自動化"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "order-of-execution"
   },
   {
     "id": 173,
@@ -9195,7 +9229,8 @@
       "項目更新"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "order-of-execution"
   },
   {
     "id": 217,
