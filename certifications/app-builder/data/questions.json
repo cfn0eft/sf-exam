@@ -452,7 +452,8 @@
       "送信メッセージ"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "approval-process"
   },
   {
     "id": 16,
@@ -696,7 +697,8 @@
       "リリース"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 21,
@@ -1233,7 +1235,8 @@
       "パフォーマンステスト"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 112,
@@ -1398,7 +1401,8 @@
       "条件設定"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "approval-process"
   },
   {
     "id": 45,
@@ -2035,7 +2039,8 @@
       "テスト環境"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 222,
@@ -2809,7 +2814,8 @@
       "開発環境"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "sandbox-types"
   },
   {
     "id": 147,
@@ -4125,7 +4131,8 @@
       "更新間隔"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 241,
@@ -4377,7 +4384,7 @@
     "answers": [
       "Partial Copy Sandbox"
     ],
-    "explanation": "本番データの一部・5GB未満を使ったテストと、週1回の更新が可能なため、Partial Copy Sandboxが正解です。",
+    "explanation": "本番データのサブセット（最大5GB・オブジェクトごとに最大1万件のサンプル）を含められ、5日ごとにリフレッシュできるのは Partial Copy Sandbox です。毎週末（7日間隔）の更新という要件も満たせます。\n\n□ Developer Sandbox　これは不正解です。コピーされるのは設定（メタデータ）のみで本番データは含まれず、データ容量も200MBです。\n□ Developer Pro Sandbox　これは不正解です。容量は1GBに増えますが、本番データのコピーは含まれません。\n□ Full Sandbox　これは不正解です。本番の全データを複製できますが、リフレッシュ間隔が29日ごとのため「毎週末に更新」の要件を満たせません。",
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
@@ -4390,7 +4397,8 @@
     "source": "tyson",
     "diff": 2,
     "case": "uc-deploy",
-    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。"
+    "scenario": "Universal Containers のアプリケーションビルダーとして、Sandbox とリリース管理に関する次の要件に対応します。",
+    "expFig": "sandbox-types"
   },
   {
     "id": 109,
@@ -5328,7 +5336,8 @@
       "ガバナ制限"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "governor-limits"
   },
   {
     "id": 298,
@@ -6465,7 +6474,8 @@
       "メールアラート"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "approval-process"
   },
   {
     "id": 266,
@@ -6569,7 +6579,8 @@
       "ロック"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "approval-process"
   },
   {
     "id": 309,
@@ -8767,7 +8778,8 @@
       "フロー"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "governor-limits"
   },
   {
     "id": 210,
@@ -8870,7 +8882,8 @@
       "バルク"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "governor-limits"
   },
   {
     "id": 201,
