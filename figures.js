@@ -298,7 +298,73 @@ window.SFQ_FIGURES = {
 +'<text class="sub" x="350" y="316" font-size="12" text-anchor="middle">①②は作成時に評価、③は対応期限の超過を監視して動く</text>'
 +'</svg>',
 
+'sf-admin/approval-process':
+'<svg viewBox="0 0 700 380" role="img" aria-label="承認プロセスのしくみ">'
++'<defs><marker id="ap-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
++'<rect class="fig" x="1" y="1" width="698" height="378" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">承認プロセスのしくみ</text>'
++'<text class="sub" x="24" y="58" font-size="13">エントリ条件で対象を絞り、ステップごとに承認者を決め、4つのタイミングでアクションを自動実行</text>'
++'<rect class="b-slate" x="24" y="80" width="148" height="72" rx="11"/>'
++'<text class="ink" x="98" y="108" font-size="13" font-weight="700" text-anchor="middle">エントリ条件</text>'
++'<text class="sub" x="98" y="130" font-size="11" text-anchor="middle">例: 金額 ≥ 1万ドル</text>'
++'<rect class="b-amber" x="200" y="80" width="148" height="72" rx="11"/>'
++'<text class="t-amber" x="274" y="108" font-size="13" text-anchor="middle">申請（Submit）</text>'
++'<text class="sub" x="274" y="130" font-size="11" text-anchor="middle">レコードをロック可</text>'
++'<rect class="b-blue" x="376" y="80" width="148" height="72" rx="11"/>'
++'<text class="t-blue" x="450" y="104" font-size="13" text-anchor="middle">承認ステップ1</text>'
++'<text class="sub" x="450" y="124" font-size="11" text-anchor="middle">承認者: マネージャー</text>'
++'<text class="sub" x="450" y="140" font-size="11" text-anchor="middle">ステップ条件で分岐可</text>'
++'<rect class="b-indigo" x="552" y="80" width="124" height="72" rx="11"/>'
++'<text class="t-indigo" x="614" y="104" font-size="13" text-anchor="middle">ステップ2…</text>'
++'<text class="sub" x="614" y="124" font-size="11" text-anchor="middle">例: 高額のみ</text>'
++'<text class="sub" x="614" y="140" font-size="11" text-anchor="middle">ディレクター承認</text>'
++'<line class="ln" x1="172" y1="116" x2="196" y2="116" stroke-width="2.4" marker-end="url(#ap-ar)"/>'
++'<line class="ln" x1="348" y1="116" x2="372" y2="116" stroke-width="2.4" marker-end="url(#ap-ar)"/>'
++'<line class="ln" x1="524" y1="116" x2="548" y2="116" stroke-width="2.4" marker-end="url(#ap-ar)"/>'
++'<rect class="card" x="24" y="184" width="652" height="160" rx="12"/>'
++'<text class="ink" x="44" y="212" font-size="14" font-weight="700">自動アクション（4つのタイミングに設定できる）</text>'
++'<rect class="b-teal" x="44" y="228" width="146" height="42" rx="9"/>'
++'<text class="t-teal" x="117" y="254" font-size="12.5" text-anchor="middle">申請時</text>'
++'<rect class="b-teal" x="202" y="228" width="146" height="42" rx="9"/>'
++'<text class="t-teal" x="275" y="254" font-size="12.5" text-anchor="middle">承認時（最終）</text>'
++'<rect class="b-teal" x="360" y="228" width="146" height="42" rx="9"/>'
++'<text class="t-teal" x="433" y="254" font-size="12.5" text-anchor="middle">却下時</text>'
++'<rect class="b-teal" x="518" y="228" width="146" height="42" rx="9"/>'
++'<text class="t-teal" x="591" y="254" font-size="12.5" text-anchor="middle">取消（Recall）時</text>'
++'<text class="ink" x="44" y="300" font-size="12">使えるアクション: 項目自動更新 ・ メールアラート ・ ToDo の作成 ・ 送信メッセージ</text>'
++'<text class="sub" x="44" y="322" font-size="11">ロック中のレコードは一般ユーザーは編集不可（管理者と、設定により現在の承認者は編集可）</text>'
++'<text class="sub" x="350" y="364" font-size="12" text-anchor="middle">フローの「承認申請」アクションから自動で申請することもできる</text>'
++'</svg>',
+
 /* ============================ app-builder ============================ */
+
+'app-builder/governor-limits':
+'<svg viewBox="0 0 700 330" role="img" aria-label="主なガバナ制限（1トランザクションあたり）">'
++'<rect class="fig" x="1" y="1" width="698" height="328" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">主なガバナ制限（1トランザクションあたり）</text>'
++'<text class="sub" x="24" y="58" font-size="13">フロー・Apex・プロセスは同じ枠を共有する（フローだけの別枠はない）</text>'
++'<rect class="b-blue" x="24" y="78" width="210" height="64" rx="10"/>'
++'<text class="t-blue" x="40" y="102" font-size="13">SOQL クエリ 100回</text>'
++'<text class="sub" x="40" y="124" font-size="11">非同期は 200回</text>'
++'<rect class="b-blue" x="252" y="78" width="210" height="64" rx="10"/>'
++'<text class="t-blue" x="268" y="102" font-size="13">SOQL 取得行 50,000行</text>'
++'<text class="sub" x="268" y="124" font-size="11">クエリで取得できる合計行数</text>'
++'<rect class="b-teal" x="480" y="78" width="196" height="64" rx="10"/>'
++'<text class="t-teal" x="496" y="102" font-size="13">DML 150回</text>'
++'<text class="sub" x="496" y="124" font-size="11">作成・更新・削除の合計</text>'
++'<rect class="b-teal" x="24" y="158" width="210" height="64" rx="10"/>'
++'<text class="t-teal" x="40" y="182" font-size="13">DML 処理行 10,000行</text>'
++'<text class="sub" x="40" y="204" font-size="11">1トランザクションの合計</text>'
++'<rect class="b-purple" x="252" y="158" width="210" height="64" rx="10"/>'
++'<text class="t-purple" x="268" y="182" font-size="13">CPU 時間 10秒</text>'
++'<text class="sub" x="268" y="204" font-size="11">非同期は 60秒</text>'
++'<rect class="b-purple" x="480" y="158" width="196" height="64" rx="10"/>'
++'<text class="t-purple" x="496" y="182" font-size="13">ヒープ 6MB</text>'
++'<text class="sub" x="496" y="204" font-size="11">非同期は 12MB</text>'
++'<rect class="b-amber" x="24" y="242" width="652" height="60" rx="10"/>'
++'<text class="t-amber" x="44" y="268" font-size="13">超過を防ぐ定石</text>'
++'<text class="ink" x="44" y="290" font-size="12">ループの中で「取得」「更新」をしない — コレクション変数に溜めて、ループの外で一括処理する</text>'
++'</svg>',
 
 'app-builder/relationships':
 '<svg viewBox="0 0 700 380" role="img" aria-label="オブジェクト関係の種類">'
@@ -591,3 +657,6 @@ window.SFQ_FIGURES = {
 /* 資格をまたいで使い回す図（同一SVGを別名で参照。教科書で app-builder「サンドボックス種別」に流用） */
 window.SFQ_FIGURES['app-builder/sandbox-types'] = window.SFQ_FIGURES['sf-admin/sandbox-types'];
 window.SFQ_FIGURES['app-builder/import-tools'] = window.SFQ_FIGURES['sf-admin/import-tools'];
+window.SFQ_FIGURES['app-builder/approval-process'] = window.SFQ_FIGURES['sf-admin/approval-process'];
+window.SFQ_FIGURES['sf-admin/governor-limits'] = window.SFQ_FIGURES['app-builder/governor-limits'];
+window.SFQ_FIGURES['sf-admin/order-of-execution'] = window.SFQ_FIGURES['app-builder/order-of-execution'];
