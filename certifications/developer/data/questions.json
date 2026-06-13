@@ -3736,5 +3736,1505 @@
     ],
     "source": "gen",
     "diff": 2
+  },
+  {
+    "id": 151,
+    "question": "組織の共有設定（組織の共有規則の既定値・OWD）の役割として正しいものはどれですか。",
+    "choices": [
+      "ユーザーが所有しないレコードへの最も制限的な基準のアクセスレベルを定める",
+      "プロファイルのオブジェクト権限を上書きする",
+      "項目レベルセキュリティを定義する",
+      "ログインできる IP 範囲を制限する"
+    ],
+    "answers": [
+      "ユーザーが所有しないレコードへの最も制限的な基準のアクセスレベルを定める"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ユーザーが所有しないレコードへの最も制限的な基準のアクセスレベルを定める　これは正解です。OWD はレコードレベルのアクセスのベースラインを「非公開／参照のみ／参照・更新」などで設定し、共有ルールやロール階層で段階的に開放していきます。\n\n□ プロファイルのオブジェクト権限を上書きする　これは不正解です。OWD はレコードレベルの共有で、オブジェクトの CRUD はプロファイル・権限セットが定めます。\n\n□ 項目レベルセキュリティを定義する　これは不正解です。FLS は別の仕組みで、OWD はレコード単位の可視性です。\n\n□ ログインできる IP 範囲を制限する　これは不正解です。IP 制限はプロファイルやネットワークアクセスの設定です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_sharing_owd.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "OWD",
+      "組織の共有設定",
+      "レコードアクセス",
+      "セキュリティ"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 152,
+    "question": "あるユーザーに、プロファイルでは付与されていない追加のオブジェクト権限を、プロファイルを変えずに付与したい。どの方法が適切ですか。",
+    "choices": [
+      "権限セット（または権限セットグループ）を割り当てる",
+      "そのユーザー専用のプロファイルを新規作成する",
+      "ロールを変更する",
+      "共有ルールを追加する"
+    ],
+    "answers": [
+      "権限セット（または権限セットグループ）を割り当てる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 権限セット（または権限セットグループ）を割り当てる　これは正解です。権限セットはプロファイルに権限を追加で重ねる仕組みで、プロファイルを変えずに個別ユーザーへ機能・オブジェクト権限を付与でき、管理を簡素化します。\n\n□ そのユーザー専用のプロファイルを新規作成する　これは不正解です。実現はできますがプロファイルが乱立し保守性が下がります。追加付与は権限セットが推奨です。\n\n□ ロールを変更する　これは不正解です。ロールはレコード共有（階層）に影響するもので、オブジェクト権限の付与とは別です。\n\n□ 共有ルールを追加する　これは不正解です。共有ルールはレコードの可視性を広げる仕組みで、オブジェクトの CRUD 権限は付与しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "権限セット",
+      "プロファイル",
+      "オブジェクト権限",
+      "セキュリティ"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 153,
+    "question": "項目レベルセキュリティ（FLS）で、あるプロファイルに対して項目を「参照不可」に設定した場合の影響として正しいものはどれですか。",
+    "choices": [
+      "そのプロファイルのユーザーには、レポートや API でもその項目が見えなくなる",
+      "ページレイアウトからは隠れるが、API では引き続き取得できる",
+      "レコードの所有者だけはその項目を参照できる",
+      "入力規則からはその項目を参照できなくなる"
+    ],
+    "answers": [
+      "そのプロファイルのユーザーには、レポートや API でもその項目が見えなくなる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ そのプロファイルのユーザーには、レポートや API でもその項目が見えなくなる　これは正解です。FLS は UI・レポート・API・検索などプラットフォーム全体で項目の参照可否を制御します。\n\n□ ページレイアウトからは隠れるが、API では引き続き取得できる　これは不正解です。レイアウトから外すだけと違い、FLS は API でも適用されます。\n\n□ レコードの所有者だけはその項目を参照できる　これは不正解です。FLS は所有権に関係なくプロファイル/権限セット単位で適用されます。\n\n□ 入力規則からはその項目を参照できなくなる　これは不正解です。入力規則や数式の内部評価は FLS の影響を受けず項目を参照できます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.users_profiles_field_level_security.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "FLS",
+      "項目レベルセキュリティ",
+      "API",
+      "セキュリティ"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 154,
+    "question": "Apex で、実行ユーザーが特定の項目を更新する権限を持つかをコードで確認したい。どの方法が適切ですか。",
+    "choices": [
+      "項目の DescribeFieldResult の isUpdateable() を確認する",
+      "Trigger.new から項目値を読み取れるかを試す",
+      "Limits クラスで権限数を取得する",
+      "SOQL で項目を SELECT できるかを例外で判定する"
+    ],
+    "answers": [
+      "項目の DescribeFieldResult の isUpdateable() を確認する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 項目の DescribeFieldResult の isUpdateable() を確認する　これは正解です。Schema の describe 情報から isAccessible()/isUpdateable()/isCreateable() を呼ぶと、実行ユーザーの FLS に基づく項目の権限をコードで確認できます。\n\n□ Trigger.new から項目値を読み取れるかを試す　これは不正解です。Trigger.new はレコードデータで、ユーザーの項目権限の判定手段ではありません。\n\n□ Limits クラスで権限数を取得する　これは不正解です。Limits はガバナ制限の確認用で、権限チェックはできません。\n\n□ SOQL で項目を SELECT できるかを例外で判定する　これは不正解です。例外頼みの判定は不確実で、describe による明示的なチェックが適切です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_perms_enforcing.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "describe",
+      "isUpdateable",
+      "FLS",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 155,
+    "question": "Apex のロジックを、機能の有効・無効でユーザーごとに切り替えたい。プロファイルや権限セットで割り当て、Apex から FeatureManagement.checkPermission で判定できる仕組みはどれですか。",
+    "choices": [
+      "カスタム権限（Custom Permission）",
+      "カスタム表示ラベル",
+      "カスタム設定のテキスト項目",
+      "ロール階層"
+    ],
+    "answers": [
+      "カスタム権限（Custom Permission）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ カスタム権限（Custom Permission）　これは正解です。カスタム権限はプロファイル・権限セットに割り当てて、Apex（FeatureManagement.checkPermission）・数式・入力規則・フローから保有有無を判定でき、機能のオン/オフをユーザー単位で制御できます。\n\n□ カスタム表示ラベル　これは不正解です。翻訳文言の管理用で、権限判定には使えません。\n\n□ カスタム設定のテキスト項目　これは不正解です。設定値の保持はできますが、権限セットによる割り当てと連動した判定の仕組みではありません。\n\n□ ロール階層　これは不正解です。ロール階層はレコード共有用で、機能フラグの判定には使いません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.custom_perms_overview.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "カスタム権限",
+      "FeatureManagement",
+      "機能フラグ",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 156,
+    "question": "Apex で、既存の sObject レコードのコピーを作り、ID を引き継がず新規レコードとして挿入したい。どの方法が適切ですか。",
+    "choices": [
+      "clone(false, false, false, false) でコピーしてから insert する",
+      "= 演算子で別変数に代入してから insert する",
+      "同じレコードを再度 update する",
+      "JSON.serialize して文字列を insert する"
+    ],
+    "answers": [
+      "clone(false, false, false, false) でコピーしてから insert する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ clone(false, false, false, false) でコピーしてから insert する　これは正解です。sObject.clone() はレコードのコピーを返し、第1引数 preserveId を false にすると ID を引き継がないため、insert で新規レコードとして作成できます。\n\n□ = 演算子で別変数に代入してから insert する　これは不正解です。代入は同じインスタンスへの参照を共有するだけで、独立したコピーにはなりません。\n\n□ 同じレコードを再度 update する　これは不正解です。update は既存レコードの更新で、コピーの作成にはなりません。\n\n□ JSON.serialize して文字列を insert する　これは不正解です。文字列はそのまま insert できず、複製手段としても不適切です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_methods_system_sobject.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "clone",
+      "sObject",
+      "複製",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 157,
+    "question": "Apex で、外部 API へ送る JSON 文字列を、Apex のオブジェクトやコレクションから生成したい。どの方法が適切ですか。",
+    "choices": [
+      "JSON.serialize(オブジェクト) を使う",
+      "String.valueOf(オブジェクト) を使う",
+      "オブジェクトを + で文字列連結する",
+      "Blob.valueOf(オブジェクト) を使う"
+    ],
+    "answers": [
+      "JSON.serialize(オブジェクト) を使う"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ JSON.serialize(オブジェクト) を使う　これは正解です。JSON.serialize は Apex のオブジェクト・コレクション・sObject を JSON 文字列へ変換します。逆変換は JSON.deserialize(文字列, 型) を使います。\n\n□ String.valueOf(オブジェクト) を使う　これは不正解です。デバッグ向けの文字列表現を返すもので、正しい JSON にはなりません。\n\n□ オブジェクトを + で文字列連結する　これは不正解です。連結では妥当な JSON 構造を生成できません。\n\n□ Blob.valueOf(オブジェクト) を使う　これは不正解です。Blob.valueOf は文字列をバイナリへ変換するもので、オブジェクトの JSON 化ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_json_json.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "JSON.serialize",
+      "JSON",
+      "連携",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 158,
+    "question": "Apex で、カンマ区切りの文字列「a,b,c」を要素 3 つの List<String> に変換したい。どのメソッドを使いますか。",
+    "choices": [
+      "String の split(',')",
+      "String の substring(',')",
+      "String の join(',')",
+      "String の replace(',')"
+    ],
+    "answers": [
+      "String の split(',')"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ String の split(',')　これは正解です。split(区切り文字) は文字列を区切りで分割して List<String> を返します。'a,b,c'.split(',') は {'a','b','c'} になります。\n\n□ String の substring(',')　これは不正解です。substring は開始・終了位置で部分文字列を取り出すメソッドで、分割はしません。\n\n□ String の join(',')　これは不正解です。join はコレクションを区切り文字で連結して 1 つの文字列にするメソッドで、分割とは逆です。\n\n□ String の replace(',')　これは不正解です。replace は文字列の置換で、リストへの分割はしません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_methods_system_string.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "String",
+      "split",
+      "文字列操作",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 159,
+    "question": "Apex で、今日の日付の 30 日後の Date を求めたい。どの方法が適切ですか。",
+    "choices": [
+      "Date.today().addDays(30)",
+      "Date.today() + 30",
+      "Date.now().plusDays(30)",
+      "Datetime.today().addDays(30)"
+    ],
+    "answers": [
+      "Date.today().addDays(30)"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Date.today().addDays(30)　これは正解です。Date 型は addDays / addMonths / addYears などのメソッドを持ち、addDays(30) で 30 日後の Date を返します。\n\n□ Date.today() + 30　これは不正解です。Apex の Date 型は + 演算子による加算をサポートしていません。\n\n□ Date.now().plusDays(30)　これは不正解です。Date に now() や plusDays() というメソッドはありません。\n\n□ Datetime.today().addDays(30)　これは不正解です。Datetime に today() メソッドはなく（now() です）、型も要件の Date と異なります。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_methods_system_date.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Date",
+      "addDays",
+      "日付計算",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 160,
+    "question": "Apex で、Decimal 値を小数第 2 位に丸めたい。どの方法が適切ですか。",
+    "choices": [
+      "Decimal の setScale(2) を使う",
+      "Math.round() をそのまま使う",
+      "Integer にキャストする",
+      "String.format で表示だけ整える"
+    ],
+    "answers": [
+      "Decimal の setScale(2) を使う"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Decimal の setScale(2) を使う　これは正解です。Decimal.setScale(桁数) は指定した小数桁に丸めた Decimal を返します。丸めモードを引数で指定することもできます。\n\n□ Math.round() をそのまま使う　これは不正解です。Math.round は最も近い整数（Long）を返すため、小数第 2 位の保持にはなりません。\n\n□ Integer にキャストする　これは不正解です。整数化すると小数部が失われ、小数第 2 位の丸めにはなりません。\n\n□ String.format で表示だけ整える　これは不正解です。表示の整形であり、数値そのものの丸めにはなりません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_methods_system_decimal.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "Decimal",
+      "setScale",
+      "丸め",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 161,
+    "question": "delete トリガの中で、削除されようとしているレコードの項目値を参照したい。どのコンテキスト変数を使いますか。",
+    "choices": [
+      "Trigger.old（Trigger.new は null）",
+      "Trigger.new（Trigger.old は null）",
+      "Trigger.newMap のみ",
+      "Trigger.size のみ"
+    ],
+    "answers": [
+      "Trigger.old（Trigger.new は null）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Trigger.old（Trigger.new は null）　これは正解です。delete トリガでは削除前のレコードが Trigger.old（および oldMap）に入り、Trigger.new は null です。\n\n□ Trigger.new（Trigger.old は null）　これは不正解です。delete では new は null になります。new に値が入るのは insert/update/undelete です。\n\n□ Trigger.newMap のみ　これは不正解です。delete では newMap も使えません。\n\n□ Trigger.size のみ　これは不正解です。size は件数を返すだけで、レコードの項目値は参照できません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_context_variables.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "トリガ",
+      "delete",
+      "Trigger.old",
+      "コンテキスト変数"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 162,
+    "question": "Apex で、取引先のリストに対して、各取引先に紐づく取引先責任者を 1 件の SOQL で取得し、ループ内でその子レコードを参照したい。どう書きますか。",
+    "choices": [
+      "サブクエリ付き SOQL を使い、acc.Contacts でループ内から子を参照する",
+      "取引先ごとに SOQL を実行して責任者を取得する",
+      "Trigger.newMap から責任者を取得する",
+      "子から親への数式項目で取得する"
+    ],
+    "answers": [
+      "サブクエリ付き SOQL を使い、acc.Contacts でループ内から子を参照する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ サブクエリ付き SOQL を使い、acc.Contacts でループ内から子を参照する　これは正解です。[SELECT Name, (SELECT LastName FROM Contacts) FROM Account WHERE ...] のようにサブクエリで取得すると、Apex から acc.Contacts で子レコードのリストにアクセスでき、ループ内 SOQL を避けられます。\n\n□ 取引先ごとに SOQL を実行して責任者を取得する　これは不正解です。ループ内 SOQL はガバナ制限超過の典型で、バルク化の原則に反します。\n\n□ Trigger.newMap から責任者を取得する　これは不正解です。newMap は処理対象レコードの Map で、別オブジェクトの子を取得する仕組みではありません。\n\n□ 子から親への数式項目で取得する　これは不正解です。数式は親の参照で、親から子の一覧取得はできません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_relationships_query_using.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "サブクエリ",
+      "子リレーション",
+      "SOQL",
+      "バルク化"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 163,
+    "question": "Apex で、レコードレベルの共有を実行ユーザーの設定に従わせ、参照できないレコードを処理対象から除外したい。クラス宣言に付けるキーワードはどれですか。",
+    "choices": [
+      "with sharing",
+      "without sharing",
+      "inherited sharing のみ（必須）",
+      "global"
+    ],
+    "answers": [
+      "with sharing"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ with sharing　これは正解です。with sharing を付けたクラスでは実行ユーザーの共有設定が適用され、参照権のないレコードはクエリ結果から除外されます。\n\n□ without sharing　これは不正解です。without sharing は共有を無視してシステムコンテキストで実行するもので、要件と逆です。\n\n□ inherited sharing のみ（必須）　これは不正解です。inherited sharing は呼び出し元の共有モードを引き継ぐ指定で、必須ではありません。\n\n□ global　これは不正解です。global はアクセス範囲の修飾子で、共有の適用とは無関係です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_keywords_sharing.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "with sharing",
+      "共有",
+      "セキュリティ",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 164,
+    "question": "Apex から、特定レコードを特定ユーザー/グループへプログラムで共有（Apex 管理共有）したい。どの方法が適切ですか。",
+    "choices": [
+      "対象オブジェクトの __Share（または標準の Share）レコードを insert する",
+      "レコードの OwnerId を別のユーザーに変更する",
+      "プロファイルに対象オブジェクトの権限を追加する",
+      "ロール階層の構成を変更して調整する"
+    ],
+    "answers": [
+      "対象オブジェクトの __Share（または標準の Share）レコードを insert する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 対象オブジェクトの __Share（または標準の Share）レコードを insert する　これは正解です。Apex 管理共有は、共有オブジェクト（カスタムは ObjectName__Share、標準は AccountShare 等）に ParentId・UserOrGroupId・AccessLevel・RowCause を設定したレコードを insert して付与します。\n\n□ レコードの OwnerId を別のユーザーに変更する　これは不正解です。所有者変更はアクセス主体ごと変えてしまい、特定ユーザーへの追加共有とは異なります。\n\n□ プロファイルに対象オブジェクトの権限を追加する　これは不正解です。オブジェクト権限はレコード単位の共有ではありません。\n\n□ ロール階層の構成を変更して調整する　これは不正解です。階層変更は広範な影響があり、個別レコードのプログラム共有の手段ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_bulk_sharing_creating_with_apex.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Apex管理共有",
+      "Shareレコード",
+      "共有",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 165,
+    "question": "SOSL の RETURNING 句で、取得するオブジェクトに対して項目・絞り込み・並べ替え・件数制限を指定できますか。",
+    "choices": [
+      "できる（RETURNING Account(Name WHERE ... ORDER BY ... LIMIT ...)）",
+      "項目の指定のみ可能で、WHERE や ORDER BY は指定できない",
+      "RETURNING 句自体が存在しない",
+      "並べ替えのみ可能で、項目は固定される"
+    ],
+    "answers": [
+      "できる（RETURNING Account(Name WHERE ... ORDER BY ... LIMIT ...)）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ できる（RETURNING Account(Name WHERE ... ORDER BY ... LIMIT ...)）　これは正解です。SOSL の RETURNING 句では、オブジェクトごとに取得項目・WHERE 条件・ORDER BY・LIMIT を指定でき、結果を絞り込めます。\n\n□ 項目の指定のみ可能で、WHERE や ORDER BY は指定できない　これは不正解です。WHERE・ORDER BY・LIMIT も指定できます。\n\n□ RETURNING 句自体が存在しない　これは不正解です。SOSL には RETURNING 句があり、戻すオブジェクトと項目を指定します。\n\n□ 並べ替えのみ可能で、項目は固定される　これは不正解です。項目も明示的に指定できます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.soql_sosl.meta/soql_sosl/sforce_api_calls_sosl_returning.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "SOSL",
+      "RETURNING",
+      "絞り込み",
+      "検索"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 166,
+    "question": "GROUP BY を使った集計クエリの結果（AggregateResult）から、集計値を Apex で取り出す方法として正しいものはどれですか。",
+    "choices": [
+      "ar.get('expr0') または別名を付けて ar.get('total') で取得する",
+      "ar.Amount のようにドット表記の項目アクセスで取得する",
+      "ar[0] のように数値の添字を指定して取得する",
+      "ar.values() で全件をまとめて配列で取得する"
+    ],
+    "answers": [
+      "ar.get('expr0') または別名を付けて ar.get('total') で取得する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ar.get('expr0') または別名を付けて ar.get('total') で取得する　これは正解です。集計関数の結果には既定で expr0, expr1... の別名が付き、ar.get('expr0') で取得します。SUM(Amount) total のように別名を付ければ ar.get('total') で読み出せます。\n\n□ ar.Amount のようにドット表記の項目アクセスで取得する　これは不正解です。AggregateResult はドット表記の項目アクセスをサポートしません。\n\n□ ar[0] のように数値の添字を指定して取得する　これは不正解です。添字アクセスはできず、get(別名) を使います。\n\n□ ar.values() で全件をまとめて配列で取得する　これは不正解です。AggregateResult に values() メソッドはありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_agg_functions.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "AggregateResult",
+      "集計",
+      "GROUP BY",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 167,
+    "question": "Batch Apex の start メソッドで、数千万件規模の対象レコードを返すために推奨される戻り値はどれですか。",
+    "choices": [
+      "Database.QueryLocator（Database.getQueryLocator で取得）",
+      "List<sObject>（SOQL の結果をそのまま返す）",
+      "対象レコードの Id を保持する Set<Id>",
+      "Id をキーにした Map<Id, sObject>"
+    ],
+    "answers": [
+      "Database.QueryLocator（Database.getQueryLocator で取得）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Database.QueryLocator（Database.getQueryLocator で取得）　これは正解です。start が QueryLocator を返すと、最大 5,000 万件を対象にでき、通常の SOQL 行数制限を超えてバッチ処理できます。\n\n□ List<sObject>（SOQL の結果をそのまま返す）　これは不正解です。Iterable として List も返せますが、通常の SOQL 行数制限の範囲に収まり、数千万件には対応できません。\n\n□ 対象レコードの Id を保持する Set<Id>　これは不正解です。start の戻り値の型として適切ではありません。\n\n□ Id をキーにした Map<Id, sObject>　これは不正解です。start の戻り値は QueryLocator か Iterable で、Map は使えません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_batch_interface.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Batch Apex",
+      "QueryLocator",
+      "大量データ",
+      "start"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 168,
+    "question": "Queueable のジョブを連鎖（チェーン）させる際の制約として正しいものはどれですか。",
+    "choices": [
+      "同期処理では 1 つの親ジョブから連鎖できる子ジョブは 1 つまで",
+      "連鎖は何段でも分岐して同時に複数起動できる",
+      "Queueable はチェーンできない",
+      "チェーンには @future が必須"
+    ],
+    "answers": [
+      "同期処理では 1 つの親ジョブから連鎖できる子ジョブは 1 つまで"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 同期処理では 1 つの親ジョブから連鎖できる子ジョブは 1 つまで　これは正解です。Queueable の execute から enqueueJob で次のジョブを 1 つ起動でき、これを繰り返してチェーンします。1 回の実行から複数の子を起動して分岐させることはできません（深さは可能）。\n\n□ 連鎖は何段でも分岐して同時に複数起動できる　これは不正解です。1 つの実行から起動できる後続ジョブは 1 つに制限されます。\n\n□ Queueable はチェーンできない　これは不正解です。Queueable はチェーンに対応しており、@future にない利点です。\n\n□ チェーンには @future が必須　これは不正解です。Queueable 自身が enqueueJob でチェーンでき、@future は不要です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_queueing_jobs.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Queueable",
+      "ジョブチェーン",
+      "非同期処理",
+      "制約"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 169,
+    "question": "カスタムメタデータ型のレコードを Apex から取得する方法の利点として正しいものはどれですか。",
+    "choices": [
+      "getAll / getInstance での取得は SOQL クエリ数の制限を消費しない",
+      "取得には必ず SOQL が必要でクエリ制限を消費する",
+      "実行ユーザーごとに異なる値を返す",
+      "DML で実行時にレコードを編集してそのまま保存できる"
+    ],
+    "answers": [
+      "getAll / getInstance での取得は SOQL クエリ数の制限を消費しない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ getAll / getInstance での取得は SOQL クエリ数の制限を消費しない　これは正解です。カスタムメタデータ型は CustomMetadataType.getAll() などのメソッドで取得でき、この方法は SOQL クエリ数の制限を消費しません（SOQL でも取得可能ですがその場合は消費します）。\n\n□ 取得には必ず SOQL が必要でクエリ制限を消費する　これは不正解です。getAll/getInstance を使えば SOQL なしで取得できます。\n\n□ 実行ユーザーごとに異なる値を返す　これは不正解です。ユーザー単位で値を変えるのは階層カスタム設定で、カスタムメタデータは組織共通です。\n\n□ DML で実行時にレコードを編集してそのまま保存できる　これは不正解です。カスタムメタデータはメタデータ扱いで、通常の DML では更新できません（Metadata API などが必要）。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_methods_system_custom_metadata_types.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "カスタムメタデータ型",
+      "getAll",
+      "SOQL制限",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 170,
+    "question": "受信メール（Email-to-Apex）を処理してレコードを作成・更新する Apex クラスが実装すべきインターフェースはどれですか。",
+    "choices": [
+      "Messaging.InboundEmailHandler",
+      "Database.Batchable",
+      "Schedulable",
+      "HttpCalloutMock"
+    ],
+    "answers": [
+      "Messaging.InboundEmailHandler"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Messaging.InboundEmailHandler　これは正解です。このインターフェースを実装し handleInboundEmail を定義したクラスを、メールサービスのアドレスに紐づけると、受信メールの本文・添付を解析してレコード処理を行えます。\n\n□ Database.Batchable　これは不正解です。これは大量データの非同期処理用で、受信メールの処理とは無関係です。\n\n□ Schedulable　これは不正解です。定時実行のためのインターフェースです。\n\n□ HttpCalloutMock　これは不正解です。テストでコールアウト応答を擬似化するためのインターフェースです。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_email_inbound.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "InboundEmailHandler",
+      "Email-to-Apex",
+      "メールサービス",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 171,
+    "question": "外部システムから REST 経由で呼び出せるカスタム Web サービスを Apex で公開したい。クラスとメソッドに付ける指定はどれですか。",
+    "choices": [
+      "クラスに @RestResource(urlMapping='...')、メソッドに @HttpGet などを付ける",
+      "クラスに @future、メソッドに @AuraEnabled を付ける",
+      "クラスに @IsTest、メソッドに @TestVisible を付ける",
+      "クラスに @InvocableMethod を付ける"
+    ],
+    "answers": [
+      "クラスに @RestResource(urlMapping='...')、メソッドに @HttpGet などを付ける"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ クラスに @RestResource(urlMapping='...')、メソッドに @HttpGet などを付ける　これは正解です。Apex REST は global クラスに @RestResource で URL を割り当て、@HttpGet/@HttpPost/@HttpPut/@HttpDelete を付けた static メソッドで各 HTTP 動詞に対応します。\n\n□ クラスに @future、メソッドに @AuraEnabled を付ける　これは不正解です。@future は非同期、@AuraEnabled は Lightning 連携用で、REST 公開ではありません。\n\n□ クラスに @IsTest、メソッドに @TestVisible を付ける　これは不正解です。テスト関連のアノテーションで、Web サービス公開とは無関係です。\n\n□ クラスに @InvocableMethod を付ける　これは不正解です。@InvocableMethod はフロー連携用で、REST エンドポイントの公開ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_rest_intro.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Apex REST",
+      "RestResource",
+      "HttpGet",
+      "統合"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 172,
+    "question": "レコード保存時の処理順序（Order of Execution）に関する説明として正しいものはどれですか。",
+    "choices": [
+      "積み上げ集計項目の再計算は after トリガなどの後に行われ、必要なら親の処理が再実行される",
+      "積み上げ集計の計算は before トリガより前に確定する",
+      "ワークフローはすべての after トリガより前に実行される",
+      "入力規則は before トリガより前に評価される"
+    ],
+    "answers": [
+      "積み上げ集計項目の再計算は after トリガなどの後に行われ、必要なら親の処理が再実行される"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 積み上げ集計項目の再計算は after トリガなどの後に行われ、必要なら親の処理が再実行される　これは正解です。子の保存処理が進んだ後に親の積み上げ集計が再計算され、親に値が反映されると親側の処理（順序実行）が再帰的に発生し得ます。\n\n□ 積み上げ集計の計算は before トリガより前に確定する　これは不正解です。集計は保存処理の後半で行われます。\n\n□ ワークフローはすべての after トリガより前に実行される　これは不正解です。ワークフローはレコード保存と after トリガの後に実行されます。\n\n□ 入力規則は before トリガより前に評価される　これは不正解です。カスタム入力規則は before トリガの後に評価されます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_order_of_execution.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "順序実行",
+      "積み上げ集計",
+      "再計算",
+      "トリガ"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 173,
+    "question": "新しい自動化を実装するとき、Salesforce が推奨するツール選定の方針として最も適切なものはどれですか。",
+    "choices": [
+      "まずフローなどの宣言的ツールで検討し、要件が複雑で扱えない場合に Apex を使う",
+      "性能を優先し、常に最初から Apex で実装する",
+      "廃止予定のワークフロールールを新規に作成する",
+      "プロセスビルダーを新規の標準ツールとして使う"
+    ],
+    "answers": [
+      "まずフローなどの宣言的ツールで検討し、要件が複雑で扱えない場合に Apex を使う"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ まずフローなどの宣言的ツールで検討し、要件が複雑で扱えない場合に Apex を使う　これは正解です。保守性とアップグレード追従の観点から、宣言的に実現できるかを先に検討し、複雑なロジックや宣言的に不可能な要件で Apex を選ぶのが推奨です。\n\n□ 性能を優先し、常に最初から Apex で実装する　これは不正解です。不要な Apex はテスト保守の負担を増やし、宣言的優先の方針に反します。\n\n□ 廃止予定のワークフロールールを新規に作成する　これは不正解です。ワークフロールールは新規作成が非推奨で、フローへ移行が進んでいます。\n\n□ プロセスビルダーを新規の標準ツールとして使う　これは不正解です。プロセスビルダーも廃止方針で、新規はフローを使います。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.process_which_tool.htm&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ツール選定",
+      "宣言的優先",
+      "フロー",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 174,
+    "question": "Apex の同期トランザクションで、1 回の HTTP コールアウトでサーバーからの応答を待てる最大時間（タイムアウト上限）はどれですか。",
+    "choices": [
+      "1 コールアウトあたり最大 120 秒",
+      "1 コールアウトあたり最大 10 秒",
+      "1 トランザクションあたり最大 10 秒",
+      "上限はなく無制限"
+    ],
+    "answers": [
+      "1 コールアウトあたり最大 120 秒"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 1 コールアウトあたり最大 120 秒　これは正解です。HTTP コールアウトのタイムアウトは 1 回あたり最大 120 秒まで設定でき、既定はより短い値です。なお 1 トランザクションのコールアウトの合計時間にも上限があります。\n\n□ 1 コールアウトあたり最大 10 秒　これは不正解です。10 秒は同期 Apex の CPU 時間の上限で、コールアウトのタイムアウトとは別です。\n\n□ 1 トランザクションあたり最大 10 秒　これは不正解です。値・区分ともに誤りです。\n\n□ 上限はなく無制限　これは不正解です。コールアウトには明確なタイムアウト上限があります。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_callouts_timeouts.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "コールアウト",
+      "タイムアウト",
+      "120秒",
+      "ガバナ制限"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 175,
+    "question": "ループ内で個別に DML や SOQL を実行する「アンチパターン」を避けるべき主な理由はどれですか。",
+    "choices": [
+      "レコード件数が増えるとガバナ制限（DML/SOQL 回数）に達して失敗するため",
+      "コンパイルが通らなくなるため",
+      "コードカバレッジが計算できなくなるため",
+      "デバッグログが出力されなくなるため"
+    ],
+    "answers": [
+      "レコード件数が増えるとガバナ制限（DML/SOQL 回数）に達して失敗するため"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ レコード件数が増えるとガバナ制限（DML/SOQL 回数）に達して失敗するため　これは正解です。ループ内の DML/SOQL は件数に比例して回数を消費し、200 件処理で容易に制限（SOQL 100・DML 150）を超えます。コレクションへの蓄積と一括処理でバルク化します。\n\n□ コンパイルが通らなくなるため　これは不正解です。構文上はコンパイルでき、実行時に制限超過で失敗します。\n\n□ コードカバレッジが計算できなくなるため　これは不正解です。カバレッジ計算には影響しません。\n\n□ デバッグログが出力されなくなるため　これは不正解です。ログ出力には影響しません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_bulk_idioms.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ループ内DML",
+      "アンチパターン",
+      "ガバナ制限",
+      "バルク化"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 176,
+    "question": "LWC で、あるオブジェクトのメタ情報（項目一覧・レコードタイプ等）を Apex を書かずに取得したい。どのワイヤアダプタを使いますか。",
+    "choices": [
+      "getObjectInfo",
+      "getRecord",
+      "getListUi",
+      "createRecord"
+    ],
+    "answers": [
+      "getObjectInfo"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ getObjectInfo　これは正解です。lightning/uiObjectInfoApi の getObjectInfo は、オブジェクトの項目・レコードタイプ・参照可否などのメタ情報を Apex なしで取得します。\n\n□ getRecord　これは不正解です。getRecord は単一レコードのデータを取得するアダプタで、オブジェクトのメタ情報は返しません。\n\n□ getListUi　これは不正解です。getListUi はリストビューのデータ取得用です。\n\n□ createRecord　これは不正解です。createRecord はレコードを作成する命令的な関数で、メタ情報の取得ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/reference-lightning-ui-api-object-info.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "getObjectInfo",
+      "メタ情報",
+      "uiObjectInfoApi"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 177,
+    "question": "LWC で、選択リスト項目の選択肢を、レコードタイプに応じて Apex なしで取得したい。どのワイヤアダプタを使いますか。",
+    "choices": [
+      "getPicklistValues",
+      "getRecord",
+      "getRelatedListRecords",
+      "updateRecord"
+    ],
+    "answers": [
+      "getPicklistValues"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ getPicklistValues　これは正解です。lightning/uiObjectInfoApi の getPicklistValues は、項目とレコードタイプ ID を指定して選択肢を取得します。レコードタイプの既定 ID は getObjectInfo から得られます。\n\n□ getRecord　これは不正解です。getRecord はレコードの値を取得するもので、選択肢の一覧は返しません。\n\n□ getRelatedListRecords　これは不正解です。関連リストのレコード取得用で、選択肢取得ではありません。\n\n□ updateRecord　これは不正解です。レコード更新用の命令的関数です。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/reference-lightning-ui-api-picklist-values.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "getPicklistValues",
+      "選択リスト",
+      "uiObjectInfoApi"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 178,
+    "question": "LWC で、ボタン押下時に Apex を書かずに新規レコードを作成したい。どの方法が適切ですか。",
+    "choices": [
+      "lightning/uiRecordApi の createRecord を呼び出す",
+      "@wire(getRecord) に新しい値を渡す",
+      "lightning-record-view-form を使う",
+      "fetch で REST を直接呼ぶ"
+    ],
+    "answers": [
+      "lightning/uiRecordApi の createRecord を呼び出す"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ lightning/uiRecordApi の createRecord を呼び出す　これは正解です。createRecord({apiName, fields}) は Lightning Data Service を通じて Apex なしでレコードを作成し、共有設定・FLS も尊重されます。\n\n□ @wire(getRecord) に新しい値を渡す　これは不正解です。getRecord は読み取り専用のデータ取得で、作成はできません。\n\n□ lightning-record-view-form を使う　これは不正解です。view-form は表示専用で、作成には record-edit-form か createRecord を使います。\n\n□ fetch で REST を直接呼ぶ　これは不正解です。LDS の関数を使うのが推奨で、生の fetch は認証・キャッシュ整合の面で不利です。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/reference_create_record.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "createRecord",
+      "uiRecordApi",
+      "LDS"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 179,
+    "question": "LWC で、Lightning Data Service を使い、編集した単一レコードの項目を Apex なしで更新したい。どの関数を使いますか。",
+    "choices": [
+      "lightning/uiRecordApi の updateRecord",
+      "lightning/uiRecordApi の getRecord",
+      "lightning/uiObjectInfoApi の getObjectInfo",
+      "lightning/navigation の NavigationMixin"
+    ],
+    "answers": [
+      "lightning/uiRecordApi の updateRecord"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ lightning/uiRecordApi の updateRecord　これは正解です。updateRecord({fields: {Id, ...}}) は LDS を通じて単一レコードを更新し、キャッシュも整合的に保たれます。Id を必ず含めます。\n\n□ lightning/uiRecordApi の getRecord　これは不正解です。getRecord は取得用で更新はしません。\n\n□ lightning/uiObjectInfoApi の getObjectInfo　これは不正解です。オブジェクトのメタ情報取得用です。\n\n□ lightning/navigation の NavigationMixin　これは不正解です。画面遷移用でレコード更新はできません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/reference_update_record.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "updateRecord",
+      "uiRecordApi",
+      "LDS"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 180,
+    "question": "lightning-record-edit-form で、保存が成功したタイミングを検知して後続処理（トースト表示など）を実行したい。どのイベントを処理しますか。",
+    "choices": [
+      "onsuccess",
+      "onload",
+      "onchange",
+      "onsubmit のみ"
+    ],
+    "answers": [
+      "onsuccess"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ onsuccess　これは正解です。record-edit-form は保存成功時に onsuccess イベントを発火し、event.detail.id で保存されたレコード ID を取得できます。後続処理はここで行います。\n\n□ onload　これは不正解です。onload はフォームの読み込み完了時で、保存成功の検知ではありません。\n\n□ onchange　これは不正解です。入力値の変更イベントで、保存の完了とは異なります。\n\n□ onsubmit のみ　これは不正解です。onsubmit は保存処理の開始前（値の差し替え用）で、成功の確定は onsuccess で受け取ります。",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/lightning-record-edit-form/documentation",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "record-edit-form",
+      "onsuccess",
+      "イベント"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 181,
+    "question": "LWC の lightning-input で、必須・形式などの入力検証に失敗しているかを確認し、エラーメッセージを表示させたい。どの方法が適切ですか。",
+    "choices": [
+      "checkValidity() で判定し reportValidity() でメッセージを表示する",
+      "入力の value を直接書き換えて再度検証する",
+      "コンポーネントの disabled 属性を切り替える",
+      "フォーカスの blur イベントを手動で発火させて検証する"
+    ],
+    "answers": [
+      "checkValidity() で判定し reportValidity() でメッセージを表示する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ checkValidity() で判定し reportValidity() でメッセージを表示する　これは正解です。入力コンポーネントは checkValidity() で妥当性を Boolean で返し、reportValidity() でフィールドにエラー表示を反映します。setCustomValidity でカスタムメッセージも設定できます。\n\n□ 入力の value を直接書き換えて再度検証する　これは不正解です。値の書き換えは検証メッセージの表示手段ではありません。\n\n□ コンポーネントの disabled 属性を切り替える　これは不正解です。無効化と検証は別です。\n\n□ フォーカスの blur イベントを手動で発火させて検証する　これは不正解です。フォーカス制御で検証メッセージの表示にはなりません。",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/lightning-input/documentation",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "lightning-input",
+      "入力検証",
+      "reportValidity"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 182,
+    "question": "LWC で、サーバーからの応答を待つ間、コンポーネント上にローディング表示を出したい。どのコンポーネントを使いますか。",
+    "choices": [
+      "lightning-spinner",
+      "lightning-card",
+      "lightning-badge",
+      "lightning-icon"
+    ],
+    "answers": [
+      "lightning-spinner"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ lightning-spinner　これは正解です。lightning-spinner は処理中を示すスピナーを表示します。読み込み中フラグを if 制御して表示・非表示を切り替えるのが定番です。\n\n□ lightning-card　これは不正解です。見出し付きの枠を提供するレイアウト部品で、ローディング表示ではありません。\n\n□ lightning-badge　これは不正解です。ラベル（バッジ）を表示する部品です。\n\n□ lightning-icon　これは不正解です。アイコンを表示する部品で、処理中表示の専用部品ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/lightning-spinner/documentation",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "lightning-spinner",
+      "ローディング",
+      "UI"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 183,
+    "question": "LWC のテンプレートで、子コンポーネントの DOM 要素を JavaScript から参照したい。推奨される方法はどれですか。",
+    "choices": [
+      "要素に lwc:ref を付け、this.refs で参照する",
+      "document.getElementById で取得する",
+      "window から直接アクセスする",
+      "innerHTML を文字列で解析する"
+    ],
+    "answers": [
+      "要素に lwc:ref を付け、this.refs で参照する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 要素に lwc:ref を付け、this.refs で参照する　これは正解です。lwc:ref=\"name\" を付与し this.refs.name で要素を参照できます（従来は this.template.querySelector も使えます）。シャドウ DOM を尊重した参照方法です。\n\n□ document.getElementById で取得する　これは不正解です。シャドウ DOM のためコンポーネント内部の要素は document からは取得できません。\n\n□ window から直接アクセスする　これは不正解です。window からコンポーネント内部の要素にはアクセスできません。\n\n□ innerHTML を文字列で解析する　これは不正解です。文字列解析は不適切で、参照の手段ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/js_props_dom.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "lwc:ref",
+      "querySelector",
+      "DOM参照"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 184,
+    "question": "LWC で発火する CustomEvent を、コンポーネントの境界（シャドウ DOM）を越えて上位まで伝播させたい。どの設定が必要ですか。",
+    "choices": [
+      "CustomEvent の bubbles と composed を true にする",
+      "CustomEvent の detail に true を入れる",
+      "dispatchEvent を 2 回呼ぶ",
+      "@api を付けて発火する"
+    ],
+    "answers": [
+      "CustomEvent の bubbles と composed を true にする"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ CustomEvent の bubbles と composed を true にする　これは正解です。bubbles はバブリング、composed はシャドウ境界を越える伝播を有効にします。多用は結合度を高めるため、通常は直接の親子で完結させるのが推奨です。\n\n□ CustomEvent の detail に true を入れる　これは不正解です。detail はイベントに添えるデータで、伝播範囲の制御ではありません。\n\n□ dispatchEvent を 2 回呼ぶ　これは不正解です。複数回の発火は伝播の代替になりません。\n\n□ @api を付けて発火する　これは不正解です。@api はプロパティ/メソッドの公開で、イベント伝播の設定ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/events_propagation.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "CustomEvent",
+      "bubbles",
+      "composed"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 185,
+    "question": "Lightning Message Service を使うコンポーネントで、購読（subscribe）を開始・解除する適切なライフサイクルの組み合わせはどれですか。",
+    "choices": [
+      "connectedCallback で購読し、disconnectedCallback で解除する",
+      "constructor で購読し、renderedCallback で解除する",
+      "renderedCallback で毎回購読する",
+      "errorCallback で購読する"
+    ],
+    "answers": [
+      "connectedCallback で購読し、disconnectedCallback で解除する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ connectedCallback で購読し、disconnectedCallback で解除する　これは正解です。DOM 挿入時に subscribe し、削除時に unsubscribe するのがメモリリークを防ぐ標準パターンです。\n\n□ constructor で購読し、renderedCallback で解除する　これは不正解です。constructor は早すぎ、renderedCallback は複数回呼ばれ得るため解除に不適切です。\n\n□ renderedCallback で毎回購読する　これは不正解です。再レンダリングのたびに購読が重複します。\n\n□ errorCallback で購読する　これは不正解です。errorCallback は子のエラー処理用で、購読開始の場所ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/use-message-channel.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "Lightning Message Service",
+      "subscribe",
+      "ライフサイクル"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 186,
+    "question": "Aura コンポーネントで、Apex なしにレコードの作成・取得・更新・削除を行える、Lightning Data Service の基盤コンポーネントはどれですか。",
+    "choices": [
+      "force:recordData",
+      "aura:iteration",
+      "force:inputField のみ",
+      "ui:button"
+    ],
+    "answers": [
+      "force:recordData"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ force:recordData　これは正解です。Aura では force:recordData が Lightning Data Service を提供し、Apex なしでレコードの CRUD を行えます（LWC の uiRecordApi に相当）。\n\n□ aura:iteration　これは不正解です。これはコレクションの繰り返し描画用のタグです。\n\n□ force:inputField のみ　これは不正解です。入力項目の部品で、データアクセスの基盤ではありません。\n\n□ ui:button　これは不正解です。ボタン部品で、レコードアクセスとは無関係です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.lightning.meta/lightning/data_service.htm",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Aura",
+      "force:recordData",
+      "Lightning Data Service",
+      "CRUD"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 187,
+    "question": "Aura コンポーネントから Apex の @AuraEnabled メソッドを呼び出す手順として正しいものはどれですか。",
+    "choices": [
+      "アクションを取得し、コールバックを設定して enqueueAction する",
+      "import 文で Apex メソッドを読み込み、直接呼び出す",
+      "@wire を使ってメソッドを宣言的に呼び出す",
+      "<apex:actionFunction> タグでラップして呼び出す"
+    ],
+    "answers": [
+      "アクションを取得し、コールバックを設定して enqueueAction する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ アクションを取得し、コールバックを設定して enqueueAction する　これは正解です。Aura のサーバー呼び出しは、アクションを取得し setParams・setCallback を設定して $A.enqueueAction(action) でキューに入れる流れです。\n\n□ import 文で Apex メソッドを読み込み、直接呼び出す　これは不正解です。これは LWC の方式で、Aura の呼び出し方ではありません。\n\n□ @wire を使ってメソッドを宣言的に呼び出す　これは不正解です。@wire は LWC のデコレーターで、Aura では使えません。\n\n□ <apex:actionFunction> タグでラップして呼び出す　これは不正解です。actionFunction は Visualforce のタグで、Aura のサーバー呼び出しには使いません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.lightning.meta/lightning/controllers_server_apex.htm",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Aura",
+      "Apex呼び出し",
+      "enqueueAction",
+      "AuraEnabled"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 188,
+    "question": "Aura コンポーネントで、属性の値に基づいて要素の表示・非表示を条件分岐したい。どのタグを使いますか。",
+    "choices": [
+      "<aura:if isTrue=\"{!v.flag}\">",
+      "<aura:set>",
+      "<aura:attribute>",
+      "<aura:dependency>"
+    ],
+    "answers": [
+      "<aura:if isTrue=\"{!v.flag}\">"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ <aura:if isTrue=\"{!v.flag}\">　これは正解です。<aura:if> は isTrue の評価結果で本体（および else のセット）を条件付きで描画します。\n\n□ <aura:set>　これは不正解です。これは属性に値をセットするタグで、条件分岐ではありません。\n\n□ <aura:attribute>　これは不正解です。属性を定義するタグです。\n\n□ <aura:dependency>　これは不正解です。依存関係を宣言するタグで、表示制御ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.lightning.meta/lightning/aura_compounds.htm",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Aura",
+      "aura:if",
+      "条件分岐",
+      "表示制御"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 189,
+    "question": "Visualforce で、項目レベルセキュリティ（FLS）やレイアウトのラベル・必須・参照などを自動的に尊重して項目を表示・入力したい。どのタグを使いますか。",
+    "choices": [
+      "<apex:inputField> / <apex:outputField>",
+      "<apex:inputText> / <apex:outputText>",
+      "<apex:param>",
+      "<apex:variable>"
+    ],
+    "answers": [
+      "<apex:inputField> / <apex:outputField>"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ <apex:inputField> / <apex:outputField>　これは正解です。これらは sObject の項目にバインドし、項目のデータ型・ラベル・FLS・選択リスト・参照ルックアップなどを自動的に反映します。\n\n□ <apex:inputText> / <apex:outputText>　これは不正解です。これらは汎用のテキスト用で、FLS や項目メタデータの自動反映はありません。\n\n□ <apex:param>　これは不正解です。アクションへパラメータを渡すタグです。\n\n□ <apex:variable>　これは不正解です。ローカル変数を宣言するタグで、項目表示ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.pages.meta/pages/pages_compref_inputField.htm",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Visualforce",
+      "inputField",
+      "FLS",
+      "項目バインド"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 190,
+    "question": "LWC をコミュニティ（Experience Cloud）や外部の Web ページに埋め込んで利用したい場合、特別な対応が必要なのはどれですか。",
+    "choices": [
+      "メタ設定の targets に配置先を追加し、必要なプロパティを公開する",
+      "Apex クラスを global にすれば自動的に埋め込める",
+      "Visualforce ページでラップしてから埋め込む必要がある",
+      "特別な対応は不要で、すべての LWC がどこでも動作する"
+    ],
+    "answers": [
+      "メタ設定の targets に配置先を追加し、必要なプロパティを公開する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ メタ設定の targets に配置先を追加し、必要なプロパティを公開する　これは正解です。配置先ごとにメタ設定の targets を指定し、Experience Builder で設定するプロパティは targetConfig で公開します。\n\n□ Apex クラスを global にすれば自動的に埋め込める　これは不正解です。アクセス修飾子と配置先の公開設定は別問題です。\n\n□ Visualforce ページでラップしてから埋め込む必要がある　これは不正解です。LWC はメタ設定で各サーフェスに配置でき、VF ラップは不要です。\n\n□ 特別な対応は不要で、すべての LWC がどこでも動作する　これは不正解です。配置先ごとに targets の指定が必要です。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/use-config-for-community-builder.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "Experience Cloud",
+      "targets",
+      "メタ設定"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 191,
+    "question": "LWC のシャドウ DOM やセキュリティ機構に関して、最近の組織で既定として推奨されているアーキテクチャはどれですか。",
+    "choices": [
+      "Lightning Web Security（LWS）",
+      "Lockerservice の無効化",
+      "iframe による完全分離のみ",
+      "セキュリティ機構なしの素の DOM"
+    ],
+    "answers": [
+      "Lightning Web Security（LWS）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Lightning Web Security（LWS）　これは正解です。LWS は従来の Lockerservice を置き換えるセキュリティアーキテクチャで、サードパーティ JavaScript の利用などの互換性を高めつつコンポーネントを分離・保護します。\n\n□ Lockerservice の無効化　これは不正解です。セキュリティを無効化するのではなく、LWS への移行が推奨されています。\n\n□ iframe による完全分離のみ　これは不正解です。iframe はコンポーネント分離の標準手段ではありません。\n\n□ セキュリティ機構なしの素の DOM　これは不正解です。Salesforce のコンポーネントは LWS/Locker による保護下で動作します。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/security_lwsec_intro.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Lightning Web Security",
+      "Locker",
+      "セキュリティ",
+      "LWC"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 192,
+    "question": "LWC のテンプレートで、親が子コンポーネントへマークアップ（コンテンツ）を差し込めるようにしたい。どの仕組みを使いますか。",
+    "choices": [
+      "子コンポーネントのテンプレートに <slot> を配置する",
+      "親で @api を宣言する",
+      "子で CustomEvent を発火する",
+      "for:each でコンテンツを生成する"
+    ],
+    "answers": [
+      "子コンポーネントのテンプレートに <slot> を配置する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 子コンポーネントのテンプレートに <slot> を配置する　これは正解です。<slot> は親から渡されたマークアップを差し込む場所を定義します。名前付きスロット（name 属性）で複数の差し込み口も作れます。\n\n□ 親で @api を宣言する　これは不正解です。@api は値を渡すプロパティの公開で、マークアップの差し込みではありません。\n\n□ 子で CustomEvent を発火する　これは不正解です。イベントは通知の仕組みで、コンテンツの差し込みではありません。\n\n□ for:each でコンテンツを生成する　これは不正解です。for:each は自コンポーネント内の繰り返しで、親からの差し込みではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/create-components-slots.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "slot",
+      "コンテンツ差し込み",
+      "テンプレート"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 193,
+    "question": "LWC で、公開プロパティの値が設定されるたびに副作用（派生値の再計算など）を実行したい。どの方法が適切ですか。",
+    "choices": [
+      "@api を getter/setter プロパティとして定義し、setter 内で処理する",
+      "constructor 内で 1 回だけ計算する",
+      "renderedCallback でフラグなしに毎回計算する",
+      "@track を付けるだけにする"
+    ],
+    "answers": [
+      "@api を getter/setter プロパティとして定義し、setter 内で処理する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ @api を getter/setter プロパティとして定義し、setter 内で処理する　これは正解です。@api をアクセサ（getter/setter）として実装すると、親から値が設定されるたびに setter が呼ばれ、そこで派生値の再計算などの副作用を実行できます。\n\n□ constructor 内で 1 回だけ計算する　これは不正解です。値の更新に追従できません。\n\n□ renderedCallback でフラグなしに毎回計算する　これは不正解です。レンダリングのたびに無条件で計算するのは非効率です。\n\n□ @track を付けるだけにする　これは不正解です。@track はオブジェクト内部変更の監視で、公開プロパティ設定時の副作用フックではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/js_props_public.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "@api",
+      "getter/setter",
+      "リアクティブ"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 194,
+    "question": "Apex テストで、静的リソースに用意した CSV のテストデータを読み込んでレコードを作成したい。どの方法が適切ですか。",
+    "choices": [
+      "Test.loadData(SObjectType.SObject, '静的リソース名') を使う",
+      "@isTest(SeeAllData=true) で組織データを使う",
+      "System.runAs でデータを読み込む",
+      "Test.startTest 内で CSV を直接 SOQL する"
+    ],
+    "answers": [
+      "Test.loadData(SObjectType.SObject, '静的リソース名') を使う"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Test.loadData(SObjectType.SObject, '静的リソース名') を使う　これは正解です。Test.loadData は、CSV を保持する静的リソースからテストレコードを一括作成し、作成したレコードのリストを返します。\n\n□ @isTest(SeeAllData=true) で組織データを使う　これは不正解です。組織データ依存はアンチパターンで、静的リソースからの読み込みとは別の話です。\n\n□ System.runAs でデータを読み込む　これは不正解です。runAs はユーザーコンテキストの切り替えで、データ読み込み機能はありません。\n\n□ Test.startTest 内で CSV を直接 SOQL する　これは不正解です。CSV を SOQL で読むことはできません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_load_test_data.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Test.loadData",
+      "静的リソース",
+      "テストデータ",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 195,
+    "question": "新しい Assert クラスを使って、期待値と実際の値が等しいことを検証したい。正しい呼び出しはどれですか。",
+    "choices": [
+      "Assert.areEqual(expected, actual)",
+      "Assert.equals(actual, expected)",
+      "Assert.isEqual(expected, actual, '型')",
+      "Assert.compare(expected, actual)"
+    ],
+    "answers": [
+      "Assert.areEqual(expected, actual)"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Assert.areEqual(expected, actual)　これは正解です。Assert クラスは Assert.areEqual / areNotEqual / isTrue / isNull / fail などの明確な API を提供し、第 1 引数が期待値・第 2 引数が実際の値です。\n\n□ Assert.equals(actual, expected)　これは不正解です。メソッド名が異なり、引数順も逆です。\n\n□ Assert.isEqual(expected, actual, '型')　これは不正解です。isEqual というメソッドはありません。\n\n□ Assert.compare(expected, actual)　これは不正解です。compare というアサーションメソッドはありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_class_System_Assert.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Assert",
+      "areEqual",
+      "アサーション",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 196,
+    "question": "本番ロジックの中で、テスト実行中のみ特定の分岐を回避するために使えるメソッドはどれですか（乱用は非推奨）。",
+    "choices": [
+      "Test.isRunningTest()",
+      "Test.startTest()",
+      "System.runAs()",
+      "Limits.getQueries()"
+    ],
+    "answers": [
+      "Test.isRunningTest()"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Test.isRunningTest()　これは正解です。テストコンテキストで実行中かを Boolean で返します。テストで実行できないコールアウトの回避などに限定的に使えますが、ロジックの検証が抜ける乱用は避けるべきです。\n\n□ Test.startTest()　これは不正解です。ガバナ制限の区切りと非同期確定のためのメソッドで、判定はしません。\n\n□ System.runAs()　これは不正解です。ユーザーコンテキストの切り替え用です。\n\n□ Limits.getQueries()　これは不正解です。SOQL 消費数を返すメソッドで、テスト判定ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_methods_system_test.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Test.isRunningTest",
+      "テスト判定",
+      "Apex",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 197,
+    "question": "コードカバレッジの計算に関する説明として正しいものはどれですか。",
+    "choices": [
+      "テストクラス自体やコメント・空行はカバレッジの分母に含まれない",
+      "テストクラスのコード行もカバレッジの対象に含まれる",
+      "コメント行もカバーすべき行として数えられる",
+      "カバレッジは SOQL の実行回数で決まる"
+    ],
+    "answers": [
+      "テストクラス自体やコメント・空行はカバレッジの分母に含まれない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ テストクラス自体やコメント・空行はカバレッジの分母に含まれない　これは正解です。カバレッジは実行可能なコード行に対して計算され、テストメソッド自体・コメント・波括弧のみの行・空行などは対象外です。\n\n□ テストクラスのコード行もカバレッジの対象に含まれる　これは不正解です。@isTest のテストコードはカバレッジの対象外です。\n\n□ コメント行もカバーすべき行として数えられる　これは不正解です。コメントは実行行ではなく数えられません。\n\n□ カバレッジは SOQL の実行回数で決まる　これは不正解です。カバレッジは実行された行の割合で決まります。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_code_coverage.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "コードカバレッジ",
+      "テストクラス",
+      "計算",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 198,
+    "question": "テストで、依存する別クラスの振る舞いを実物に依存せず擬似化（モック）したい。Apex が提供する仕組みはどれですか。",
+    "choices": [
+      "Stub API（Test.createStub と StubProvider）",
+      "Test.loadData",
+      "Database.Stateful",
+      "System.schedule"
+    ],
+    "answers": [
+      "Stub API（Test.createStub と StubProvider）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Stub API（Test.createStub と StubProvider）　これは正解です。Apex Stub API は、StubProvider を実装し Test.createStub でスタブのインスタンスを生成して、メソッド呼び出しに対する戻り値を制御できます。外部依存を切り離した単体テストに使います。\n\n□ Test.loadData　これは不正解です。静的リソースからのテストデータ作成で、モックではありません。\n\n□ Database.Stateful　これは不正解です。Batch の状態保持用で、モックの仕組みではありません。\n\n□ System.schedule　これは不正解です。定時実行の登録で、テストのモックとは無関係です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_stub_api.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Stub API",
+      "モック",
+      "createStub",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 199,
+    "question": "テストで、ある操作が想定どおり例外を投げることを検証したい。適切な実装はどれですか。",
+    "choices": [
+      "try で操作を呼び、例外が出なければ Assert.fail、catch で型やメッセージを検証する",
+      "操作を呼び出すだけで、例外が出れば自動的に成功とみなされる",
+      "@isTest(SeeAllData=true) を付ける",
+      "Test.startTest だけで例外が検証される"
+    ],
+    "answers": [
+      "try で操作を呼び、例外が出なければ Assert.fail、catch で型やメッセージを検証する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ try で操作を呼び、例外が出なければ Assert.fail、catch で型やメッセージを検証する　これは正解です。例外を期待するテストでは、try 内で操作を呼んで「例外が出なければ Assert.fail で失敗」とし、catch で例外の型やメッセージをアサートします。\n\n□ 操作を呼び出すだけで、例外が出れば自動的に成功とみなされる　これは不正解です。未捕捉の例外はテストを失敗させます。明示的に捕捉して検証する必要があります。\n\n□ @isTest(SeeAllData=true) を付ける　これは不正解です。データ可視性の設定で、例外検証とは無関係です。\n\n□ Test.startTest だけで例外が検証される　これは不正解です。startTest は制限の区切りで、例外検証は行いません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_best_practices.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "例外テスト",
+      "Assert.fail",
+      "try-catch",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 200,
+    "question": "コマンドラインや CI/CD パイプラインから、メタデータ（package.xml で定義）を組織へリリースする標準的な手段はどれですか。",
+    "choices": [
+      "Metadata API（CLI や Ant 移行ツール経由）",
+      "画面操作でリリースする送信変更セット",
+      "レコード入出力用のデータローダ",
+      "レポート結果のエクスポート機能"
+    ],
+    "answers": [
+      "Metadata API（CLI や Ant 移行ツール経由）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Metadata API（CLI や Ant 移行ツール経由）　これは正解です。package.xml でコンポーネントを定義し、Salesforce CLI や Ant 移行ツールを通じて Metadata API でリリースする方式は、スクリプト化・CI/CD に適します。\n\n□ 画面操作でリリースする送信変更セット　これは不正解です。変更セットは UI 操作の宣言的リリースで、CI/CD のスクリプト自動化には向きません。\n\n□ レコード入出力用のデータローダ　これは不正解です。レコード入出力用のデータローダはレコードデータの入出力用で、メタデータのリリース手段ではありません。\n\n□ レポート結果のエクスポート機能　これは不正解です。レポートの出力であり、リリースとは無関係です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.api_meta.meta/api_meta/meta_intro.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Metadata API",
+      "package.xml",
+      "CI/CD",
+      "リリース"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 201,
+    "question": "リリース手段の使い分けとして正しいものはどれですか。",
+    "choices": [
+      "変更セットは関連組織間の宣言的リリース、Metadata API/DX はスクリプト・バージョン管理に適する",
+      "変更セットは CI/CD パイプラインの自動化に最適である",
+      "Metadata API は関連組織間でのみ利用できる",
+      "Salesforce DX は本番組織には一切リリースできない"
+    ],
+    "answers": [
+      "変更セットは関連組織間の宣言的リリース、Metadata API/DX はスクリプト・バージョン管理に適する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 変更セットは関連組織間の宣言的リリース、Metadata API/DX はスクリプト・バージョン管理に適する　これは正解です。変更セットは UI で手軽ですが関連組織間に限られ、Metadata API・Salesforce DX はソース管理・自動化・組織横断のリリースに向きます。\n\n□ 変更セットは CI/CD パイプラインの自動化に最適である　これは不正解です。変更セットは手動操作が中心で自動化に不向きです。\n\n□ Metadata API は関連組織間でのみ利用できる　これは不正解です。Metadata API は認証できる任意の組織にリリースできます。\n\n□ Salesforce DX は本番組織には一切リリースできない　これは不正解です。DX/CLI は本番組織にもリリースできます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.deploy_overview.htm&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "リリース手段",
+      "変更セット",
+      "Metadata API",
+      "DX"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 202,
+    "question": "変更セットでプロファイルをリリースする際の注意点として正しいものはどれですか。",
+    "choices": [
+      "プロファイルに含まれる権限は、関連コンポーネントが変更セットに含まれている範囲のみ反映される",
+      "プロファイルを含めれば、参照する全オブジェクトと項目が自動で含まれる",
+      "プロファイルは変更セットに含められない",
+      "プロファイルのリリースはテストを必要としない"
+    ],
+    "answers": [
+      "プロファイルに含まれる権限は、関連コンポーネントが変更セットに含まれている範囲のみ反映される"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ プロファイルに含まれる権限は、関連コンポーネントが変更セットに含まれている範囲のみ反映される　これは正解です。プロファイルは変更セットに含めても、同じセットに含まれるオブジェクト・項目・Apex クラスなどに対する権限のみが反映され、含まれない要素の権限は移行されません。\n\n□ プロファイルを含めれば、参照する全オブジェクトと項目が自動で含まれる　これは不正解です。依存コンポーネントは自動補完されません。\n\n□ プロファイルは変更セットに含められない　これは不正解です。プロファイルは含められます。\n\n□ プロファイルのリリースはテストを必要としない　これは不正解です。Apex を含む本番リリースではテスト要件が適用されます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.changesets_best_practices.htm&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "プロファイル",
+      "変更セット",
+      "権限",
+      "リリース"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 203,
+    "question": "Developer Sandbox のリフレッシュ間隔として正しいものはどれですか。",
+    "choices": [
+      "1 日に 1 回",
+      "5 日に 1 回",
+      "29 日に 1 回",
+      "リフレッシュできない"
+    ],
+    "answers": [
+      "1 日に 1 回"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 1 日に 1 回　これは正解です。Developer および Developer Pro Sandbox は 1 日間隔でリフレッシュできます。\n\n□ 5 日に 1 回　これは不正解です。5 日間隔は Partial Copy Sandbox のリフレッシュ間隔です。\n\n□ 29 日に 1 回　これは不正解です。29 日間隔は Full Sandbox のリフレッシュ間隔です。\n\n□ リフレッシュできない　これは不正解です。Developer Sandbox はリフレッシュ可能です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Developer Sandbox",
+      "リフレッシュ間隔",
+      "Sandbox",
+      "環境"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 204,
+    "question": "Salesforce DX のスクラッチ組織の有効期間として正しいものはどれですか。",
+    "choices": [
+      "既定 7 日・最大 30 日で、期限が切れると失効する",
+      "無期限に利用できる",
+      "最大 90 日まで延長できる",
+      "本番組織と同じく永続する"
+    ],
+    "answers": [
+      "既定 7 日・最大 30 日で、期限が切れると失効する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 既定 7 日・最大 30 日で、期限が切れると失効する　これは正解です。スクラッチ組織は使い捨ての短命な環境で、作成時に有効期間（既定 7 日、最大 30 日）を指定し、期限到達で失効します。\n\n□ 無期限に利用できる　これは不正解です。スクラッチ組織は有効期限のある一時環境です。\n\n□ 最大 90 日まで延長できる　これは不正解です。上限は 30 日です。\n\n□ 本番組織と同じく永続する　これは不正解です。永続環境ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "スクラッチ組織",
+      "有効期間",
+      "Salesforce DX",
+      "環境"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 205,
+    "question": "管理パッケージのコンポーネントを購読組織にインストールする際、コードカバレッジ要件はどう扱われますか。",
+    "choices": [
+      "管理パッケージ内の Apex はパッケージ作成時に検証済みのため、インストール時のカバレッジ要件は課されない",
+      "購読組織のカバレッジが 75% に下がるとインストールできない",
+      "インストール時に購読組織で全テストが再実行され 75% が必須",
+      "管理パッケージにはテストを含められない"
+    ],
+    "answers": [
+      "管理パッケージ内の Apex はパッケージ作成時に検証済みのため、インストール時のカバレッジ要件は課されない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 管理パッケージ内の Apex はパッケージ作成時に検証済みのため、インストール時のカバレッジ要件は課されない　これは正解です。管理パッケージの Apex はパッケージ化時にカバレッジが検証されるため、購読組織へのインストール時に改めて 75% を満たす必要はありません。\n\n□ 購読組織のカバレッジが 75% に下がるとインストールできない　これは不正解です。管理パッケージのコードは購読組織のカバレッジ計算には影響しません。\n\n□ インストール時に購読組織で全テストが再実行され 75% が必須　これは不正解です。インストール時にカバレッジ要件は課されません。\n\n□ 管理パッケージにはテストを含められない　これは不正解です。テストは含められ、パッケージ化時に実行されます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_managed_packages.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "管理パッケージ",
+      "コードカバレッジ",
+      "インストール",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 206,
+    "question": "Salesforce DX を用いたソース駆動の CI/CD パイプラインで「信頼できる唯一の情報源（source of truth）」とすべきものはどれですか。",
+    "choices": [
+      "バージョン管理システム（Git）上のソース",
+      "本番組織の現在のメタデータ",
+      "各開発者のサンドボックス",
+      "変更セットの履歴"
+    ],
+    "answers": [
+      "バージョン管理システム（Git）上のソース"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ バージョン管理システム（Git）上のソース　これは正解です。ソース駆動開発では Git 上のソースを真実の源とし、スクラッチ組織やサンドボックス、本番はそこからデプロイされる派生物として扱います。\n\n□ 本番組織の現在のメタデータ　これは不正解です。本番はデプロイ先であり、真実の源はリポジトリです。\n\n□ 各開発者のサンドボックス　これは不正解です。個々の環境は作業場所で、統合された真実の源ではありません。\n\n□ 変更セットの履歴　これは不正解です。変更セットは宣言的リリースの記録で、バージョン管理の代替にはなりません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_develop.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "CI/CD",
+      "ソース駆動",
+      "Git",
+      "真実の源"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 207,
+    "question": "本番組織で Apex 例外が発生したときに、開発者へ自動で通知させたい。標準で利用できる手段はどれですか。",
+    "choices": [
+      "未捕捉例外のメール通知（Apex 例外メール）を設定する",
+      "デバッグログを常時 FINEST で記録する",
+      "設定変更履歴を監視する",
+      "項目履歴管理を有効にする"
+    ],
+    "answers": [
+      "未捕捉例外のメール通知（Apex 例外メール）を設定する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 未捕捉例外のメール通知（Apex 例外メール）を設定する　これは正解です。Apex 例外メールの設定で、未処理例外の発生時に指定ユーザーや Apex 例外メール受信者へ通知を送れます。\n\n□ デバッグログを常時 FINEST で記録する　これは不正解です。ログは大量になりすぐ上限に達し、通知の仕組みでもありません。\n\n□ 設定変更履歴を監視する　これは不正解です。設定変更の記録で、実行時例外の通知ではありません。\n\n□ 項目履歴管理を有効にする　これは不正解です。レコードの項目変更追跡で、例外通知とは無関係です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.code_apex_exception_email.htm&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Apex例外メール",
+      "通知",
+      "トラブルシュート",
+      "本番"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 208,
+    "question": "1 つのデバッグログ（単一トランザクション）のサイズには上限があり、超えた分は記録されません。トラブルシュート時の対処として適切なものはどれですか。",
+    "choices": [
+      "対象カテゴリのログレベルを下げ、必要な情報に絞ってログ量を抑える",
+      "すべてのカテゴリを FINEST に上げて再取得する",
+      "デバッグログを無効化する",
+      "System.debug を大量に追加する"
+    ],
+    "answers": [
+      "対象カテゴリのログレベルを下げ、必要な情報に絞ってログ量を抑える"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 対象カテゴリのログレベルを下げ、必要な情報に絞ってログ量を抑える　これは正解です。1 ログのサイズ上限を超えると末尾が切り捨てられるため、不要なカテゴリのレベルを下げ、調査対象（Apex Code 等）に絞ってログ量を抑えます。\n\n□ すべてのカテゴリを FINEST に上げて再取得する　これは不正解です。ログ量が増えてさらに早く上限に達し、肝心の情報が切れます。\n\n□ デバッグログを無効化する　これは不正解です。無効化すると調査自体ができません。\n\n□ System.debug を大量に追加する　これは不正解です。出力が増えて上限到達を早めるだけです。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.code_debug_log.htm&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "デバッグログ",
+      "ログサイズ上限",
+      "ログレベル",
+      "トラブルシュート"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 209,
+    "question": "Apex のテストクラスについて正しいものはどれですか。",
+    "choices": [
+      "@isTest を付けたクラスは本番組織の Apex コードサイズ制限（文字数）に算入されない",
+      "テストクラスは本番組織へリリースできない仕様である",
+      "テストクラスは必ず global 修飾子で宣言する",
+      "1 つの組織にテストクラスは 1 つしか作成できない決まりだ"
+    ],
+    "answers": [
+      "@isTest を付けたクラスは本番組織の Apex コードサイズ制限（文字数）に算入されない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ @isTest を付けたクラスは本番組織の Apex コードサイズ制限（文字数）に算入されない　これは正解です。テストクラス（@isTest）は組織の Apex 文字数制限の対象外で、リリースに必須なため本番にも配置します。\n\n□ テストクラスは本番組織へリリースできない仕様である　これは不正解です。テストはリリース要件のため本番にも配置されます。\n\n□ テストクラスは必ず global 修飾子で宣言する　これは不正解です。テストクラスは通常 private で宣言します。\n\n□ 1 つの組織にテストクラスは 1 つしか作成できない決まりだ　これは不正解です。複数作成できます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_annotation_IsTest.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "テストクラス",
+      "@isTest",
+      "コードサイズ制限",
+      "リリース"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 210,
+    "question": "VS Code（Salesforce 拡張機能）を使ったローカル開発で、組織のメタデータを取得・反映し、テストやデバッグを行う土台となるツールはどれですか。",
+    "choices": [
+      "Salesforce CLI（sf コマンド）",
+      "データローダ",
+      "スキーマビルダー",
+      "ワークベンチ（Workbench）のみ"
+    ],
+    "answers": [
+      "Salesforce CLI（sf コマンド）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Salesforce CLI（sf コマンド）　これは正解です。Salesforce CLI は組織認証・ソースの取得/反映・テスト実行・スクラッチ組織管理などを担い、VS Code 拡張機能や CI/CD の土台になります。\n\n□ データローダ　これは不正解です。レコードデータの入出力ツールで、ソース開発の土台ではありません。\n\n□ スキーマビルダー　これは不正解です。データモデルの可視化ツールです。\n\n□ ワークベンチ（Workbench）のみ　これは不正解です。Workbench は API 操作の補助ツールで、ローカル開発の土台となる CLI の代替ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Salesforce CLI",
+      "VS Code",
+      "ローカル開発",
+      "DX"
+    ],
+    "source": "gen",
+    "diff": 1
   }
 ]
