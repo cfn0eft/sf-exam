@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "title": "🎯 試験の概要と公式4分野",
+    "content": "Platform Developer I：60問・105分・合格ライン68%。宣言的（クリックで構築）を最優先し、限界を超えるときだけ Apex/LWC へ、が基本思想。\n\n| 分野 | ウェイト | キー領域 |\n|---|---|---|\n| 開発者の基礎 | 23% | データモデル、リレーション、Apex 言語（型/コレクション/クラス）、ガバナ制限、セキュリティ |\n| プロセスの自動化とロジック | 30% | トリガ、SOQL/SOSL、DML、非同期、順序実行、フロー、例外 |\n| ユーザーインターフェース | 25% | LWC、Aura、Visualforce、LDS、SLDS |\n| テスト・デバッグ・リリース | 22% | テスト/カバレッジ、モック、変更セット、DX、デバッグ |\n\n> 「まず宣言的、無理ならコード」の判断を問う問題が全分野で出る。"
+  },
+  {
+    "title": "⚡ ガバナ制限チートシート（同期）",
+    "content": "| 項目 | 同期 | 非同期 |\n|---|---|---|\n| SOQL クエリ発行 | 100 | 200 |\n| SOQL 取得行数 | 50,000 | 50,000 |\n| DML ステートメント | 150 | 150 |\n| DML 処理レコード | 10,000 | 10,000 |\n| CPU 時間 | 10,000ms | 60,000ms |\n| ヒープサイズ | 6MB | 12MB |\n| コールアウト | 100/トランザクション | 同左 |\n\n> ループ内 SOQL/DML が超過の最大要因。コレクションに集めてループ外で一括処理（バルク化）。\n> LimitException は try-catch で捕捉できない。"
+  },
+  {
+    "title": "🔁 保存時の処理順序（Order of Execution）",
+    "content": "1. システム検証（必須項目・最大長など）\n2. **before トリガ**\n3. システム検証（再）＋**カスタム入力規則**\n4. レコードをDBへ保存（未コミット）\n5. **after トリガ**\n6. 割り当てルール・自動応答ルール・ワークフロールール\n7. ワークフロー項目更新 → **before/after update トリガが再度1回実行**\n8. エスカレーション、**積み上げ集計の再計算**（親側の処理が再発生し得る）\n9. 重複ルール、コミット、コミット後ロジック（メール送信など）\n\n> よく問われる: 入力規則は before トリガの「後」、ワークフローは after トリガの「後」。"
+  },
+  {
+    "title": "⏳ 非同期 Apex の使い分け",
+    "content": "| 手段 | いつ使う | ポイント |\n|---|---|---|\n| @future | 軽量な非同期・トリガからのコールアウト | 引数プリミティブのみ・void・チェーン不可 |\n| Queueable | sObject 保持・ジョブのチェーン・コールアウト | enqueueJob・AllowsCallouts・1段ずつチェーン |\n| Batch | 大量（最大5,000万件）の分割処理 | start=QueryLocator・Stateful で状態保持 |\n| Schedulable | 定時実行 | System.schedule＋CRON、Batch を起動も定番 |\n\n> future から future は呼べない。チェーンが要るなら Queueable。"
+  },
+  {
+    "title": "🧪 テストの必須知識",
+    "content": "- 本番リリース要件: **全体カバレッジ75%以上＋全トリガ1行以上＋テスト全成功**\n- テストは既定で組織データから分離（SeeAllData=true で明示・非推奨）\n- 共通データは **@testSetup** で1回作成、CSV は **Test.loadData**\n- **Test.startTest/stopTest**: 新しい制限で実行＋非同期を同期的に確定（1メソッド1回）\n- **System.runAs**: ユーザーの共有を適用（FLS/CRUDは強制しない）・MIXED_DML 回避にも\n- コールアウトは **HttpCalloutMock**、依存は **Stub API** でモック\n- 検証は **Assert.areEqual(expected, actual)**、正常系/負/バルク(200件)を網羅\n\n> カバレッジは「行が実行されたか」。assert がないと品質検証にならない。"
+  },
+  {
+    "title": "🚀 リリースとツール",
+    "content": "| 手段 | 特徴 | 向き |\n|---|---|---|\n| 変更セット | UI操作・追加のみ・関連組織間 | 手軽な宣言的リリース |\n| Metadata API | package.xml・CLI/Ant | スクリプト・CI/CD |\n| Salesforce DX | ソース駆動・スクラッチ組織 | バージョン管理・自動化 |\n\n- 変更セット: 削除不可・アップロード後変更不可・依存は手動・検証＋クイックデプロイ\n- Sandbox: Dev(メタ/1日) / Partial(サンプル/5日) / Full(完全/29日)\n- スクラッチ組織: Dev Hub から作成・既定7日/最大30日・push/pull で同期\n- パッケージ: 管理(名前空間・保護) / アンロック(社内ソース駆動) / 未管理(編集可・更新不可)"
+  },
+  {
+    "title": "🔎 SOQL / SOSL 早見",
+    "content": "- **子→親**: `SELECT Account.Name FROM Contact`（ドット・最大5階層）\n- **親→子**: `SELECT Name, (SELECT LastName FROM Contacts) FROM Account`（サブクエリ・複数形リレーション名）\n- **集計**: `SELECT AccountId, SUM(Amount) FROM Opportunity GROUP BY AccountId` → AggregateResult、`ar.get('expr0')`\n- **バインド**: `WHERE Id IN :idSet`\n- **日付**: `WHERE CreatedDate = LAST_N_DAYS:7`\n- **ロック**: `... FOR UPDATE`\n- **FLS強制**: `... WITH SECURITY_ENFORCED`\n- **SOSL**: `FIND 'term' IN ALL FIELDS RETURNING Account(Name), Contact(LastName)` ＝複数オブジェクト横断検索\n\n> SOQL に JOIN や UNION は無い。動的SOQLは escapeSingleQuotes/バインドで注入対策。"
+  },
+  {
+    "title": "🧱 Apex 言語の落とし穴",
+    "content": "- すべての変数は **null 初期化**（Boolean も false ではなく null）\n- 整数同士の除算は **切り捨て**（`5/2` は 2）\n- アクセス修飾子の既定は **private**\n- オーバーライドは親 `virtual`/`abstract` ＋子 `override`\n- 定数は **static final**、再帰トリガ抑止は **static 変数（Set<Id>）**\n- 型確認は **instanceof**、null 安全参照は **?.**\n- Map のキー存在は **containsKey**（get の null 判定は不正確）\n\n> Boolean の null 判定での NullPointerException は頻出のひっかけ。"
+  },
+  {
+    "title": "🖥️ UI フレームワークの選び方",
+    "content": "| やりたいこと | 推奨 |\n|---|---|\n| 新規のカスタム UI | LWC（軽量・標準Web標準・高速） |\n| 既存 Aura の拡張・一部機能 | Aura（Aura内にLWCは配置可、逆は不可） |\n| PDF帳票・メールテンプレート・公開ページ | Visualforce |\n| コードなしのレコード表示/編集 | LDS（record-form / uiRecordApi） |\n| Lightning と一貫した見た目 | SLDS（基盤コンポーネント） |\n\n- 親→子=@api、子→親=CustomEvent、階層外=Lightning Message Service\n- データ取得=@wire（読み取り）/命令的（DML）、再取得=refreshApex\n- 画面遷移=NavigationMixin、通知=ShowToastEvent"
+  },
+  {
+    "title": "🔐 セキュリティの3層",
+    "content": "| 層 | 制御 | Apex での扱い |\n|---|---|---|\n| レコード | OWD→共有ルール/ロール階層/手動共有 | with sharing（共有のみ適用） |\n| オブジェクト | プロファイル/権限セットの CRUD | isCreateable/isDeletable 等で確認 |\n| 項目 | FLS（参照/編集） | WITH SECURITY_ENFORCED / stripInaccessible / isAccessible |\n\n- 権限の追加付与は **権限セット**（プロファイルは変えない）\n- 機能のON/OFFは **カスタム権限**（FeatureManagement.checkPermission）\n- Apex 管理共有は **__Share レコードの insert**\n\n> with sharing が守るのは「共有」だけ。FLS・CRUD は別途チェックが必要、が定番のひっかけ。"
+  }
+]
