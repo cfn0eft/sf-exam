@@ -139,6 +139,8 @@ async function loadCertData(){
   CRAMDATA=(await gj('cram.json'))||[];
   COMPDATA=(await gj('compare.json'))||[];
   allQ=[...QDATA];filtQ=[...allQ];
+  // 共有 localStorage の出典指定が、この資格に存在しない出典なら 'all' 扱いに（保存はしない＝他資格の設定は維持）
+  if(srcFilter!=='all'&&!allQ.some(q=>q&&q.source===srcFilter))srcFilter='all';
 }
 function applyCertText(){
   if(CFG.certName)certName=CFG.certName;
@@ -2218,7 +2220,7 @@ function renderMypage(){
     +'<div class="card">'
     +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
     +'<div class="mp-opt"><span class="mp-ic">🔠</span><span class="mp-main">文字サイズ<div class="mp-osub">問題・選択肢・解説などの本文</div></span><span class="mp-seg">'+seg(fs==='small','小',"applyFontSize('small');renderMypage()")+seg(fs==='normal','標準',"applyFontSize('normal');renderMypage()")+seg(fs==='large','大',"applyFontSize('large');renderMypage()")+'</span></div>'
-    +'<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+seg(sf==='tyson',"タイソン","setSrcFilter('tyson');renderMypage()")+seg(sf==='gen',"生成","setSrcFilter('gen');renderMypage()")+'</span></div>'
+    +((allQ.some(q=>q&&q.source==='tyson')&&allQ.some(q=>q&&q.source==='gen'))?('<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+seg(sf==='tyson',"タイソン","setSrcFilter('tyson');renderMypage()")+seg(sf==='gen',"生成","setSrcFilter('gen');renderMypage()")+'</span></div>'):'')
     +'<div class="mp-opt"><span class="mp-ic">⌨️</span><span class="mp-main">キーボード操作<div class="mp-osub">PCショートカット一覧（<b>?</b> キーでも開く）</div></span><span class="mp-seg"><button onclick="toggleShortcutHelp(true)">表示</button></span></div>'
     +'<div class="mp-opt"><span class="mp-ic">💾</span><span class="mp-main">バックアップ<div class="mp-osub">進捗をファイルに保存／復元（端末移行・消失対策）</div></span><span class="mp-seg"><button onclick="exportProgress()">書出</button><button onclick="document.getElementById(\'mp-import\').click()">読込</button></span></div>'
     +'<input type="file" id="mp-import" accept="application/json,.json" style="display:none" onchange="importProgress(this)">'
