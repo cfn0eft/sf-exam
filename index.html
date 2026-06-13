@@ -154,7 +154,10 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     { slug:'app-builder', storageKey:'sfqab_v1', icon:'🧩', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
       desc:'宣言的なアプリ構築・データモデル・自動化・UI・リリース。公式5分野対応。',
       meta:['445問','83用語','合格63%'] },
-    { coming:true }, { coming:true }
+    { slug:'developer', storageKey:'sfqdev_v1', icon:'⚡', title:'Salesforce 認定<br>Platform デベロッパー',
+      desc:'Apex・SOQL/SOSL・トリガ・LWC/Aura/Visualforce・テスト/リリースを網羅。公式4分野対応。',
+      meta:['218問','48用語','合格68%'] },
+    { coming:true }
   ];
   (function renderCerts(){
     var grid = document.getElementById('cert-grid'); if (!grid) return;
@@ -189,8 +192,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=35"></script>
-<script src="cloud-sync.js?v=35"></script>
+<script src="changelog.js?v=36"></script>
+<script src="cloud-sync.js?v=36"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
