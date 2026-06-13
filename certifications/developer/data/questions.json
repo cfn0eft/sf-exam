@@ -1,1 +1,1492 @@
-[]
+[
+  {
+    "id": 1,
+    "question": "カスタムオブジェクト間に主従関係（Master-Detail）を定義した場合の動作として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "親レコードを削除すると子レコードも自動的に削除される",
+      "子レコードの所有者は親レコードとは独立して設定できる",
+      "親オブジェクトに積み上げ集計項目を作成できる",
+      "子レコードの共有は子オブジェクト独自の共有ルールで制御する"
+    ],
+    "answers": [
+      "親レコードを削除すると子レコードも自動的に削除される",
+      "親オブジェクトに積み上げ集計項目を作成できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 親レコードを削除すると子レコードも自動的に削除される　これは正解です。主従関係ではカスケード削除が行われ、親の削除と同時にすべての子レコードが削除されます。\n\n□ 子レコードの所有者は親レコードとは独立して設定できる　これは不正解です。主従関係の子レコードには所有者項目がなく、所有者とアクセス権は親レコードから継承されます。\n\n□ 親オブジェクトに積み上げ集計項目を作成できる　これは正解です。積み上げ集計項目（COUNT・SUM・MIN・MAX）は主従関係の親側にのみ作成できます。\n\n□ 子レコードの共有は子オブジェクト独自の共有ルールで制御する　これは不正解です。主従関係の子は親の共有設定を継承するため、子オブジェクトに独自の共有ルールは定義できません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "主従関係",
+      "オブジェクトリレーション",
+      "積み上げ集計",
+      "データモデル"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 2,
+    "question": "開発者は、1人の受講者が複数のコースを受講でき、1つのコースに複数の受講者が登録できるデータモデルを設計しています。どの方法が適切ですか。",
+    "choices": [
+      "受講者とコースの両方への主従関係を持つジャンクションオブジェクトを作成する",
+      "受講者オブジェクトに複数選択リスト項目を作成してコース名を保持する",
+      "コースオブジェクトに受講者への参照項目を複数作成する",
+      "受講者とコースの間に階層関係を作成する"
+    ],
+    "answers": [
+      "受講者とコースの両方への主従関係を持つジャンクションオブジェクトを作成する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 受講者とコースの両方への主従関係を持つジャンクションオブジェクトを作成する　これは正解です。多対多のリレーションは、2つの主従関係を持つ中間オブジェクト（ジャンクションオブジェクト）で実現するのが標準的な設計です。受講者×コースの組み合わせを1レコードとして保持できます。\n\n□ 受講者オブジェクトに複数選択リスト項目を作成してコース名を保持する　これは不正解です。複数選択リストはレコードへのリレーションではなく文字列の保持にすぎず、レポートや集計、参照整合性が確保できません。\n\n□ コースオブジェクトに受講者への参照項目を複数作成する　これは不正解です。参照項目を複数並べる設計は登録数の上限が固定され、多対多の表現として破綻します。\n\n□ 受講者とコースの間に階層関係を作成する　これは不正解です。階層関係はユーザーオブジェクト専用のリレーション種別です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.relationships_manytomany.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "多対多",
+      "ジャンクションオブジェクト",
+      "主従関係",
+      "データモデル"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 3,
+    "question": "積み上げ集計項目を作成するための前提条件として正しいものはどれですか。",
+    "choices": [
+      "集計対象の子オブジェクトと主従関係で結ばれている",
+      "集計対象の子オブジェクトと参照関係で結ばれている",
+      "子オブジェクトに数式項目が存在している",
+      "親オブジェクトで項目履歴管理が有効になっている"
+    ],
+    "answers": [
+      "集計対象の子オブジェクトと主従関係で結ばれている"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 集計対象の子オブジェクトと主従関係で結ばれている　これは正解です。積み上げ集計項目は主従関係の親（主）側にのみ作成でき、従側レコードの COUNT・SUM・MIN・MAX を集計できます。\n\n□ 集計対象の子オブジェクトと参照関係で結ばれている　これは不正解です。参照関係では積み上げ集計項目を作成できません。参照関係で集計が必要な場合はフローや Apex での実装を検討します。\n\n□ 子オブジェクトに数式項目が存在している　これは不正解です。数式項目の有無は積み上げ集計の作成条件とは関係ありません。\n\n□ 親オブジェクトで項目履歴管理が有効になっている　これは不正解です。項目履歴管理は変更の追跡機能であり、積み上げ集計の前提条件ではありません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_roll_up_summary_fields.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "積み上げ集計",
+      "主従関係",
+      "項目"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 4,
+    "question": "数式項目に関する説明として正しいものはどれですか。",
+    "choices": [
+      "値はレコード参照時に計算され、データベースには保存されない",
+      "値はレコード保存時に計算され、データベースに保存される",
+      "ユーザーが画面から手動で値を上書きできる",
+      "数式の参照先項目を変更するとレコードの最終更新日も更新される"
+    ],
+    "answers": [
+      "値はレコード参照時に計算され、データベースには保存されない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 値はレコード参照時に計算され、データベースには保存されない　これは正解です。数式項目は読み取り専用で、レコードが表示・参照されるたびに最新の値が計算されます。\n\n□ 値はレコード保存時に計算され、データベースに保存される　これは不正解です。保存時に値を確定して格納するのはワークフローの項目自動更新やトリガによる項目設定の動きで、数式項目は参照時計算です。\n\n□ ユーザーが画面から手動で値を上書きできる　これは不正解です。数式項目は常に読み取り専用で、手入力はできません。\n\n□ 数式の参照先項目を変更するとレコードの最終更新日も更新される　これは不正解です。数式の再計算はレコードの更新として扱われないため、最終更新日は変わりません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_formuladef.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "数式項目",
+      "参照時計算",
+      "項目"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 5,
+    "question": "開発者は、トリガ内で取引先 ID をキーとして対応する取引先レコードを高速に取得できるコレクションを使用したいと考えています。どのコレクション型が適切ですか。",
+    "choices": [
+      "Map<Id, Account>",
+      "List<Account>",
+      "Set<Id>",
+      "List<Set<Id>>"
+    ],
+    "answers": [
+      "Map<Id, Account>"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Map<Id, Account>　これは正解です。Map はキーと値のペアを保持するコレクションで、ID をキーに get(id) で対応するレコードを直接取得できます。SOQL の結果をそのまま Map のコンストラクタに渡せる点もトリガのバルク処理で頻出のイディオムです。\n\n□ List<Account>　これは不正解です。List は順序付きのコレクションで、ID から特定のレコードを探すには毎回ループでの走査が必要になります。\n\n□ Set<Id>　これは不正解です。Set は重複しない値の集合で ID の保持には適しますが、ID に対応するレコード本体を取り出すことはできません。\n\n□ List<Set<Id>>　これは不正解です。Set のリストという入れ子構造であり、ID からレコードを引く用途には合いません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/langCon_apex_collections_maps.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "コレクション",
+      "Map",
+      "Apex",
+      "トリガ"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 6,
+    "question": "Apex のコレクションのうち、「要素の重複を許可しない」特性を持つものはどれですか。",
+    "choices": [
+      "Set",
+      "List",
+      "Map",
+      "Enum"
+    ],
+    "answers": [
+      "Set"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Set　これは正解です。Set は重複しない要素の集合を保持するコレクションで、同じ値を add しても 1 つしか保持されません。重複排除や「処理済み ID の記録」によく使われます。\n\n□ List　これは不正解です。List は順序付きのコレクションで、同じ値を複数回格納できます。\n\n□ Map　これは不正解です。Map はキーの重複こそ許しませんが、キーと値のペアを保持するコレクションであり、「要素の集合」を表す型ではありません。\n\n□ Enum　これは不正解です。Enum は定数の集合を定義する型であり、実行時に要素を追加するコレクションではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/langCon_apex_collections_sets.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "コレクション",
+      "Set",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 7,
+    "question": "Salesforce プラットフォームにガバナ制限が存在する主な理由はどれですか。",
+    "choices": [
+      "マルチテナント環境で共有リソースを特定の組織が独占しないようにするため",
+      "Apex コードのコンパイル時間を短縮するため",
+      "ライセンス種別に応じて利用できる機能を出し分けるため",
+      "データストレージの使用量に応じた課金を行うため"
+    ],
+    "answers": [
+      "マルチテナント環境で共有リソースを特定の組織が独占しないようにするため"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ マルチテナント環境で共有リソースを特定の組織が独占しないようにするため　これは正解です。Salesforce は複数の組織が同じインフラを共有するマルチテナント環境のため、暴走したコードが CPU やデータベースを占有しないよう、SOQL 回数や DML 回数などに上限が設けられています。\n\n□ Apex コードのコンパイル時間を短縮するため　これは不正解です。ガバナ制限は実行時のリソース消費を制御する仕組みで、コンパイルとは関係ありません。\n\n□ ライセンス種別に応じて利用できる機能を出し分けるため　これは不正解です。機能の出し分けはエディションやライセンスの役割で、ガバナ制限の目的ではありません。\n\n□ データストレージの使用量に応じた課金を行うため　これは不正解です。ストレージは契約上の制限であり、Apex 実行時のガバナ制限とは別の概念です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_gov_limits.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "ガバナ制限",
+      "マルチテナント",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 8,
+    "question": "新しい自動化要件を実装する際、Apex のカスタムコードよりも先にフローなどの宣言的ツールを検討すべき理由として最も適切なものはどれですか。",
+    "choices": [
+      "コードカバレッジ要件がなく、プラットフォームの機能改善が自動的に反映されるため",
+      "フローはガバナ制限の対象外であり大量データ処理に強いため",
+      "宣言的ツールは保存時の順序実行の影響を受けないため",
+      "Apex は API 経由でしか実行できず画面操作からは呼び出せないため"
+    ],
+    "answers": [
+      "コードカバレッジ要件がなく、プラットフォームの機能改善が自動的に反映されるため"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ コードカバレッジ要件がなく、プラットフォームの機能改善が自動的に反映されるため　これは正解です。宣言的ツールはテストクラスの作成・保守が不要で、リリースごとの標準機能の強化を享受できるため、まず宣言的に実現できないかを検討するのが推奨アプローチです。\n\n□ フローはガバナ制限の対象外であり大量データ処理に強いため　これは不正解です。フローも SOQL・DML などのガバナ制限の対象です。\n\n□ 宣言的ツールは保存時の順序実行の影響を受けないため　これは不正解です。レコードトリガフローも保存時の順序実行（Order of Execution）の中で実行されます。\n\n□ Apex は API 経由でしか実行できず画面操作からは呼び出せないため　これは不正解です。Apex はトリガ・LWC・クイックアクションなど画面操作からも呼び出せます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_concepts.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "宣言的開発",
+      "フロー",
+      "Apex",
+      "設計"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 9,
+    "question": "Apex の static 変数に関する説明として正しいものはどれですか。",
+    "choices": [
+      "同一トランザクション内でのみ値が保持され、トリガの再帰制御に利用できる",
+      "組織全体で永続化され、複数のトランザクション間で値が共有される",
+      "レコードごとに個別の値を保持できる",
+      "トリガのコンテキストからは参照できない"
+    ],
+    "answers": [
+      "同一トランザクション内でのみ値が保持され、トリガの再帰制御に利用できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 同一トランザクション内でのみ値が保持され、トリガの再帰制御に利用できる　これは正解です。static 変数のスコープは 1 トランザクションで、「すでにトリガを実行したか」をフラグとして記録し再帰実行を防ぐ定番パターンに使われます。\n\n□ 組織全体で永続化され、複数のトランザクション間で値が共有される　これは不正解です。トランザクションが終わると static 変数は破棄されます。永続的な設定値の保持にはカスタム設定やカスタムメタデータ型を使います。\n\n□ レコードごとに個別の値を保持できる　これは不正解です。static 変数はクラスに 1 つであり、レコード単位の値はインスタンス変数やコレクションで管理します。\n\n□ トリガのコンテキストからは参照できない　これは不正解です。トリガからクラスの static 変数を参照・更新でき、むしろ再帰制御のためにトリガから使うのが典型です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_static.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "static",
+      "Apex",
+      "トリガ",
+      "再帰制御"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 10,
+    "question": "Apex で「Boolean isActive;」と宣言したまま値を代入していない場合、isActive の値はどれですか。",
+    "choices": [
+      "null",
+      "false",
+      "true",
+      "0"
+    ],
+    "answers": [
+      "null"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ null　これは正解です。Apex ではすべての変数（Boolean を含むプリミティブ型）が null で初期化されます。Java と異なり Boolean も false ではなく null になるため、if (isActive) のような判定は NullPointerException の原因になります。\n\n□ false　これは不正解です。Java のプリミティブ boolean は false で初期化されますが、Apex の Boolean は null です。この違いは試験でも実務でも頻出の落とし穴です。\n\n□ true　これは不正解です。true で初期化される言語仕様はありません。\n\n□ 0　これは不正解です。0 は数値であり、Boolean 型の値として代入できません。\n\n補足：null の Boolean に対して比較や論理演算を行うと実行時例外になるため、宣言時に false を明示的に代入するのが安全です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/langCon_apex_primitives.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "データ型",
+      "Boolean",
+      "null",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 11,
+    "question": "既存の参照関係を主従関係に変換しようとしたところ、変換できませんでした。最も可能性が高い原因はどれですか。",
+    "choices": [
+      "参照項目が空白のままの子レコードが存在している",
+      "子オブジェクトに積み上げ集計項目が存在している",
+      "親オブジェクトのレコード数が上限を超えている",
+      "子オブジェクトでレコードタイプが有効になっている"
+    ],
+    "answers": [
+      "参照項目が空白のままの子レコードが存在している"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 参照項目が空白のままの子レコードが存在している　これは正解です。主従関係では従レコードに必ず主レコードが必要なため、参照項目が空白のレコードが 1 件でもあると変換できません。すべての既存レコードに親の値を設定してから変換します。\n\n□ 子オブジェクトに積み上げ集計項目が存在している　これは不正解です。積み上げ集計項目は主従関係の親側に作成されるもので、子オブジェクト側の変換可否とは関係ありません。\n\n□ 親オブジェクトのレコード数が上限を超えている　これは不正解です。親のレコード件数は変換の制約ではありません。\n\n□ 子オブジェクトでレコードタイプが有効になっている　これは不正解です。レコードタイプの有無はリレーション変換の条件に影響しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.relationships_considerations.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "参照関係",
+      "主従関係",
+      "リレーション変換"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 12,
+    "question": "外部システムにある注文データを Salesforce にコピーせず、リアルタイムに参照したい要件があります。どの機能が適切ですか。",
+    "choices": [
+      "Salesforce Connect の外部オブジェクト",
+      "データローダによる日次インポート",
+      "Big Object（大規模オブジェクト）",
+      "変更データキャプチャ"
+    ],
+    "answers": [
+      "Salesforce Connect の外部オブジェクト"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Salesforce Connect の外部オブジェクト　これは正解です。外部オブジェクト（API 参照名が __x で終わる）は外部システムのデータをコピーせず、アクセス時にオンデマンドで取得して Salesforce 内のオブジェクトと同じように表示・検索できます。\n\n□ データローダによる日次インポート　これは不正解です。データを組織内にコピーする方式であり、「コピーせずリアルタイムに参照」という要件を満たしません。\n\n□ Big Object（大規模オブジェクト）　これは不正解です。Big Object は Salesforce 内部に大量データを保管するための仕組みで、外部データの参照機能ではありません。\n\n□ 変更データキャプチャ　これは不正解です。変更データキャプチャは Salesforce 側のレコード変更イベントを外部へ通知する機能で、方向が逆です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.object_reference.meta/object_reference/sforce_api_objects_external_objects.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "外部オブジェクト",
+      "Salesforce Connect",
+      "統合"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 13,
+    "question": "Apex クラスに with sharing キーワードを指定した場合の動作として正しいものはどれですか。",
+    "choices": [
+      "実行ユーザーの共有設定が適用され、参照できないレコードはクエリ結果から除外される",
+      "実行ユーザーの項目レベルセキュリティが自動的に適用される",
+      "実行ユーザーのプロファイルのオブジェクト権限が自動的に強制される",
+      "クラス内のすべての DML が読み取り専用になる"
+    ],
+    "answers": [
+      "実行ユーザーの共有設定が適用され、参照できないレコードはクエリ結果から除外される"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 実行ユーザーの共有設定が適用され、参照できないレコードはクエリ結果から除外される　これは正解です。with sharing は組織の共有ルール・ロール階層などのレコードレベルのアクセス制御を Apex の実行に適用します。\n\n□ 実行ユーザーの項目レベルセキュリティが自動的に適用される　これは不正解です。with sharing が強制するのはレコードの共有のみで、項目レベルセキュリティ（FLS）は適用されません。FLS の考慮には Security.stripInaccessible や WITH SECURITY_ENFORCED を使います。\n\n□ 実行ユーザーのプロファイルのオブジェクト権限が自動的に強制される　これは不正解です。オブジェクトの CRUD 権限も with sharing では強制されず、別途チェックが必要です。\n\n□ クラス内のすべての DML が読み取り専用になる　これは不正解です。with sharing は DML を禁止する仕組みではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_keywords_sharing.htm",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "with sharing",
+      "共有",
+      "セキュリティ",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 14,
+    "question": "Apex から参照するしきい値などの設定値について、ハードコードを避け、変更セットでのリリース時に設定値そのものも一緒に移行したい。どの機能が最も適切ですか。",
+    "choices": [
+      "カスタムメタデータ型",
+      "カスタム表示ラベル",
+      "リストカスタム設定",
+      "静的リソース"
+    ],
+    "answers": [
+      "カスタムメタデータ型"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ カスタムメタデータ型　これは正解です。カスタムメタデータ型はレコード（設定値）自体がメタデータとして扱われるため、変更セットやパッケージで定義と値の両方をリリースできます。Apex からは SOQL 制限を消費せずに取得できる点も利点です。\n\n□ カスタム表示ラベル　これは不正解です。表示ラベルは画面に表示する文言の翻訳・管理が主目的で、数値のしきい値など構造化された設定の管理には向きません。\n\n□ リストカスタム設定　これは不正解です。カスタム設定の定義は移行できますが、レコード（設定値）はデータとして扱われるため変更セットでは移行されず、組織ごとに再入力が必要です。\n\n□ 静的リソース　これは不正解です。静的リソースは画像や JavaScript などのファイル置き場であり、Apex から構造化された設定値を参照する用途には適しません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.custommetadatatypes_overview.htm&type=5",
+    "multi": false,
+    "domain": "fund",
+    "keywords": [
+      "カスタムメタデータ型",
+      "カスタム設定",
+      "リリース",
+      "ハードコード回避"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 15,
+    "question": "Apex トリガ内で、更新前の項目値と更新後の項目値を比較する必要があります。更新前のレコードを ID で取得できるコンテキスト変数はどれですか。",
+    "choices": [
+      "Trigger.oldMap",
+      "Trigger.newMap",
+      "Trigger.isUpdate",
+      "Trigger.size"
+    ],
+    "answers": [
+      "Trigger.oldMap"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Trigger.oldMap　これは正解です。Trigger.oldMap はレコード ID をキーとした更新前バージョンの Map で、Trigger.new のレコードと突き合わせて「項目値が変わったか」を判定する定番パターンに使います。update / delete トリガで利用できます。\n\n□ Trigger.newMap　これは不正解です。Trigger.newMap が保持するのは更新後の新しいバージョンのレコードです。\n\n□ Trigger.isUpdate　これは不正解です。isUpdate はトリガが update 操作で起動したかを示す Boolean であり、レコードの値は持ちません。\n\n□ Trigger.size　これは不正解です。size はトリガで処理されるレコード件数（新旧合計）を示す数値です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_context_variables.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "トリガ",
+      "コンテキスト変数",
+      "Trigger.oldMap",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 16,
+    "question": "トリガを使用して、レコードが挿入される際に同じレコードの項目値を自動設定する必要があります。最も効率的な実装はどれですか。",
+    "choices": [
+      "before insert トリガで Trigger.new の項目値を直接変更する",
+      "after insert トリガで Trigger.new の項目値を変更して update を実行する",
+      "before insert トリガで Trigger.new のレコードに update を実行する",
+      "after insert トリガで Trigger.old の項目値を変更する"
+    ],
+    "answers": [
+      "before insert トリガで Trigger.new の項目値を直接変更する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ before insert トリガで Trigger.new の項目値を直接変更する　これは正解です。before トリガでは Trigger.new のレコードを直接書き換えるだけで、DML なしで変更が保存に反映されます。同一レコードの項目設定の最も効率的な方法です。\n\n□ after insert トリガで Trigger.new の項目値を変更して update を実行する　これは不正解です。after トリガでは Trigger.new は読み取り専用です。レコードをコピーして update する方法はありますが、余分な DML と順序実行の再実行が発生し非効率です。\n\n□ before insert トリガで Trigger.new のレコードに update を実行する　これは不正解です。挿入前のレコードはまだデータベースに存在しないため update できず、実行時エラーになります。\n\n□ after insert トリガで Trigger.old の項目値を変更する　これは不正解です。insert トリガでは Trigger.old は null です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.code_define_trigger.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "トリガ",
+      "before insert",
+      "項目更新",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 17,
+    "question": "商談がフェーズ「Closed Won」に更新されたとき、関連する契約レコードを新規作成するトリガを実装します。どのトリガイベントが適切ですか。",
+    "choices": [
+      "after update",
+      "before update",
+      "before insert",
+      "after delete"
+    ],
+    "answers": [
+      "after update"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ after update　これは正解です。別レコード（契約）の作成は、対象の商談がデータベースに保存され ID や最終的な項目値が確定した後に行うのが適切です。after トリガは関連レコードの作成・更新に使用します。\n\n□ before update　これは不正解です。before トリガは保存前の同一レコードの項目変更に適したタイミングで、別レコードの作成を行うと、後続の検証などで保存が失敗した場合の整合性に問題が生じます。\n\n□ before insert　これは不正解です。要件は「更新されたとき」であり、挿入イベントでは検知できません。\n\n□ after delete　これは不正解です。削除イベントでは商談の成立を検知できません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "トリガ",
+      "after update",
+      "関連レコード",
+      "Apex"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 18,
+    "question": "大量データの一括処理に対応した（バルク化された）Apex トリガの実装プラクティスとして適切なものはどれですか。2つ選びなさい。",
+    "choices": [
+      "SOQL クエリはループの外で 1 回だけ実行し、結果を Map に格納して参照する",
+      "更新対象レコードを List に集めて、DML はループの外で一括実行する",
+      "レコードごとに SOQL を実行して常に最新の関連データを取得する",
+      "レコードを 1 件ずつ update して部分的な失敗に備える"
+    ],
+    "answers": [
+      "SOQL クエリはループの外で 1 回だけ実行し、結果を Map に格納して参照する",
+      "更新対象レコードを List に集めて、DML はループの外で一括実行する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ SOQL クエリはループの外で 1 回だけ実行し、結果を Map に格納して参照する　これは正解です。ループ内 SOQL は 200 件のトリガ実行で即座に「SOQL 100 回」のガバナ制限に達します。WHERE Id IN :ids 形式で一括取得し Map で引くのが定石です。\n\n□ 更新対象レコードを List に集めて、DML はループの外で一括実行する　これは正解です。DML ステートメントの上限（150 回）を消費しないよう、コレクションへの蓄積と一括 DML が基本パターンです。\n\n□ レコードごとに SOQL を実行して常に最新の関連データを取得する　これは不正解です。鮮度の問題は同一トランザクション内では発生せず、ループ内 SOQL はガバナ制限超過の典型的な原因です。\n\n□ レコードを 1 件ずつ update して部分的な失敗に備える　これは不正解です。部分的な成功が必要な場合は Database.update(records, false) を一括で使用します。1 件ずつの DML は制限超過の原因になります。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_triggers/apex_triggers_bulk",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "バルク化",
+      "トリガ",
+      "ガバナ制限",
+      "ベストプラクティス"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 19,
+    "question": "同期トランザクションにおける Apex のガバナ制限として正しいものはどれですか。",
+    "choices": [
+      "SOQL クエリは最大 100 回発行できる",
+      "DML ステートメントは最大 100 回実行できる",
+      "SOQL クエリで取得できるレコードは合計 10,000 行まで",
+      "CPU 時間の上限は 60,000 ミリ秒"
+    ],
+    "answers": [
+      "SOQL クエリは最大 100 回発行できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ SOQL クエリは最大 100 回発行できる　これは正解です。同期トランザクションの SOQL 発行回数の上限は 100 回です（非同期では 200 回）。\n\n□ DML ステートメントは最大 100 回実行できる　これは不正解です。DML ステートメントの上限は 150 回です。なお DML で処理できるレコード数の合計は 10,000 行です。\n\n□ SOQL クエリで取得できるレコードは合計 10,000 行まで　これは不正解です。SOQL の取得行数の上限は合計 50,000 行です。10,000 行は DML の処理レコード数の上限です。\n\n□ CPU 時間の上限は 60,000 ミリ秒　これは不正解です。同期トランザクションの CPU 時間の上限は 10,000 ミリ秒で、60,000 ミリ秒は非同期処理の上限です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_gov_limits.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "ガバナ制限",
+      "SOQL",
+      "DML",
+      "CPU時間"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 20,
+    "question": "複数のレコードを挿入する際、一部のレコードが入力規則エラーで失敗しても、残りのレコードの保存は継続したい。どの実装が適切ですか。",
+    "choices": [
+      "Database.insert(records, false) を実行し SaveResult で結果を確認する",
+      "insert records; を try-catch で囲んで例外を握りつぶす",
+      "Database.insert(records, true) を実行する",
+      "insert records; の前に Database.setSavepoint() を実行する"
+    ],
+    "answers": [
+      "Database.insert(records, false) を実行し SaveResult で結果を確認する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Database.insert(records, false) を実行し SaveResult で結果を確認する　これは正解です。第 2 引数 allOrNone を false にすると部分的な成功が許可され、戻り値の Database.SaveResult 配列から isSuccess() や getErrors() で各レコードの結果を確認できます。\n\n□ insert records; を try-catch で囲んで例外を握りつぶす　これは不正解です。DML ステートメントは 1 件でも失敗すると操作全体が失敗してロールバックされるため、catch しても成功レコードは保存されません。\n\n□ Database.insert(records, true) を実行する　これは不正解です。allOrNone が true の場合は DML ステートメントと同じ「全件成功か全件失敗か」の動作になります。\n\n□ insert records; の前に Database.setSavepoint() を実行する　これは不正解です。Savepoint はトランザクションを任意の時点へ巻き戻す仕組みであり、部分的な成功を実現するものではありません。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_database/apex_database_dml",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "DML",
+      "Database.insert",
+      "部分成功",
+      "SaveResult"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 21,
+    "question": "取引先責任者（Contact）のクエリで、親である取引先の名前も同時に取得する SOQL として正しいものはどれですか。",
+    "choices": [
+      "SELECT LastName, Account.Name FROM Contact",
+      "SELECT LastName, Account__r.Name FROM Contact",
+      "SELECT LastName, (SELECT Name FROM Account) FROM Contact",
+      "SELECT LastName FROM Contact JOIN Account ON Contact.AccountId = Account.Id"
+    ],
+    "answers": [
+      "SELECT LastName, Account.Name FROM Contact"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ SELECT LastName, Account.Name FROM Contact　これは正解です。子から親への参照は、標準リレーションであればリレーション名（Account）にドット表記を続けて親の項目を取得できます。\n\n□ SELECT LastName, Account__r.Name FROM Contact　これは不正解です。__r サフィックスはカスタムリレーションの場合に使用します。Contact から Account への標準リレーションでは Account.Name と記述します。\n\n□ SELECT LastName, (SELECT Name FROM Account) FROM Contact　これは不正解です。サブクエリは親から子を取得する構文であり、子から親の取得には使えません。\n\n□ SELECT LastName FROM Contact JOIN Account ON Contact.AccountId = Account.Id　これは不正解です。SOQL には SQL のような JOIN 構文は存在せず、リレーション名による走査を使用します。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_database/apex_database_soql",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "SOQL",
+      "リレーションクエリ",
+      "親子関係"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 22,
+    "question": "取引先（Account）と、それぞれに関連する取引先責任者（Contact）の一覧を 1 回の SOQL で取得する方法として正しいものはどれですか。",
+    "choices": [
+      "SELECT Name, (SELECT LastName FROM Contacts) FROM Account",
+      "SELECT Name, (SELECT LastName FROM Contact) FROM Account",
+      "SELECT Name, Contacts.LastName FROM Account",
+      "SELECT Name FROM Account WHERE Id IN (SELECT AccountId FROM Contact)"
+    ],
+    "answers": [
+      "SELECT Name, (SELECT LastName FROM Contacts) FROM Account"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ SELECT Name, (SELECT LastName FROM Contacts) FROM Account　これは正解です。親から子の取得はサブクエリを使用し、FROM には子オブジェクト名ではなく子リレーション名（標準オブジェクトでは複数形の Contacts）を指定します。\n\n□ SELECT Name, (SELECT LastName FROM Contact) FROM Account　これは不正解です。サブクエリの FROM に単数形のオブジェクト名を指定しており、リレーション名（Contacts）でないためエラーになります。\n\n□ SELECT Name, Contacts.LastName FROM Account　これは不正解です。ドット表記は子から親への走査に使う構文で、親から子の取得には使えません。\n\n□ SELECT Name FROM Account WHERE Id IN (SELECT AccountId FROM Contact)　これは不正解です。これは準結合と呼ばれる絞り込みの構文で、取引先責任者を持つ取引先は取得できますが、責任者のレコード自体は取得できません。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_database/apex_database_soql",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "SOQL",
+      "サブクエリ",
+      "子リレーション",
+      "親子関係"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 23,
+    "question": "ユーザーが入力したキーワードで、取引先・取引先責任者・商談を横断してテキスト検索する機能を Apex で実装します。どの方法が最も適切ですか。",
+    "choices": [
+      "SOSL の FIND 句と RETURNING 句を使用する",
+      "オブジェクトごとの SOQL を UNION で結合する",
+      "1 つの SOQL に 3 つのオブジェクトを FROM 句で列挙する",
+      "Database.getQueryLocator で 3 オブジェクトを順に走査する"
+    ],
+    "answers": [
+      "SOSL の FIND 句と RETURNING 句を使用する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ SOSL の FIND 句と RETURNING 句を使用する　これは正解です。SOSL は検索インデックスを使って複数オブジェクトを横断したテキスト検索を 1 回で実行でき、RETURNING 句でオブジェクトごとの取得項目を指定できます。「キーワードで複数オブジェクトを検索」は SOSL の典型的なユースケースです。\n\n□ オブジェクトごとの SOQL を UNION で結合する　これは不正解です。SOQL に UNION 構文は存在しません。\n\n□ 1 つの SOQL に 3 つのオブジェクトを FROM 句で列挙する　これは不正解です。SOQL の FROM 句に指定できるオブジェクトは 1 つだけです。\n\n□ Database.getQueryLocator で 3 オブジェクトを順に走査する　これは不正解です。getQueryLocator は Batch Apex で大量レコードを処理するための仕組みで、テキスト検索の手段ではありません。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_database/apex_database_sosl",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "SOSL",
+      "テキスト検索",
+      "複数オブジェクト",
+      "FIND"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 24,
+    "question": "レコード保存時の処理順序（Order of Execution）として正しいものはどれですか。",
+    "choices": [
+      "before トリガ → カスタム入力規則 → after トリガ → ワークフロールール",
+      "カスタム入力規則 → before トリガ → after トリガ → ワークフロールール",
+      "before トリガ → after トリガ → カスタム入力規則 → ワークフロールール",
+      "ワークフロールール → before トリガ → カスタム入力規則 → after トリガ"
+    ],
+    "answers": [
+      "before トリガ → カスタム入力規則 → after トリガ → ワークフロールール"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ before トリガ → カスタム入力規則 → after トリガ → ワークフロールール　これは正解です。保存時はシステム検証の後に before トリガが実行され、その後にカスタム入力規則を含む検証、レコード保存（未コミット）、after トリガ、割り当て・自動応答ルール、ワークフロールールの順で進みます。\n\n□ カスタム入力規則 → before トリガ →…　これは不正解です。カスタム入力規則は before トリガの後に評価されます。before トリガで設定した値も入力規則の評価対象になる、という点が試験で問われる定番です。\n\n□ before トリガ → after トリガ → カスタム入力規則 →…　これは不正解です。検証はレコードがデータベースに保存される前、つまり after トリガより前に行われます。\n\n□ ワークフロールール → before トリガ →…　これは不正解です。ワークフロールールはレコード保存と after トリガの後に実行されます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_order_of_execution.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "順序実行",
+      "トリガ",
+      "入力規則",
+      "ワークフロー"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 25,
+    "question": "update トリガを持つオブジェクトに、項目自動更新を行うワークフロールールが設定されています。ユーザーの更新操作でワークフローの項目自動更新が実行された場合の動作として正しいものはどれですか。",
+    "choices": [
+      "before update と after update トリガがもう一度だけ実行される",
+      "トリガは再実行されない",
+      "再帰エラーが発生してトランザクション全体が失敗する",
+      "after update トリガのみが再実行される"
+    ],
+    "answers": [
+      "before update と after update トリガがもう一度だけ実行される"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ before update と after update トリガがもう一度だけ実行される　これは正解です。ワークフローの項目自動更新がレコードを変更した場合、before/after update トリガが追加で 1 回（合計 2 回）実行されます。トリガのロジックはこの再実行を考慮して冪等に設計する必要があります。\n\n□ トリガは再実行されない　これは不正解です。項目自動更新はレコードの再保存にあたるため、update トリガが再度起動します。\n\n□ 再帰エラーが発生してトランザクション全体が失敗する　これは不正解です。プラットフォームはワークフローによるトリガ再実行を 1 回に制限しており、無限ループにはなりません。\n\n□ after update トリガのみが再実行される　これは不正解です。before と after の両方の update トリガが再実行されます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_order_of_execution.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "順序実行",
+      "ワークフロー",
+      "項目自動更新",
+      "トリガ再実行"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 26,
+    "question": "@future アノテーションを付けたメソッドの制約として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "引数に sObject 型を渡すことはできない",
+      "戻り値の型は void でなければならない",
+      "1 トランザクションで 1 回しか呼び出せない",
+      "@future メソッドから別の @future メソッドを呼び出せる"
+    ],
+    "answers": [
+      "引数に sObject 型を渡すことはできない",
+      "戻り値の型は void でなければならない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 引数に sObject 型を渡すことはできない　これは正解です。実行されるまでにレコードが変更されている可能性があるため、引数はプリミティブ型・プリミティブのコレクションのみ許可されます。レコードを扱う場合は ID を渡して実行時に再クエリします。\n\n□ 戻り値の型は void でなければならない　これは正解です。@future メソッドは static かつ戻り値 void が必須です。\n\n□ 1 トランザクションで 1 回しか呼び出せない　これは不正解です。1 トランザクションで最大 50 回まで呼び出せます。\n\n□ @future メソッドから別の @future メソッドを呼び出せる　これは不正解です。future から future の呼び出しはできません。非同期処理の連鎖が必要な場合は Queueable Apex を使用します。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_invoking_future_methods.htm",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "future",
+      "非同期処理",
+      "Apex",
+      "制約"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 27,
+    "question": "非同期処理の実装で、sObject をメンバ変数として保持し、処理完了後に次の非同期ジョブを連鎖（チェーン）させたい要件があります。どの方法が適切ですか。",
+    "choices": [
+      "Queueable インターフェースを実装し System.enqueueJob で起動する",
+      "@future メソッドに sObject をシリアライズして渡す",
+      "Schedulable インターフェースを実装し毎分実行する",
+      "トリガから insert を再帰的に実行する"
+    ],
+    "answers": [
+      "Queueable インターフェースを実装し System.enqueueJob で起動する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Queueable インターフェースを実装し System.enqueueJob で起動する　これは正解です。Queueable は @future と異なり sObject や複雑な型をメンバ変数として保持でき、execute 内から次のジョブを enqueue するチェーンも可能です。ジョブ ID で進捗の追跡もできます。\n\n□ @future メソッドに sObject をシリアライズして渡す　これは不正解です。@future の引数にはプリミティブ型しか渡せず、チェーン（future から future の呼び出し）もできません。\n\n□ Schedulable インターフェースを実装し毎分実行する　これは不正解です。スケジュール済み Apex は定時実行の仕組みで、処理完了に続けてジョブを連鎖させる用途には適しません。\n\n□ トリガから insert を再帰的に実行する　これは不正解です。トリガの再帰は非同期処理の代替にならず、ガバナ制限と無限ループの危険があります。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_queueing_jobs.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Queueable",
+      "非同期処理",
+      "ジョブチェーン",
+      "enqueueJob"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 28,
+    "question": "数百万件のレコードを夜間に一括補正する Apex 処理を実装します。どの方法が最も適切ですか。",
+    "choices": [
+      "Database.Batchable インターフェースを実装した Batch Apex を使用する",
+      "@future メソッドで全件を一度に処理する",
+      "Schedulable の execute 内で全件を SOQL で取得して DML を実行する",
+      "レコードトリガフローで全レコードを更新する"
+    ],
+    "answers": [
+      "Database.Batchable インターフェースを実装した Batch Apex を使用する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Database.Batchable インターフェースを実装した Batch Apex を使用する　これは正解です。Batch Apex は Database.QueryLocator を使うと最大 5,000 万件を対象にでき、レコードをバッチ（既定 200 件）に分割してそれぞれ独立したガバナ制限で処理します。大量データの一括処理の標準的な手段です。\n\n□ @future メソッドで全件を一度に処理する　これは不正解です。future も 1 回の実行は通常の非同期ガバナ制限（SOQL 取得 50,000 行・DML 10,000 行）の範囲内であり、数百万件は処理できません。\n\n□ Schedulable の execute 内で全件を SOQL で取得して DML を実行する　これは不正解です。スケジュールはあくまで起動の仕組みで、execute 内の処理は同じくガバナ制限を超えられません。定時起動が必要なら Schedulable から Batch を起動します。\n\n□ レコードトリガフローで全レコードを更新する　これは不正解です。レコードトリガフローは保存イベントで起動するもので、数百万件の夜間一括補正の起点にはなりません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_batch_interface.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "Batch Apex",
+      "大量データ",
+      "非同期処理",
+      "QueryLocator"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 29,
+    "question": "毎週月曜日の午前 2 時に Apex 処理を自動実行する要件があります。どの実装が適切ですか。",
+    "choices": [
+      "Schedulable インターフェースを実装し System.schedule で CRON 式を指定する",
+      "Queueable インターフェースを実装し System.enqueueJob に実行時刻を渡す",
+      "@future メソッドに実行予定時刻を引数として渡す",
+      "Batch Apex の scope パラメータに実行間隔を指定する"
+    ],
+    "answers": [
+      "Schedulable インターフェースを実装し System.schedule で CRON 式を指定する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Schedulable インターフェースを実装し System.schedule で CRON 式を指定する　これは正解です。Schedulable を実装したクラスを System.schedule(ジョブ名, CRON式, インスタンス) で登録すると、指定スケジュールで execute メソッドが実行されます。設定画面の「Apex クラスをスケジュール」からも登録できます。\n\n□ Queueable インターフェースを実装し System.enqueueJob に実行時刻を渡す　これは不正解です。enqueueJob は即時に近いタイミングでキュー投入する仕組みで、定期実行のスケジュール指定はできません。\n\n□ @future メソッドに実行予定時刻を引数として渡す　これは不正解です。@future に実行時刻を指定する機能はなく、リソースが空き次第実行されます。\n\n□ Batch Apex の scope パラメータに実行間隔を指定する　これは不正解です。scope は 1 バッチあたりの処理レコード件数であり、実行タイミングの指定ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_scheduler.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "スケジュール済みApex",
+      "Schedulable",
+      "CRON",
+      "定期実行"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 30,
+    "question": "Apex の例外処理に関する説明として正しいものはどれですか。",
+    "choices": [
+      "ガバナ制限超過で発生する System.LimitException は try-catch で捕捉できない",
+      "DmlException を捕捉すると、それまでに成功した DML は自動的に取り消される",
+      "カスタム例外クラスは Exception を継承せずに定義できる",
+      "finally ブロックは例外が発生した場合のみ実行される"
+    ],
+    "answers": [
+      "ガバナ制限超過で発生する System.LimitException は try-catch で捕捉できない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ガバナ制限超過で発生する System.LimitException は try-catch で捕捉できない　これは正解です。LimitException は捕捉不可能な例外で、発生するとトランザクションは即座に終了します。だからこそ、制限に達する前に Limits クラスで残量を確認したりバルク化したりする設計が重要です。\n\n□ DmlException を捕捉すると、それまでに成功した DML は自動的に取り消される　これは不正解です。例外を捕捉した場合、それまでの DML は取り消されません。巻き戻しが必要な場合は Savepoint を使って明示的にロールバックします。\n\n□ カスタム例外クラスは Exception を継承せずに定義できる　これは不正解です。カスタム例外は Exception を継承し、クラス名の末尾を Exception にする必要があります。\n\n□ finally ブロックは例外が発生した場合のみ実行される　これは不正解です。finally は例外の有無にかかわらず必ず実行されます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_gov_limits.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "例外処理",
+      "LimitException",
+      "try-catch",
+      "DmlException"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 31,
+    "question": "複数の DML 操作の途中でエラーが発生した場合に、トランザクション内の特定の時点まで処理を巻き戻したい。どの方法が適切ですか。",
+    "choices": [
+      "Database.setSavepoint() で保存ポイントを作成し Database.rollback() で巻き戻す",
+      "try-catch で例外を捕捉すれば DML は自動的に取り消される",
+      "Database.insert の allOrNone に false を指定する",
+      "DML ごとに @future メソッドへ分割して独立させる"
+    ],
+    "answers": [
+      "Database.setSavepoint() で保存ポイントを作成し Database.rollback() で巻き戻す"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Database.setSavepoint() で保存ポイントを作成し Database.rollback() で巻き戻す　これは正解です。Savepoint を設定しておくと、エラー発生時にその時点までデータベースの状態を巻き戻せます。なおロールバックしても消費したガバナ制限は戻りません。\n\n□ try-catch で例外を捕捉すれば DML は自動的に取り消される　これは不正解です。例外を捕捉するとトランザクションは継続し、捕捉前に成功した DML はそのまま残ります。自動で全件ロールバックされるのは例外が未処理のままトランザクションが失敗した場合です。\n\n□ Database.insert の allOrNone に false を指定する　これは不正解です。allOrNone=false は 1 回の DML 内での部分的な成功を許す仕組みで、複数の DML をまたいだ巻き戻しはできません。\n\n□ DML ごとに @future メソッドへ分割して独立させる　これは不正解です。別トランザクションに分かれるためまとめて巻き戻すことがそもそも不可能になります。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/langCon_apex_transaction_control.htm",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "トランザクション",
+      "Savepoint",
+      "ロールバック",
+      "DML"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 32,
+    "question": "レコード保存時の自動化要件のうち、Apex トリガではなくレコードトリガフローでの実装が適しているものはどれですか。",
+    "choices": [
+      "作成・更新時に同一レコードの項目値を条件に応じて設定する",
+      "Map を多段に使った複数オブジェクト横断の集計処理",
+      "Savepoint による部分的なロールバックを伴う処理",
+      "CPU 集約的な大量レコードの変換処理"
+    ],
+    "answers": [
+      "作成・更新時に同一レコードの項目値を条件に応じて設定する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 作成・更新時に同一レコードの項目値を条件に応じて設定する　これは正解です。同一レコードの項目設定は「保存前（Fast Field Update）」のレコードトリガフローの典型的なユースケースで、宣言的に高速に実装できます。\n\n□ Map を多段に使った複数オブジェクト横断の集計処理　これは不正解です。複雑なデータ構造の操作はフローの要素では表現しづらく、Apex の得意分野です。\n\n□ Savepoint による部分的なロールバックを伴う処理　これは不正解です。フローにはトランザクションの Savepoint を操作する機能がなく、Apex でのみ実装できます。\n\n□ CPU 集約的な大量レコードの変換処理　これは不正解です。性能チューニングやバルク最適化が重要な処理は Apex（必要に応じて Batch）での実装が適しています。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_concepts_trigger_record.htm&type=5",
+    "multi": false,
+    "domain": "logic",
+    "keywords": [
+      "レコードトリガフロー",
+      "Apexトリガ",
+      "自動化",
+      "使い分け"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 33,
+    "question": "LWC で、親コンポーネントから子コンポーネントへ値を渡せるように、子コンポーネント側のプロパティに指定するデコレーターはどれですか。",
+    "choices": [
+      "@api",
+      "@track",
+      "@wire",
+      "@AuraEnabled"
+    ],
+    "answers": [
+      "@api"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ @api　これは正解です。@api を付けたプロパティはパブリックになり、親コンポーネントがテンプレートの属性として値を渡せるようになります。\n\n□ @track　これは不正解です。@track はオブジェクトや配列の内部の変更を監視してリアクティブにするためのデコレーターで、プロパティを外部に公開する機能はありません（単純な値は現在デフォルトでリアクティブです）。\n\n□ @wire　これは不正解です。@wire は Lightning Data Service や Apex メソッドからリアクティブにデータを取得するためのデコレーターです。\n\n□ @AuraEnabled　これは不正解です。@AuraEnabled は Apex 側のメソッドやプロパティを Lightning コンポーネントから利用可能にするアノテーションで、LWC の JavaScript では使いません。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "@api",
+      "デコレーター",
+      "親子通信"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 34,
+    "question": "@AuraEnabled(cacheable=true) を指定した Apex メソッドの説明として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "LWC の @wire から呼び出すことができる",
+      "メソッド内で DML を実行できない",
+      "戻り値の型は void でなければならない",
+      "global アクセス修飾子の指定が必須である"
+    ],
+    "answers": [
+      "LWC の @wire から呼び出すことができる",
+      "メソッド内で DML を実行できない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ LWC の @wire から呼び出すことができる　これは正解です。@wire で Apex メソッドを使用するには cacheable=true の指定が必須です。結果はクライアント側でキャッシュされ、表示が高速になります。\n\n□ メソッド内で DML を実行できない　これは正解です。cacheable=true のメソッドは読み取り専用とみなされ、DML を実行すると実行時エラーになります。データ変更が必要な場合は cacheable を付けず命令的（imperative）に呼び出します。\n\n□ 戻り値の型は void でなければならない　これは不正解です。void が必須なのは @future メソッドの制約で、@AuraEnabled メソッドはデータを返すのが通常です。\n\n□ global アクセス修飾子の指定が必須である　これは不正解です。同一組織内で使う場合は public static で問題ありません。global が必要なのは管理パッケージで公開する場合などです。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": true,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "@wire",
+      "cacheable",
+      "AuraEnabled"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 35,
+    "question": "LWC で、ボタンクリック時に DML（レコード更新）を伴う Apex メソッドを呼び出す実装として適切なものはどれですか。",
+    "choices": [
+      "@AuraEnabled メソッドをインポートして命令的（imperative）に呼び出す",
+      "@AuraEnabled(cacheable=true) メソッドを @wire で呼び出す",
+      "connectedCallback 内で @wire の結果を更新する",
+      "getRecord ワイヤアダプタの結果に値を代入する"
+    ],
+    "answers": [
+      "@AuraEnabled メソッドをインポートして命令的（imperative）に呼び出す"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ @AuraEnabled メソッドをインポートして命令的（imperative）に呼び出す　これは正解です。ユーザー操作のタイミングで実行する処理や DML を伴う処理は、メソッドを import して Promise として呼び出す命令的コールが適切です。\n\n□ @AuraEnabled(cacheable=true) メソッドを @wire で呼び出す　これは不正解です。cacheable=true のメソッドでは DML が実行できず、@wire はコンポーネントのライフサイクルに連動した読み取り向けの仕組みです。\n\n□ connectedCallback 内で @wire の結果を更新する　これは不正解です。connectedCallback は初期化のタイミングであり、ボタンクリック時の DML 実行とは関係ありません。\n\n□ getRecord ワイヤアダプタの結果に値を代入する　これは不正解です。ワイヤアダプタの結果は読み取り専用で、代入してもサーバーには反映されません。更新には updateRecord や Apex を使います。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "imperative",
+      "Apex呼び出し",
+      "DML"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 36,
+    "question": "LWC の子コンポーネントで発生した操作を親コンポーネントへ通知する標準的な方法はどれですか。",
+    "choices": [
+      "CustomEvent を作成して dispatchEvent で発火する",
+      "親コンポーネントの @api プロパティを子から直接書き換える",
+      "pubsub モジュールで同一ページ内に発行する",
+      "Apex 経由でプラットフォームイベントを発行する"
+    ],
+    "answers": [
+      "CustomEvent を作成して dispatchEvent で発火する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ CustomEvent を作成して dispatchEvent で発火する　これは正解です。子から親への通知は CustomEvent が標準です。new CustomEvent('selected', { detail: 値 }) を dispatchEvent し、親はテンプレートで onselected ハンドラを記述して受け取ります。\n\n□ 親コンポーネントの @api プロパティを子から直接書き換える　これは不正解です。データの流れは「親から子へはプロパティ、子から親へはイベント」が原則で、子が親の状態を直接変更する設計は推奨されません。\n\n□ pubsub モジュールで同一ページ内に発行する　これは不正解です。pubsub や Lightning Message Service は DOM 階層上の親子関係がないコンポーネント間の通信手段で、直接の親子間ではイベントを使います。\n\n□ Apex 経由でプラットフォームイベントを発行する　これは不正解です。プラットフォームイベントはサーバーを経由する組織レベルのイベント基盤で、同一画面内の親子通知には過剰です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "CustomEvent",
+      "イベント",
+      "親子通信"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 37,
+    "question": "Apex や追加の JavaScript ロジックをほとんど書かずに、LWC でレコードの表示・編集フォームを実装できる基盤コンポーネントはどれですか。",
+    "choices": [
+      "lightning-record-form",
+      "lightning-datatable",
+      "lightning-input",
+      "lightning-card"
+    ],
+    "answers": [
+      "lightning-record-form"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ lightning-record-form　これは正解です。record-id とオブジェクト API 参照名を指定するだけで、Lightning Data Service を通じてレコードの表示・編集・作成フォームを生成します。項目レベルセキュリティと共有設定も自動的に適用され、Apex は不要です。\n\n□ lightning-datatable　これは不正解です。datatable は複数レコードの一覧表示用コンポーネントで、データの取得は別途実装する必要があります。\n\n□ lightning-input　これは不正解です。単一の入力項目を描画する部品であり、レコードの読み書きは自前で実装する必要があります。\n\n□ lightning-card　これは不正解です。card は見出しやアイコン付きの枠を提供するレイアウト用コンポーネントです。",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/lightning-record-form/documentation",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Lightning Data Service",
+      "lightning-record-form",
+      "LWC"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 38,
+    "question": "作成した LWC を Lightning アプリケーションビルダーでレコードページに配置できるようにするための設定はどれですか。",
+    "choices": [
+      "js-meta.xml で isExposed を true にし targets に lightning__RecordPage を追加する",
+      "コンポーネントのフォルダ名の先頭に名前空間プレフィックス c- を付けて参照する",
+      "JavaScript クラスに @api recordId プロパティを宣言してページに渡す",
+      "コンポーネントを Aura アプリケーションでラップしてからページに配置する"
+    ],
+    "answers": [
+      "js-meta.xml で isExposed を true にし targets に lightning__RecordPage を追加する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ js-meta.xml で isExposed を true にし targets に lightning__RecordPage を追加する　これは正解です。*.js-meta.xml の isExposed でツールへの公開を許可し、targets でレコードページ・ホームページ・アプリページなどの配置先を指定します。\n\n□ コンポーネントのフォルダ名の先頭に名前空間プレフィックス c- を付けて参照する　これは不正解です。c- はテンプレート内で参照するときの名前空間プレフィックスで、フォルダ名に付けるものではなく、配置可否とも関係ありません。\n\n□ JavaScript クラスに @api recordId プロパティを宣言してページに渡す　これは不正解です。recordId はレコードページに配置されたコンポーネントが現在のレコード ID を受け取るための宣言で、配置できるようにする設定そのものではありません。\n\n□ コンポーネントを Aura アプリケーションでラップしてからページに配置する　これは不正解です。LWC はメタ設定だけで Lightning アプリケーションビルダーに公開でき、Aura のラップは不要です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "meta.xml",
+      "Lightning App Builder",
+      "targets"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 39,
+    "question": "同一の Lightning ページ上にある、DOM 階層で親子関係にない LWC と Visualforce ページの間で情報をやり取りする方法として適切なものはどれですか。",
+    "choices": [
+      "Lightning Message Service（メッセージチャネル）を使用する",
+      "CustomEvent のバブリングで伝播させる",
+      "@api プロパティを相互に参照する",
+      "Apex コントローラの static 変数を介して共有する"
+    ],
+    "answers": [
+      "Lightning Message Service（メッセージチャネル）を使用する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Lightning Message Service（メッセージチャネル）を使用する　これは正解です。LMS は DOM 階層に関係なく、LWC・Aura・Visualforce の間でメッセージを発行・購読できる仕組みで、ページ内の独立したコンポーネント間通信の公式な手段です。\n\n□ CustomEvent のバブリングで伝播させる　これは不正解です。DOM イベントは要素の階層を伝播する仕組みのため、親子関係がないコンポーネントや iframe 内の Visualforce には届きません。\n\n□ @api プロパティを相互に参照する　これは不正解です。@api は親がテンプレート経由で子に値を渡す仕組みで、独立したコンポーネント同士では使えません。\n\n□ Apex コントローラの static 変数を介して共有する　これは不正解です。static 変数の寿命は 1 トランザクションで、別々のリクエスト間で値は共有されません。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/use-message-channel.html",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Lightning Message Service",
+      "LWC",
+      "Visualforce",
+      "コンポーネント間通信"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 40,
+    "question": "LWC のライフサイクルフックのうち、コンポーネントが DOM に挿入されたときに実行され、初期化処理に適しているものはどれですか。",
+    "choices": [
+      "connectedCallback",
+      "renderedCallback",
+      "constructor",
+      "disconnectedCallback"
+    ],
+    "answers": [
+      "connectedCallback"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ connectedCallback　これは正解です。コンポーネントが DOM に挿入されたタイミングで実行されるフックで、初期値の計算やイベント購読の開始などの初期化処理に適しています。\n\n□ renderedCallback　これは不正解です。renderedCallback はレンダリングが完了するたびに実行されるため複数回呼ばれる可能性があり、初期化処理を書くとガード条件が必要になります。\n\n□ constructor　これは不正解です。constructor は要素が DOM に挿入される前に呼ばれ、この時点では @api プロパティの値もまだ設定されていません。\n\n□ disconnectedCallback　これは不正解です。disconnectedCallback は DOM から削除されたときに呼ばれるフックで、購読解除などの後片付けに使います。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "ライフサイクル",
+      "connectedCallback"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 41,
+    "question": "Aura コンポーネントと LWC の互換性について正しいものはどれですか。",
+    "choices": [
+      "Aura コンポーネントの中に LWC を配置できるが、LWC の中に Aura は配置できない",
+      "LWC の中に Aura コンポーネントを配置できるが、その逆はできない",
+      "相互に自由に入れ子にできる",
+      "同一の Lightning ページ上には共存できない"
+    ],
+    "answers": [
+      "Aura コンポーネントの中に LWC を配置できるが、LWC の中に Aura は配置できない"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Aura コンポーネントの中に LWC を配置できるが、LWC の中に Aura は配置できない　これは正解です。互換性は一方向で、Aura は LWC を子として含められますが、LWC のテンプレートに Aura コンポーネントは記述できません。段階的な移行では外側から Aura → LWC へ置き換えていきます。\n\n□ LWC の中に Aura コンポーネントを配置できるが、その逆はできない　これは不正解です。方向が逆です。\n\n□ 相互に自由に入れ子にできる　これは不正解です。LWC の中に Aura は配置できません。\n\n□ 同一の Lightning ページ上には共存できない　これは不正解です。同じページに Aura と LWC を並べて配置することは問題なくできます。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/lightning-web-components-basics",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Aura",
+      "LWC",
+      "互換性",
+      "移行"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 42,
+    "question": "Visualforce ページで、Apex コードを書かずに取引先レコードの表示と保存を実装したい。どの方法が適切ですか。",
+    "choices": [
+      "取引先の標準コントローラ（standardController）を使用する",
+      "カスタムコントローラを作成する",
+      "コントローラ拡張（extensions）を作成する",
+      "JavaScript Remoting を使用する"
+    ],
+    "answers": [
+      "取引先の標準コントローラ（standardController）を使用する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 取引先の標準コントローラ（standardController）を使用する　これは正解です。<apex:page standardController=\"Account\"> と指定すると、レコードの取得・{!account.Name} などの項目参照・{!save} などの標準アクションが Apex なしで利用できます。ユーザーの権限・FLS も尊重されます。\n\n□ カスタムコントローラを作成する　これは不正解です。カスタムコントローラは Apex クラスの作成そのものであり、「コードを書かない」要件に反します。\n\n□ コントローラ拡張（extensions）を作成する　これは不正解です。拡張も Apex クラスとして実装する必要があります。\n\n□ JavaScript Remoting を使用する　これは不正解です。Remoting は @RemoteAction を付けた Apex メソッドを JavaScript から呼ぶ仕組みで、Apex とスクリプトの両方の実装が必要です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/visualforce_fundamentals",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Visualforce",
+      "標準コントローラ",
+      "standardController"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 43,
+    "question": "Visualforce で標準コントローラの機能（レコード取得や save アクション）を維持したまま、独自のロジックを追加したい。どの方法が適切ですか。",
+    "choices": [
+      "コントローラ拡張を作成し extensions 属性でページに指定する",
+      "カスタムコントローラで標準コントローラを継承する",
+      "標準コントローラの Apex クラスを直接編集する",
+      "ページに <apex:actionFunction> を追加する"
+    ],
+    "answers": [
+      "コントローラ拡張を作成し extensions 属性でページに指定する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ コントローラ拡張を作成し extensions 属性でページに指定する　これは正解です。ApexPages.StandardController を受け取るコンストラクタを持つクラスを作成して extensions に指定すると、標準コントローラの動作に独自メソッドを上乗せできます。\n\n□ カスタムコントローラで標準コントローラを継承する　これは不正解です。標準コントローラは Apex クラスとして公開されておらず、継承はできません。\n\n□ 標準コントローラの Apex クラスを直接編集する　これは不正解です。標準コントローラはプラットフォーム側の実装であり、編集できません。\n\n□ ページに <apex:actionFunction> を追加する　これは不正解です。actionFunction は JavaScript からコントローラのアクションを呼ぶための部品で、ロジックの追加自体は別途コントローラ側に必要です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/visualforce_fundamentals",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Visualforce",
+      "コントローラ拡張",
+      "extensions",
+      "StandardController"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 44,
+    "question": "Visualforce ページで「Maximum view state size limit (170KB) exceeded」エラーが発生しています。対策として適切なものはどれですか。",
+    "choices": [
+      "ページの再表示に不要な大きな変数に transient キーワードを指定する",
+      "コマンドボタンに immediate=\"true\" を追加する",
+      "ページに lightningStylesheets=\"true\" を指定する",
+      "アクションメソッドを @future メソッドに変更する"
+    ],
+    "answers": [
+      "ページの再表示に不要な大きな変数に transient キーワードを指定する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ページの再表示に不要な大きな変数に transient キーワードを指定する　これは正解です。ビューステートにはフォーム間のリクエストで維持されるコントローラの状態が保存されます。transient を付けた変数はビューステートから除外されるため、サイズ削減の第一の対策です。\n\n□ コマンドボタンに immediate=\"true\" を追加する　これは不正解です。immediate は入力検証をスキップしてアクションを実行する属性で、ビューステートのサイズは変わりません。\n\n□ ページに lightningStylesheets=\"true\" を指定する　これは不正解です。Lightning 風の見た目を適用する属性で、状態のサイズには影響しません。\n\n□ アクションメソッドを @future メソッドに変更する　これは不正解です。@future はアクションメソッドとして呼び出せず、ビューステートの削減策でもありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_keywords_transient.htm",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Visualforce",
+      "ViewState",
+      "transient",
+      "パフォーマンス"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 45,
+    "question": "Visualforce で取引先の一覧をページネーション付きで表示したい。Apex を書かずに実現する方法はどれですか。",
+    "choices": [
+      "standardController=\"Account\" と recordSetVar を併用する",
+      "カスタムコントローラで StandardSetController を使用する",
+      "SOQL の OFFSET 句をページ式から直接指定する",
+      "<apex:relatedList> で一覧を表示する"
+    ],
+    "answers": [
+      "standardController=\"Account\" と recordSetVar を併用する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ standardController=\"Account\" と recordSetVar を併用する　これは正解です。recordSetVar を指定すると標準リストコントローラが有効になり、レコードの集合の表示に加えて next / previous などのページネーションアクションが Apex なしで利用できます。\n\n□ カスタムコントローラで StandardSetController を使用する　これは不正解です。StandardSetController は強力なページネーション手段ですが、Apex クラスの実装が必要なため「Apex を書かない」要件に反します。\n\n□ SOQL の OFFSET 句をページ式から直接指定する　これは不正解です。Visualforce の式から SOQL を直接実行することはできず、OFFSET の利用にはコントローラの実装が必要です。\n\n□ <apex:relatedList> で一覧を表示する　これは不正解です。relatedList は表示中のレコードの関連リストを表示する部品で、オブジェクト全体の一覧表示には使えません。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/visualforce_fundamentals",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "Visualforce",
+      "標準リストコントローラ",
+      "recordSetVar",
+      "ページネーション"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 46,
+    "question": "カスタム UI を Lightning Experience の標準画面と一貫した見た目にするために使用すべきフレームワークはどれですか。",
+    "choices": [
+      "Salesforce Lightning Design System（SLDS）",
+      "Bootstrap",
+      "Tailwind CSS",
+      "jQuery UI"
+    ],
+    "answers": [
+      "Salesforce Lightning Design System（SLDS）"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Salesforce Lightning Design System（SLDS）　これは正解です。SLDS は Salesforce 公式の CSS フレームワーク・デザインガイドラインで、Lightning Experience と同じ見た目・操作感の UI を構築できます。LWC の基盤コンポーネントは SLDS のスタイルを内蔵しています。\n\n□ Bootstrap　これは不正解です。汎用の CSS フレームワークであり、Lightning Experience のデザイン言語とは一致しません。\n\n□ Tailwind CSS　これは不正解です。ユーティリティファーストの汎用フレームワークで、Salesforce のデザイン標準とは別物です。\n\n□ jQuery UI　これは不正解です。古い汎用 UI ライブラリで、Lightning のデザインとの一貫性は得られません。",
+    "reference_url": "https://www.lightningdesignsystem.com/",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "SLDS",
+      "デザインシステム",
+      "Lightning Experience",
+      "CSS"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 47,
+    "question": "Lightning レコードページ上の特定のコンポーネントを、項目の値が一定の条件を満たすレコードでのみ表示したい。最も簡単な実装はどれですか。",
+    "choices": [
+      "Lightning アプリケーションビルダーでコンポーネントの表示条件を設定する",
+      "コンポーネントの JavaScript に if 文で表示制御を実装する",
+      "条件ごとにレコードタイプと別ページを作成する",
+      "Apex コントローラで描画の可否を返す"
+    ],
+    "answers": [
+      "Lightning アプリケーションビルダーでコンポーネントの表示条件を設定する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Lightning アプリケーションビルダーでコンポーネントの表示条件を設定する　これは正解です。表示条件（コンポーネントの可視性）はレコードの項目値・デバイス・ユーザーの属性などを条件に宣言的に設定でき、コードの変更なしで実現できる最も簡単な方法です。\n\n□ コンポーネントの JavaScript に if 文で表示制御を実装する　これは不正解です。実現は可能ですが、コードの修正・テスト・リリースが必要になり「最も簡単」ではありません。\n\n□ 条件ごとにレコードタイプと別ページを作成する　これは不正解です。レコードタイプの追加はデータモデルへの影響が大きく、項目値による表示の出し分けには過剰です。\n\n□ Apex コントローラで描画の可否を返す　これは不正解です。サーバー側の実装とコンポーネント側の対応が必要で、宣言的な表示条件で足りる要件には不適切です。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.lightning_page_components_visibility.htm&type=5",
+    "multi": false,
+    "domain": "ui",
+    "keywords": [
+      "表示条件",
+      "Lightning App Builder",
+      "レコードページ"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 48,
+    "question": "本番組織へ Apex をリリースするためのコードカバレッジ要件として正しいものはどれですか。",
+    "choices": [
+      "組織全体で 75% 以上、かつ各トリガに 1 行以上のカバレッジが必要",
+      "クラスごとに 75% 以上のカバレッジが必要",
+      "組織全体で 90% 以上のカバレッジが必要",
+      "トリガはカバレッジの計算対象に含まれない"
+    ],
+    "answers": [
+      "組織全体で 75% 以上、かつ各トリガに 1 行以上のカバレッジが必要"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 組織全体で 75% 以上、かつ各トリガに 1 行以上のカバレッジが必要　これは正解です。本番リリースの要件は「組織（またはリリース対象）全体のカバレッジ 75% 以上」と「すべてのトリガに 1 行以上のカバレッジ」です。さらにすべてのテストがエラーなく成功する必要があります。\n\n□ クラスごとに 75% 以上のカバレッジが必要　これは不正解です。75% はクラス単位ではなく全体の要件です（品質の観点で各クラスも高カバレッジが望ましいのは別の話です）。\n\n□ 組織全体で 90% 以上のカバレッジが必要　これは不正解です。要件は 75% です。\n\n□ トリガはカバレッジの計算対象に含まれない　これは不正解です。トリガもカバレッジの対象で、さらに 1 行以上のカバレッジが個別に要求されます。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_testing",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "コードカバレッジ",
+      "テスト",
+      "リリース",
+      "75%"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 49,
+    "question": "API バージョン 24.0 以降のテストクラスにおける、組織の既存データへのアクセスに関する既定の動作はどれですか。",
+    "choices": [
+      "既存データにはアクセスできず、テスト内で作成したデータのみ参照できる",
+      "組織内のすべてのデータに自由にアクセスできる",
+      "既存データの参照はできるが DML は実行できない",
+      "User や Profile を含むあらゆるレコードを一切参照できない"
+    ],
+    "answers": [
+      "既存データにはアクセスできず、テスト内で作成したデータのみ参照できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 既存データにはアクセスできず、テスト内で作成したデータのみ参照できる　これは正解です。API 24.0 以降、テストは既定で組織データから分離されます。テストが必要とするデータはテスト内（または @testSetup）で作成するのがベストプラクティスで、組織データへのアクセスには @isTest(SeeAllData=true) の明示が必要です。\n\n□ 組織内のすべてのデータに自由にアクセスできる　これは不正解です。これは API 23.0 以前の既定、または SeeAllData=true を指定した場合の動作です。\n\n□ 既存データの参照はできるが DML は実行できない　これは不正解です。既定では参照自体ができません。\n\n□ User や Profile を含むあらゆるレコードを一切参照できない　これは不正解です。User・Profile・RecordType などの設定・メタデータ系のオブジェクトは SeeAllData に関係なく参照できます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "テストデータ",
+      "SeeAllData",
+      "@isTest",
+      "データ分離"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 50,
+    "question": "Test.startTest() と Test.stopTest() の説明として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "startTest 以降のコードは新しいガバナ制限のセットで実行される",
+      "stopTest を呼ぶと future などの非同期処理が同期的に完了する",
+      "1 つのテストメソッド内で何回でも呼び出せる",
+      "startTest はテストデータの作成処理を高速化する"
+    ],
+    "answers": [
+      "startTest 以降のコードは新しいガバナ制限のセットで実行される",
+      "stopTest を呼ぶと future などの非同期処理が同期的に完了する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ startTest 以降のコードは新しいガバナ制限のセットで実行される　これは正解です。テストデータの準備で消費した制限とは別に、テスト対象コードを新しい制限で実行できるため、ガバナ制限の検証が正確になります。\n\n□ stopTest を呼ぶと future などの非同期処理が同期的に完了する　これは正解です。startTest〜stopTest 間で起動した future・Queueable・Batch などは stopTest の時点で同期的に実行されるため、その後で結果をアサートできます。\n\n□ 1 つのテストメソッド内で何回でも呼び出せる　これは不正解です。startTest / stopTest のペアは 1 テストメソッドにつき 1 回しか呼び出せません。\n\n□ startTest はテストデータの作成処理を高速化する　これは不正解です。実行速度を上げる機能ではなく、ガバナ制限の区切りと非同期処理の確定がその役割です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexref.meta/apexref/apex_methods_system_test.htm",
+    "multi": true,
+    "domain": "deploy",
+    "keywords": [
+      "Test.startTest",
+      "ガバナ制限",
+      "非同期テスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 51,
+    "question": "同一テストクラス内の複数のテストメソッドで、共通のテストデータを 1 回だけ作成して再利用したい。どの方法が適切ですか。",
+    "choices": [
+      "@testSetup を付けたメソッドでデータを作成する",
+      "各テストメソッドの先頭に同じデータ作成処理を記述する",
+      "@isTest(SeeAllData=true) を指定して組織のデータを使用する",
+      "テストクラスのコンストラクタでデータを作成する"
+    ],
+    "answers": [
+      "@testSetup を付けたメソッドでデータを作成する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ @testSetup を付けたメソッドでデータを作成する　これは正解です。@testSetup メソッドはクラス内のテスト実行前に 1 回だけ実行され、作成したレコードは各テストメソッドの開始時に元の状態へロールバックされて再利用されます。データ作成の重複を排除でき、実行も高速になります。\n\n□ 各テストメソッドの先頭に同じデータ作成処理を記述する　これは不正解です。動作はしますが、コードの重複と実行時間の増加を招き「1 回だけ作成」という要件を満たしません。\n\n□ @isTest(SeeAllData=true) を指定して組織のデータを使用する　これは不正解です。組織データへの依存はテストを脆弱にするアンチパターンで、本番とサンドボックスで結果が変わる原因になります。\n\n□ テストクラスのコンストラクタでデータを作成する　これは不正解です。テストデータの共有の仕組みとしてコンストラクタはサポートされておらず、@testSetup が公式の手段です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_testing",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "@testSetup",
+      "テストデータ",
+      "テストクラス"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 52,
+    "question": "テストコードで使用する System.runAs() の説明として正しいものはどれですか。",
+    "choices": [
+      "指定したユーザーのレコード共有を適用してコードブロックを実行できる",
+      "指定したユーザーの項目レベルセキュリティとオブジェクト権限がすべて強制される",
+      "テスト以外の通常の Apex コードでも使用できる",
+      "runAs のブロック内ではガバナ制限が無効になる"
+    ],
+    "answers": [
+      "指定したユーザーのレコード共有を適用してコードブロックを実行できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 指定したユーザーのレコード共有を適用してコードブロックを実行できる　これは正解です。runAs はユーザーコンテキストを切り替え、そのユーザーのレコード共有（Sharing）を適用した動作を検証できます。\n\n□ 指定したユーザーの項目レベルセキュリティとオブジェクト権限がすべて強制される　これは不正解です。runAs が適用するのはレコード共有のみで、FLS やオブジェクト権限（CRUD）は強制されません。これは試験頻出の注意点です。\n\n□ テスト以外の通常の Apex コードでも使用できる　これは不正解です。runAs はテストメソッド内でのみ使用できます。\n\n□ runAs のブロック内ではガバナ制限が無効になる　これは不正解です。runAs はガバナ制限に影響しません。制限を区切るのは Test.startTest / stopTest の役割です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_testing",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "System.runAs",
+      "テスト",
+      "共有",
+      "ユーザーコンテキスト"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 53,
+    "question": "外部 Web サービスへの HTTP コールアウトを含む Apex クラスのテストを実装します。どの方法が適切ですか。",
+    "choices": [
+      "HttpCalloutMock を実装したクラスを Test.setMock で登録する",
+      "テスト中に実際のエンドポイントへコールアウトを実行する",
+      "@isTest(SeeAllData=true) を指定してコールアウトを許可する",
+      "コールアウト部分を if (!Test.isRunningTest()) で囲んでカバレッジから除外する"
+    ],
+    "answers": [
+      "HttpCalloutMock を実装したクラスを Test.setMock で登録する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ HttpCalloutMock を実装したクラスを Test.setMock で登録する　これは正解です。テストでは実際のコールアウトが禁止されているため、HttpCalloutMock インターフェースを実装した擬似応答クラスを Test.setMock(HttpCalloutMock.class, mock) で登録し、想定したレスポンスに対する動作を検証します。\n\n□ テスト中に実際のエンドポイントへコールアウトを実行する　これは不正解です。テストメソッドからの Web サービスコールアウトはプラットフォームが許可しておらず、例外が発生します。\n\n□ @isTest(SeeAllData=true) を指定してコールアウトを許可する　これは不正解です。SeeAllData は組織データへのアクセスに関する設定で、コールアウトの可否とは無関係です。\n\n□ コールアウト部分を if (!Test.isRunningTest()) で囲んでカバレッジから除外する　これは不正解です。テストで実際のロジックが検証されなくなるアンチパターンで、モックを使うのが正しい方法です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_integration_services",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "HttpCalloutMock",
+      "コールアウト",
+      "テスト",
+      "Test.setMock"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 54,
+    "question": "System.assertEquals(expected, actual) の引数の意味として正しいものはどれですか。",
+    "choices": [
+      "第 1 引数が期待値、第 2 引数が実際の値",
+      "第 1 引数が実際の値、第 2 引数が期待値",
+      "引数の順序はテスト結果やメッセージに影響しない",
+      "第 3 引数には期待値の型を指定する"
+    ],
+    "answers": [
+      "第 1 引数が期待値、第 2 引数が実際の値"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 第 1 引数が期待値、第 2 引数が実際の値　これは正解です。System.assertEquals(expected, actual) の順序で、失敗時には「Expected: X, Actual: Y」の形式でメッセージが表示されます。新しい Assert クラスの Assert.areEqual も同じ順序です。\n\n□ 第 1 引数が実際の値、第 2 引数が期待値　これは不正解です。順序が逆です。\n\n□ 引数の順序はテスト結果やメッセージに影響しない　これは不正解です。合否判定（等価比較）には影響しませんが、失敗時のメッセージの Expected / Actual が逆に表示され、デバッグを誤らせます。\n\n□ 第 3 引数には期待値の型を指定する　これは不正解です。省略可能な第 3 引数は失敗時に表示するカスタムメッセージです。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/apex_testing",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "アサーション",
+      "assertEquals",
+      "テスト"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 55,
+    "question": "本番組織で、特定ユーザーの操作によって実行された Apex の処理内容を調査したい。どの方法が適切ですか。",
+    "choices": [
+      "対象ユーザーのトレースフラグを設定してデバッグログを取得する",
+      "本番組織の Apex クラスに System.debug を直接追加する",
+      "設定変更履歴（Setup Audit Trail）を確認する",
+      "Apex ジョブのページで実行内容を確認する"
+    ],
+    "answers": [
+      "対象ユーザーのトレースフラグを設定してデバッグログを取得する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 対象ユーザーのトレースフラグを設定してデバッグログを取得する　これは正解です。デバッグログはユーザー単位のトレースフラグとデバッグレベルを設定して収集します。対象ユーザーが操作を再現すれば、実行された Apex・SOQL・ガバナ消費などをログで確認できます。\n\n□ 本番組織の Apex クラスに System.debug を直接追加する　これは不正解です。本番組織では Apex クラスを直接編集できません。変更はサンドボックスで行いリリースする必要があります。\n\n□ 設定変更履歴（Setup Audit Trail）を確認する　これは不正解です。設定変更履歴は管理者による設定変更の記録であり、Apex の実行内容は記録されません。\n\n□ Apex ジョブのページで実行内容を確認する　これは不正解です。Apex ジョブに表示されるのは Batch などの非同期ジョブの状態のみで、処理の詳細なログは確認できません。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/developer_console",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "デバッグログ",
+      "トレースフラグ",
+      "本番調査"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 56,
+    "question": "Sandbox で開発したカスタムオブジェクトと Apex クラスを、画面操作（宣言的な手順）で本番組織へリリースしたい。どの方法が適切ですか。",
+    "choices": [
+      "送信変更セットを本番組織へアップロードし、本番側でリリースする",
+      "本番組織で同じカスタムオブジェクトと Apex を手動で再作成する",
+      "Sandbox の更新（リフレッシュ）を実行して本番へ反映する",
+      "Salesforce 間接続（Salesforce to Salesforce）で組織間共有する"
+    ],
+    "answers": [
+      "送信変更セットを本番組織へアップロードし、本番側でリリースする"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 送信変更セットを本番組織へアップロードし、本番側でリリースする　これは正解です。リリース接続が承認された組織間では、Sandbox で送信変更セットを作成してアップロードし、本番側で受信変更セットとして検証・リリースできます。画面操作で完結する標準的なリリース手段です。\n\n□ 本番組織で同じカスタムオブジェクトと Apex を手動で再作成する　これは不正解です。Apex クラスは本番組織で直接作成・編集できません。\n\n□ Sandbox の更新（リフレッシュ）を実行して本番へ反映する　これは不正解です。リフレッシュは本番の内容を Sandbox へコピーする操作で、方向が逆です。\n\n□ Salesforce 間接続（Salesforce to Salesforce）で組織間共有する　これは不正解です。Salesforce to Salesforce はレコードデータを共有する機能で、メタデータのリリースには使えません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.changesets.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "リリース",
+      "Sandbox",
+      "本番"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 57,
+    "question": "変更セットによるリリースの特徴・制約として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "コンポーネントの追加・更新はできるが、リリース先のコンポーネント削除はできない",
+      "リリース接続で承認された組織にのみ送信できる",
+      "アップロード後の変更セットに後からコンポーネントを追加できる",
+      "Apex クラスを含む変更セットはテストなしで即時リリースされる"
+    ],
+    "answers": [
+      "コンポーネントの追加・更新はできるが、リリース先のコンポーネント削除はできない",
+      "リリース接続で承認された組織にのみ送信できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ コンポーネントの追加・更新はできるが、リリース先のコンポーネント削除はできない　これは正解です。変更セットは追加・変更のみで、削除（破壊的変更）には対応していません。削除が必要な場合は手動または Metadata API（destructiveChanges）で行います。\n\n□ リリース接続で承認された組織にのみ送信できる　これは正解です。送信先・受信元はリリース接続で相互に承認された関連組織（同じ本番に紐づく Sandbox や本番）に限られます。\n\n□ アップロード後の変更セットに後からコンポーネントを追加できる　これは不正解です。アップロードした変更セットは変更できません。修正が必要な場合は複製（クローン）して新しい変更セットを作成します。\n\n□ Apex クラスを含む変更セットはテストなしで即時リリースされる　これは不正解です。本番へのリリースでは Apex テストの実行とカバレッジ要件（75% 以上）を満たす必要があります。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.changesets_about_outbound.htm&type=5",
+    "multi": true,
+    "domain": "deploy",
+    "keywords": [
+      "変更セット",
+      "制約",
+      "リリース接続",
+      "リリース"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 58,
+    "question": "本番組織と同じ規模の全データを使ってパフォーマンステストや負荷テストを行いたい。どの Sandbox が適切ですか。",
+    "choices": [
+      "Full Sandbox",
+      "Developer Sandbox",
+      "Developer Pro Sandbox",
+      "Partial Copy Sandbox"
+    ],
+    "answers": [
+      "Full Sandbox"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Full Sandbox　これは正解です。Full Sandbox は本番組織の完全なコピー（全レコード・添付ファイルを含む）で、本番同等の規模でのパフォーマンステスト・負荷テスト・ステージングに適した唯一の Sandbox です。\n\n□ Developer Sandbox　これは不正解です。設定（メタデータ）のみがコピーされ、レコードデータは含まれません。容量も 200MB と小さく、個人の開発用途向けです。\n\n□ Developer Pro Sandbox　これは不正解です。Developer と同じくメタデータのみのコピーで、容量が 1GB に拡張されたものです。\n\n□ Partial Copy Sandbox　これは不正解です。テンプレートで選択したオブジェクトのサンプルデータ（最大 5GB）のみがコピーされるため、本番と同じ規模のテストはできません。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Sandbox",
+      "Full Sandbox",
+      "パフォーマンステスト",
+      "環境"
+    ],
+    "source": "gen",
+    "diff": 1
+  },
+  {
+    "id": 59,
+    "question": "Partial Copy Sandbox の説明として正しいものはどれですか。",
+    "choices": [
+      "Sandbox テンプレートで選択したオブジェクトのサンプルデータが本番からコピーされる",
+      "本番組織の全レコードがコピーされる",
+      "メタデータのみがコピーされ、レコードデータは含まれない",
+      "リフレッシュは 29 日に 1 回しか実行できない"
+    ],
+    "answers": [
+      "Sandbox テンプレートで選択したオブジェクトのサンプルデータが本番からコピーされる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Sandbox テンプレートで選択したオブジェクトのサンプルデータが本番からコピーされる　これは正解です。Partial Copy はメタデータに加え、テンプレートで指定したオブジェクトのサンプルデータ（最大 5GB）を含む Sandbox で、結合テストやユーザー受け入れテストに適しています。\n\n□ 本番組織の全レコードがコピーされる　これは不正解です。全データのコピーは Full Sandbox の特徴です。\n\n□ メタデータのみがコピーされ、レコードデータは含まれない　これは不正解です。メタデータのみは Developer / Developer Pro Sandbox の特徴です。\n\n□ リフレッシュは 29 日に 1 回しか実行できない　これは不正解です。29 日間隔は Full Sandbox のリフレッシュ間隔で、Partial Copy は 5 日間隔でリフレッシュできます。",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "Partial Copy",
+      "Sandbox",
+      "テンプレート",
+      "リフレッシュ"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 60,
+    "question": "Salesforce DX のスクラッチ組織の説明として正しいものはどれですか。",
+    "choices": [
+      "設定ファイルから短時間で作成・破棄できる、ソース駆動開発向けの環境",
+      "本番組織のデータを自動的に含む長期利用向けの環境",
+      "本番組織の設定変更が常に自動同期される環境",
+      "テスト実行専用でメタデータの作成・変更はできない環境"
+    ],
+    "answers": [
+      "設定ファイルから短時間で作成・破棄できる、ソース駆動開発向けの環境"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 設定ファイルから短時間で作成・破棄できる、ソース駆動開発向けの環境　これは正解です。スクラッチ組織は組織の構成を定義ファイル（scratch org definition）から自動作成できる使い捨ての環境で、バージョン管理されたソースを「真実の源」とするソース駆動開発・CI と組み合わせて使います。有効期間は既定 7 日・最大 30 日です。\n\n□ 本番組織のデータを自動的に含む長期利用向けの環境　これは不正解です。スクラッチ組織は空の短命な環境で、必要なデータは CLI 等で投入します。本番データを含む環境は Full / Partial Copy Sandbox です。\n\n□ 本番組織の設定変更が常に自動同期される環境　これは不正解です。本番との自動同期の仕組みはなく、ソースリポジトリからプッシュして構成します。\n\n□ テスト実行専用でメタデータの作成・変更はできない環境　これは不正解です。スクラッチ組織は開発環境であり、メタデータの作成・変更が日常的な用途です。",
+    "reference_url": "https://trailhead.salesforce.com/ja/content/learn/modules/sfdx_app_dev",
+    "multi": false,
+    "domain": "deploy",
+    "keywords": [
+      "スクラッチ組織",
+      "Salesforce DX",
+      "ソース駆動開発"
+    ],
+    "source": "gen",
+    "diff": 2
+  }
+]
