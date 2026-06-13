@@ -5236,5 +5236,213 @@
     ],
     "source": "gen",
     "diff": 1
+  },
+  {
+    "id": 211,
+    "question": "外部オブジェクト（Salesforce Connect）の特徴として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "データを Salesforce に保存せず、アクセス時に外部システムから取得する",
+      "API 参照名が __x で終わる",
+      "レコードは通常のカスタムオブジェクトと同じく組織のストレージを消費する",
+      "外部データは夜間バッチで Salesforce にコピーされる"
+    ],
+    "answers": [
+      "データを Salesforce に保存せず、アクセス時に外部システムから取得する",
+      "API 参照名が __x で終わる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データを Salesforce に保存せず、アクセス時に外部システムから取得する　これは正解です。外部オブジェクトはデータをコピーせず、オンデマンドで外部システムを参照します。\n\n□ API 参照名が __x で終わる　これは正解です。外部オブジェクトの API 参照名は __x で終わります（カスタムオブジェクトは __c）。\n\n□ レコードは通常のカスタムオブジェクトと同じく組織のストレージを消費する　これは不正解です。データは Salesforce に保存されないためストレージを消費しません。\n\n□ 外部データは夜間バッチで Salesforce にコピーされる　これは不正解です。コピーは行わず、アクセス時にリアルタイムで取得します。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.object_reference.meta/object_reference/sforce_api_objects_external_objects.htm",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "外部オブジェクト",
+      "Salesforce Connect",
+      "統合",
+      "__x"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 212,
+    "question": "Apex クラスに with sharing を指定しても「強制されない」ものはどれですか。2つ選びなさい。",
+    "choices": [
+      "項目レベルセキュリティ（FLS）",
+      "オブジェクトの CRUD 権限",
+      "レコードの共有（ロール階層・共有ルール）",
+      "実行ユーザーが参照できないレコードの除外"
+    ],
+    "answers": [
+      "項目レベルセキュリティ（FLS）",
+      "オブジェクトの CRUD 権限"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 項目レベルセキュリティ（FLS）　これは正解です（強制されない側）。with sharing が適用するのはレコード共有のみで、FLS は別途 WITH SECURITY_ENFORCED や stripInaccessible で考慮します。\n\n□ オブジェクトの CRUD 権限　これは正解です（強制されない側）。CRUD も with sharing では強制されず、describe や WITH SECURITY_ENFORCED でチェックが必要です。\n\n□ レコードの共有（ロール階層・共有ルール）　これは不正解です。これはまさに with sharing が適用する対象です。\n\n□ 実行ユーザーが参照できないレコードの除外　これは不正解です。これは共有適用の結果であり、with sharing が行うことです。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_classes_keywords_sharing.htm",
+    "multi": true,
+    "domain": "fund",
+    "keywords": [
+      "with sharing",
+      "FLS",
+      "CRUD",
+      "セキュリティ"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 213,
+    "question": "Queueable Apex が @future メソッドより優れている点はどれですか。2つ選びなさい。",
+    "choices": [
+      "sObject などの複雑な型をメンバ変数として保持できる",
+      "ジョブをチェーン（後続ジョブを起動）できる",
+      "引数にプリミティブ型しか渡せない",
+      "戻り値の型を void に限定できる"
+    ],
+    "answers": [
+      "sObject などの複雑な型をメンバ変数として保持できる",
+      "ジョブをチェーン（後続ジョブを起動）できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ sObject などの複雑な型をメンバ変数として保持できる　これは正解です。@future は引数がプリミティブに限られますが、Queueable は複雑な型を保持できます。\n\n□ ジョブをチェーン（後続ジョブを起動）できる　これは正解です。Queueable は execute から次のジョブを enqueue でき、@future にはないチェーン機能です。\n\n□ 引数にプリミティブ型しか渡せない　これは不正解です。これは @future の制約であり、利点ではありません。\n\n□ 戻り値の型を void に限定できる　これは不正解です。これは @future の制約で、優位点ではありません。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_queueing_jobs.htm",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "Queueable",
+      "future",
+      "非同期処理",
+      "ジョブチェーン"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 214,
+    "question": "プラットフォームイベントの特徴として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "発行者と購読者を疎結合にするイベント駆動の仕組みである",
+      "Apex の EventBus.publish やフローから発行できる",
+      "発行すると必ず同一トランザクション内で同期的に処理される",
+      "購読できるのは Apex トリガのみである"
+    ],
+    "answers": [
+      "発行者と購読者を疎結合にするイベント駆動の仕組みである",
+      "Apex の EventBus.publish やフローから発行できる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 発行者と購読者を疎結合にするイベント駆動の仕組みである　これは正解です。プラットフォームイベントは発行/購読モデルで両者を疎結合にします。\n\n□ Apex の EventBus.publish やフローから発行できる　これは正解です。Apex・フロー・API などから発行できます。\n\n□ 発行すると必ず同一トランザクション内で同期的に処理される　これは不正解です。購読側は基本的に非同期に処理され、発行トランザクションとは分離されます。\n\n□ 購読できるのは Apex トリガのみである　これは不正解です。Apex トリガ・フロー・外部システム（Pub/Sub API・CometD）など複数が購読できます。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.platform_events.meta/platform_events/platform_events_intro.htm",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "プラットフォームイベント",
+      "イベント駆動",
+      "EventBus",
+      "統合"
+    ],
+    "source": "gen",
+    "diff": 3
+  },
+  {
+    "id": 215,
+    "question": "バルク化された Apex を書くためのプラクティスとして正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "関連レコードは WHERE Id IN :ids でまとめて取得し、Map で参照する",
+      "大量レコードは SOQL for ループで分割しヒープ超過を避ける",
+      "レコードごとに DML を実行して部分的な失敗に備える",
+      "ループ内で都度 SOQL を実行して最新値を取得する"
+    ],
+    "answers": [
+      "関連レコードは WHERE Id IN :ids でまとめて取得し、Map で参照する",
+      "大量レコードは SOQL for ループで分割しヒープ超過を避ける"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 関連レコードは WHERE Id IN :ids でまとめて取得し、Map で参照する　これは正解です。一括取得＋Map 参照はループ内 SOQL を避ける基本パターンです。\n\n□ 大量レコードは SOQL for ループで分割しヒープ超過を避ける　これは正解です。SOQL for ループは内部で 200 件ずつ処理しヒープを抑えます。\n\n□ レコードごとに DML を実行して部分的な失敗に備える　これは不正解です。1 件ずつの DML は DML ステートメント上限を浪費します。部分成功は Database.x(records, false) を一括で使います。\n\n□ ループ内で都度 SOQL を実行して最新値を取得する　これは不正解です。ループ内 SOQL は制限超過の典型的なアンチパターンです。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_bulk_idioms.htm",
+    "multi": true,
+    "domain": "logic",
+    "keywords": [
+      "バルク化",
+      "SOQL for ループ",
+      "ガバナ制限",
+      "ベストプラクティス"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 216,
+    "question": "lightning-record-form コンポーネントの特徴として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "Lightning Data Service を使い、共有設定と FLS を自動的に尊重する",
+      "Apex コントローラを書かずにレコードの表示・編集・作成ができる",
+      "複数オブジェクトを横断したクエリ結果を表形式で一覧表示する",
+      "サーバーへの外部コールアウトを直接実行して連携できる"
+    ],
+    "answers": [
+      "Lightning Data Service を使い、共有設定と FLS を自動的に尊重する",
+      "Apex コントローラを書かずにレコードの表示・編集・作成ができる"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Lightning Data Service を使い、共有設定と FLS を自動的に尊重する　これは正解です。record-form は LDS 経由で動作し、共有・FLS を自動適用します。\n\n□ Apex コントローラを書かずにレコードの表示・編集・作成ができる　これは正解です。record-id とオブジェクト API 名の指定だけでフォームを生成します。\n\n□ 複数オブジェクトを横断したクエリ結果を表形式で一覧表示する　これは不正解です。横断検索や一覧表示の機能はありません（datatable や SOSL の領分）。\n\n□ サーバーへの外部コールアウトを直接実行して連携できる　これは不正解です。外部コールアウトの機能はありません。",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/lightning-record-form/documentation",
+    "multi": true,
+    "domain": "ui",
+    "keywords": [
+      "lightning-record-form",
+      "Lightning Data Service",
+      "LWC",
+      "FLS"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 217,
+    "question": "LWC のデータの流れに関する正しい記述はどれですか。2つ選びなさい。",
+    "choices": [
+      "親から子へは @api プロパティで値を渡す",
+      "子から親へは CustomEvent を発火して通知する",
+      "子は親の @api プロパティを直接書き換えて状態を変える",
+      "親子間の通信には必ず Lightning Message Service を使う"
+    ],
+    "answers": [
+      "親から子へは @api プロパティで値を渡す",
+      "子から親へは CustomEvent を発火して通知する"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 親から子へは @api プロパティで値を渡す　これは正解です。親はテンプレートの属性として子の @api プロパティに値を渡します。\n\n□ 子から親へは CustomEvent を発火して通知する　これは正解です。子は dispatchEvent で CustomEvent を発火し、親が on<event> で受け取ります。\n\n□ 子は親の @api プロパティを直接書き換えて状態を変える　これは不正解です。データの流れは一方向で、子が親の状態を直接変更する設計は推奨されません。\n\n□ 親子間の通信には必ず Lightning Message Service を使う　これは不正解です。LMS は階層関係のないコンポーネント間の通信用で、直接の親子はプロパティとイベントを使います。",
+    "reference_url": "https://developer.salesforce.com/docs/platform/ja-jp/lwc/guide/js_props_public.html",
+    "multi": true,
+    "domain": "ui",
+    "keywords": [
+      "LWC",
+      "@api",
+      "CustomEvent",
+      "親子通信"
+    ],
+    "source": "gen",
+    "diff": 2
+  },
+  {
+    "id": 218,
+    "question": "Salesforce DX のスクラッチ組織の特徴として正しいものはどれですか。2つ選びなさい。",
+    "choices": [
+      "設定ファイルから短時間で作成・破棄できる使い捨ての環境である",
+      "既定 7 日・最大 30 日の有効期間を持つ",
+      "本番組織の全データを自動的に含む",
+      "Dev Hub を有効化しなくても作成できる"
+    ],
+    "answers": [
+      "設定ファイルから短時間で作成・破棄できる使い捨ての環境である",
+      "既定 7 日・最大 30 日の有効期間を持つ"
+    ],
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 設定ファイルから短時間で作成・破棄できる使い捨ての環境である　これは正解です。スクラッチ組織は定義ファイルから自動作成できる短命な環境で、ソース駆動開発に使います。\n\n□ 既定 7 日・最大 30 日の有効期間を持つ　これは正解です。作成時に有効期間を指定し、期限到達で失効します。\n\n□ 本番組織の全データを自動的に含む　これは不正解です。スクラッチ組織は空の環境で、データは別途投入します（全データ含むのは Full Sandbox）。\n\n□ Dev Hub を有効化しなくても作成できる　これは不正解です。スクラッチ組織の作成には Dev Hub の有効化が前提です。",
+    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs.htm",
+    "multi": true,
+    "domain": "deploy",
+    "keywords": [
+      "スクラッチ組織",
+      "Salesforce DX",
+      "Dev Hub",
+      "ソース駆動"
+    ],
+    "source": "gen",
+    "diff": 2
   }
 ]
