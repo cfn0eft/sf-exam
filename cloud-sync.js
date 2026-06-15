@@ -283,9 +283,14 @@
       '<div class="sfqc-card">' +
         '<p class="sfqc-title" id="sfqc-lock-title">⏳ 承認待ちです</p>' +
         '<p class="sfqc-sub" id="sfqc-lock-sub"></p>' +
+        '<div id="sfqc-lock-form">' +
+          '<input id="sfqc-lock-name" class="sfqc-field" type="text" maxlength="40" placeholder="お名前（管理者が確認します）" />' +
+          '<button id="sfqc-lock-apply" class="sfqc-btn sfqc-btn-primary" style="width:100%;margin-top:4px">この内容で利用を申請する</button>' +
+          '<div id="sfqc-lock-msg" class="sfqc-msg"></div>' +
+        '</div>' +
         '<div class="sfqc-row">' +
           '<button id="sfqc-lock-reload" class="sfqc-btn sfqc-btn-ghost">再確認</button>' +
-          '<button id="sfqc-lock-logout" class="sfqc-btn sfqc-btn-primary">ログアウト</button>' +
+          '<button id="sfqc-lock-logout" class="sfqc-btn sfqc-btn-ghost">ログアウト</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(elLock);
@@ -325,15 +330,24 @@
     // ロック画面のボタン
     document.getElementById('sfqc-lock-logout').addEventListener('click', doLogout);
     document.getElementById('sfqc-lock-reload').addEventListener('click', function () { if (currentUser) onLogin(currentUser); });
+    document.getElementById('sfqc-lock-apply').addEventListener('click', doApplyAccess);
+    var lockName = document.getElementById('sfqc-lock-name');
+    if (lockName) lockName.addEventListener('keydown', function (e) { if (e.key === 'Enter') doApplyAccess(); });
   }
 
   function showOverlay() { if (elOverlay) elOverlay.classList.add('show'); }
   function hideOverlay() { if (elOverlay) elOverlay.classList.remove('show'); }
   // 未承認/停止中の利用者を全面ロック（state: 'pending'|'blocked'|'error'）
-  function showLock(state) {
+  // info.reqName = 既に申請済みの名前（あれば入力欄に復元）
+  function showLock(state, info) {
     if (!elLock) return;
+    info = info || {};
     var t = document.getElementById('sfqc-lock-title');
     var s = document.getElementById('sfqc-lock-sub');
+    var form = document.getElementById('sfqc-lock-form');
+    var nameIn = document.getElementById('sfqc-lock-name');
+    var lockMsg = document.getElementById('sfqc-lock-msg');
+    var showForm = (state !== 'blocked'); // 停止中（意図的にブロック）は申請フォームを出さない
     if (state === 'blocked') {
       if (t) t.textContent = '🚫 利用が停止されています';
       if (s) s.innerHTML = 'このアカウントは現在ご利用いただけません。<br>心当たりがない場合は管理者にお問い合わせください。';
@@ -342,13 +356,44 @@
       if (s) s.innerHTML = 'アクセス権を確認できませんでした。<br>通信環境を確認して「再確認」を押してください。';
     } else {
       if (t) t.textContent = '⏳ 承認待ちです';
-      if (s) s.innerHTML = 'ご登録ありがとうございます。<br>管理者の承認後にご利用いただけます。<br>承認されたら「再確認」を押してください。';
+      if (s) s.innerHTML = '下のフォームにお名前を入れて「利用を申請」してください。<br>管理者の承認後にご利用いただけます（承認されたら「再確認」）。';
+    }
+    if (form) form.style.display = showForm ? '' : 'none';
+    if (showForm && nameIn) {
+      // 申請済みの名前 > ログインID から復元（ユーザーは上書き可）
+      if (!nameIn.value) nameIn.value = info.reqName || currentName || '';
+      if (lockMsg) {
+        if (info.reqName) { lockMsg.textContent = '申請済みです（内容を更新して再申請もできます）。'; lockMsg.className = 'sfqc-msg ok'; }
+        else { lockMsg.textContent = ''; lockMsg.className = 'sfqc-msg'; }
+      }
     }
     hideOverlay();
     elLock.classList.add('show');
     setStatus('');
   }
   function hideLock() { if (elLock) elLock.classList.remove('show'); }
+
+  // 承認待ちユーザーが「お名前」を入れて利用を申請する。access は pending のまま、
+  // name/req を本人 doc に書く（Firestore ルールで pending 維持の書込は本人に許可）。
+  function doApplyAccess() {
+    if (!currentUser || !db) return;
+    var nameIn = document.getElementById('sfqc-lock-name');
+    var lockMsg = document.getElementById('sfqc-lock-msg');
+    var nm = (nameIn ? nameIn.value : '').trim();
+    if (!nm) { if (lockMsg) { lockMsg.textContent = 'お名前を入力してください。'; lockMsg.className = 'sfqc-msg err'; } return; }
+    if (lockMsg) { lockMsg.textContent = '申請中…'; lockMsg.className = 'sfqc-msg'; }
+    db.collection(COLLECTION).doc(currentUser.uid).set({
+      access: 'pending', name: nm, email: currentEmail,
+      req: { name: nm, ts: Date.now() }, updated: Date.now()
+    }, { merge: true })
+      .then(function () {
+        currentName = nm; setBadge(nm);
+        if (lockMsg) { lockMsg.textContent = '申請を受け付けました。承認をお待ちください。'; lockMsg.className = 'sfqc-msg ok'; }
+      })
+      .catch(function (e) {
+        if (lockMsg) { lockMsg.textContent = '申請に失敗しました（' + (e && e.code || 'error') + '）。'; lockMsg.className = 'sfqc-msg err'; }
+      });
+  }
   function setMsg(t, kind) { if (elMsg) { elMsg.textContent = t || ''; elMsg.className = 'sfqc-msg' + (kind ? ' ' + kind : ''); } }
   function setStatus(t) { if (elStatus) elStatus.textContent = t || ''; notifyAccount(); }
   function setBadge(name) {
@@ -526,7 +571,7 @@
               { merge: true }
             ).catch(function () {});
           }
-          showLock(acc || 'pending');
+          showLock(acc || 'pending', { reqName: (data.req && data.req.name) || data.name || '' });
           return;
         }
       }
@@ -737,7 +782,7 @@
         if (Array.isArray(data.feedback)) {
           data.feedback.forEach(function (fb) { if (fb && typeof fb === 'object') adminFeedback.push({ uid: d.id, name: nm, email: email, fb: fb }); });
         }
-        var entry = byUid[d.id] || (byUid[d.id] = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), certs: [] });
+        var entry = byUid[d.id] || (byUid[d.id] = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), certs: [] });
         var stores = data.stores;
         if (stores && typeof stores === 'object' && Object.keys(stores).length) {
           Object.keys(stores).forEach(function (ck) {
@@ -849,10 +894,11 @@
       var accBtn = (u.access === 'approved')
         ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
         : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
+      var reqLabel = (u.access !== 'approved' && u.req && u.req.ts) ? ' <span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>' : '';
       html +=
         '<div class="sfqc-acc">' +
           '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + dormantLabel + '</span>' +
+            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + reqLabel + dormantLabel + '</span>' +
             '<span class="sfqc-acc-stats">' +
               '<span>登録資格 <b>' + a.certCount + '</b></span>' +
               '<span>解答 <b>' + a.answered + '</b>問 / 述べ<b>' + a.attempts + '</b>回</span>' +
