@@ -1288,8 +1288,10 @@ function openNotebook(){
   ov.innerHTML='<div class="nb-card"><div class="nb-head"><span>📓 間違いノート（'+entries.length+'問）</span><button class="nb-close" onclick="closeNotebook()">✕</button></div><div class="nb-scroll">'+body+'</div>'
     +(entries.length?'<div class="nb-foot"><button class="btn bp" style="width:100%" onclick="nbReviewAll()">📖 ノートを全部復習（'+entries.length+'問）</button></div>':'')+'</div>';
   ov.classList.add('show');
+  if(!_nbKeyH){_nbKeyH=function(e){if(e.key==='Escape')closeNotebook();};document.addEventListener('keydown',_nbKeyH);}
 }
-function closeNotebook(){const ov=document.getElementById('nb-ov');if(ov)ov.classList.remove('show');}
+let _nbKeyH=null;
+function closeNotebook(){const ov=document.getElementById('nb-ov');if(ov)ov.classList.remove('show');if(_nbKeyH){document.removeEventListener('keydown',_nbKeyH);_nbKeyH=null;}}
 function nbStudy(id){closeNotebook();const q=allQ.find(function(x){return x.id===id;});if(q)beginStudyWith([q]);}
 function nbReviewAll(){const ls=scopedQ().filter(function(q){return needsReview(q.id);});closeNotebook();beginStudyWith(shuffle(ls));}
 

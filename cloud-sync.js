@@ -206,7 +206,9 @@
       '.sfqc-ts-col{flex:1;min-width:4px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}' +
       '.sfqc-ts-bar{width:80%;background:#3b82f6;border-radius:2px 2px 0 0;min-height:2px}' +
       '.sfqc-ts-x{font-size:8px;color:#94a3b8;margin-top:2px;white-space:nowrap}' +
-      'body.dark .sfqc-ts-bar{background:#60a5fa}' +
+      '.sfqc-ts-col{cursor:pointer}.sfqc-ts-col:hover .sfqc-ts-bar,.sfqc-ts-col:focus .sfqc-ts-bar{background:#1d4ed8;outline:none}' +
+      '.sfqc-ts-readout{font-size:12px;color:#334155;margin-top:6px;font-weight:700;min-height:1.4em}' +
+      'body.dark .sfqc-ts-bar{background:#60a5fa}body.dark .sfqc-ts-readout{color:#cbd5e1}' +
       /* 操作ログ */
       '.sfqc-log-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow:auto}' +
       '.sfqc-log-item{display:flex;gap:8px;font-size:11px;align-items:baseline;border-bottom:1px solid #f1f5f9;padding:3px 0}' +
@@ -579,8 +581,18 @@
       examCount: examCount, examBest: examBest, examPassed: examPassed, examLastTs: examLastTs,
       examFull: examFull, examFullPassed: examFullPassed,
       examDate: store.examDate || '', goal: store.goal || 0,
-      daysActive: daysActive, lastStudyDate: lastStudyDate
+      daysActive: daysActive, lastStudyDate: lastStudyDate,
+      studySec: (store.time && typeof store.time.tot === 'number') ? store.time.tot : 0   // 学習時間（秒）#18
     };
+  }
+  // 学習時間の表示用フォーマット（秒→「Xh Ym」/「Ym」/「Xs」）
+  function fmtDur(sec) {
+    sec = Math.max(0, Math.round(sec || 0));
+    if (sec < 60) return sec + '秒';
+    var m = Math.round(sec / 60);
+    if (m < 60) return m + '分';
+    var h = Math.floor(m / 60), mm = m % 60;
+    return h + '時間' + (mm ? mm + '分' : '');
   }
 
   /* ---------------- 認証アクション ---------------- */
@@ -734,15 +746,20 @@
         '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-rep-ok" style="width:100%;margin-top:10px">確認しました</button>' +
       '</div>';
     document.body.appendChild(wrap);
-    var ok = document.getElementById('sfqc-rep-ok');
-    if (ok) ok.addEventListener('click', function () {
+    var onKey;
+    var dismiss = function () {
       try {
         var s = {};
         Object.keys(allReplies).forEach(function (fid) { var rep = allReplies[fid]; if (rep) s[fid] = rep.ts || Date.now(); });
         localStorage.setItem('sfq_fbreply_seen', JSON.stringify(s));
       } catch (e) {}
+      document.removeEventListener('keydown', onKey);
       if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
-    });
+    };
+    onKey = function (e) { if (e.key === 'Escape') { e.preventDefault(); dismiss(); } };
+    document.addEventListener('keydown', onKey);
+    var ok = document.getElementById('sfqc-rep-ok');
+    if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
   }
 
   /* ---------------- クラウド保存（デバウンス） ---------------- */
@@ -807,9 +824,9 @@
   // 全体ダッシュボード（KPI＋分野別＋問題別正答率）。問題別は折りたたみ。
   function adminDashboardHTML() {
     var total = adminUsers.length, today = admToday();
-    var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumExF = 0, sumExFP = 0;
+    var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumExF = 0, sumExFP = 0, sumStudy = 0;
     adminUsers.forEach(function (u) {
-      var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumExF += a.examFull; sumExFP += a.examFullPassed;
+      var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumExF += a.examFull; sumExFP += a.examFullPassed; sumStudy += a.studySec;
       if (a.lastStudyDate === today) actToday++;
       if (admDaysAgo(a.lastStudyDate) <= 6) actWeek++;
     });
@@ -820,6 +837,7 @@
     var html = '<div class="sfqc-sec">全体サマリー</div><div class="sfqc-kpis">' +
       kpi(total, '総ユーザー') + kpi(actToday, '今日のアクティブ') + kpi(actWeek, '今週のアクティブ') +
       kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumExF, '本番模試 受験') + kpi(passRate + '%', '本番合格率') +
+      kpi(fmtDur(sumStudy), '総学習時間') +
       '</div>';
 
     html += timeSeriesHTML();   // 日別アクティブの推移
@@ -847,17 +865,24 @@
         Object.keys(hist).forEach(function (id) {
           var h = hist[id], t = (h.c || 0) + (h.w || 0); if (!t) return;
           var dc; try { dc = domainOf(+id); } catch (e) { dc = null; }
-          if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0 }); da.c += (h.c || 0); da.t += t; }
+          if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0, sec: 0 }); da.c += (h.c || 0); da.t += t; }
+        });
+        // 分野別の学習時間（store.time.dom[code].sec）も足し込む #18
+        var tdom = (r.store.time && r.store.time.dom) || {};
+        Object.keys(tdom).forEach(function (dc) {
+          var sec = (tdom[dc] && tdom[dc].sec) || 0; if (!sec) return;
+          var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0, sec: 0 }); da.sec += sec;
         });
       });
       var defs = (typeof DOMAIN_DEFS !== 'undefined') ? DOMAIN_DEFS : [];
       var dbars = '';
       defs.forEach(function (d) {
-        var a = domAgg[d.code]; if (!a || !a.t) return; var pc = Math.round(a.c / a.t * 100);
+        var a = domAgg[d.code]; if (!a || (!a.t && !a.sec)) return; var pc = a.t ? Math.round(a.c / a.t * 100) : 0;
         var col = pc >= 70 ? '#16a34a' : pc >= 50 ? '#d97706' : '#dc2626';
-        dbars += '<div class="sfqc-dom"><span class="nm">' + esc(d.emoji + ' ' + d.name) + '</span><div class="bw"><div class="bf" style="width:' + pc + '%;background:' + col + '"></div></div><span class="pc" style="color:' + col + '">' + pc + '% <small>(' + a.c + '/' + a.t + ')</small></span></div>';
+        var timeLabel = a.sec ? ' ・ ⏱ ' + esc(fmtDur(a.sec)) : '';
+        dbars += '<div class="sfqc-dom"><span class="nm">' + esc(d.emoji + ' ' + d.name) + '</span><div class="bw"><div class="bf" style="width:' + pc + '%;background:' + col + '"></div></div><span class="pc" style="color:' + col + '">' + pc + '% <small>(' + a.c + '/' + a.t + ')' + timeLabel + '</small></span></div>';
       });
-      if (dbars) html += '<div class="sfqc-sec">分野別 平均正答率（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card">' + dbars + '</div>';
+      if (dbars) html += '<div class="sfqc-sec">分野別 平均正答率＋学習時間（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card">' + dbars + '</div>';
     }
 
     // 問題別（hist だけで全資格分を計算できる。問題文・要確認フラグは現在資格のときだけ付く）
@@ -875,7 +900,7 @@
         ? '※ 回答数が多く正答率が低い問題＝難しすぎる/設問に問題がある可能性。改善の優先候補（表示は低い順・上位40件、書き出しは全件）。'
         : '※ 問題文・分野別は「' + esc(dcert) + '」のページから管理者ビューを開くと表示されます（ID・正答率は全件書き出せます）。';
       html += dlHead +
-        '<details class="sfqc-itemwrap"' + (isCur ? '' : ' open') + '><summary>低い順 上位40件を表示</summary>' +
+        '<details class="sfqc-itemwrap"><summary>低い順 上位40件を表示</summary>' +
         '<div class="sfqc-dash-card" style="margin-top:8px"><table class="sfqc-itbl"><thead><tr><th>問題</th><th>内容</th><th class="num">回答数</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>' +
         '<div class="sfqc-itnote">' + note + '</div></div></details>';
     }
@@ -936,7 +961,8 @@
     var maxAct = 1; labels.forEach(function (k) { if (act[k] > maxAct) maxAct = act[k]; });
     var bars = labels.map(function (k, idx) {
       var h = Math.round(act[k] / maxAct * 100);
-      return '<div class="sfqc-ts-col" title="' + esc(k + '：アクティブ ' + act[k] + '人 / 解答 ' + ans[k] + '件') + '">' +
+      var lab = k + '：アクティブ ' + act[k] + '人 / 解答 ' + ans[k] + '件';
+      return '<div class="sfqc-ts-col" role="button" tabindex="0" title="' + esc(lab) + '" data-ts-label="' + esc(lab) + '">' +
         '<div class="sfqc-ts-bar" style="height:' + Math.max(2, h) + '%"></div>' +
         '<div class="sfqc-ts-x">' + (idx % 5 === 0 ? esc(k.slice(5)) : '') + '</div></div>';
     }).join('');
@@ -944,7 +970,8 @@
     var actDays = labels.filter(function (k) { return act[k] > 0; }).length;
     return '<div class="sfqc-sec">日別アクティブ（直近' + DAYS + '日・棒＝アクティブ人数）</div>' +
       '<div class="sfqc-dash-card"><div class="sfqc-ts">' + bars + '</div>' +
-      '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。棒にカーソルを乗せると日別の人数/解答が出ます。</div></div>';
+      '<div class="sfqc-ts-readout" id="sfqc-ts-readout">棒をタップ／カーソルを乗せると、その日の人数・解答数が出ます。</div>' +
+      '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。</div></div>';
   }
 
   // 操作ログ（#4）。管理者アカウントに保存された adminLog を新しい順に表示。
@@ -962,7 +989,7 @@
 
   function aggregateUser(certs) {
     var ans = 0, att = 0, c = 0, w = 0, ex = 0, exP = 0, exBest = 0, exFull = 0, exFullP = 0;
-    var notes = 0, srsDue = 0, srsTotal = 0, vocab = 0, bm = 0, days = 0;
+    var notes = 0, srsDue = 0, srsTotal = 0, vocab = 0, bm = 0, days = 0, study = 0;
     var lastStudy = '';
     certs.forEach(function (x) {
       var s = x.stats;
@@ -970,7 +997,7 @@
       ex += s.examCount; exP += s.examPassed; if (s.examBest > exBest) exBest = s.examBest;
       exFull += s.examFull; exFullP += s.examFullPassed;
       notes += s.notes; srsDue += s.srsDue; srsTotal += s.srsTotal;
-      vocab += s.vocab; bm += s.bookmarks; days += s.daysActive;
+      vocab += s.vocab; bm += s.bookmarks; days += s.daysActive; study += s.studySec;
       if (s.lastStudyDate > lastStudy) lastStudy = s.lastStudyDate;
     });
     return {
@@ -980,7 +1007,7 @@
       examCount: ex, examPassed: exP, examBest: exBest,
       examFull: exFull, examFullPassed: exFullP,
       notes: notes, srsDue: srsDue, srsTotal: srsTotal,
-      vocab: vocab, bookmarks: bm, daysActive: days,
+      vocab: vocab, bookmarks: bm, daysActive: days, studySec: study,
       lastStudyDate: lastStudy
     };
   }
@@ -1044,6 +1071,7 @@
       adminUsers = Object.keys(byUid).map(function (k) { return refreshUser(byUid[k]); });
       adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
       adminLogEntries.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      if (adminLogEntries.length > LOG_CAP) adminLogEntries = adminLogEntries.slice(0, LOG_CAP);
       adminSelApps = {};
       renderAdmin();
     }).catch(function (e) {
@@ -1051,16 +1079,18 @@
     });
   }
 
-  // 操作ログを記録（#4）。管理者自身の doc に arrayUnion（自doc書込はルール上常に可）。
+  // 操作ログを記録（#4）。管理者自身の doc に保存（自doc書込はルール上常に可）。
+  // 直近 LOG_CAP 件だけを保持する「上限付き」配列をそのまま書き戻すので、無制限には増えない。
   // 表示は即時にローカル adminLogEntries を使うため、DB 書込は best-effort（失敗しても UI を妨げない）。
+  var LOG_CAP = 200;
   function logAdmin(action, detail) {
     var entry = { ts: Date.now(), action: action, detail: detail || '', by: currentName || '' };
     adminLogEntries.unshift(entry);
-    if (adminLogEntries.length > 200) adminLogEntries = adminLogEntries.slice(0, 200);
+    if (adminLogEntries.length > LOG_CAP) adminLogEntries = adminLogEntries.slice(0, LOG_CAP);
     if (currentUser && db) {
       try {
         db.collection(COLLECTION).doc(currentUser.uid)
-          .update(new firebase.firestore.FieldPath('adminLog'), firebase.firestore.FieldValue.arrayUnion(entry))
+          .update(new firebase.firestore.FieldPath('adminLog'), adminLogEntries.slice(0, LOG_CAP))
           .catch(function () {});
       } catch (e) {}
     }
@@ -1267,6 +1297,13 @@
     });
     var qCsv = document.getElementById('sfqc-q-csv'); if (qCsv) qCsv.addEventListener('click', function () { exportQuestionRates('csv'); });
     var qJson = document.getElementById('sfqc-q-json'); if (qJson) qJson.addEventListener('click', function () { exportQuestionRates('json'); });
+    // 日別アクティブ：棒をタップ/キー操作でその日の値を表示（タッチ端末対応）
+    body.querySelectorAll('[data-ts-label]').forEach(function (b) {
+      var show = function () { var ro = document.getElementById('sfqc-ts-readout'); if (ro) ro.textContent = '📅 ' + b.getAttribute('data-ts-label'); };
+      b.addEventListener('click', show);
+      b.addEventListener('mouseenter', show);
+      b.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } });
+    });
     // 申請の一括承認(#8)：チェック選択・全選択・実行
     body.querySelectorAll('.sfqc-app-sel').forEach(function (b) {
       b.addEventListener('change', function () {
@@ -1321,6 +1358,7 @@
           kv('教科書 読了', s.tbmDone + ' (しおり ' + s.tbmBm + ')') +
           kv('メモ', s.notes + ' 件') +
           kv('学習日数', s.daysActive + ' 日') +
+          kv('学習時間', fmtDur(s.studySec)) +
           kv('最終学習日', s.lastStudyDate || '—') +
           kv('受験予定日', examDateLabel) +
           kv('日次目標', goalLabel) +
@@ -1649,7 +1687,7 @@
       'SRS総数', 'SRS期限到来',
       '用語習得', '用語学習中', '用語総数',
       '教科書読了', '教科書しおり', 'メモ数',
-      '学習日数', '最終学習日', '受験予定日', '日次目標'
+      '学習日数', '学習時間(分)', '最終学習日', '受験予定日', '日次目標'
     ];
     var lines = [head.join(',')];
     adminUsers.forEach(function (u) {
@@ -1663,7 +1701,7 @@
           s.srsTotal, s.srsDue,
           s.vocab, s.vocabLearning, s.vocabTotal,
           s.tbmDone, s.tbmBm, s.notes,
-          s.daysActive, s.lastStudyDate, s.examDate, s.goal
+          s.daysActive, Math.round((s.studySec || 0) / 60), s.lastStudyDate, s.examDate, s.goal
         ];
         lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
       });
