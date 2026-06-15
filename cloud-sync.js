@@ -191,6 +191,8 @@
       '.sfqc-fb-msg{font-size:13px;color:#1e293b;white-space:pre-wrap;line-height:1.55;word-break:break-word}' +
       '.sfqc-fb-qx{font-size:11px;color:#64748b;margin-top:6px;background:#f8fafc;border-radius:6px;padding:5px 8px;word-break:break-word}' +
       '.sfqc-fb-ref{font-size:11px;margin-top:5px}.sfqc-fb-ref a{color:#2563eb}' +
+      '.sfqc-fb-open{display:inline-block;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:7px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none}' +
+      'body.dark .sfqc-fb-open{background:#1e3a5f;border-color:#1e40af;color:#bfdbfe}' +
       '.sfqc-divider{height:1px;background:#e2e8f0;margin:14px 0}' +
       'body.dark .sfqc-fb-item{background:#1e293b;border-color:#334155}' +
       'body.dark .sfqc-fb-cat{background:#312e81;color:#c7d2fe}' +
@@ -514,12 +516,17 @@
     // メモ
     var notes = store.notes || {}, notesCount = Object.keys(notes).filter(function (k) { return (notes[k] || '').trim(); }).length;
 
-    // 試験履歴
+    // 試験履歴。合否は e.pass（真偽）で判定する。
+    // ※ e.ok は「正解数（整数）」なので合格数の判定には使わない（1問でも正解だと真になってしまう）。
+    // 「本番形式（フル）」= 問題数が examN の模試のみ。合格率の母数はこれに揃える
+    //   （ユーザー向け推移グラフ examTrendHTML の (e.n||EXAM_N)===EXAM_N と同義）。
+    var FULL_N = (window.CERT_CONFIG && CERT_CONFIG.examN) || 60;
     var exams = store.exams || [], examCount = exams.length;
-    var examBest = 0, examPassed = 0, examLastTs = 0;
+    var examBest = 0, examPassed = 0, examLastTs = 0, examFull = 0, examFullPassed = 0;
     exams.forEach(function (e) {
       if ((e.pct || 0) > examBest) examBest = e.pct;
-      if (e.ok) examPassed++;
+      if (e.pass) examPassed++;
+      if ((e.n || FULL_N) === FULL_N) { examFull++; if (e.pass) examFullPassed++; }
       if ((e.ts || 0) > examLastTs) examLastTs = e.ts;
     });
 
@@ -541,6 +548,7 @@
       srsTotal: srsKeys.length, srsDue: srsDue,
       lowConf: lowConf, wrongCur: wrongCur,
       examCount: examCount, examBest: examBest, examPassed: examPassed, examLastTs: examLastTs,
+      examFull: examFull, examFullPassed: examFullPassed,
       examDate: store.examDate || '', goal: store.goal || 0,
       daysActive: daysActive, lastStudyDate: lastStudyDate
     };
@@ -719,6 +727,7 @@
   var adminPass = false;     // 合格者のみ
   var adminAccess = 'all';   // 'all'|'approved'|'pending'|'blocked'（アクセス状態フィルタ）
   var adminPendingCount = 0; // 承認待ち件数（バッジ通知用）
+  var adminDashCert = '';    // 詳細集計（分野別・問題別）で表示中の資格。''=現在ページの資格 #2
 
   function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
   function admDaysAgo(s) { if (!s) return Infinity; try { var d = new Date(s + 'T00:00:00'); return Math.floor((Date.now() - d.getTime()) / 86400000); } catch (e) { return Infinity; } }
@@ -726,32 +735,45 @@
   // 全体ダッシュボード（KPI＋分野別＋問題別正答率）。問題別は折りたたみ。
   function adminDashboardHTML() {
     var total = adminUsers.length, today = admToday();
-    var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumEx = 0, sumExP = 0;
+    var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumExF = 0, sumExFP = 0;
     adminUsers.forEach(function (u) {
-      var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumEx += a.examCount; sumExP += a.examPassed;
+      var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumExF += a.examFull; sumExFP += a.examFullPassed;
       if (a.lastStudyDate === today) actToday++;
       if (admDaysAgo(a.lastStudyDate) <= 6) actWeek++;
     });
     var avgRate = sumAtt ? Math.round(sumCorr / sumAtt * 100) : 0;
-    var passRate = sumEx ? Math.round(sumExP / sumEx * 100) : 0;
+    // 合格率は「本番形式（フル）の模試」だけを母数にする（カスタム/短縮模試は除外＝ユーザー向け推移グラフと同義）
+    var passRate = sumExF ? Math.round(sumExFP / sumExF * 100) : 0;
     var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
     var html = '<div class="sfqc-sec">全体サマリー</div><div class="sfqc-kpis">' +
       kpi(total, '総ユーザー') + kpi(actToday, '今日のアクティブ') + kpi(actWeek, '今週のアクティブ') +
-      kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumEx, '試験受験') + kpi(passRate + '%', '試験合格率') +
+      kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumExF, '本番模試 受験') + kpi(passRate + '%', '本番合格率') +
       '</div>';
 
-    var certName = (window.CERT_CONFIG && CERT_CONFIG.shortName) || CERT_KEY;
-    var haveEngine = (typeof QDATA !== 'undefined' && QDATA && QDATA.length && typeof domainOf === 'function');
-    if (haveEngine) {
-      var domAgg = {}, perQ = {};
+    // ---- 詳細集計（分野別・問題別）。資格を切り替えて全資格を1画面で点検できる(#2) ----
+    var certSet = {}; adminRows.forEach(function (r) { if (r.cert && r.cert !== '—') certSet[r.cert] = 1; });
+    var certKeys = Object.keys(certSet);
+    var dcert = dashCert();   // 選択中の資格（既定＝現在ページの資格）
+    var isCur = (dcert === CERT_KEY);
+    var engineHere = (typeof QDATA !== 'undefined' && QDATA && QDATA.length && typeof domainOf === 'function');
+
+    if (certKeys.length > 1) {
+      var dchips = certKeys.map(function (ck) {
+        return '<button class="sfqc-fchip' + (ck === dcert ? ' on' : '') + '" data-dashcert="' + esc(ck) + '">' + esc(ck) + '</button>';
+      }).join('');
+      html += '<div class="sfqc-toolbar sfqc-toolbar2"><span class="sfqc-sort-label">詳細集計の資格:</span>' + dchips + '</div>';
+    }
+
+    // 分野別（domainOf/DOMAIN_DEFS は現在ページの資格のものなので、現在資格を選んでいるときだけ表示）
+    if (isCur && engineHere) {
+      var domAgg = {};
       adminRows.forEach(function (r) {
-        if (r.cert !== CERT_KEY) return;
+        if (r.cert !== dcert) return;
         var hist = r.store.hist || {};
         Object.keys(hist).forEach(function (id) {
-          var h = hist[id], c = h.c || 0, t = (h.c || 0) + (h.w || 0); if (!t) return;
-          var pq = perQ[id] || (perQ[id] = { c: 0, t: 0 }); pq.c += c; pq.t += t;
+          var h = hist[id], t = (h.c || 0) + (h.w || 0); if (!t) return;
           var dc; try { dc = domainOf(+id); } catch (e) { dc = null; }
-          if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0 }); da.c += c; da.t += t; }
+          if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0 }); da.c += (h.c || 0); da.t += t; }
         });
       });
       var defs = (typeof DOMAIN_DEFS !== 'undefined') ? DOMAIN_DEFS : [];
@@ -761,23 +783,54 @@
         var col = pc >= 70 ? '#16a34a' : pc >= 50 ? '#d97706' : '#dc2626';
         dbars += '<div class="sfqc-dom"><span class="nm">' + esc(d.emoji + ' ' + d.name) + '</span><div class="bw"><div class="bf" style="width:' + pc + '%;background:' + col + '"></div></div><span class="pc" style="color:' + col + '">' + pc + '% <small>(' + a.c + '/' + a.t + ')</small></span></div>';
       });
-      if (dbars) html += '<div class="sfqc-sec">分野別 平均正答率（全ユーザー・' + esc(certName) + '）</div><div class="sfqc-dash-card">' + dbars + '</div>';
+      if (dbars) html += '<div class="sfqc-sec">分野別 平均正答率（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card">' + dbars + '</div>';
+    }
 
-      var qmap = qTextMap();
-      var items = Object.keys(perQ).map(function (id) { var a = perQ[id]; return { id: id, c: a.c, t: a.t, rate: Math.round(a.c / a.t * 100) }; });
-      items.sort(function (a, b) { return a.rate - b.rate || b.t - a.t; });
+    // 問題別（hist だけで全資格分を計算できる。問題文・要確認フラグは現在資格のときだけ付く）
+    var items = perQuestionStats(dcert);
+    if (items.length) {
+      var qmap = (isCur && engineHere) ? qTextMap() : {};
       var rows = items.slice(0, 40).map(function (it) {
         var rc = it.rate < 50 ? 'lo' : it.rate < 70 ? 'mi' : 'hi';
         var flag = (it.t >= 5 && it.rate < 40) ? '<span class="sfqc-flag">要確認</span>' : '';
         return '<tr><td class="num">Q' + esc(it.id) + '</td><td class="qx">' + esc((qmap[it.id] || '').slice(0, 60)) + '</td><td class="num">' + it.t + '</td><td class="num"><span class="sfqc-rate ' + rc + '">' + it.rate + '%</span>' + flag + '</td></tr>';
       }).join('');
-      if (items.length) {
-        html += '<details class="sfqc-itemwrap"><summary>📝 問題別 正答率（低い順・全ユーザー集計・' + esc(certName) + ' ' + items.length + '問）</summary>' +
-          '<div class="sfqc-dash-card" style="margin-top:8px"><table class="sfqc-itbl"><thead><tr><th>問題</th><th>内容</th><th class="num">回答数</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-          '<div class="sfqc-itnote">※ 回答数が多く正答率が低い問題＝難しすぎる/設問に問題がある可能性。改善の優先候補（最大40件）。</div></div></details>';
-      }
+      var dlHead = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">📝 問題別 正答率（全ユーザー・' + esc(dcert) + ' ' + items.length + '問）</div>' +
+        '<div class="sfqc-fb-dl"><button class="sfqc-mini fb-dl" id="sfqc-q-csv">⬇ CSV</button><button class="sfqc-mini fb-dl" id="sfqc-q-json">⬇ JSON</button></div></div>';
+      var note = (isCur && engineHere)
+        ? '※ 回答数が多く正答率が低い問題＝難しすぎる/設問に問題がある可能性。改善の優先候補（表示は低い順・上位40件、書き出しは全件）。'
+        : '※ 問題文・分野別は「' + esc(dcert) + '」のページから管理者ビューを開くと表示されます（ID・正答率は全件書き出せます）。';
+      html += dlHead +
+        '<details class="sfqc-itemwrap"' + (isCur ? '' : ' open') + '><summary>低い順 上位40件を表示</summary>' +
+        '<div class="sfqc-dash-card" style="margin-top:8px"><table class="sfqc-itbl"><thead><tr><th>問題</th><th>内容</th><th class="num">回答数</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="sfqc-itnote">' + note + '</div></div></details>';
     }
     return html;
+  }
+
+  // 詳細集計で選択中の資格（無効/未選択なら現在ページの資格、無ければ存在する最初の資格）
+  function dashCert() {
+    var has = {}; adminRows.forEach(function (r) { if (r.cert && r.cert !== '—') has[r.cert] = 1; });
+    if (adminDashCert && has[adminDashCert]) return adminDashCert;
+    if (has[CERT_KEY]) return CERT_KEY;
+    var ks = Object.keys(has);
+    return ks[0] || CERT_KEY;
+  }
+
+  // 指定資格の問題別集計（hist だけで計算するので、エンジン未読込・他資格でも動く）。低い順にソート。
+  function perQuestionStats(cert) {
+    var perQ = {};
+    adminRows.forEach(function (r) {
+      if (r.cert !== cert) return;
+      var hist = r.store.hist || {};
+      Object.keys(hist).forEach(function (id) {
+        var h = hist[id], t = (h.c || 0) + (h.w || 0); if (!t) return;
+        var pq = perQ[id] || (perQ[id] = { c: 0, t: 0 }); pq.c += (h.c || 0); pq.t += t;
+      });
+    });
+    var items = Object.keys(perQ).map(function (id) { var a = perQ[id]; return { id: id, c: a.c, t: a.t, rate: Math.round(a.c / a.t * 100) }; });
+    items.sort(function (a, b) { return a.rate - b.rate || b.t - a.t; });
+    return items;
   }
 
   function qTextMap() {
@@ -787,13 +840,14 @@
   }
 
   function aggregateUser(certs) {
-    var ans = 0, att = 0, c = 0, w = 0, ex = 0, exP = 0, exBest = 0;
+    var ans = 0, att = 0, c = 0, w = 0, ex = 0, exP = 0, exBest = 0, exFull = 0, exFullP = 0;
     var notes = 0, srsDue = 0, srsTotal = 0, vocab = 0, bm = 0, days = 0;
     var lastStudy = '';
     certs.forEach(function (x) {
       var s = x.stats;
       ans += s.answered; att += s.attempts; c += s.correct; w += s.wrong;
       ex += s.examCount; exP += s.examPassed; if (s.examBest > exBest) exBest = s.examBest;
+      exFull += s.examFull; exFullP += s.examFullPassed;
       notes += s.notes; srsDue += s.srsDue; srsTotal += s.srsTotal;
       vocab += s.vocab; bm += s.bookmarks; days += s.daysActive;
       if (s.lastStudyDate > lastStudy) lastStudy = s.lastStudyDate;
@@ -803,6 +857,7 @@
       answered: ans, attempts: att, correct: c, wrong: w,
       rate: att ? Math.round(c / att * 100) : 0,
       examCount: ex, examPassed: exP, examBest: exBest,
+      examFull: exFull, examFullPassed: exFullP,
       notes: notes, srsDue: srsDue, srsTotal: srsTotal,
       vocab: vocab, bookmarks: bm, daysActive: days,
       lastStudyDate: lastStudy
@@ -1040,6 +1095,16 @@
     body.querySelectorAll('.sfqc-fb-done').forEach(function (b) {
       b.addEventListener('click', function () { adminResolveFeedback(+b.getAttribute('data-fi')); });
     });
+    // フィードバック：問題へジャンプ(#5)
+    body.querySelectorAll('[data-openq]').forEach(function (b) {
+      b.addEventListener('click', function () { var id = b.getAttribute('data-openq'); closeAdmin(); if (window.jumpQ) window.jumpQ(Number(id)); });
+    });
+    // ダッシュボード：詳細集計の資格切替(#2)・問題別正答率の書き出し(#6)
+    body.querySelectorAll('[data-dashcert]').forEach(function (b) {
+      b.addEventListener('click', function () { adminDashCert = b.getAttribute('data-dashcert'); renderAdmin(); });
+    });
+    var qCsv = document.getElementById('sfqc-q-csv'); if (qCsv) qCsv.addEventListener('click', function () { exportQuestionRates('csv'); });
+    var qJson = document.getElementById('sfqc-q-json'); if (qJson) qJson.addEventListener('click', function () { exportQuestionRates('json'); });
   }
 
   function certDetailHTML(c, uid, name) {
@@ -1219,6 +1284,16 @@
       var fb = r.fb;
       var idx = adminFeedback.indexOf(r);
       var qref = fb.qid ? ('Q' + esc(String(fb.qid))) : '（全般）';
+      // 問題への導線(#5)：現在ページの資格なら jumpQ で即表示、他資格は報告時のURLを開く。
+      var openLink = '';
+      if (fb.qid && fb.cert === CERT_KEY && typeof window.jumpQ === 'function') {
+        openLink = '<button class="sfqc-fb-open" data-openq="' + esc(String(fb.qid)) + '">🔎 Q' + esc(String(fb.qid)) + ' を開く</button>';
+      } else if (fb.url) {
+        openLink = '<a class="sfqc-fb-open" href="' + esc(fb.url) + '" target="_blank" rel="noopener">🔗 報告ページ' + (fb.qid ? '（Q' + esc(String(fb.qid)) + '）' : '') + 'を開く</a>';
+      }
+      var links = (openLink || fb.ref)
+        ? '<div class="sfqc-fb-ref">' + openLink + (fb.ref ? (openLink ? ' ・ ' : '') + '<a href="' + esc(fb.ref) + '" target="_blank" rel="noopener">参照リンク</a>' : '') + '</div>'
+        : '';
       return '<div class="sfqc-fb-item">' +
         '<div class="sfqc-fb-top">' +
           '<span class="sfqc-fb-cat">' + esc(fbCatLabel(fb.cat)) + '</span>' +
@@ -1227,7 +1302,7 @@
         '</div>' +
         '<div class="sfqc-fb-msg">' + esc(fb.msg || '') + '</div>' +
         (fb.qtext ? '<div class="sfqc-fb-qx">問題: ' + esc(fb.qtext) + '</div>' : '') +
-        (fb.ref ? '<div class="sfqc-fb-ref"><a href="' + esc(fb.ref) + '" target="_blank" rel="noopener">参照リンク</a></div>' : '') +
+        links +
         '</div>';
     }).join('');
     return head + bar + '<div class="sfqc-fb-list">' + (items || '<div class="sfqc-empty">条件に合う報告がありません。</div>') + '</div><div class="sfqc-divider"></div>';
@@ -1270,6 +1345,36 @@
     });
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
     dlBlob(blob, 'sfquiz-feedback-' + new Date().toISOString().slice(0, 10) + '.csv');
+  }
+
+  // 問題別 正答率の書き出し（#6）。表示は上位40件だが、書き出しは全件。
+  // 問題文は現在ページの資格のときだけ付く（他資格は QDATA 未読込のため空欄）。
+  function questionRateRows(cert) {
+    var qmap = (cert === CERT_KEY) ? qTextMap() : {};
+    return perQuestionStats(cert).map(function (it) {
+      return { cert: cert, qid: it.id, question: qmap[it.id] || '',
+               answers: it.t, correct: it.c, rate: it.rate,
+               flag: (it.t >= 5 && it.rate < 40) ? '要確認' : '' };
+    });
+  }
+  function exportQuestionRates(fmt) {
+    var cert = dashCert();
+    var rows = questionRateRows(cert);
+    if (!rows.length) { alert('書き出すデータがありません。'); return; }
+    var stamp = new Date().toISOString().slice(0, 10);
+    if (fmt === 'json') {
+      dlBlob(new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json;charset=utf-8;' }),
+        'sfquiz-qrates-' + cert + '-' + stamp + '.json');
+      return;
+    }
+    var head = ['資格', '問題ID', '問題文', '回答数', '正解数', '正答率(%)', 'フラグ'];
+    var lines = [head.join(',')];
+    rows.forEach(function (r) {
+      var row = [r.cert, r.qid, r.question, r.answers, r.correct, r.rate, r.flag];
+      lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+    });
+    dlBlob(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' }),
+      'sfquiz-qrates-' + cert + '-' + stamp + '.csv');
   }
 
   function exportCsv() {
