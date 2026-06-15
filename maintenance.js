@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var MAINTENANCE = true; // ← ここだけ true / false を変える
+  var MAINTENANCE = false; // ← ここだけ true / false を変える
 
   if (!MAINTENANCE) return;
 
