@@ -1,6 +1,7 @@
 # 学習データとエンジンの自動検証（push / PR 毎）
-# - tools/validate-data.js: JSONスキーマ・図参照・キャッシュ版数3点セットの整合
-# - tools/test-engine.js:   エンジン純粋ロジックのスモークテスト
+# - tools/validate-data.js:    JSONスキーマ・図参照・キャッシュ版数3点セットの整合
+# - tools/test-engine.js:      エンジン純粋ロジックのスモークテスト
+# - tools/test-cloud-sync.js:  クラウド同期/管理者ビューの集計ロジックのスモークテスト
 name: CI
 on:
   push:
@@ -19,3 +20,5 @@ jobs:
         run: node tools/validate-data.js
       - name: エンジン スモークテスト
         run: node tools/test-engine.js
+      - name: クラウド同期 集計ロジック スモークテスト
+        run: node tools/test-cloud-sync.js
