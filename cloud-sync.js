@@ -211,7 +211,24 @@
       '.sfqc-acc-access.pend{background:#fef9c3;color:#854d0e}' +
       '.sfqc-acc-access.block{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-act-approve{background:#dcfce7;color:#15803d}' +
-      '.sfqc-act-block{background:#fee2e2;color:#b91c1c}';
+      '.sfqc-act-block{background:#fee2e2;color:#b91c1c}' +
+      /* 新規申請・承認待ちセクション */
+      '.sfqc-app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}' +
+      '.sfqc-app-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;border-radius:10px;padding:10px 12px}' +
+      '.sfqc-app-item.is-block{border-left-color:#ef4444}' +
+      '.sfqc-app-info{flex:1;min-width:160px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}' +
+      '.sfqc-app-name{font-weight:800;font-size:14px}' +
+      '.sfqc-app-actions{display:flex;gap:6px}' +
+      '.sfqc-app-actions button{border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}' +
+      'body.dark .sfqc-app-item{background:#1e293b;border-color:#334155}' +
+      /* 申請通知ドット（バッジ）＋管理者ビューボタンの件数 */
+      '#sfqc-badge-dot{display:none;width:9px;height:9px;border-radius:50%;background:#ef4444;margin-left:3px;box-shadow:0 0 0 2px #fff;vertical-align:middle}' +
+      '#sfqc-admin-btn.has-pending{color:#b45309}' +
+      '.sfqc-admin-badge{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle}' +
+      /* アカウント一覧をコンパクトに（情報過多で改行が重なる問題の解消） */
+      '.sfqc-acc-head{gap:10px}' +
+      '.sfqc-acc-stats{gap:6px 12px;font-size:11.5px}' +
+      '.sfqc-del-doc{margin:6px 0 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}';
     var s = document.createElement('style');
     s.textContent = css;
     document.head.appendChild(s);
@@ -254,7 +271,7 @@
     elBadge = document.createElement('div');
     elBadge.id = 'sfqc-badge';
     elBadge.innerHTML =
-      '<button id="sfqc-badge-toggle" type="button"><span id="sfqc-name">👤</span><span class="sfqc-caret">▾</span></button>' +
+      '<button id="sfqc-badge-toggle" type="button"><span id="sfqc-name">👤</span><span class="sfqc-caret">▾</span><span id="sfqc-badge-dot"></span></button>' +
       '<div id="sfqc-menu">' +
         '<div class="sfqc-status" id="sfqc-status"></div>' +
         '<button id="sfqc-admin-btn" type="button">👑 管理者ビュー</button>' +
@@ -408,6 +425,29 @@
   // マイページ等へアカウント状態の更新を通知（エンジン側が __sfqOnAccount を実装）
   function notifyAccount() { if (window.__sfqOnAccount) { try { window.__sfqOnAccount(); } catch (e) {} } }
   function showAdminBtn(v) { if (elAdminBtn) elAdminBtn.classList[v ? 'add' : 'remove']('show'); }
+  // 承認待ち件数をバッジ（赤ドット）と管理者ビューボタンに反映
+  function setAdminPending(n) {
+    adminPendingCount = n || 0;
+    if (elAdminBtn) {
+      elAdminBtn.innerHTML = '👑 管理者ビュー' + (adminPendingCount > 0 ? '<span class="sfqc-admin-badge">申請 ' + adminPendingCount + '</span>' : '');
+      elAdminBtn.classList[adminPendingCount > 0 ? 'add' : 'remove']('has-pending');
+    }
+    var dot = document.getElementById('sfqc-badge-dot');
+    if (dot) dot.style.display = (adminPendingCount > 0 && isAdmin) ? 'inline-block' : 'none';
+  }
+  // 管理者ログイン時に承認待ち（access==='pending'）の件数を数えてバッジ表示する
+  function refreshAdminPending() {
+    if (!isAdmin || !db) return;
+    db.collection(COLLECTION).get().then(function (snap) {
+      var n = 0;
+      snap.forEach(function (d) {
+        if (currentUser && d.id === currentUser.uid) return; // 管理者自身は除外
+        var data = d.data() || {};
+        if ((data.access || 'pending') === 'pending') n++;
+      });
+      setAdminPending(n);
+    }).catch(function () {});
+  }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
 
   /* ---------------- ヘルパー ---------------- */
@@ -577,6 +617,7 @@
         }
       }
       hideLock();
+      if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
 
@@ -675,6 +716,7 @@
   var adminActivity = 'all'; // 'all'|'week'|'dormant'
   var adminPass = false;     // 合格者のみ
   var adminAccess = 'all';   // 'all'|'approved'|'pending'|'blocked'（アクセス状態フィルタ）
+  var adminPendingCount = 0; // 承認待ち件数（バッジ通知用）
 
   function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
   function admDaysAgo(s) { if (!s) return Infinity; try { var d = new Date(s + 'T00:00:00'); return Math.floor((Date.now() - d.getTime()) / 86400000); } catch (e) { return Infinity; } }
@@ -810,6 +852,10 @@
         return u;
       });
       adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
+      // 承認待ち件数を通知バッジに同期（自分は除外）
+      setAdminPending(adminUsers.filter(function (u) {
+        return (u.access || 'pending') === 'pending' && !(currentUser && u.uid === currentUser.uid);
+      }).length);
       renderAdmin();
     }).catch(function (e) {
       body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
@@ -846,6 +892,40 @@
     return list;
   }
 
+  // 新規申請・承認待ちを独立セクションで見やすく表示（申請があるものを上に・新しい順）
+  function applicationsSectionHTML() {
+    var apps = adminUsers.filter(function (u) { return (u.access || 'pending') !== 'approved'; });
+    apps.sort(function (a, b) {
+      var ar = (a.req && a.req.ts) || 0, br = (b.req && b.req.ts) || 0;
+      if (ar !== br) return br - ar;            // 申請の新しい順
+      return (b.updated || 0) - (a.updated || 0);
+    });
+    var reqCount = apps.filter(function (u) { return u.req && u.req.ts; }).length;
+    var head = '<div class="sfqc-sec" style="margin-top:0">🔔 新規申請・承認待ち ' +
+      '<span class="sfqc-fb-count">承認待ち ' + apps.length + '件（うち申請あり ' + reqCount + '件）</span></div>';
+    if (!apps.length) return head + '<div class="sfqc-empty" style="padding:14px">承認待ちのアカウントはありません。</div><div class="sfqc-divider"></div>';
+    var cards = apps.map(function (u) {
+      var isBlock = (u.access === 'blocked');
+      var stateChip = isBlock
+        ? '<span class="sfqc-acc-access block">🚫 停止中</span>'
+        : '<span class="sfqc-acc-access pend">⏳ 承認待ち</span>';
+      var reqChip = (u.req && u.req.ts)
+        ? '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>'
+        : '<span class="sfqc-inactive">未申請</span>';
+      var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
+      return '<div class="sfqc-app-item' + (isBlock ? ' is-block' : '') + '">' +
+          '<div class="sfqc-app-info">' +
+            '<span class="sfqc-app-name">👤 ' + esc(u.name) + '</span>' + emailLabel + stateChip + reqChip +
+          '</div>' +
+          '<div class="sfqc-app-actions">' +
+            '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>' +
+            (isBlock ? '' : '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">🚫 停止</button>') +
+          '</div>' +
+        '</div>';
+    }).join('');
+    return head + '<div class="sfqc-app-list">' + cards + '</div><div class="sfqc-divider"></div>';
+  }
+
   function renderAdmin() {
     var body = document.getElementById('sfqc-adm-body');
     if (!adminUsers.length) { body.innerHTML = '<div class="sfqc-empty">アカウントがまだありません。</div>'; return; }
@@ -856,7 +936,8 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
 
-    var html = feedbackSectionHTML();
+    var html = applicationsSectionHTML();
+    html += feedbackSectionHTML();
     html += adminDashboardHTML();
     html += '<div class="sfqc-sec">ユーザー</div>';
     html += '<div class="sfqc-toolbar">' +
@@ -895,21 +976,16 @@
       var accBtn = (u.access === 'approved')
         ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
         : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
-      var reqLabel = (u.access !== 'approved' && u.req && u.req.ts) ? ' <span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>' : '';
       html +=
         '<div class="sfqc-acc">' +
           '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + reqLabel + dormantLabel + '</span>' +
+            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + dormantLabel + '</span>' +
             '<span class="sfqc-acc-stats">' +
-              '<span>登録資格 <b>' + a.certCount + '</b></span>' +
-              '<span>解答 <b>' + a.answered + '</b>問 / 述べ<b>' + a.attempts + '</b>回</span>' +
+              '<span>解答 <b>' + a.answered + '</b>問</span>' +
               '<span>正答率 <b>' + a.rate + '%</b></span>' +
-              '<span>試験 <b>' + a.examCount + '</b>回' + passLabel + ' / 最高 <b>' + a.examBest + '%</b></span>' +
-              '<span>学習日数 <b>' + a.daysActive + '</b></span>' +
-              '<span>★<b>' + a.bookmarks + '</b> / 用語<b>' + a.vocab + '</b> / メモ<b>' + a.notes + '</b></span>' +
-              '<span>SRS待ち <b>' + a.srsDue + '</b>/' + a.srsTotal + '</span>' +
-              '<span>最終学習 ' + esc(a.lastStudyDate || '—') + '</span>' +
-              '<span>最終更新 ' + fmtDate(u.updated) + '</span>' +
+              '<span>試験 <b>' + a.examCount + '</b>回' + passLabel + '</span>' +
+              '<span>学習 <b>' + a.daysActive + '</b>日</span>' +
+              '<span>最終 ' + esc(a.lastStudyDate || '—') + '</span>' +
             '</span>' +
             '<span class="sfqc-acc-actions">' +
               accBtn +
@@ -1016,7 +1092,10 @@
     html += '<div class="sfqc-meta">' +
       '<div>UID: <code>' + esc(u.uid) + '</code></div>' +
       (u.email ? '<div>メール: ' + esc(u.email) + '</div>' : '') +
+      (u.req && u.req.ts ? '<div>申請: ' + esc(u.req.name || u.name) + '（' + esc(fmtDate(u.req.ts)) + '）</div>' : '') +
       '</div>';
+    // アカウント全体の削除（doc ごと削除＝全資格の進捗・申請・フィードバックを消去）
+    html += '<div><button class="sfqc-del-doc" data-deluid="' + esc(u.uid) + '" data-delname="' + esc(u.name) + '">🗑 このアカウントを完全削除（全データ）</button></div>';
     // 資格ごと
     u.certs.forEach(function (c) { html += certDetailHTML(c, u.uid, u.name); });
     // 問題別履歴（最も多く解いている資格の hist を表示）
@@ -1044,6 +1123,19 @@
     box.querySelectorAll('.sfqc-act-del').forEach(function (b) {
       b.addEventListener('click', function () { deleteAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
     });
+    box.querySelectorAll('.sfqc-del-doc').forEach(function (b) {
+      b.addEventListener('click', function () { deleteUserDoc(b.getAttribute('data-deluid'), b.getAttribute('data-delname')); });
+    });
+  }
+
+  // アカウントを doc ごと完全削除（全資格の進捗・申請・フィードバックを消去）。
+  // ※ログイン認証(Firebase Auth)自体はクライアントから消せないため、コンソールで別途削除する。
+  function deleteUserDoc(uid, name) {
+    if (!isAdmin || !db || !uid) return;
+    if (!confirm('「' + name + '」のアカウントデータを完全に削除します。\n（全資格の進捗・利用申請・フィードバックがすべて消えます。取り消せません）\n\n※ログインID自体(Firebase Authentication)はFirebaseコンソールから削除してください。\n\n本当に削除しますか？')) return;
+    db.collection(COLLECTION).doc(uid).delete()
+      .then(function () { toastSafe('「' + name + '」を完全削除しました'); loadAdmin(); })
+      .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
   }
 
   // アクセス権の付与/停止（管理者のみ）。Firestoreルールで access は管理者だけ書込可。
@@ -1259,7 +1351,7 @@
         onLogin(user);
       } else {
         currentUser = null; isAdmin = false;
-        setBadge(''); setStatus(''); showAdminBtn(false); closeAdmin();
+        setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
         showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
       }
     });
