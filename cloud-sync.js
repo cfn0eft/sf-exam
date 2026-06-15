@@ -212,6 +212,7 @@
       '.sfqc-acc-access.block{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-act-approve{background:#dcfce7;color:#15803d}' +
       '.sfqc-act-block{background:#fee2e2;color:#b91c1c}' +
+      '.sfqc-act-reject{background:#fef3c7;color:#92400e}' +
       /* 新規申請・承認待ちセクション */
       '.sfqc-app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}' +
       '.sfqc-app-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;border-radius:10px;padding:10px 12px}' +
@@ -443,7 +444,8 @@
       snap.forEach(function (d) {
         if (currentUser && d.id === currentUser.uid) return; // 管理者自身は除外
         var data = d.data() || {};
-        if ((data.access || 'pending') === 'pending') n++;
+        // 通知は「実際に申請ボタンを押した人（req あり）かつ未承認」だけを数える
+        if ((data.access || 'pending') !== 'approved' && data.req && data.req.ts) n++;
       });
       setAdminPending(n);
     }).catch(function () {});
@@ -852,9 +854,9 @@
         return u;
       });
       adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
-      // 承認待ち件数を通知バッジに同期（自分は除外）
+      // 申請件数を通知バッジに同期（実際に申請した人・未承認のみ、自分は除外）
       setAdminPending(adminUsers.filter(function (u) {
-        return (u.access || 'pending') === 'pending' && !(currentUser && u.uid === currentUser.uid);
+        return isApplicant(u) && !(currentUser && u.uid === currentUser.uid);
       }).length);
       renderAdmin();
     }).catch(function (e) {
@@ -892,26 +894,25 @@
     return list;
   }
 
-  // 新規申請・承認待ちを独立セクションで見やすく表示（申請があるものを上に・新しい順）
+  // 「新規申請」は実際に申請ボタンを押した人（req あり）かつ未承認のみを対象にする。
+  // 既存の未ログイン/未申請アカウントは含めない（＝勝手に申請扱いにしない）。
+  function isApplicant(u) { return (u.access || 'pending') !== 'approved' && u.req && u.req.ts; }
   function applicationsSectionHTML() {
-    var apps = adminUsers.filter(function (u) { return (u.access || 'pending') !== 'approved'; });
-    apps.sort(function (a, b) {
-      var ar = (a.req && a.req.ts) || 0, br = (b.req && b.req.ts) || 0;
-      if (ar !== br) return br - ar;            // 申請の新しい順
-      return (b.updated || 0) - (a.updated || 0);
-    });
-    var reqCount = apps.filter(function (u) { return u.req && u.req.ts; }).length;
-    var head = '<div class="sfqc-sec" style="margin-top:0">🔔 新規申請・承認待ち ' +
-      '<span class="sfqc-fb-count">承認待ち ' + apps.length + '件（うち申請あり ' + reqCount + '件）</span></div>';
-    if (!apps.length) return head + '<div class="sfqc-empty" style="padding:14px">承認待ちのアカウントはありません。</div><div class="sfqc-divider"></div>';
+    var apps = adminUsers.filter(isApplicant);
+    apps.sort(function (a, b) { return (b.req.ts || 0) - (a.req.ts || 0); }); // 申請の新しい順
+    var head = '<div class="sfqc-sec" style="margin-top:0">🔔 新規申請 ' +
+      '<span class="sfqc-fb-count">' + apps.length + '件</span></div>';
+    if (!apps.length) {
+      return head + '<div class="sfqc-empty" style="padding:14px">新規の利用申請はありません。<br>' +
+        '<small>未申請の承認待ちアカウントは、下の一覧「アクセス: 承認待ち」で確認・承認できます。</small></div>' +
+        '<div class="sfqc-divider"></div>';
+    }
     var cards = apps.map(function (u) {
       var isBlock = (u.access === 'blocked');
       var stateChip = isBlock
         ? '<span class="sfqc-acc-access block">🚫 停止中</span>'
         : '<span class="sfqc-acc-access pend">⏳ 承認待ち</span>';
-      var reqChip = (u.req && u.req.ts)
-        ? '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>'
-        : '<span class="sfqc-inactive">未申請</span>';
+      var reqChip = '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>';
       var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
       return '<div class="sfqc-app-item' + (isBlock ? ' is-block' : '') + '">' +
           '<div class="sfqc-app-info">' +
@@ -919,6 +920,7 @@
           '</div>' +
           '<div class="sfqc-app-actions">' +
             '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>' +
+            '<button class="sfqc-act-reject" data-rej-uid="' + esc(u.uid) + '" data-rej-name="' + esc(u.name) + '">❌ 却下</button>' +
             (isBlock ? '' : '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">🚫 停止</button>') +
           '</div>' +
         '</div>';
@@ -1019,6 +1021,9 @@
     });
     body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
       b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
+    });
+    body.querySelectorAll('[data-rej-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { rejectApplication(b.getAttribute('data-rej-uid'), b.getAttribute('data-rej-name')); });
     });
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
@@ -1136,6 +1141,17 @@
     db.collection(COLLECTION).doc(uid).delete()
       .then(function () { toastSafe('「' + name + '」を完全削除しました'); loadAdmin(); })
       .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
+  }
+
+  // 利用申請の却下（管理者のみ）。req を消して申請一覧から外す。access は承認待ちのまま。
+  // （完全に締め出すときは「停止」を使う。却下後も本人は再申請できる）
+  function rejectApplication(uid, name) {
+    if (!isAdmin || !db || !uid) return;
+    if (!confirm('「' + name + '」の利用申請を却下します。\n（アカウントは「承認待ち」のままで、本人は再申請できます。完全に締め出す場合は「停止」を使ってください）\n\nよろしいですか？')) return;
+    var FV = firebase.firestore.FieldValue;
+    db.collection(COLLECTION).doc(uid).update({ req: FV.delete(), updated: Date.now() })
+      .then(function () { toastSafe('「' + name + '」の申請を却下しました'); loadAdmin(); })
+      .catch(function (e) { alert('却下に失敗しました: ' + (e && e.message)); });
   }
 
   // アクセス権の付与/停止（管理者のみ）。Firestoreルールで access は管理者だけ書込可。
