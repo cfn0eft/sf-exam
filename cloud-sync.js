@@ -35,7 +35,7 @@
 
   var auth = null, db = null, currentUser = null, saveTimer = null;
   var currentName = '', currentEmail = '', isAdmin = false;
-  var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin;
+  var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
 
   /* ---------------- スタイル ---------------- */
   function injectStyle() {
@@ -201,7 +201,17 @@
       'body.dark .sfqc-card{background:#1e293b;color:#e2e8f0}' +
       'body.dark .sfqc-field{background:#0f172a;border-color:#334155;color:#e2e8f0}' +
       'body.dark .sfqc-btn-ghost{background:#334155;color:#cbd5e1}' +
-      'body.dark .sfqc-sub{color:#94a3b8}';
+      'body.dark .sfqc-sub{color:#94a3b8}' +
+      /* アクセス承認ゲート（未承認ロック画面） */
+      '#sfqc-lock{position:fixed;inset:0;z-index:100001;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.85);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfqc-lock.show{display:flex}' +
+      /* 管理者ビュー：アカウントのアクセス状態チップ＋承認/停止ボタン */
+      '.sfqc-acc-access{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap}' +
+      '.sfqc-acc-access.ok{background:#dcfce7;color:#15803d}' +
+      '.sfqc-acc-access.pend{background:#fef9c3;color:#854d0e}' +
+      '.sfqc-acc-access.block{background:#fee2e2;color:#b91c1c}' +
+      '.sfqc-act-approve{background:#dcfce7;color:#15803d}' +
+      '.sfqc-act-block{background:#fee2e2;color:#b91c1c}';
     var s = document.createElement('style');
     s.textContent = css;
     document.head.appendChild(s);
@@ -266,6 +276,20 @@
       '</div>';
     document.body.appendChild(elAdmin);
 
+    // アクセス承認ゲート（未承認/停止中の利用者を全面ロックする画面）
+    elLock = document.createElement('div');
+    elLock.id = 'sfqc-lock';
+    elLock.innerHTML =
+      '<div class="sfqc-card">' +
+        '<p class="sfqc-title" id="sfqc-lock-title">⏳ 承認待ちです</p>' +
+        '<p class="sfqc-sub" id="sfqc-lock-sub"></p>' +
+        '<div class="sfqc-row">' +
+          '<button id="sfqc-lock-reload" class="sfqc-btn sfqc-btn-ghost">再確認</button>' +
+          '<button id="sfqc-lock-logout" class="sfqc-btn sfqc-btn-primary">ログアウト</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(elLock);
+
     elStatus = document.getElementById('sfqc-status');
     elAdminBtn = document.getElementById('sfqc-admin-btn');
 
@@ -297,10 +321,34 @@
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
     document.getElementById('sfqc-adm-csv').addEventListener('click', exportCsv);
+
+    // ロック画面のボタン
+    document.getElementById('sfqc-lock-logout').addEventListener('click', doLogout);
+    document.getElementById('sfqc-lock-reload').addEventListener('click', function () { if (currentUser) onLogin(currentUser); });
   }
 
   function showOverlay() { if (elOverlay) elOverlay.classList.add('show'); }
   function hideOverlay() { if (elOverlay) elOverlay.classList.remove('show'); }
+  // 未承認/停止中の利用者を全面ロック（state: 'pending'|'blocked'|'error'）
+  function showLock(state) {
+    if (!elLock) return;
+    var t = document.getElementById('sfqc-lock-title');
+    var s = document.getElementById('sfqc-lock-sub');
+    if (state === 'blocked') {
+      if (t) t.textContent = '🚫 利用が停止されています';
+      if (s) s.innerHTML = 'このアカウントは現在ご利用いただけません。<br>心当たりがない場合は管理者にお問い合わせください。';
+    } else if (state === 'error') {
+      if (t) t.textContent = '⚠️ 確認できませんでした';
+      if (s) s.innerHTML = 'アクセス権を確認できませんでした。<br>通信環境を確認して「再確認」を押してください。';
+    } else {
+      if (t) t.textContent = '⏳ 承認待ちです';
+      if (s) s.innerHTML = 'ご登録ありがとうございます。<br>管理者の承認後にご利用いただけます。<br>承認されたら「再確認」を押してください。';
+    }
+    hideOverlay();
+    elLock.classList.add('show');
+    setStatus('');
+  }
+  function hideLock() { if (elLock) elLock.classList.remove('show'); }
   function setMsg(t, kind) { if (elMsg) { elMsg.textContent = t || ''; elMsg.className = 'sfqc-msg' + (kind ? ' ' + kind : ''); } }
   function setStatus(t) { if (elStatus) elStatus.textContent = t || ''; notifyAccount(); }
   function setBadge(name) {
@@ -460,18 +508,41 @@
     busy(false);
     flushPendingFeedback(); // 未ログイン中に退避した報告があれば送信
 
-    // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
-    // 認証とアカウント管理（管理者ビュー）のみ。進捗の読込/移行は各クイズページ側に任せる。
-    if (!window.__setStore) {
-      setStatus('');
-      setMsg(''); if (elPw) elPw.value = '';
-      hideOverlay();
-      return;
-    }
-
-    setStatus('読込中…');
+    setStatus('確認中…');
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
       var data = (doc.exists && doc.data()) || {};
+
+      // ---- アクセス承認ゲート（ホワイトリスト方式・既定で不許可）----
+      // 管理者は常に許可。一般ユーザーは access==='approved' のときだけ利用可。
+      // 未設定/'pending'/'blocked' は全面ロック（承認は管理者ビューから付与）。
+      if (!isAdmin) {
+        var acc = data.access;
+        if (acc !== 'approved') {
+          try { localStorage.removeItem('sfq_access_' + user.uid); } catch (e) {}
+          // 初回サインアップ等で doc が無ければ「承認待ち」doc を作り、管理者ビューに可視化する
+          if (!doc.exists) {
+            db.collection(COLLECTION).doc(user.uid).set(
+              { access: 'pending', name: currentName, email: currentEmail, updated: Date.now() },
+              { merge: true }
+            ).catch(function () {});
+          }
+          showLock(acc || 'pending');
+          return;
+        }
+      }
+      hideLock();
+      // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
+      try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
+
+      // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
+      // 認証とアカウント管理（管理者ビュー）のみ。進捗の読込/移行は各クイズページ側に任せる。
+      if (!window.__setStore) {
+        setStatus(''); setMsg(''); if (elPw) elPw.value = '';
+        hideOverlay();
+        return;
+      }
+
+      setStatus('読込中…');
       var certStore = data.stores && data.stores[CERT_KEY];
       if (certStore) {
         // この資格のクラウド進捗を採用（資格別に分離されている）
@@ -495,6 +566,14 @@
       }
       setMsg(''); if (elPw) elPw.value = ''; hideOverlay();
     }).catch(function () {
+      // 読込失敗（オフライン等）。承認を確認できないので、過去に承認済みの端末のみ素通しする。
+      if (!isAdmin) {
+        var cached = '';
+        try { cached = localStorage.getItem('sfq_access_' + user.uid) || ''; } catch (e) {}
+        if (cached !== 'approved') { showLock('error'); return; }
+      }
+      hideLock();
+      if (!window.__setStore) { setStatus(''); hideOverlay(); return; }
       hideOverlay(); setStatus('オフライン'); toastSafe('オフライン: ローカルの進捗を表示中');
     });
   }
@@ -549,6 +628,7 @@
   var adminCert = 'all';     // 資格フィルタ
   var adminActivity = 'all'; // 'all'|'week'|'dormant'
   var adminPass = false;     // 合格者のみ
+  var adminAccess = 'all';   // 'all'|'approved'|'pending'|'blocked'（アクセス状態フィルタ）
 
   function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
   function admDaysAgo(s) { if (!s) return Infinity; try { var d = new Date(s + 'T00:00:00'); return Math.floor((Date.now() - d.getTime()) / 86400000); } catch (e) { return Infinity; } }
@@ -657,7 +737,7 @@
         if (Array.isArray(data.feedback)) {
           data.feedback.forEach(function (fb) { if (fb && typeof fb === 'object') adminFeedback.push({ uid: d.id, name: nm, email: email, fb: fb }); });
         }
-        var entry = byUid[d.id] || (byUid[d.id] = { uid: d.id, name: nm, email: email, updated: data.updated || 0, certs: [] });
+        var entry = byUid[d.id] || (byUid[d.id] = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), certs: [] });
         var stores = data.stores;
         if (stores && typeof stores === 'object' && Object.keys(stores).length) {
           Object.keys(stores).forEach(function (ck) {
@@ -709,6 +789,7 @@
     if (adminActivity === 'week') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) <= 6; });
     else if (adminActivity === 'dormant') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) >= 30; });
     if (adminPass) list = list.filter(function (u) { return u.agg.examPassed > 0; });
+    if (adminAccess !== 'all') list = list.filter(function (u) { return (u.access || 'pending') === adminAccess; });
     list.sort(function (a, b) {
       if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
       if (adminSort === 'rate')     return b.agg.rate - a.agg.rate;
@@ -742,6 +823,10 @@
         '<button class="sfqc-fchip' + (adminActivity === 'week' ? ' on' : '') + '" data-act="week">7日以内</button>' +
         '<button class="sfqc-fchip' + (adminActivity === 'dormant' ? ' on' : '') + '" data-act="dormant">休眠30日+</button>' +
         '<button class="sfqc-fchip' + (adminPass ? ' on' : '') + '" data-pass="1">合格者</button>' +
+        '<span class="sfqc-sort-label">アクセス:</span>' +
+        '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">承認済み</button>' +
+        '<button class="sfqc-fchip' + (adminAccess === 'pending' ? ' on' : '') + '" data-access="pending">承認待ち</button>' +
+        '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">停止中</button>' +
       '</div>';
     html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
         '<span class="sfqc-sort-label">並び順:</span>' +
@@ -758,10 +843,16 @@
       var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
       var dago = admDaysAgo(a.lastStudyDate);
       var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
+      var accMap = { approved: ['ok', '✅ 承認済み'], pending: ['pend', '⏳ 承認待ち'], blocked: ['block', '🚫 停止中'] };
+      var am = accMap[u.access] || accMap.pending;
+      var accChip = '<span class="sfqc-acc-access ' + am[0] + '">' + am[1] + '</span>';
+      var accBtn = (u.access === 'approved')
+        ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
+        : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
       html +=
         '<div class="sfqc-acc">' +
           '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + dormantLabel + '</span>' +
+            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + dormantLabel + '</span>' +
             '<span class="sfqc-acc-stats">' +
               '<span>登録資格 <b>' + a.certCount + '</b></span>' +
               '<span>解答 <b>' + a.answered + '</b>問 / 述べ<b>' + a.attempts + '</b>回</span>' +
@@ -774,6 +865,7 @@
               '<span>最終更新 ' + fmtDate(u.updated) + '</span>' +
             '</span>' +
             '<span class="sfqc-acc-actions">' +
+              accBtn +
               '<button class="sfqc-act-detail" data-i="' + i + '">詳細 ▾</button>' +
             '</span>' +
           '</div>' +
@@ -798,6 +890,12 @@
     });
     body.querySelectorAll('[data-pass]').forEach(function (b) {
       b.addEventListener('click', function () { adminPass = !adminPass; renderAdmin(); });
+    });
+    body.querySelectorAll('[data-access]').forEach(function (b) {
+      b.addEventListener('click', function () { var v = b.getAttribute('data-access'); adminAccess = (adminAccess === v ? 'all' : v); renderAdmin(); });
+    });
+    body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
     });
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
@@ -899,6 +997,16 @@
     box.querySelectorAll('.sfqc-act-del').forEach(function (b) {
       b.addEventListener('click', function () { deleteAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
     });
+  }
+
+  // アクセス権の付与/停止（管理者のみ）。Firestoreルールで access は管理者だけ書込可。
+  function setAccess(uid, name, state) {
+    if (!isAdmin || !db) return;
+    var verb = state === 'approved' ? '承認' : '停止';
+    if (!confirm('「' + name + '」を' + verb + 'します。よろしいですか？')) return;
+    db.collection(COLLECTION).doc(uid).set({ access: state, updated: Date.now() }, { merge: true })
+      .then(function () { toastSafe('「' + name + '」を' + verb + 'しました'); loadAdmin(); })
+      .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
   }
 
   function resetAccount(uid, cert, name) {
