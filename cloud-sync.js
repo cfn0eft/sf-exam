@@ -292,6 +292,7 @@
           '<button id="sfqc-lock-reload" class="sfqc-btn sfqc-btn-ghost">再確認</button>' +
           '<button id="sfqc-lock-logout" class="sfqc-btn sfqc-btn-ghost">ログアウト</button>' +
         '</div>' +
+        '<p class="sfqc-hint">⚠️ サーバーの関係で、管理・制限を行う場合があります。<br>詳しくは管理者にお尋ねください。</p>' +
       '</div>';
     document.body.appendChild(elLock);
 
