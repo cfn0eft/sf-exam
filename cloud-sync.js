@@ -520,6 +520,7 @@
     var mBanner = document.createElement('div');
     mBanner.id = 'sfqc-maint-banner';
     document.body.appendChild(mBanner);
+    window.addEventListener('resize', function () { if (!isAdmin && lastMaint) checkMaintenance(); });
 
     elStatus = document.getElementById('sfqc-status');
     elAdminBtn = document.getElementById('sfqc-admin-btn');
@@ -990,6 +991,7 @@
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
+    document.body.style.paddingTop = '';
   }
 
   function showChatFab(on) {
@@ -1363,6 +1365,8 @@
         banner.classList.add('show');
       } else { banner.classList.remove('show'); }
     }
+    // 予告バナーは position:fixed なので、表示中はその高さぶん本文を押し下げて重なりを防ぐ
+    document.body.style.paddingTop = banner.classList.contains('show') ? (banner.offsetHeight + 'px') : '';
     // 次に状態が変わる「境界時刻」ちょうどに再判定する（タイマー＝ほぼリアルタイムで開始/終了を反映）
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     var cands = [];
