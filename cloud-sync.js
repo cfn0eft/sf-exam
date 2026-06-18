@@ -510,9 +510,13 @@
         '<p class="sfqc-sub" id="sfqc-maint-msg"></p>' +
         '<p class="sfqc-sub" id="sfqc-maint-end" style="font-weight:700;color:#b45309"></p>' +
         '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-maint-reload" style="width:100%">再確認</button>' +
+        '<div class="sfqc-row" style="margin-top:8px">' +
+          '<button class="sfqc-btn sfqc-btn-ghost" id="sfqc-maint-logout" style="width:100%">ログアウト（管理者で入り直す）</button>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(maint);
     document.getElementById('sfqc-maint-reload').addEventListener('click', checkMaintenance);
+    document.getElementById('sfqc-maint-logout').addEventListener('click', doLogout);
     var mBanner = document.createElement('div');
     mBanner.id = 'sfqc-maint-banner';
     document.body.appendChild(mBanner);
