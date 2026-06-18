@@ -1,21 +1,25 @@
 /* SF資格 学習アプリ — Service Worker
  * 役割: アプリシェルをキャッシュしてオフラインでも学習できるようにする。
- * 方針: 同一オリジン = キャッシュ優先＋裏で更新 / クロスオリジン(Firebase等) = ネットワーク優先。
+ * 方針:
+ *   - HTML(ナビゲーション) = ネットワーク優先（最新の ?v= を必ず読ませる。オフライン時のみキャッシュ）
+ *   - その他の同一オリジン(?v= 付きJS/CSS・データJSON 等) = キャッシュ優先＋裏で更新
+ *   - クロスオリジン(Firebase等) = ネットワーク優先
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
+ * ※ HTML をネットワーク優先にすることで、ハードリロード(Ctrl+Shift+R)なしで更新が反映される。
  */
-const CACHE = 'sf-exam-v68';
+const CACHE = 'sf-exam-v69';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=66',
+  './maintenance.js?v=67',
   './manifest.webmanifest',
-  './quiz.css?v=66',
-  './quiz-engine.js?v=66',
-  './changelog.js?v=66',
-  './figures.js?v=66',
+  './quiz.css?v=67',
+  './quiz-engine.js?v=67',
+  './changelog.js?v=67',
+  './figures.js?v=67',
   './firebase-config.js',
-  './cloud-sync.js?v=66',
+  './cloud-sync.js?v=67',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   // 学習データ：初回訪問からオフラインで学べるようプリキャッシュ（allSettledなので失敗してもinstallは継続）
@@ -69,7 +73,24 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // 同一オリジン: キャッシュ優先＋裏でネットワーク更新（stale-while-revalidate）
+  // HTML(ナビゲーション/ドキュメント): ネットワーク優先。
+  // エントリのHTMLを常に最新にすることで、参照する ?v= 付きアセットも新URLとして取得され、
+  // ハードリロードなしで更新が反映される。オフライン時のみキャッシュへフォールバック。
+  const isHTML = req.mode === 'navigate' ||
+    req.destination === 'document' ||
+    (req.headers.get('accept') || '').includes('text/html');
+  if (isHTML) {
+    e.respondWith(
+      fetch(req).then((r) => {
+        const cp = r.clone();
+        caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {});
+        return r;
+      }).catch(() => caches.match(req).then((c) => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // その他の同一オリジン(?v= 付きJS/CSS・データJSON 等): キャッシュ優先＋裏でネットワーク更新（stale-while-revalidate）
   e.respondWith(
     caches.match(req).then((cached) => {
       const net = fetch(req).then((r) => {
