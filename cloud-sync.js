@@ -40,12 +40,12 @@
   /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
   var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
-  var lastBroadcast = null, lastNotices = [], lastChat = [], lastRead = {};
+  var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {};
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
-  var adminBroadcast = null;       // 管理者ビュー用の現在の一斉お知らせ
+  var adminBroadcasts = [];        // 管理者ビュー用：一斉お知らせレコード一覧 [{id,...}]
   var adminColUnsub = null, adminRenderTimer = null; // 管理者ビューのライブ購読（DM未読バッジ等の即時反映）
   var hbTimer = null, hbVisHandler = null;          // 在席ハートビート（lastSeen 更新）
   var ONLINE_MS = 120000;                            // この時間以内に lastSeen があれば「オンライン」とみなす
@@ -99,6 +99,7 @@
       '.sfqc-mini{border:none;border-radius:8px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer}' +
       '.sfqc-mini.csv{background:#10b981;color:#fff}' +
       '.sfqc-mini.reload{background:#6366f1;color:#fff}' +
+      '.sfqc-mini.sfqc-danger{background:#fee2e2;color:#b91c1c}body.dark .sfqc-mini.sfqc-danger{background:#7f1d1d;color:#fecaca}' +
       '.sfqc-mini.close{background:#e2e8f0;color:#475569}' +
       '.sfqc-adminbody{flex:1;overflow:auto;padding:14px 18px}' +
       '.sfqc-acc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden}' +
@@ -566,7 +567,7 @@
     elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
-    document.getElementById('sfqc-adm-broadcast').addEventListener('click', sendBroadcast);
+    document.getElementById('sfqc-adm-broadcast').addEventListener('click', function () { openCompose({ mode: 'broadcast' }); });
     document.getElementById('sfqc-adm-csv').addEventListener('click', exportCsv);
 
     // ロック画面のボタン
@@ -982,16 +983,17 @@
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
     }, function () {});
-    // 一斉お知らせ doc を購読
+    // 一斉お知らせ（レコード）＋メンテナンス設定を broadcast コレクションでまとめて購読
     if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
-    broadcastUnsub = db.collection(BROADCAST_COL).doc('current').onSnapshot(function (snap) {
-      lastBroadcast = (snap.exists && snap.data()) || null;
+    broadcastUnsub = db.collection(BROADCAST_COL).onSnapshot(function (snap) {
+      var arr = [];
+      snap.forEach(function (d) {
+        if (d.id === MAINT_DOC) { lastMaint = d.data() || null; return; }
+        if (d.id === 'current') return; // 旧・単一お知らせは無視（レコード化済み）
+        var x = d.data() || {}; if (!x.msg) return; x.id = d.id; arr.push(x);
+      });
+      lastBroadcasts = arr;
       surfaceNotices();
-    }, function () {});
-    // メンテナンス設定を購読＋定期チェック（管理者は対象外）
-    if (maintUnsub) { maintUnsub(); maintUnsub = null; }
-    maintUnsub = db.collection(BROADCAST_COL).doc(MAINT_DOC).onSnapshot(function (snap) {
-      lastMaint = (snap.exists && snap.data()) || null;
       checkMaintenance();
     }, function () {});
     if (maintTimer) clearInterval(maintTimer);
@@ -1004,7 +1006,7 @@
     if (maintUnsub) { maintUnsub(); maintUnsub = null; }
     if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
-    lastBroadcast = null; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null;
+    lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null;
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
@@ -1016,20 +1018,22 @@
     if (fab) fab.classList[on ? 'add' : 'remove']('show');
   }
 
+  // お知らせの未読判定（配信時刻を過ぎ、かつ最終改訂(rev)より後に既読していない）
+  function annDue(x, now) { return (x.publishAt || x.ts || 0) <= now; }
+  function annUnread(x, map) { return ((map && map[x.id]) || 0) < (x.rev || x.ts || 0); }
   // 未読のお知らせ（一斉＋個別）をまとめて1つのモーダルでポップ
   function surfaceNotices() {
     try {
       if (document.getElementById('sfqc-replies')) return; // 既にポップ表示中
       var now = Date.now();
-      var due = function (x) { return (x.publishAt || x.ts || 0) <= now; }; // 予約配信：配信時刻を過ぎたものだけ
+      var bcm = (lastRead && lastRead.bcm) || {}, ntm = (lastRead && lastRead.ntm) || {};
       var items = [];
-      var bcSeen = num(localStorage.getItem(uidKey('sfq_broadcast_seen')));
-      if (lastBroadcast && lastBroadcast.msg && due(lastBroadcast) && (lastBroadcast.ts || 0) > bcSeen) {
-        items.push({ title: lastBroadcast.title || '📢 お知らせ', msg: lastBroadcast.msg, ts: lastBroadcast.ts || 0, kind: 'bc' });
-      }
-      var nSeen = num(localStorage.getItem(uidKey('sfq_notice_seen')));
-      lastNotices.forEach(function (n) {
-        if (n && n.msg && due(n) && (n.ts || 0) > nSeen) items.push({ title: '📩 管理者からのお知らせ', msg: n.msg, ts: n.ts || 0, kind: 'notice' });
+      lastBroadcasts.forEach(function (b) {
+        if (b && b.msg && annDue(b, now) && annUnread(b, bcm)) items.push({ kind: 'bc', id: b.id, title: '📢 お知らせ', msg: b.msg, ts: b.ts || 0, rev: b.rev || b.ts || 0 });
+      });
+      (lastNotices || []).forEach(function (n) {
+        var nid = n && (n.id || ('n' + (n.ts || 0)));
+        if (n && n.msg && annDue(n, now) && annUnread({ id: nid, rev: n.rev || n.ts || 0 }, ntm)) items.push({ kind: 'notice', id: nid, title: '📩 あなたへのお知らせ', msg: n.msg, ts: n.ts || 0, rev: n.rev || n.ts || 0 });
       });
       if (!items.length) return;
       items.sort(function (a, b) { return b.ts - a.ts; });
@@ -1051,13 +1055,9 @@
     document.body.appendChild(wrap);
     var onKey;
     var dismiss = function () {
-      try {
-        var maxBc = 0, maxN = 0;
-        items.forEach(function (r) { if (r.kind === 'bc') maxBc = Math.max(maxBc, r.ts); else maxN = Math.max(maxN, r.ts); });
-        if (maxBc) localStorage.setItem(uidKey('sfq_broadcast_seen'), String(Math.max(maxBc, num(localStorage.getItem(uidKey('sfq_broadcast_seen'))))));
-        if (maxN) localStorage.setItem(uidKey('sfq_notice_seen'), String(Math.max(maxN, num(localStorage.getItem(uidKey('sfq_notice_seen'))))));
-        writeRead({ bc: maxBc, notice: maxN }); // 既読をクラウドへ記録（管理者が可視化）
-      } catch (e) {}
+      var now = Date.now(), bcm = {}, ntm = {};
+      items.forEach(function (r) { if (r.kind === 'bc') bcm[r.id] = now; else ntm[r.id] = now; });
+      writeRead({ bcm: bcm, ntm: ntm }); // 既読をクラウドへ記録（管理者が可視化）
       document.removeEventListener('keydown', onKey);
       if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
     };
@@ -1085,15 +1085,24 @@
       if (mode === 'user') writeRead({ chat: max }); // 利用者が読んだら既読を記録
     } catch (e) {}
   }
-  // 既読タイムスタンプを自 doc の read{bc,notice,chat} に記録（値は増加方向のみ）。管理者ビューで集計表示。
+  // 既読を自 doc の read{bcm:{id:ts}, ntm:{id:ts}, chat:ts} に記録（管理者ビューで集計表示）。
   function writeRead(patch) {
     if (!db || !currentUser || isAdmin) return;
     var cur = lastRead || {}, out = {}, changed = false;
-    ['bc', 'notice', 'chat'].forEach(function (k) {
-      var v = patch[k] || 0; if (v && v > (cur[k] || 0)) { out[k] = v; changed = true; }
+    // 一斉/個別お知らせ：レコードIDごとの既読マップ
+    ['bcm', 'ntm'].forEach(function (mk) {
+      if (!patch[mk]) return;
+      var curMap = (cur[mk] && typeof cur[mk] === 'object') ? cur[mk] : {};
+      var outMap = {};
+      Object.keys(patch[mk]).forEach(function (id) {
+        var v = patch[mk][id] || 0; if (v && v > (curMap[id] || 0)) { outMap[id] = v; curMap[id] = v; }
+      });
+      if (Object.keys(outMap).length) { out[mk] = outMap; cur[mk] = curMap; changed = true; }
     });
+    // チャット：高水位（数値）
+    if (patch.chat && patch.chat > (cur.chat || 0)) { out.chat = patch.chat; cur.chat = patch.chat; changed = true; }
     if (!changed) return;
-    lastRead = { bc: Math.max(cur.bc || 0, out.bc || 0), notice: Math.max(cur.notice || 0, out.notice || 0), chat: Math.max(cur.chat || 0, out.chat || 0) };
+    lastRead = cur;
     db.collection(COLLECTION).doc(currentUser.uid).set({ read: out }, { merge: true }).catch(function () {});
   }
   function refreshChatBadge() {
@@ -1174,10 +1183,6 @@
     }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
   }
 
-  // 管理者：一斉お知らせ／個別お知らせの作成（予約配信つき）。作成モーダルを開く。
-  function sendBroadcast() { if (isAdmin && db) openCompose('broadcast'); }
-  function sendNotice(uid, name) { if (isAdmin && db && uid) openCompose('notice', uid, name); }
-
   // datetime-local 値（'YYYY-MM-DDTHH:MM'）⇔ ms
   function msToLocalInput(ms) {
     if (!ms) return '';
@@ -1186,20 +1191,33 @@
   }
   function localInputToMs(v) { if (!v) return 0; var t = new Date(v).getTime(); return isFinite(t) ? t : 0; }
 
-  function openCompose(mode, uid, name) {
-    composeCtx = { mode: mode, uid: uid || '', name: name || '' };
+  // 作成モーダルを開く（新規/編集 兼用）。
+  //   broadcast: openCompose({mode:'broadcast', id?, msg?, publishAt?})
+  //   notice   : openCompose({mode:'notice', uid?, name?, id?, msg?, publishAt?})  uid 未指定なら宛先セレクトを表示
+  function openCompose(ctx) {
+    composeCtx = ctx || {};
+    var mode = composeCtx.mode, editing = !!composeCtx.id;
     var card = document.getElementById('sfqc-cmp-card');
-    var heading = (mode === 'broadcast') ? '📢 全員へお知らせ' : ('📩 ' + (name || '利用者') + ' さんへお知らせ');
+    var heading = (mode === 'broadcast') ? (editing ? '📢 全体お知らせを編集' : '📢 全体へお知らせ')
+      : (editing ? '📩 個別お知らせを編集' : '📩 個別お知らせ');
+    var recipientSel = '';
+    if (mode === 'notice' && !composeCtx.uid) {
+      var opts = annAudience().slice().sort(function (a, b) { return (a.name || '').localeCompare(b.name || '', 'ja'); })
+        .map(function (u) { return '<option value="' + esc(u.uid) + '">' + esc(u.name) + (u.email ? '（' + esc(u.email) + '）' : '') + '</option>'; }).join('');
+      recipientSel = '<label>宛先</label><select id="sfqc-cmp-to"><option value="">— 選択 —</option>' + opts + '</select>';
+    } else if (mode === 'notice') {
+      recipientSel = '<p class="sfqc-cmp-hint">宛先：' + esc(composeCtx.name || '利用者') + '</p>';
+    }
     card.innerHTML =
-      '<h3>' + esc(heading) + '</h3>' +
+      '<h3>' + esc(heading) + '</h3>' + recipientSel +
       '<label>本文</label>' +
-      '<textarea id="sfqc-cmp-text" maxlength="2000" placeholder="お知らせの内容…"></textarea>' +
+      '<textarea id="sfqc-cmp-text" maxlength="2000" placeholder="お知らせの内容…">' + esc(composeCtx.msg || '') + '</textarea>' +
       '<label>予約配信（空欄なら今すぐ）</label>' +
-      '<input type="datetime-local" id="sfqc-cmp-when">' +
-      '<p class="sfqc-cmp-hint">指定した日時以降に、利用者の画面へポップ表示されます。</p>' +
+      '<input type="datetime-local" id="sfqc-cmp-when" value="' + esc((composeCtx.publishAt && composeCtx.publishAt > Date.now()) ? msToLocalInput(composeCtx.publishAt) : '') + '">' +
+      '<p class="sfqc-cmp-hint">指定日時以降に利用者の画面へポップ表示されます。編集すると未読に戻り、再度表示されます。</p>' +
       '<div class="sfqc-cmp-row">' +
         '<button class="sfqc-btn sfqc-btn-ghost" id="sfqc-cmp-cancel">キャンセル</button>' +
-        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-cmp-send">送信</button>' +
+        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-cmp-send">' + (editing ? '保存' : '送信') + '</button>' +
       '</div>';
     document.getElementById('sfqc-cmp-cancel').addEventListener('click', closeCompose);
     document.getElementById('sfqc-cmp-send').addEventListener('click', submitCompose);
@@ -1215,26 +1233,67 @@
     var now = Date.now();
     var publishAt = (when && when > now) ? when : now;
     var scheduled = publishAt > now + 1000;
+    msg = msg.slice(0, 2000);
+    var done = function (label) {
+      toastSafe(label); closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+    };
+    var fail = function (e) { alert('保存に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); };
     if (composeCtx.mode === 'broadcast') {
-      var rec = { title: '📢 お知らせ', msg: msg.slice(0, 2000), ts: now, publishAt: publishAt, by: currentName || 'admin' };
-      db.collection(BROADCAST_COL).doc('current').set(rec).then(function () {
-        adminBroadcast = rec;
-        logAdmin('一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 28));
-        toastSafe(scheduled ? '一斉お知らせを予約しました' : '一斉お知らせを送信しました');
-        closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
-      }).catch(function (e) { alert('送信に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
+      var col = db.collection(BROADCAST_COL);
+      var rec = { msg: msg, publishAt: publishAt, rev: now, by: currentName || 'admin' };
+      var p;
+      if (composeCtx.id) { p = col.doc(composeCtx.id).set(rec, { merge: true }); }
+      else { rec.ts = now; p = col.add(rec); }
+      p.then(function () { logAdmin(composeCtx.id ? '一斉お知らせ編集' : '一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 26)); loadBroadcasts(function () { done(composeCtx && composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました')); }); }).catch(fail);
     } else {
-      var rec2 = { msg: msg.slice(0, 2000), ts: now, publishAt: publishAt, by: currentName || 'admin' };
-      var FV = firebase.firestore.FieldValue;
-      var ref = db.collection(COLLECTION).doc(composeCtx.uid);
-      ref.update('notices', FV.arrayUnion(rec2)).catch(function () {
-        return ref.set({ notices: [rec2] }, { merge: true });
-      }).then(function () {
-        logAdmin('個別お知らせ', (composeCtx.name || '') + '：' + (scheduled ? '[予約] ' : '') + msg.slice(0, 18));
-        toastSafe(scheduled ? 'お知らせを予約しました' : 'お知らせを送信しました');
-        closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
-      }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
+      var uid = composeCtx.uid || (document.getElementById('sfqc-cmp-to') && document.getElementById('sfqc-cmp-to').value);
+      if (!uid) { alert('宛先を選択してください。'); return; }
+      var u = findUser(uid);
+      var arr = (u && Array.isArray(u.notices)) ? u.notices.slice() : [];
+      if (composeCtx.id) {
+        var hit = false;
+        arr = arr.map(function (n) { var nid = n.id || ('n' + (n.ts || 0)); if (nid === composeCtx.id) { hit = true; return { id: nid, msg: msg, ts: n.ts || now, rev: now, publishAt: publishAt, by: currentName || 'admin' }; } return n; });
+        if (!hit) arr.push({ id: composeCtx.id, msg: msg, ts: now, rev: now, publishAt: publishAt, by: currentName || 'admin' });
+      } else {
+        arr.push({ id: 'n' + now + Math.floor(Math.random() * 1000), msg: msg, ts: now, rev: now, publishAt: publishAt, by: currentName || 'admin' });
+      }
+      db.collection(COLLECTION).doc(uid).set({ notices: arr }, { merge: true }).then(function () {
+        if (u) u.notices = arr;
+        logAdmin(composeCtx.id ? '個別お知らせ編集' : '個別お知らせ', (u && u.name || '') + '：' + msg.slice(0, 16));
+        done(composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました'));
+      }).catch(function (e) { alert('保存に失敗しました: ' + (e && e.message)); });
     }
+  }
+  // 全体お知らせの編集/削除、個別お知らせの編集/削除
+  function editBroadcast(id) { var b = adminBroadcasts.filter(function (x) { return x.id === id; })[0]; if (b) openCompose({ mode: 'broadcast', id: id, msg: b.msg, publishAt: b.publishAt }); }
+  function deleteBroadcast(id) {
+    if (!isAdmin || !db || !id) return;
+    if (!confirm('この全体お知らせを削除します。よろしいですか？')) return;
+    db.collection(BROADCAST_COL).doc(id).delete().then(function () { logAdmin('一斉お知らせ削除', id); loadBroadcasts(function () { toastSafe('削除しました'); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin(); }); })
+      .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
+  }
+  function editNotice(uid, id) {
+    var u = findUser(uid); if (!u) return;
+    var n = (u.notices || []).filter(function (x) { return (x.id || ('n' + (x.ts || 0))) === id; })[0]; if (!n) return;
+    openCompose({ mode: 'notice', uid: uid, name: u.name, id: id, msg: n.msg, publishAt: n.publishAt });
+  }
+  function deleteNotice(uid, id) {
+    if (!isAdmin || !db || !uid) return;
+    var u = findUser(uid); if (!u) return;
+    if (!confirm('「' + (u.name || '') + '」さんへの個別お知らせを削除します。よろしいですか？')) return;
+    var arr = (u.notices || []).filter(function (x) { return (x.id || ('n' + (x.ts || 0))) !== id; });
+    db.collection(COLLECTION).doc(uid).set({ notices: arr }, { merge: true }).then(function () {
+      u.notices = arr; logAdmin('個別お知らせ削除', (u.name || '') + '／' + id); toastSafe('削除しました'); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+    }).catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
+  }
+  // 全体お知らせレコードを取得して adminBroadcasts に格納
+  function loadBroadcasts(cb) {
+    if (!db) { if (cb) cb(); return; }
+    db.collection(BROADCAST_COL).get().then(function (snap) {
+      var arr = [];
+      snap.forEach(function (d) { if (d.id === MAINT_DOC || d.id === 'current') return; var x = d.data() || {}; if (!x.msg) return; x.id = d.id; arr.push(x); });
+      adminBroadcasts = arr; if (cb) cb();
+    }).catch(function () { if (cb) cb(); });
   }
 
   /* ---------------- メンテナンス（単発＋定期。期間中は非管理者を全画面ロック） ---------------- */
@@ -1754,11 +1813,12 @@
       ingestAdminDocs(snap);
       if (first) {
         first = false;
-        // 初回だけ 一斉お知らせ／メンテナンス設定を取得してから描画
-        db.collection(BROADCAST_COL).doc('current').get().then(function (b) { adminBroadcast = (b.exists && b.data()) || null; })
-          .catch(function () {}).then(function () { return db.collection(BROADCAST_COL).doc(MAINT_DOC).get(); })
-          .then(function (m) { lastMaint = (m && m.exists && m.data()) || null; }).catch(function () {})
-          .then(function () { if (elAdmin && elAdmin.classList.contains('show')) renderAdmin(); });
+        // 初回だけ お知らせレコード一覧／メンテナンス設定を取得してから描画
+        loadBroadcasts(function () {
+          db.collection(BROADCAST_COL).doc(MAINT_DOC).get()
+            .then(function (m) { lastMaint = (m && m.exists && m.data()) || null; }).catch(function () {})
+            .then(function () { if (elAdmin && elAdmin.classList.contains('show')) renderAdmin(); });
+        });
         return;
       }
       scheduleAdminRender(); // 2回目以降＝ライブ更新（入力中などは控える・デバウンス）
@@ -1930,7 +1990,7 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
 
-    // ── タブで「ダッシュボード／ユーザー／メッセージ(DM)」を分離 ──
+    // ── タブで「ユーザー／ダッシュボード／お知らせ／DM」を分離 ──
     var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
     var tabBtn = function (k, l, badge) {
       return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
@@ -1939,7 +1999,8 @@
     var html = '<div class="sfqc-tabs">' +
         tabBtn('users', '👥 ユーザー', adminPendingCount || 0) +
         tabBtn('dash', '📊 ダッシュボード', 0) +
-        tabBtn('msg', '💬 メッセージ', totalUnread || 0) +
+        tabBtn('ann', '📢 お知らせ', 0) +
+        tabBtn('dm', '💬 DM', totalUnread || 0) +
       '</div>';
 
     if (adminTab === 'dash') {
@@ -1947,9 +2008,10 @@
       html += maintenanceSectionHTML();
       html += adminDashboardHTML();
       html += auditLogHTML();
-    } else if (adminTab === 'msg') {
-      // ユーザーとのDM＋フィードバック（一斉お知らせはヘッダーの📢ボタン）
-      html += messagesSectionHTML();
+    } else if (adminTab === 'ann') {
+      html += announcementsSectionHTML(); // お知らせ（一斉＋個別）の作成・編集・削除・既読
+    } else if (adminTab === 'dm') {
+      html += dmSectionHTML();            // 利用者とのチャット＋フィードバック
     } else {
       // ユーザー管理（新規申請＋一覧。承認/停止/詳細）
       html += applicationsSectionHTML();
@@ -2025,8 +2087,13 @@
     body.querySelectorAll('[data-tab]').forEach(function (b) {
       b.addEventListener('click', function () { adminTab = b.getAttribute('data-tab'); renderAdmin(); });
     });
-    // 一斉お知らせの作成・編集／メンテナンス編集
-    var bcNew = document.getElementById('sfqc-bc-new'); if (bcNew) bcNew.addEventListener('click', sendBroadcast);
+    // お知らせ（全体/個別）の新規・編集・削除
+    var bcNew = document.getElementById('sfqc-bc-new'); if (bcNew) bcNew.addEventListener('click', function () { openCompose({ mode: 'broadcast' }); });
+    var ntNew = document.getElementById('sfqc-nt-new'); if (ntNew) ntNew.addEventListener('click', function () { openCompose({ mode: 'notice' }); });
+    body.querySelectorAll('[data-bcedit]').forEach(function (b) { b.addEventListener('click', function () { editBroadcast(b.getAttribute('data-bcedit')); }); });
+    body.querySelectorAll('[data-bcdel]').forEach(function (b) { b.addEventListener('click', function () { deleteBroadcast(b.getAttribute('data-bcdel')); }); });
+    body.querySelectorAll('[data-ntedit]').forEach(function (b) { b.addEventListener('click', function () { var p = b.getAttribute('data-ntedit').split('|'); editNotice(p[0], p[1]); }); });
+    body.querySelectorAll('[data-ntdel]').forEach(function (b) { b.addEventListener('click', function () { var p = b.getAttribute('data-ntdel').split('|'); deleteNotice(p[0], p[1]); }); });
     var maintEdit = document.getElementById('sfqc-maint-edit'); if (maintEdit) maintEdit.addEventListener('click', openMaintEditor);
     var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
     // メッセージタブ：DM絞り込み
@@ -2063,10 +2130,7 @@
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
     });
-    // 管理者→利用者：個別お知らせ・チャット
-    body.querySelectorAll('[data-notice-uid]').forEach(function (b) {
-      b.addEventListener('click', function () { sendNotice(b.getAttribute('data-notice-uid'), b.getAttribute('data-notice-name')); });
-    });
+    // 管理者→利用者：チャットを開く
     body.querySelectorAll('[data-chat-uid]').forEach(function (b) {
       b.addEventListener('click', function () { openChat(b.getAttribute('data-chat-uid'), b.getAttribute('data-chat-name'), 'admin'); });
     });
@@ -2347,93 +2411,96 @@
     var m = null; chat.forEach(function (x) { if (x && (!m || (x.ts || 0) > (m.ts || 0))) m = x; });
     return m;
   }
-  // メッセージタブ：ユーザーとのDM一覧＋フィードバック（ダッシュボードから分離）
-  function messagesSectionHTML() {
+  // 配信対象（管理者自身を除く）と、一斉お知らせの既読者
+  function annAudience() { var myUid = (currentUser && currentUser.uid) || ''; return adminUsers.filter(function (u) { return u.uid !== myUid; }); }
+
+  // 📢 お知らせタブ：全体お知らせ（レコード）＋個別お知らせ。どちらも作成・編集・削除・既読つき。
+  function announcementsSectionHTML() {
+    var now = Date.now();
+    // ── 全体お知らせ ──
+    var html = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">📢 全体お知らせ <span class="sfqc-fb-count">' + adminBroadcasts.length + '件</span></div>' +
+      '<div class="sfqc-fb-dl"><button class="sfqc-mini reload" id="sfqc-bc-new">＋ 新規作成</button></div></div>';
+    if (!adminBroadcasts.length) html += '<div class="sfqc-empty">まだ全体お知らせはありません。</div>';
+    var aud = annAudience();
+    adminBroadcasts.slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).forEach(function (b) {
+      var rev = b.rev || b.ts || 0;
+      var readers = aud.filter(function (u) { return (((u.read && u.read.bcm) || {})[b.id] || 0) >= rev; });
+      var unreadU = aud.filter(function (u) { return (((u.read && u.read.bcm) || {})[b.id] || 0) < rev; });
+      var scheduled = (b.publishAt || b.ts || 0) > now;
+      var when = scheduled ? ('🕒 予約 ' + fmtDate(b.publishAt) + '（未配信）') : ('✅ 配信 ' + fmtDate(b.publishAt || b.ts));
+      var prev = b.msg.length > 100 ? b.msg.slice(0, 100) + '…' : b.msg;
+      var readerList = readers.map(function (u) { return '<div class="sfqc-rd-row">✅ ' + esc(u.name) + ' <span class="sfqc-rd-t">' + esc(fmtDate(((u.read && u.read.bcm) || {})[b.id])) + '</span></div>'; }).join('') || '<div class="sfqc-rd-row sfqc-rd-none">まだ既読の人はいません</div>';
+      var unreadList = unreadU.map(function (u) { return '<div class="sfqc-rd-row">⬜ ' + esc(u.name) + '</div>'; }).join('') || '<div class="sfqc-rd-row sfqc-rd-none">全員が既読です 🎉</div>';
+      html += '<div class="sfqc-bc-card">' +
+          '<div class="sfqc-bc-msg">' + esc(prev) + '</div>' +
+          '<div class="sfqc-bc-meta">' +
+            '<span>' + esc(when) + '</span>' +
+            '<span>👁 既読 <b>' + readers.length + '</b> / ' + aud.length + '人</span>' +
+            '<button class="sfqc-mini" data-bcedit="' + esc(b.id) + '">✏️ 編集</button>' +
+            '<button class="sfqc-mini sfqc-danger" data-bcdel="' + esc(b.id) + '">🗑 削除</button>' +
+          '</div>' +
+          '<details class="sfqc-rd"><summary>👥 既読者・未読者</summary><div class="sfqc-rd-grid">' +
+            '<div><div class="sfqc-rd-h">既読 ' + readers.length + '</div>' + readerList + '</div>' +
+            '<div><div class="sfqc-rd-h">未読 ' + unreadU.length + '</div>' + unreadList + '</div>' +
+          '</div></details>' +
+        '</div>';
+    });
+    // ── 個別お知らせ（全ユーザー横断） ──
+    html += '<div class="sfqc-divider"></div>';
+    var notices = [];
+    adminUsers.forEach(function (u) { (u.notices || []).forEach(function (n) { notices.push({ u: u, n: n, id: (n.id || ('n' + (n.ts || 0))) }); }); });
+    notices.sort(function (a, b) { return (b.n.ts || 0) - (a.n.ts || 0); });
+    html += '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">📩 個別お知らせ <span class="sfqc-fb-count">' + notices.length + '件</span></div>' +
+      '<div class="sfqc-fb-dl"><button class="sfqc-mini reload" id="sfqc-nt-new">＋ 個別送信</button></div></div>';
+    if (!notices.length) html += '<div class="sfqc-empty">まだ個別お知らせはありません。</div>';
+    notices.forEach(function (it) {
+      var n = it.n, u = it.u, rev = n.rev || n.ts || 0;
+      var rd = (((u.read && u.read.ntm) || {})[it.id] || 0) >= rev;
+      var scheduled = (n.publishAt || n.ts || 0) > now;
+      var when = scheduled ? ('🕒 予約 ' + fmtDate(n.publishAt) + '（未配信）') : ('配信 ' + fmtDate(n.publishAt || n.ts));
+      var prev = n.msg.length > 80 ? n.msg.slice(0, 80) + '…' : n.msg;
+      html += '<div class="sfqc-bc-card">' +
+          '<div class="sfqc-bc-meta" style="margin-bottom:6px">' +
+            '<span style="font-weight:700">👤 ' + esc(u.name) + '</span>' +
+            '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">' + (rd ? '既読' : '未読') + '</span>' +
+            '<span>' + esc(when) + '</span>' +
+          '</div>' +
+          '<div class="sfqc-bc-msg">' + esc(prev) + '</div>' +
+          '<div class="sfqc-bc-meta">' +
+            '<button class="sfqc-mini" data-ntedit="' + esc(u.uid) + '|' + esc(it.id) + '">✏️ 編集</button>' +
+            '<button class="sfqc-mini sfqc-danger" data-ntdel="' + esc(u.uid) + '|' + esc(it.id) + '">🗑 削除</button>' +
+          '</div>' +
+        '</div>';
+    });
+    return html;
+  }
+
+  // 💬 DMタブ：利用者とのチャット＋フィードバック
+  function dmSectionHTML() {
     var users = adminUsers.map(function (u) {
       var last = lastChatMsg(u.chat);
       return { u: u, unread: chatUnreadCount(u.chat, 'admin', u.uid), last: last, lastTs: (last && last.ts) || 0 };
     });
     var totalUnread = users.reduce(function (s, x) { return s + x.unread; }, 0);
-    users.sort(function (a, b) {
-      return (b.unread > 0) - (a.unread > 0) || b.lastTs - a.lastTs || (b.u.updated || 0) - (a.u.updated || 0);
-    });
+    users.sort(function (a, b) { return (b.unread > 0) - (a.unread > 0) || b.lastTs - a.lastTs || (b.u.updated || 0) - (a.u.updated || 0); });
     var q = dmFilter.trim().toLowerCase();
-    var list = q ? users.filter(function (x) {
-      return (x.u.name || '').toLowerCase().indexOf(q) >= 0 || (x.u.email || '').toLowerCase().indexOf(q) >= 0;
-    }) : users;
-
-    // 一斉お知らせの状態カード（本文・配信/予約・既読数・既読者/未読者一覧）
-    var html = '<div class="sfqc-sec">📢 一斉お知らせ</div>';
-    var bc = adminBroadcast, now = Date.now();
-    var myUid = (currentUser && currentUser.uid) || '';
-    var audience = adminUsers.filter(function (u) { return u.uid !== myUid; }); // 管理者自身は配信対象外
-    if (bc && bc.msg) {
-      var readers = audience.filter(function (u) { return (u.read && u.read.bc || 0) >= (bc.ts || 0); });
-      var unread = audience.filter(function (u) { return (u.read && u.read.bc || 0) < (bc.ts || 0); });
-      var scheduled = (bc.publishAt || bc.ts || 0) > now;
-      var when = scheduled ? ('🕒 予約：' + fmtDate(bc.publishAt) + '（未配信）') : ('✅ 配信：' + fmtDate(bc.publishAt || bc.ts));
-      var bcPrev = bc.msg.length > 90 ? bc.msg.slice(0, 90) + '…' : bc.msg;
-      var readerList = readers.map(function (u) { return '<div class="sfqc-rd-row">✅ ' + esc(u.name) + ' <span class="sfqc-rd-t">' + esc(fmtDate(u.read.bc)) + '</span></div>'; }).join('') || '<div class="sfqc-rd-row sfqc-rd-none">まだ既読の人はいません</div>';
-      var unreadList = unread.map(function (u) { return '<div class="sfqc-rd-row">⬜ ' + esc(u.name) + '</div>'; }).join('') || '<div class="sfqc-rd-row sfqc-rd-none">全員が既読です 🎉</div>';
-      html += '<div class="sfqc-bc-card">' +
-          '<div class="sfqc-bc-msg">' + esc(bcPrev) + '</div>' +
-          '<div class="sfqc-bc-meta">' +
-            '<span>' + esc(when) + '</span>' +
-            '<span>👁 既読 <b>' + readers.length + '</b> / ' + audience.length + '人</span>' +
-            '<button class="sfqc-mini" id="sfqc-bc-new">✏️ 新規・編集</button>' +
-          '</div>' +
-          '<details class="sfqc-rd"><summary>👥 既読者・未読者を表示</summary>' +
-            '<div class="sfqc-rd-grid">' +
-              '<div><div class="sfqc-rd-h">既読 ' + readers.length + '</div>' + readerList + '</div>' +
-              '<div><div class="sfqc-rd-h">未読 ' + unread.length + '</div>' + unreadList + '</div>' +
-            '</div></details>' +
-        '</div>';
-    } else {
-      html += '<div class="sfqc-bc-card"><div class="sfqc-bc-meta"><span>まだ一斉お知らせはありません。</span>' +
-        '<button class="sfqc-mini" id="sfqc-bc-new">📢 作成</button></div></div>';
-    }
-
-    html += '<div class="sfqc-sec">💬 ダイレクトメッセージ' + (totalUnread ? ' <span class="sfqc-fb-count">未読 ' + totalUnread + '</span>' : '') + '</div>';
-    html += '<div class="sfqc-toolbar">' +
-        '<input id="sfqc-dm-q" class="sfqc-search" type="search" placeholder="🔍 名前・メールで絞り込み" value="' + esc(dmFilter) + '">' +
-        '<span class="sfqc-count">' + list.length + ' / ' + users.length + '人</span>' +
-      '</div>';
-    if (!list.length) {
-      html += '<div class="sfqc-empty">該当する利用者がいません。</div>';
-    }
+    var list = q ? users.filter(function (x) { return (x.u.name || '').toLowerCase().indexOf(q) >= 0 || (x.u.email || '').toLowerCase().indexOf(q) >= 0; }) : users;
+    var html = '<div class="sfqc-sec">💬 ダイレクトメッセージ' + (totalUnread ? ' <span class="sfqc-fb-count">未読 ' + totalUnread + '</span>' : '') + '</div>';
+    html += '<div class="sfqc-toolbar"><input id="sfqc-dm-q" class="sfqc-search" type="search" placeholder="🔍 名前・メールで絞り込み" value="' + esc(dmFilter) + '"><span class="sfqc-count">' + list.length + ' / ' + users.length + '人</span></div>';
+    if (!list.length) html += '<div class="sfqc-empty">該当する利用者がいません。</div>';
     list.forEach(function (x) {
       var u = x.u, last = x.last;
       var prev = last ? ((last.from === 'admin' ? 'あなた: ' : '') + (last.msg || '')) : 'メッセージはまだありません';
       if (prev.length > 42) prev = prev.slice(0, 42) + '…';
-      // 管理者の最後の発言が読まれたか（💬チャット）と、最新の個別お知らせの既読（📢）
       var readChip = '';
-      if (last && last.from === 'admin') {
-        var rd = (u.read && u.read.chat || 0) >= (last.ts || 0);
-        readChip = '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">💬' + (rd ? '既読' : '未読') + '</span>';
-      }
-      var lastNotice = (u.notices && u.notices.length) ? u.notices.reduce(function (m, n) { return (!m || (n.ts || 0) > (m.ts || 0)) ? n : m; }, null) : null;
-      var noticeChip = '';
-      if (lastNotice) {
-        var nrd = (u.read && u.read.notice || 0) >= (lastNotice.ts || 0);
-        noticeChip = '<span class="sfqc-read ' + (nrd ? 'yes' : 'no') + '" title="最新の個別お知らせ">📢' + (nrd ? '既読' : '未読') + '</span>';
-      }
-      html +=
-        '<div class="sfqc-dm' + (x.unread ? ' unread' : '') + '">' +
-          '<div class="sfqc-dm-main">' +
-            '<span class="sfqc-dm-name">👤 ' + esc(u.name) + '</span>' +
-            (x.unread ? '<span class="sfqc-dm-badge">' + x.unread + '</span>' : '') +
-            '<span class="sfqc-dm-prev">' + esc(prev) + '</span>' +
-          '</div>' +
-          '<div class="sfqc-dm-act">' +
-            noticeChip + readChip +
-            (last ? '<span class="sfqc-dm-time">' + esc(fmtDate(last.ts)) + '</span>' : '') +
-            '<button class="sfqc-act-notice" data-notice-uid="' + esc(u.uid) + '" data-notice-name="' + esc(u.name) + '" title="個別お知らせ">📢</button>' +
-            '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button>' +
-          '</div>' +
+      if (last && last.from === 'admin') { var rd = (u.read && u.read.chat || 0) >= (last.ts || 0); readChip = '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">💬' + (rd ? '既読' : '未読') + '</span>'; }
+      html += '<div class="sfqc-dm' + (x.unread ? ' unread' : '') + '">' +
+          '<div class="sfqc-dm-main"><span class="sfqc-dm-name">👤 ' + esc(u.name) + '</span>' + (x.unread ? '<span class="sfqc-dm-badge">' + x.unread + '</span>' : '') + '<span class="sfqc-dm-prev">' + esc(prev) + '</span></div>' +
+          '<div class="sfqc-dm-act">' + readChip + (last ? '<span class="sfqc-dm-time">' + esc(fmtDate(last.ts)) + '</span>' : '') +
+            '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button></div>' +
         '</div>';
     });
-    html += '<div class="sfqc-divider"></div>';
-    html += feedbackSectionHTML();
+    html += '<div class="sfqc-divider"></div>' + feedbackSectionHTML();
     return html;
   }
   function feedbackSectionHTML() {
