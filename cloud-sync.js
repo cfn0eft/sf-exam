@@ -1269,6 +1269,7 @@
     maintDraft = {
       enabled: !!m.enabled,
       msg: m.msg || 'ただいまメンテナンスを実施しています。しばらくお待ちください。',
+      preMsg: m.preMsg || '',
       windows: Array.isArray(m.windows) ? m.windows.map(function (w) { return { start: w.start, end: w.end }; }) : [],
       recurring: {
         enabled: !!(m.recurring && m.recurring.enabled),
@@ -1294,7 +1295,8 @@
     card.innerHTML =
       '<h3>🛠 メンテナンス設定</h3>' +
       '<label><input type="checkbox" id="sfm-en"' + (d.enabled ? ' checked' : '') + '> メンテナンス機能を有効にする</label>' +
-      '<label>利用者へのメッセージ</label><textarea id="sfm-msg">' + esc(d.msg) + '</textarea>' +
+      '<label>メンテナンス中のメッセージ（ロック画面に表示）</label><textarea id="sfm-msg" placeholder="例）ただいまメンテナンスを実施しています。しばらくお待ちください。">' + esc(d.msg) + '</textarea>' +
+      '<label>予告バナーのメッセージ（開始前に表示・空欄なら日時のみ）</label><textarea id="sfm-premsg" placeholder="例）まもなくメンテナンスを開始します。キリの良いところで学習を終えてください。">' + esc(d.preMsg) + '</textarea>' +
       '<label>単発の期間</label>' + (winRows || '<p class="sfqc-cmp-hint">未設定</p>') +
       '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center">' +
         '<input type="datetime-local" id="sfm-ws" style="flex:1;min-width:150px"><input type="datetime-local" id="sfm-we" style="flex:1;min-width:150px">' +
@@ -1309,6 +1311,7 @@
     var pull = function () {
       d.enabled = document.getElementById('sfm-en').checked;
       d.msg = document.getElementById('sfm-msg').value;
+      d.preMsg = document.getElementById('sfm-premsg').value;
       d.recurring.enabled = document.getElementById('sfm-ren').checked;
       d.recurring.start = document.getElementById('sfm-rstart').value || '02:00';
       d.recurring.durMin = +document.getElementById('sfm-rdur').value || 120;
@@ -1331,7 +1334,7 @@
   }
   function saveMaint() {
     var d = maintDraft; if (!d || !db) return;
-    var rec = { enabled: !!d.enabled, msg: (d.msg || '').slice(0, 1000), windows: d.windows || [],
+    var rec = { enabled: !!d.enabled, msg: (d.msg || '').slice(0, 1000), preMsg: (d.preMsg || '').slice(0, 1000), windows: d.windows || [],
       recurring: { enabled: !!d.recurring.enabled, dows: d.recurring.dows || [], start: d.recurring.start || '02:00', durMin: +d.recurring.durMin || 120 },
       preMin: +d.preMin || 0, updated: Date.now(), by: currentName || 'admin' };
     db.collection(BROADCAST_COL).doc(MAINT_DOC).set(rec).then(function () {
@@ -1346,7 +1349,8 @@
     if (!overlay || !banner) return;
     var now = Date.now();
     var st = maintStatus(lastMaint, now);
-    var msg = (lastMaint && lastMaint.msg) || 'ただいまメンテナンスを実施しています。ご不便をおかけします。';
+    var msg = (lastMaint && lastMaint.msg) || 'ただいまメンテナンスを実施しています。しばらくお待ちください。';
+    var preMsg = (lastMaint && lastMaint.preMsg) || '';
     var preMin = (lastMaint && lastMaint.preMin != null) ? lastMaint.preMin : 60;
     if (st.active) {
       document.getElementById('sfqc-maint-msg').textContent = msg;
@@ -1355,7 +1359,7 @@
     } else {
       overlay.classList.remove('show');
       if (st.upcoming && st.upcoming - now <= preMin * 60000) {
-        banner.textContent = '🛠 ' + fmtDate(st.upcoming) + ' よりメンテナンス予定です（' + msg + '）';
+        banner.textContent = '🛠 ' + fmtDate(st.upcoming) + ' よりメンテナンス予定です' + (preMsg ? '（' + preMsg + '）' : '');
         banner.classList.add('show');
       } else { banner.classList.remove('show'); }
     }
