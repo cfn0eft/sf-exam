@@ -318,6 +318,17 @@
       '.sfqc-rd-none{color:#94a3b8}' +
       'body.dark .sfqc-rd > summary{color:#c7d2fe}body.dark .sfqc-rd-row{color:#e2e8f0}' +
       '@media(max-width:560px){.sfqc-rd-grid{grid-template-columns:1fr}}' +
+      /* オンライン在席チップ（「承認済み」緑と区別するため別色＋点滅ドット） */
+      '.sfqc-online{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}' +
+      '.sfqc-online-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:sfqc-pulse 1.8s infinite}' +
+      '@keyframes sfqc-pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 6px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}' +
+      'body.dark .sfqc-online{background:#312e81;color:#c7d2fe;border-color:#4f46e5}' +
+      /* ログイン履歴の行 */
+      '.sfqc-login-hist{margin-top:6px;display:flex;flex-direction:column;gap:4px}' +
+      '.sfqc-login-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#334155;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:5px 10px}' +
+      '.sfqc-login-no{font-size:10px;font-weight:800;color:#94a3b8;min-width:16px;text-align:right}' +
+      '.sfqc-login-latest{margin-left:auto;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;border-radius:999px;padding:1px 7px}' +
+      'body.dark .sfqc-login-row{background:#0f172a;border-color:#334155;color:#cbd5e1}body.dark .sfqc-login-latest{background:#14532d;color:#bbf7d0}' +
       /* メンテナンス：全画面ロック＋予告バナー */
       '#sfqc-maint{position:fixed;inset:0;z-index:100004;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:16px}' +
       '#sfqc-maint.show{display:flex}' +
@@ -1984,7 +1995,7 @@
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip +
-                (isOnline(u) ? '<span class="sfqc-acc-access ok" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '">🟢 オンライン</span>' : '') +
+                (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
               (u.email ? '<span class="sfqc-acc-email-line">' + esc(u.email) + '</span>' : '') +
@@ -2174,7 +2185,10 @@
     if (u.logins && u.logins.length) {
       var recent = u.logins.slice().sort(function (a, b) { return b - a; }).slice(0, 15);
       html += '<details class="sfqc-rd"><summary>🕑 ログイン履歴（' + u.logins.length + '件中・最新' + recent.length + '件）</summary>' +
-        '<div style="margin-top:6px">' + recent.map(function (t) { return '<div class="sfqc-rd-row">' + esc(fmtDateTime(t)) + '</div>'; }).join('') + '</div></details>';
+        '<div class="sfqc-login-hist">' + recent.map(function (t, idx) {
+          return '<div class="sfqc-login-row"><span class="sfqc-login-no">' + (idx + 1) + '</span>🕒 ' + esc(fmtDateTime(t)) +
+            (idx === 0 ? '<span class="sfqc-login-latest">最新</span>' : '') + '</div>';
+        }).join('') + '</div></details>';
     }
     // アカウント全体の削除（doc ごと削除＝全資格の進捗・申請・フィードバックを消去）
     html += '<div><button class="sfqc-del-doc" data-deluid="' + esc(u.uid) + '" data-delname="' + esc(u.name) + '">🗑 このアカウントを完全削除（全データ）</button></div>';
