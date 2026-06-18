@@ -47,6 +47,8 @@
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
   var adminBroadcast = null;       // 管理者ビュー用の現在の一斉お知らせ
   var adminColUnsub = null, adminRenderTimer = null; // 管理者ビューのライブ購読（DM未読バッジ等の即時反映）
+  var hbTimer = null, hbVisHandler = null;          // 在席ハートビート（lastSeen 更新）
+  var ONLINE_MS = 120000;                            // この時間以内に lastSeen があれば「オンライン」とみなす
 
   /* ---------------- スタイル ---------------- */
   function injectStyle() {
@@ -792,6 +794,7 @@
     if (!auth) return;
     closeAdmin();
     stopUserMessaging();
+    stopPresence();
     if (window.__setStore) window.__setStore(emptyStore());
     if (window.__refreshUI) window.__refreshUI();
     auth.signOut();
@@ -850,6 +853,8 @@
       if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
+      recordLogin(user.uid, data);     // ログイン日時を記録（履歴つき）
+      startPresence(user.uid);         // 在席ハートビート開始（管理者が「現在オンライン」を確認できる）
       if (!isAdmin) startUserMessaging(user.uid); // お知らせ＋チャットのリアルタイム購読を開始
 
       // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
@@ -1482,8 +1487,10 @@
     var avgRate = sumAtt ? Math.round(sumCorr / sumAtt * 100) : 0;
     // 合格率は「本番形式（フル）の模試」だけを母数にする（カスタム/短縮模試は除外＝ユーザー向け推移グラフと同義）
     var passRate = sumExF ? Math.round(sumExFP / sumExF * 100) : 0;
+    var onlineNow = adminUsers.filter(isOnline).length;
     var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
     var html = '<div class="sfqc-sec">全体サマリー</div><div class="sfqc-kpis">' +
+      kpi('🟢 ' + onlineNow, '現在オンライン') +
       kpi(total, '総ユーザー') + kpi(actToday, '今日のアクティブ') + kpi(actWeek, '今週のアクティブ') +
       kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumExF, '本番模試 受験') + kpi(passRate + '%', '本番合格率') +
       kpi(fmtDur(sumStudy), '総学習時間') +
@@ -1708,7 +1715,7 @@
       }
       // 管理者自身の doc から操作ログを取り込む（#4）
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), certs: [] };
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -1753,11 +1760,13 @@
     if (adminRenderTimer) clearTimeout(adminRenderTimer);
     adminRenderTimer = setTimeout(function () {
       if (!elAdmin || !elAdmin.classList.contains('show')) return;
+      syncPendingBadge(); // バッジは常に最新化
       var ae = document.activeElement;
-      if (ae && (ae.id === 'sfqc-dm-q' || ae.id === 'sfqc-q' || ae.id === 'sfqc-cmp-text' || ae.id === 'sfqc-chat-text')) { syncPendingBadge(); return; }
+      if (ae && (ae.id === 'sfqc-dm-q' || ae.id === 'sfqc-q' || ae.id === 'sfqc-cmp-text' || ae.id === 'sfqc-chat-text')) return;
       var cmp = document.getElementById('sfqc-compose'); if (cmp && cmp.classList.contains('show')) return;
+      if (document.querySelector('.sfqc-detail.show')) return; // 詳細を開いている間は再描画しない
       renderAdmin();
-    }, 400);
+    }, 1500); // ハートビート連発時の再描画を抑えるためデバウンス長め
   }
 
   // 操作ログを記録（#4）。管理者自身の doc に保存（自doc書込はルール上常に可）。
@@ -1783,6 +1792,51 @@
       return d.getFullYear() + '/' + p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
     catch (e) { return '—'; }
   }
+  // 秒まで表示（ログイン・アクセス時刻用）
+  function fmtDateTime(ms) {
+    if (!ms) return '—';
+    try { var d = new Date(ms); var p = function (n) { return ('0' + n).slice(-2); };
+      return d.getFullYear() + '/' + p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()); }
+    catch (e) { return '—'; }
+  }
+  // 経過時間の概算（「たった今 / N分前」）
+  function fmtAgo(ms) {
+    if (!ms) return '—';
+    var s = Math.floor((Date.now() - ms) / 1000);
+    if (s < 60) return s + '秒前';
+    if (s < 3600) return Math.floor(s / 60) + '分前';
+    if (s < 86400) return Math.floor(s / 3600) + '時間前';
+    return Math.floor(s / 86400) + '日前';
+  }
+
+  /* ---------------- ログイン記録＋在席（オンライン）ハートビート ----------------
+     ・ログイン時に lastLogin（秒精度）と logins[]（直近30件の履歴）を記録。
+     ・在席中は lastSeen を45秒ごとに更新（非表示タブは更新しない）。
+       管理者は (now - lastSeen) <= ONLINE_MS なら「オンライン」と判定して可視化。
+     ・いずれも本人 doc への書込のみ＝既存ルールのまま動作（ルール変更不要）。 */
+  function recordLogin(uid, data) {
+    if (!db || !uid) return;
+    var now = Date.now();
+    var logins = (data && Array.isArray(data.logins)) ? data.logins.slice() : [];
+    logins.push(now); if (logins.length > 30) logins = logins.slice(-30);
+    db.collection(COLLECTION).doc(uid).set({ lastLogin: now, lastSeen: now, logins: logins }, { merge: true }).catch(function () {});
+  }
+  function presenceWrite(uid) {
+    if (!db || !uid || document.hidden) return; // 非表示タブは在席に数えない
+    db.collection(COLLECTION).doc(uid).set({ lastSeen: Date.now() }, { merge: true }).catch(function () {});
+  }
+  function startPresence(uid) {
+    stopPresence();
+    presenceWrite(uid);
+    hbTimer = setInterval(function () { presenceWrite(uid); }, 45000);
+    hbVisHandler = function () { if (!document.hidden) presenceWrite(uid); };
+    document.addEventListener('visibilitychange', hbVisHandler);
+  }
+  function stopPresence() {
+    if (hbTimer) { clearInterval(hbTimer); hbTimer = null; }
+    if (hbVisHandler) { document.removeEventListener('visibilitychange', hbVisHandler); hbVisHandler = null; }
+  }
+  function isOnline(u) { return u && u.lastSeen && (Date.now() - u.lastSeen) <= ONLINE_MS; }
 
   function filterSortUsers() {
     var list = adminUsers.slice();
@@ -1929,7 +1983,9 @@
           '<div class="sfqc-acc">' +
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + dormantLabel +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip +
+                (isOnline(u) ? '<span class="sfqc-acc-access ok" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '">🟢 オンライン</span>' : '') +
+                dormantLabel +
               '</div>' +
               (u.email ? '<span class="sfqc-acc-email-line">' + esc(u.email) + '</span>' : '') +
               '<span class="sfqc-acc-stats">' +
@@ -1937,7 +1993,9 @@
                 '<span>正答率 <b>' + a.rate + '%</b></span>' +
                 '<span>試験 <b>' + a.examCount + '</b>回' + passLabel + '</span>' +
                 '<span>学習 <b>' + a.daysActive + '</b>日</span>' +
-                '<span>最終 ' + esc(a.lastStudyDate || '—') + '</span>' +
+                '<span>最終学習 ' + esc(a.lastStudyDate || '—') + '</span>' +
+                '<span title="' + esc(fmtDateTime(u.lastLogin)) + '">ログイン ' + (u.lastLogin ? esc(fmtDateTime(u.lastLogin)) : '—') + '</span>' +
+                '<span>最終アクセス ' + (u.lastSeen ? esc(fmtAgo(u.lastSeen)) : '—') + '</span>' +
               '</span>' +
               '<span class="sfqc-acc-actions">' +
                 accBtn +
@@ -1948,7 +2006,9 @@
           '</div>';
       });
     }
+    var prevScroll = body.scrollTop; // ライブ再描画でスクロール位置が飛ばないよう保持
     body.innerHTML = html;
+    try { body.scrollTop = prevScroll; } catch (e) {}
 
     // タブ切替（ダッシュボード／ユーザー／メッセージ）
     body.querySelectorAll('[data-tab]').forEach(function (b) {
@@ -2106,8 +2166,16 @@
     html += '<div class="sfqc-meta">' +
       '<div>UID: <code>' + esc(u.uid) + '</code></div>' +
       (u.email ? '<div>メール: ' + esc(u.email) + '</div>' : '') +
+      '<div>状態: ' + (isOnline(u) ? '🟢 オンライン' : '⚪ オフライン') + '（最終アクセス ' + esc(u.lastSeen ? fmtDateTime(u.lastSeen) : '—') + '）</div>' +
+      '<div>最終ログイン: ' + esc(u.lastLogin ? fmtDateTime(u.lastLogin) : '—') + '</div>' +
       (u.req && u.req.ts ? '<div>申請: ' + esc(u.req.name || u.name) + '（' + esc(fmtDate(u.req.ts)) + '）</div>' : '') +
       '</div>';
+    // ログイン履歴（直近・秒精度）
+    if (u.logins && u.logins.length) {
+      var recent = u.logins.slice().sort(function (a, b) { return b - a; }).slice(0, 15);
+      html += '<details class="sfqc-rd"><summary>🕑 ログイン履歴（' + u.logins.length + '件中・最新' + recent.length + '件）</summary>' +
+        '<div style="margin-top:6px">' + recent.map(function (t) { return '<div class="sfqc-rd-row">' + esc(fmtDateTime(t)) + '</div>'; }).join('') + '</div></details>';
+    }
     // アカウント全体の削除（doc ごと削除＝全資格の進捗・申請・フィードバックを消去）
     html += '<div><button class="sfqc-del-doc" data-deluid="' + esc(u.uid) + '" data-delname="' + esc(u.name) + '">🗑 このアカウントを完全削除（全データ）</button></div>';
     // 資格ごと
