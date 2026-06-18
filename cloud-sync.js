@@ -918,6 +918,7 @@
       }
       setMsg(''); if (elPw) elPw.value = ''; hideOverlay();
       surfaceReplies(data.fbReplies);   // 管理者からの未読の返信があれば通知(#7)
+      syncNewsSeen(data);               // アップデートのお知らせ既読をクラウドと同期（再表示防止）
     }).catch(function () {
       // 読込失敗（オフライン等）。承認を確認できないので、過去に承認済みの端末のみ素通しする。
       if (!isAdmin) {
@@ -975,6 +976,24 @@
     var ok = document.getElementById('sfqc-rep-ok');
     if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
   }
+
+  // アップデートのお知らせ（changelog）既読をクラウドと同期。localStorage が消えても再表示しない。
+  // newsSeen は changelog 先頭 id（'YYYY-MM-DD' 等）。文字列比較で新しい方を採用。
+  function syncNewsSeen(data) {
+    try {
+      var cloud = (data && data.newsSeen) || '';
+      var local = localStorage.getItem('sfq_news_seen') || '';
+      var newest = (cloud > local) ? cloud : local;
+      if (newest && newest !== local) { try { localStorage.setItem('sfq_news_seen', newest); } catch (e) {} }
+      if (local && local > cloud && currentUser && db) { db.collection(COLLECTION).doc(currentUser.uid).set({ newsSeen: local }, { merge: true }).catch(function () {}); }
+      if (window.SFQ_syncNews) { try { window.SFQ_syncNews(); } catch (e) {} } // ベル/バナーを再描画
+    } catch (e) {}
+  }
+  // 利用者が「お知らせ」を開いたら既読 id をクラウドへ保存（エンジン/LP から呼ぶ）
+  window.__cloudMarkNews = function (id) {
+    if (!id || !currentUser || !db) return;
+    db.collection(COLLECTION).doc(currentUser.uid).set({ newsSeen: id }, { merge: true }).catch(function () {});
+  };
 
   /* ===================================================================
      管理者 → 利用者メッセージ（① お知らせポップ：一斉＋個別 ／ ② チャット）
@@ -1089,8 +1108,10 @@
 
   // チャットの未読件数（利用者側＝管理者からの未読、管理者側＝利用者からの未読）
   function chatUnreadCount(msgs, mode, uid) {
-    var key = (mode === 'admin') ? ('sfq_chat_seen_adm_' + uid) : uidKey('sfq_chat_seen');
-    var seen = num(localStorage.getItem(key));
+    var seen;
+    if (mode === 'admin') seen = num(localStorage.getItem('sfq_chat_seen_adm_' + uid));
+    // 利用者側はクラウド既読(read.chat)も参照（localStorage が消えても再表示しない）
+    else seen = Math.max(num(localStorage.getItem(uidKey('sfq_chat_seen'))), (lastRead && lastRead.chat) || 0);
     var fromSide = (mode === 'admin') ? 'user' : 'admin';
     var n = 0;
     (msgs || []).forEach(function (m) { if (m && m.from === fromSide && (m.ts || 0) > seen) n++; });

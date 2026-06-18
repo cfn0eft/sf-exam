@@ -2838,7 +2838,8 @@ function qkDone(){
 const CHANGELOG=(typeof window!=='undefined'&&window.SFQ_CHANGELOG)||[];
 function newsLatestId(){return CHANGELOG.length?CHANGELOG[0].id:'';}
 function hasUnseenNews(){try{return !!CHANGELOG.length&&localStorage.getItem('sfq_news_seen')!==newsLatestId();}catch(e){return false;}}
-function markNewsSeen(){try{localStorage.setItem('sfq_news_seen',newsLatestId());}catch(e){}}
+function markNewsSeen(){try{localStorage.setItem('sfq_news_seen',newsLatestId());}catch(e){} try{if(window.__cloudMarkNews)window.__cloudMarkNews(newsLatestId());}catch(e){}}
+if(typeof window!=='undefined')window.SFQ_syncNews=function(){try{renderNews();}catch(e){}};
 function renderNews(){
   // 各資格ホーム：トップバーのベルに未読ドットを出す（ポップアップは openNews）
   const has=hasUnseenNews();
