@@ -40,7 +40,7 @@
   /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
   var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
-  var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {};
+  var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
@@ -970,6 +970,7 @@
   // 承認済みの一般利用者がログインしたら、リアルタイム購読とチャットUIを開始
   function startUserMessaging(uid) {
     if (!db || !uid || isAdmin) return;
+    ownLoaded = false; // 既読マップを読み込むまでポップを抑止（読込のたびに出る不具合の防止）
     showChatFab(true);
     // 自分の doc を購読（notices / chat の更新を即時反映）
     if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
@@ -979,6 +980,7 @@
       lastNotices = Array.isArray(d.notices) ? d.notices : [];
       lastChat = Array.isArray(d.chat) ? d.chat : [];
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
+      ownLoaded = true; // 既読マップ取得済み
       surfaceNotices();
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
@@ -1006,7 +1008,7 @@
     if (maintUnsub) { maintUnsub(); maintUnsub = null; }
     if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
-    lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null;
+    lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null; ownLoaded = false;
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
@@ -1024,6 +1026,7 @@
   // 未読のお知らせ（一斉＋個別）をまとめて1つのモーダルでポップ
   function surfaceNotices() {
     try {
+      if (!ownLoaded) return; // 既読マップ未取得のうちはポップしない（読込ごとの再表示を防止）
       if (document.getElementById('sfqc-replies')) return; // 既にポップ表示中
       var now = Date.now();
       var bcm = (lastRead && lastRead.bcm) || {}, ntm = (lastRead && lastRead.ntm) || {};
