@@ -97,6 +97,14 @@
              ))
          );
        }
+
+       // 一斉お知らせ（管理者→全利用者）。全ログインユーザーが読め、書けるのは管理者だけ。
+       // ※ 個別お知らせ・チャットは各自の progress/{uid} 内（notices[]/chat[]）に入るため、
+       //   上の progress ルールだけで動作し、ここは「一斉お知らせ」専用。
+       match /broadcast/{doc} {
+         allow read:  if request.auth != null;
+         allow write: if isAdmin();
+       }
      }
    }
    ```
