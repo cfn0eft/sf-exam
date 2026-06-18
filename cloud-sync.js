@@ -991,7 +991,7 @@
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
-    document.body.style.paddingTop = '';
+    applyBannerOffset(0);
   }
 
   function showChatFab(on) {
@@ -1344,6 +1344,12 @@
       closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
     }).catch(function (e) { alert('保存に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
   }
+  // バナー表示中の重なり対策：本文・上部バー（sticky）・アカウントバッジ（fixed）を h ぶん下げる
+  function applyBannerOffset(h) {
+    document.body.style.paddingTop = h ? (h + 'px') : '';
+    var tb = document.querySelector('.topbar'); if (tb) tb.style.top = h ? (h + 'px') : '';
+    if (elBadge) elBadge.style.top = h ? (h + 9) + 'px' : '';
+  }
   function checkMaintenance() {
     if (isAdmin) return; // 管理者は対象外
     var overlay = document.getElementById('sfqc-maint');
@@ -1365,8 +1371,8 @@
         banner.classList.add('show');
       } else { banner.classList.remove('show'); }
     }
-    // 予告バナーは position:fixed なので、表示中はその高さぶん本文を押し下げて重なりを防ぐ
-    document.body.style.paddingTop = banner.classList.contains('show') ? (banner.offsetHeight + 'px') : '';
+    // 予告バナーは position:fixed。表示中はその高さぶん本文・上部バー・アカウントバッジを下げて重なり/クリック不能を防ぐ
+    applyBannerOffset(banner.classList.contains('show') ? banner.offsetHeight : 0);
     // 次に状態が変わる「境界時刻」ちょうどに再判定する（タイマー＝ほぼリアルタイムで開始/終了を反映）
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     var cands = [];
