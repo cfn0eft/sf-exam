@@ -37,6 +37,12 @@
   var currentName = '', currentEmail = '', isAdmin = false;
   var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
 
+  /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
+  var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
+  var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
+  var lastBroadcast = null, lastNotices = [], lastChat = [];
+  var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
+
   /* ---------------- スタイル ---------------- */
   function injectStyle() {
     var css = '' +
@@ -238,6 +244,35 @@
       '.sfqc-rep-ts{font-size:11px;color:#0891b2;margin-bottom:3px}' +
       '.sfqc-rep-msg{font-size:13.5px;color:#0e4a5b;white-space:pre-wrap;word-break:break-word;line-height:1.55}' +
       'body.dark .sfqc-rep-item{background:#083344;border-color:#155e75}body.dark .sfqc-rep-msg{color:#cffafe}body.dark .sfqc-rep-ts{color:#67e8f9}' +
+      /* 管理者→利用者メッセージ：お知らせポップ＋チャット */
+      '#sfqc-chat-fab{position:fixed;right:16px;bottom:calc(var(--tab,0px) + 14px);z-index:99990;display:none;width:54px;height:54px;border:none;border-radius:50%;background:#6366f1;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.45);font-family:inherit}' +
+      '#sfqc-chat-fab.show{display:flex;align-items:center;justify-content:center}' +
+      '#sfqc-chat-fab:hover{filter:brightness(1.08)}' +
+      '#sfqc-chat-fab .sfqc-chat-badge{position:absolute;top:-3px;right:-3px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff}' +
+      '#sfqc-chat-fab.has-unread .sfqc-chat-badge{display:flex}' +
+      '#sfqc-chat{position:fixed;right:16px;bottom:calc(var(--tab,0px) + 14px);z-index:100001;display:none;width:min(94vw,360px);height:min(72vh,520px);background:#fff;color:#1e293b;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);flex-direction:column;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif}' +
+      '#sfqc-chat.show{display:flex}' +
+      '.sfqc-chat-head{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#6366f1;color:#fff;font-weight:700;font-size:14px}' +
+      '.sfqc-chat-head .sfqc-chat-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+      '.sfqc-chat-head button{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:15px}' +
+      '.sfqc-chat-msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#f1f5f9}' +
+      '.sfqc-chat-empty{margin:auto;color:#94a3b8;font-size:12.5px;text-align:center;line-height:1.6}' +
+      '.sfqc-chat-b{max-width:80%;padding:8px 11px;border-radius:13px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}' +
+      '.sfqc-chat-b .sfqc-chat-t{display:block;font-size:10px;opacity:.6;margin-top:3px}' +
+      '.sfqc-chat-b.mine{align-self:flex-end;background:#6366f1;color:#fff;border-bottom-right-radius:4px}' +
+      '.sfqc-chat-b.theirs{align-self:flex-start;background:#fff;color:#1e293b;border:1px solid #e2e8f0;border-bottom-left-radius:4px}' +
+      '.sfqc-chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid #e2e8f0;background:#fff}' +
+      '.sfqc-chat-input textarea{flex:1;resize:none;border:1px solid #cbd5e1;border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;max-height:84px;color:#1e293b;background:#fff}' +
+      '.sfqc-chat-input button{border:none;background:#6366f1;color:#fff;border-radius:10px;padding:0 14px;font-weight:700;cursor:pointer;font-size:13px}' +
+      '.sfqc-chat-input button:disabled{opacity:.5;cursor:default}' +
+      'body.dark #sfqc-chat{background:#1e293b;color:#e2e8f0}' +
+      'body.dark .sfqc-chat-msgs{background:#0f172a}' +
+      'body.dark .sfqc-chat-b.theirs{background:#1e293b;color:#e2e8f0;border-color:#334155}' +
+      'body.dark .sfqc-chat-input{background:#1e293b;border-color:#334155}' +
+      'body.dark .sfqc-chat-input textarea{background:#0f172a;color:#e2e8f0;border-color:#334155}' +
+      '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
+      '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
+      '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
       /* 管理者ビュー：アカウントのアクセス状態チップ＋承認/停止ボタン */
       '.sfqc-acc-access{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap}' +
       '.sfqc-acc-access.ok{background:#dcfce7;color:#15803d}' +
@@ -320,6 +355,7 @@
         '<div class="sfqc-adminhead">' +
           '<h2>👑 管理者ビュー</h2><span class="sfqc-tag">全アカウント</span>' +
           '<button class="sfqc-mini reload" id="sfqc-adm-reload">↻ 更新</button>' +
+          '<button class="sfqc-mini" id="sfqc-adm-broadcast">📢 一斉お知らせ</button>' +
           '<button class="sfqc-mini csv" id="sfqc-adm-csv">CSV書き出し</button>' +
           '<button class="sfqc-mini close" id="sfqc-adm-close">閉じる</button>' +
         '</div>' +
@@ -346,6 +382,31 @@
         '<p class="sfqc-hint">⚠️ サーバーの関係で、管理・制限を行う場合があります。<br>詳しくは管理者にお尋ねください。</p>' +
       '</div>';
     document.body.appendChild(elLock);
+
+    // チャット：起動ボタン（💬）＋パネル（承認済みの一般利用者にのみ表示）
+    var fab = document.createElement('button');
+    fab.id = 'sfqc-chat-fab'; fab.type = 'button';
+    fab.innerHTML = '💬<span class="sfqc-chat-badge" id="sfqc-chat-badge"></span>';
+    document.body.appendChild(fab);
+    var chat = document.createElement('div');
+    chat.id = 'sfqc-chat';
+    chat.innerHTML =
+      '<div class="sfqc-chat-head">' +
+        '<span class="sfqc-chat-title" id="sfqc-chat-title">管理者とのチャット</span>' +
+        '<button type="button" id="sfqc-chat-close" title="閉じる">✕</button>' +
+      '</div>' +
+      '<div class="sfqc-chat-msgs" id="sfqc-chat-msgs"></div>' +
+      '<div class="sfqc-chat-input">' +
+        '<textarea id="sfqc-chat-text" rows="1" maxlength="1000" placeholder="メッセージを入力…"></textarea>' +
+        '<button type="button" id="sfqc-chat-send">送信</button>' +
+      '</div>';
+    document.body.appendChild(chat);
+    fab.addEventListener('click', function () { openChat(currentUser ? currentUser.uid : '', currentName, 'user'); });
+    document.getElementById('sfqc-chat-close').addEventListener('click', closeChat);
+    document.getElementById('sfqc-chat-send').addEventListener('click', sendChat);
+    document.getElementById('sfqc-chat-text').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    });
 
     elStatus = document.getElementById('sfqc-status');
     elAdminBtn = document.getElementById('sfqc-admin-btn');
@@ -377,6 +438,7 @@
     elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
+    document.getElementById('sfqc-adm-broadcast').addEventListener('click', sendBroadcast);
     document.getElementById('sfqc-adm-csv').addEventListener('click', exportCsv);
 
     // ロック画面のボタン
@@ -393,6 +455,7 @@
   // info.reqName = 既に申請済みの名前（あれば入力欄に復元）
   function showLock(state, info) {
     if (!elLock) return;
+    showChatFab(false); // 未承認/停止中はチャットを出さない
     info = info || {};
     var t = document.getElementById('sfqc-lock-title');
     var s = document.getElementById('sfqc-lock-sub');
@@ -613,6 +676,7 @@
   function doLogout() {
     if (!auth) return;
     closeAdmin();
+    stopUserMessaging();
     if (window.__setStore) window.__setStore(emptyStore());
     if (window.__refreshUI) window.__refreshUI();
     auth.signOut();
@@ -671,6 +735,7 @@
       if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
+      if (!isAdmin) startUserMessaging(user.uid); // お知らせ＋チャットのリアルタイム購読を開始
 
       // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
       // 認証とアカウント管理（管理者ビュー）のみ。進捗の読込/移行は各クイズページ側に任せる。
@@ -761,6 +826,218 @@
     var ok = document.getElementById('sfqc-rep-ok');
     if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
   }
+
+  /* ===================================================================
+     管理者 → 利用者メッセージ（① お知らせポップ：一斉＋個別 ／ ② チャット）
+     ・一斉お知らせ … 共有 doc `broadcast/current` を全員が購読（要 Firestore ルール）
+     ・個別お知らせ … 各利用者 doc の `notices[]`（管理者が追記、本人にポップ）
+     ・チャット     … 各利用者 doc の `chat[]`（本人・管理者が双方向に追記、realtime）
+     利用者側は自 doc を onSnapshot で購読し、未読を検知してポップ／バッジ表示する。
+     =================================================================== */
+
+  // 承認済みの一般利用者がログインしたら、リアルタイム購読とチャットUIを開始
+  function startUserMessaging(uid) {
+    if (!db || !uid || isAdmin) return;
+    showChatFab(true);
+    // 自分の doc を購読（notices / chat の更新を即時反映）
+    if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
+    ownDocUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
+      if (snap.metadata && snap.metadata.hasPendingWrites) return; // 自分の書込は無視（ちらつき防止）
+      var d = (snap.exists && snap.data()) || {};
+      lastNotices = Array.isArray(d.notices) ? d.notices : [];
+      lastChat = Array.isArray(d.chat) ? d.chat : [];
+      surfaceNotices();
+      refreshChatBadge();
+      if (chatOpen && chatMode === 'user') renderChatMsgs();
+    }, function () {});
+    // 一斉お知らせ doc を購読
+    if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
+    broadcastUnsub = db.collection(BROADCAST_COL).doc('current').onSnapshot(function (snap) {
+      lastBroadcast = (snap.exists && snap.data()) || null;
+      surfaceNotices();
+    }, function () {});
+  }
+  function stopUserMessaging() {
+    if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
+    if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
+    if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
+    lastBroadcast = null; lastNotices = []; lastChat = [];
+    chatOpen = false; closeChat(); showChatFab(false);
+  }
+
+  function showChatFab(on) {
+    var fab = document.getElementById('sfqc-chat-fab');
+    if (fab) fab.classList[on ? 'add' : 'remove']('show');
+  }
+
+  // 未読のお知らせ（一斉＋個別）をまとめて1つのモーダルでポップ
+  function surfaceNotices() {
+    try {
+      if (document.getElementById('sfqc-replies')) return; // 既にポップ表示中
+      var items = [];
+      var bcSeen = num(localStorage.getItem(uidKey('sfq_broadcast_seen')));
+      if (lastBroadcast && lastBroadcast.msg && (lastBroadcast.ts || 0) > bcSeen) {
+        items.push({ title: lastBroadcast.title || '📢 お知らせ', msg: lastBroadcast.msg, ts: lastBroadcast.ts || 0, kind: 'bc' });
+      }
+      var nSeen = num(localStorage.getItem(uidKey('sfq_notice_seen')));
+      lastNotices.forEach(function (n) {
+        if (n && n.msg && (n.ts || 0) > nSeen) items.push({ title: '📩 管理者からのお知らせ', msg: n.msg, ts: n.ts || 0, kind: 'notice' });
+      });
+      if (!items.length) return;
+      items.sort(function (a, b) { return b.ts - a.ts; });
+      showNoticeModal(items);
+    } catch (e) {}
+  }
+  function showNoticeModal(items) {
+    var old = document.getElementById('sfqc-replies'); if (old && old.parentNode) old.parentNode.removeChild(old);
+    var wrap = document.createElement('div'); wrap.id = 'sfqc-replies';
+    var rows = items.map(function (r) {
+      return '<div class="sfqc-rep-item"><div class="sfqc-rep-ts">' + esc(r.title) + '・' + esc(fmtDate(r.ts)) + '</div><div class="sfqc-rep-msg">' + esc(r.msg) + '</div></div>';
+    }).join('');
+    wrap.innerHTML = '<div class="sfqc-card sfqc-rep-card">' +
+        '<p class="sfqc-title">📢 管理者からのお知らせ</p>' +
+        '<p class="sfqc-sub">新しいお知らせが届きました。</p>' +
+        '<div class="sfqc-rep-list">' + rows + '</div>' +
+        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-rep-ok" style="width:100%;margin-top:10px">確認しました</button>' +
+      '</div>';
+    document.body.appendChild(wrap);
+    var onKey;
+    var dismiss = function () {
+      try {
+        var maxBc = 0, maxN = 0;
+        items.forEach(function (r) { if (r.kind === 'bc') maxBc = Math.max(maxBc, r.ts); else maxN = Math.max(maxN, r.ts); });
+        if (maxBc) localStorage.setItem(uidKey('sfq_broadcast_seen'), String(Math.max(maxBc, num(localStorage.getItem(uidKey('sfq_broadcast_seen'))))));
+        if (maxN) localStorage.setItem(uidKey('sfq_notice_seen'), String(Math.max(maxN, num(localStorage.getItem(uidKey('sfq_notice_seen'))))));
+      } catch (e) {}
+      document.removeEventListener('keydown', onKey);
+      if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+    };
+    onKey = function (e) { if (e.key === 'Escape') { e.preventDefault(); dismiss(); } };
+    document.addEventListener('keydown', onKey);
+    var ok = document.getElementById('sfqc-rep-ok');
+    if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
+  }
+
+  // チャットの未読件数（利用者側＝管理者からの未読、管理者側＝利用者からの未読）
+  function chatUnreadCount(msgs, mode, uid) {
+    var key = (mode === 'admin') ? ('sfq_chat_seen_adm_' + uid) : uidKey('sfq_chat_seen');
+    var seen = num(localStorage.getItem(key));
+    var fromSide = (mode === 'admin') ? 'user' : 'admin';
+    var n = 0;
+    (msgs || []).forEach(function (m) { if (m && m.from === fromSide && (m.ts || 0) > seen) n++; });
+    return n;
+  }
+  function markChatSeen(msgs, mode, uid) {
+    try {
+      var key = (mode === 'admin') ? ('sfq_chat_seen_adm_' + uid) : uidKey('sfq_chat_seen');
+      var max = num(localStorage.getItem(key));
+      (msgs || []).forEach(function (m) { if (m && (m.ts || 0) > max) max = m.ts; });
+      localStorage.setItem(key, String(max));
+    } catch (e) {}
+  }
+  function refreshChatBadge() {
+    var fab = document.getElementById('sfqc-chat-fab');
+    var badge = document.getElementById('sfqc-chat-badge');
+    if (!fab || !badge) return;
+    var n = chatUnreadCount(lastChat, 'user', '');
+    badge.textContent = n > 99 ? '99+' : String(n);
+    fab.classList[n > 0 ? 'add' : 'remove']('has-unread');
+  }
+
+  // チャットパネルを開く（mode='user' は本人、'admin' は管理者が特定利用者と）
+  function openChat(uid, name, mode) {
+    if (!uid) return;
+    chatOpen = true; chatUid = uid; chatName = name || ''; chatMode = mode || 'user';
+    var panel = document.getElementById('sfqc-chat');
+    var title = document.getElementById('sfqc-chat-title');
+    if (title) title.textContent = (mode === 'admin') ? ('💬 ' + (name || '利用者')) : '管理者とのチャット';
+    if (panel) panel.classList.add('show');
+    if (mode === 'admin') {
+      // 管理者：対象利用者の doc を購読
+      if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
+      var msgsEl = document.getElementById('sfqc-chat-msgs');
+      if (msgsEl) msgsEl.innerHTML = '<div class="sfqc-chat-empty">読み込み中…</div>';
+      adminChatUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
+        var d = (snap.exists && snap.data()) || {};
+        lastChat = Array.isArray(d.chat) ? d.chat : [];
+        renderChatMsgs();
+      }, function () {});
+    } else {
+      renderChatMsgs();
+    }
+    var ta = document.getElementById('sfqc-chat-text'); if (ta) try { ta.focus(); } catch (e) {}
+  }
+  function closeChat() {
+    chatOpen = false;
+    var panel = document.getElementById('sfqc-chat'); if (panel) panel.classList.remove('show');
+    if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
+    if (chatMode === 'admin' && typeof renderAdmin === 'function' && elAdmin && elAdmin.classList.contains('show')) {
+      // 既読を反映してバッジ更新
+      renderAdmin();
+    }
+    chatMode = 'user';
+  }
+  function renderChatMsgs() {
+    var el = document.getElementById('sfqc-chat-msgs'); if (!el) return;
+    var msgs = (lastChat || []).slice().sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+    if (!msgs.length) {
+      el.innerHTML = '<div class="sfqc-chat-empty">まだメッセージはありません。<br>' +
+        (chatMode === 'admin' ? 'この利用者へメッセージを送れます。' : 'ご質問・ご要望をお送りください。') + '</div>';
+    } else {
+      var mineSide = (chatMode === 'admin') ? 'admin' : 'user';
+      el.innerHTML = msgs.map(function (m) {
+        var mine = (m.from === mineSide);
+        var who = (m.from === 'admin') ? '管理者' : (m.from === 'user' ? (chatMode === 'admin' ? (chatName || '利用者') : 'あなた') : '');
+        return '<div class="sfqc-chat-b ' + (mine ? 'mine' : 'theirs') + '">' + esc(m.msg || '') +
+          '<span class="sfqc-chat-t">' + esc(who) + '・' + esc(fmtDate(m.ts)) + '</span></div>';
+      }).join('');
+    }
+    el.scrollTop = el.scrollHeight;
+    markChatSeen(lastChat, chatMode, chatUid);
+    if (chatMode === 'user') refreshChatBadge();
+  }
+  function sendChat() {
+    var ta = document.getElementById('sfqc-chat-text'); if (!ta) return;
+    var msg = (ta.value || '').trim(); if (!msg || !db || !chatUid) return;
+    var from = (chatMode === 'admin') ? 'admin' : 'user';
+    var rec = { from: from, msg: msg.slice(0, 1000), ts: Date.now(), by: currentName || from };
+    var FV = firebase.firestore.FieldValue;
+    ta.value = '';
+    // 楽観的に即描画
+    lastChat = (lastChat || []).concat([rec]); renderChatMsgs();
+    var ref = db.collection(COLLECTION).doc(chatUid);
+    ref.update('chat', FV.arrayUnion(rec)).catch(function () {
+      return ref.set({ chat: [rec] }, { merge: true });
+    }).then(function () {
+      if (chatMode === 'admin') { try { logAdmin('チャット', (chatName || '') + '：' + rec.msg.slice(0, 20)); } catch (e) {} }
+    }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
+  }
+
+  // 管理者：一斉お知らせを送信（broadcast/current を上書き）
+  function sendBroadcast() {
+    if (!isAdmin || !db) return;
+    var msg = (window.prompt('全利用者へ一斉送信するお知らせを入力してください（次回ログイン中の画面にポップ表示されます）', '') || '').trim();
+    if (!msg) return;
+    var rec = { title: '📢 お知らせ', msg: msg.slice(0, 2000), ts: Date.now(), by: currentName || 'admin' };
+    db.collection(BROADCAST_COL).doc('current').set(rec)
+      .then(function () { logAdmin('一斉お知らせ', msg.slice(0, 30)); toastSafe('一斉お知らせを送信しました'); })
+      .catch(function (e) { alert('送信に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
+  }
+  // 管理者：個別お知らせを送信（対象 doc の notices[] に追記＝本人にポップ）
+  function sendNotice(uid, name) {
+    if (!isAdmin || !db || !uid) return;
+    var msg = (window.prompt('「' + (name || '') + '」さんへのお知らせを入力してください（本人の画面にポップ表示されます）', '') || '').trim();
+    if (!msg) return;
+    var rec = { msg: msg.slice(0, 2000), ts: Date.now(), by: currentName || 'admin' };
+    var FV = firebase.firestore.FieldValue;
+    var ref = db.collection(COLLECTION).doc(uid);
+    ref.update('notices', FV.arrayUnion(rec)).catch(function () {
+      return ref.set({ notices: [rec] }, { merge: true });
+    }).then(function () { logAdmin('個別お知らせ', (name || '') + '：' + msg.slice(0, 20)); toastSafe('お知らせを送信しました'); })
+      .catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
+  }
+  function num(v) { var n = parseInt(v, 10); return isFinite(n) ? n : 0; }
+  function uidKey(base) { return base + '_' + ((currentUser && currentUser.uid) || 'anon'); }
 
   /* ---------------- クラウド保存（デバウンス） ---------------- */
   window.__cloudSave = function () {
@@ -1013,7 +1290,7 @@
   }
 
   function openAdmin() { if (!isAdmin) return; elAdmin.classList.add('show'); loadAdmin(); }
-  function closeAdmin() { if (elAdmin) elAdmin.classList.remove('show'); }
+  function closeAdmin() { if (elAdmin) elAdmin.classList.remove('show'); if (chatMode === 'admin') closeChat(); }
 
   // 1ユーザーの stats/agg を再計算（store を差し替えたあと等に呼ぶ）
   function refreshUser(u) {
@@ -1057,7 +1334,7 @@
         }
         // 管理者自身の doc から操作ログを取り込む（#4）
         if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-        var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), certs: [] };
+        var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), certs: [] };
         var stores = data.stores;
         if (stores && typeof stores === 'object' && Object.keys(stores).length) {
           Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -1237,6 +1514,8 @@
             '</span>' +
             '<span class="sfqc-acc-actions">' +
               accBtn +
+              '<button class="sfqc-act-notice" data-notice-uid="' + esc(u.uid) + '" data-notice-name="' + esc(u.name) + '">📢 お知らせ</button>' +
+              '<button class="sfqc-act-chat' + (chatUnreadCount(u.chat, 'admin', u.uid) > 0 ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 チャット' + (chatUnreadCount(u.chat, 'admin', u.uid) > 0 ? ' (' + chatUnreadCount(u.chat, 'admin', u.uid) + ')' : '') + '</button>' +
               '<button class="sfqc-act-detail" data-i="' + i + '">詳細 ▾</button>' +
             '</span>' +
           '</div>' +
@@ -1274,6 +1553,13 @@
     });
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
+    });
+    // 管理者→利用者：個別お知らせ・チャット
+    body.querySelectorAll('[data-notice-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { sendNotice(b.getAttribute('data-notice-uid'), b.getAttribute('data-notice-name')); });
+    });
+    body.querySelectorAll('[data-chat-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { openChat(b.getAttribute('data-chat-uid'), b.getAttribute('data-chat-name'), 'admin'); });
     });
     // フィードバック：ダウンロード・絞り込み・対応済み
     var fbJson = document.getElementById('sfqc-fb-json'); if (fbJson) fbJson.addEventListener('click', exportFeedbackJson);
