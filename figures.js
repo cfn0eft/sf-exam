@@ -650,6 +650,50 @@ window.SFQ_FIGURES = {
 +'<text class="ink" x="378" y="244" font-size="12">・ 参照関係・検索・関連リストに対応</text>'
 +'<text class="sub" x="378" y="276" font-size="11.5">最新の外部データを常に見たいとき</text>'
 +'<text class="sub" x="350" y="322" font-size="12" text-anchor="middle">外部オブジェクトの API 参照名は __x で終わる</text>'
++'</svg>',
+
+'app-builder/mobile-app':
+'<svg viewBox="0 0 700 380" role="img" aria-label="Salesforce モバイルアプリの構成（何がどこで決まるか）">'
++'<defs><marker id="mo-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
++'<rect class="fig" x="1" y="1" width="698" height="378" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">Salesforce モバイルアプリの構成</text>'
++'<text class="sub" x="24" y="58" font-size="13">デスクトップと同じ Lightning アプリ／ページを「モバイル向けに最適化」して表示する</text>'
++'<rect class="card" x="56" y="78" width="190" height="284" rx="22"/>'
++'<rect class="b-blue" x="70" y="92" width="162" height="36" rx="8"/>'
++'<text class="ink" x="151" y="115" font-size="11.5" text-anchor="middle">★ レコードタイトル</text>'
++'<circle class="b-amber" cx="92" cy="150" r="13"/>'
++'<circle class="b-amber" cx="130" cy="150" r="13"/>'
++'<circle class="b-amber" cx="168" cy="150" r="13"/>'
++'<circle class="b-slate" cx="206" cy="150" r="13"/>'
++'<text class="sub" x="151" y="178" font-size="10" text-anchor="middle">アクションバー</text>'
++'<rect class="b-teal" x="70" y="190" width="162" height="78" rx="8"/>'
++'<text class="ink" x="151" y="222" font-size="11.5" text-anchor="middle">Lightning ページ</text>'
++'<text class="sub" x="151" y="242" font-size="10.5" text-anchor="middle">（電話フォームファクタ）</text>'
++'<rect class="b-purple" x="70" y="276" width="162" height="40" rx="8"/>'
++'<text class="ink" x="151" y="301" font-size="11" text-anchor="middle">モバイルカード</text>'
++'<rect class="b-indigo" x="70" y="324" width="162" height="30" rx="8"/>'
++'<text class="ink" x="151" y="343" font-size="10.5" text-anchor="middle">ナビゲーション項目</text>'
++'<rect class="box" x="300" y="84" width="376" height="44" rx="9"/>'
++'<text class="t-blue" x="314" y="104" font-size="12.5">コンパクトレイアウト</text>'
++'<text class="sub" x="314" y="121" font-size="11">強調表示の項目／先頭の項目がレコードのタイトル</text>'
++'<line class="ln" x1="232" y1="110" x2="296" y2="106" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
++'<rect class="box" x="300" y="136" width="376" height="44" rx="9"/>'
++'<text class="t-amber" x="314" y="156" font-size="12.5">アクションバー</text>'
++'<text class="sub" x="314" y="173" font-size="11">ページレイアウト「Salesforce モバイル…のアクション」</text>'
++'<line class="ln" x1="220" y1="162" x2="296" y2="158" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
++'<rect class="box" x="300" y="188" width="376" height="56" rx="9"/>'
++'<text class="t-teal" x="314" y="208" font-size="12.5">電話フォームファクタの Lightning ページ</text>'
++'<text class="sub" x="314" y="225" font-size="11">アプリビルダーで「電話」用に作成 ＞ ［有効化］で割当</text>'
++'<text class="sub" x="314" y="240" font-size="11">可視性も「フォームファクタ」で出し分けできる</text>'
++'<line class="ln" x1="232" y1="222" x2="296" y2="216" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
++'<rect class="box" x="300" y="252" width="376" height="44" rx="9"/>'
++'<text class="t-purple" x="314" y="272" font-size="12.5">モバイルカード</text>'
++'<text class="sub" x="314" y="289" font-size="11">ページレイアウトに配置／モバイルアプリだけに表示</text>'
++'<line class="ln" x1="232" y1="296" x2="296" y2="278" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
++'<rect class="box" x="300" y="304" width="376" height="46" rx="9"/>'
++'<text class="t-indigo" x="314" y="324" font-size="12.5">ナビゲーション</text>'
++'<text class="sub" x="314" y="341" font-size="11">Lightning アプリ単位（アプリケーションマネージャ）で構成</text>'
++'<line class="ln" x1="232" y1="339" x2="296" y2="328" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
 +'</svg>'
 
 };
@@ -660,3 +704,4 @@ window.SFQ_FIGURES['app-builder/import-tools'] = window.SFQ_FIGURES['sf-admin/im
 window.SFQ_FIGURES['app-builder/approval-process'] = window.SFQ_FIGURES['sf-admin/approval-process'];
 window.SFQ_FIGURES['sf-admin/governor-limits'] = window.SFQ_FIGURES['app-builder/governor-limits'];
 window.SFQ_FIGURES['sf-admin/order-of-execution'] = window.SFQ_FIGURES['app-builder/order-of-execution'];
+window.SFQ_FIGURES['sf-admin/mobile-app'] = window.SFQ_FIGURES['app-builder/mobile-app'];

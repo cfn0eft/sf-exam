@@ -6921,7 +6921,8 @@
       "数式項目削減"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "mobile-app"
   },
   {
     "id": 336,
