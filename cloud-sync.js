@@ -273,6 +273,38 @@
       '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
       '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
       '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
+      /* 管理者ビュー：タブ（ダッシュボード／ユーザー／メッセージの分離） */
+      '.sfqc-tabs{display:flex;gap:6px;margin:0 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}' +
+      '.sfqc-tab{flex:0 0 auto;border:1px solid #e2e8f0;background:#fff;color:#475569;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;position:relative}' +
+      '.sfqc-tab.on{background:#6366f1;color:#fff;border-color:#6366f1}' +
+      '.sfqc-tab-badge{display:inline-block;min-width:18px;margin-left:6px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;vertical-align:middle}' +
+      'body.dark .sfqc-tab{background:#1e293b;color:#cbd5e1;border-color:#334155}' +
+      /* 管理者ビュー：DM一覧（メッセージタブ） */
+      '.sfqc-dm{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;margin-bottom:8px}' +
+      '.sfqc-dm.unread{border-color:#c7d2fe;background:#f5f7ff}' +
+      '.sfqc-dm-main{display:flex;align-items:center;gap:8px;min-width:0;flex:1}' +
+      '.sfqc-dm-name{font-weight:700;font-size:14px;white-space:nowrap}' +
+      '.sfqc-dm-badge{flex:0 0 auto;min-width:18px;padding:0 6px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;text-align:center}' +
+      '.sfqc-dm-prev{color:#64748b;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}' +
+      '.sfqc-dm-act{display:flex;align-items:center;gap:8px;flex:0 0 auto}' +
+      '.sfqc-dm-time{font-size:10px;color:#94a3b8;white-space:nowrap}' +
+      'body.dark .sfqc-dm{background:#1e293b;border-color:#334155}body.dark .sfqc-dm.unread{background:#312e81;border-color:#4f46e5}body.dark .sfqc-dm-prev{color:#94a3b8}' +
+      /* 管理者ビュー：スマホ最適化 */
+      '@media(max-width:560px){' +
+        '.sfqc-adminwrap{inset:6px;border-radius:12px}' +
+        '.sfqc-adminhead{padding:9px 11px;gap:6px}' +
+        '.sfqc-adminhead h2{font-size:14px;flex:1 0 100%;min-width:0}' +
+        '.sfqc-adminhead .sfqc-tag{order:3}' +
+        '.sfqc-mini{padding:6px 10px;font-size:11.5px}' +
+        '.sfqc-adminbody{padding:10px 11px}' +
+        '.sfqc-acc-head{flex-direction:column;align-items:stretch;gap:8px}' +
+        '.sfqc-acc-stats{gap:4px 12px;font-size:11.5px}' +
+        '.sfqc-acc-actions{flex-wrap:wrap}' +
+        '.sfqc-acc-actions button{flex:1 1 auto}' +
+        '.sfqc-kpis{grid-template-columns:repeat(2,1fr)}' +
+        '.sfqc-tab{padding:7px 12px;font-size:12px}' +
+        '.sfqc-toolbar{padding:8px 10px}' +
+      '}' +
       /* 管理者ビュー：アカウントのアクセス状態チップ＋承認/停止ボタン */
       '.sfqc-acc-access{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap}' +
       '.sfqc-acc-access.ok{background:#dcfce7;color:#15803d}' +
@@ -1093,6 +1125,8 @@
   var adminPass = false;     // 合格者のみ
   var adminAccess = 'all';   // 'all'|'approved'|'pending'|'blocked'（アクセス状態フィルタ）
   var adminPendingCount = 0; // 承認待ち件数（バッジ通知用）
+  var adminTab = 'users';    // 管理者ビューのタブ：'users'|'dash'|'msg'（ダッシュボードとDMを分離）
+  var dmFilter = '';         // メッセージタブの名前絞り込み
   var adminDashCert = '';    // 詳細集計（分野別・問題別）で表示中の資格。''=現在ページの資格 #2
 
   function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
@@ -1461,70 +1495,96 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
 
-    var html = applicationsSectionHTML();
-    html += feedbackSectionHTML();
-    html += adminDashboardHTML();
-    html += '<div class="sfqc-sec">ユーザー</div>';
-    html += '<div class="sfqc-toolbar">' +
-        '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
-        '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
-      '</div>';
-    html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
-        '<span class="sfqc-sort-label">資格:</span>' + certChips +
-        '<span class="sfqc-sort-label">状態:</span>' +
-        '<button class="sfqc-fchip' + (adminActivity === 'week' ? ' on' : '') + '" data-act="week">7日以内</button>' +
-        '<button class="sfqc-fchip' + (adminActivity === 'dormant' ? ' on' : '') + '" data-act="dormant">休眠30日+</button>' +
-        '<button class="sfqc-fchip' + (adminPass ? ' on' : '') + '" data-pass="1">合格者</button>' +
-        '<span class="sfqc-sort-label">アクセス:</span>' +
-        '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">承認済み</button>' +
-        '<button class="sfqc-fchip' + (adminAccess === 'pending' ? ' on' : '') + '" data-access="pending">承認待ち</button>' +
-        '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">停止中</button>' +
-      '</div>';
-    html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
-        '<span class="sfqc-sort-label">並び順:</span>' +
-        sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
+    // ── タブで「ダッシュボード／ユーザー／メッセージ(DM)」を分離 ──
+    var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
+    var tabBtn = function (k, l, badge) {
+      return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
+        (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
+    };
+    var html = '<div class="sfqc-tabs">' +
+        tabBtn('users', '👥 ユーザー', adminPendingCount || 0) +
+        tabBtn('dash', '📊 ダッシュボード', 0) +
+        tabBtn('msg', '💬 メッセージ', totalUnread || 0) +
       '</div>';
 
-    if (!list.length) {
-      html += '<div class="sfqc-empty">条件に合うアカウントがありません。</div>';
-    }
-
-    list.forEach(function (u, i) {
-      var a = u.agg;
-      var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
-      var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
-      var dago = admDaysAgo(a.lastStudyDate);
-      var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
-      var accMap = { approved: ['ok', '✅ 承認済み'], pending: ['pend', '⏳ 承認待ち'], blocked: ['block', '🚫 停止中'] };
-      var am = accMap[u.access] || accMap.pending;
-      var accChip = '<span class="sfqc-acc-access ' + am[0] + '">' + am[1] + '</span>';
-      var accBtn = (u.access === 'approved')
-        ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
-        : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
-      html +=
-        '<div class="sfqc-acc">' +
-          '<div class="sfqc-acc-head">' +
-            '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + dormantLabel + '</span>' +
-            '<span class="sfqc-acc-stats">' +
-              '<span>解答 <b>' + a.answered + '</b>問</span>' +
-              '<span>正答率 <b>' + a.rate + '%</b></span>' +
-              '<span>試験 <b>' + a.examCount + '</b>回' + passLabel + '</span>' +
-              '<span>学習 <b>' + a.daysActive + '</b>日</span>' +
-              '<span>最終 ' + esc(a.lastStudyDate || '—') + '</span>' +
-            '</span>' +
-            '<span class="sfqc-acc-actions">' +
-              accBtn +
-              '<button class="sfqc-act-notice" data-notice-uid="' + esc(u.uid) + '" data-notice-name="' + esc(u.name) + '">📢 お知らせ</button>' +
-              '<button class="sfqc-act-chat' + (chatUnreadCount(u.chat, 'admin', u.uid) > 0 ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 チャット' + (chatUnreadCount(u.chat, 'admin', u.uid) > 0 ? ' (' + chatUnreadCount(u.chat, 'admin', u.uid) + ')' : '') + '</button>' +
-              '<button class="sfqc-act-detail" data-i="' + i + '">詳細 ▾</button>' +
-            '</span>' +
-          '</div>' +
-          '<div class="sfqc-detail" id="sfqc-det-' + i + '"></div>' +
+    if (adminTab === 'dash') {
+      // 分析専用（KPI・推移・分野別/問題別・操作ログ）
+      html += adminDashboardHTML();
+      html += auditLogHTML();
+    } else if (adminTab === 'msg') {
+      // ユーザーとのDM＋フィードバック（一斉お知らせはヘッダーの📢ボタン）
+      html += messagesSectionHTML();
+    } else {
+      // ユーザー管理（新規申請＋一覧。承認/停止/詳細）
+      html += applicationsSectionHTML();
+      html += '<div class="sfqc-sec">ユーザー</div>';
+      html += '<div class="sfqc-toolbar">' +
+          '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
+          '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
         '</div>';
-    });
-    html += auditLogHTML();   // 操作ログ（#4）
+      html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
+          '<span class="sfqc-sort-label">資格:</span>' + certChips +
+          '<span class="sfqc-sort-label">状態:</span>' +
+          '<button class="sfqc-fchip' + (adminActivity === 'week' ? ' on' : '') + '" data-act="week">7日以内</button>' +
+          '<button class="sfqc-fchip' + (adminActivity === 'dormant' ? ' on' : '') + '" data-act="dormant">休眠30日+</button>' +
+          '<button class="sfqc-fchip' + (adminPass ? ' on' : '') + '" data-pass="1">合格者</button>' +
+          '<span class="sfqc-sort-label">アクセス:</span>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">承認済み</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'pending' ? ' on' : '') + '" data-access="pending">承認待ち</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">停止中</button>' +
+        '</div>';
+      html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
+          '<span class="sfqc-sort-label">並び順:</span>' +
+          sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
+        '</div>';
+
+      if (!list.length) {
+        html += '<div class="sfqc-empty">条件に合うアカウントがありません。</div>';
+      }
+
+      list.forEach(function (u, i) {
+        var a = u.agg;
+        var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
+        var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
+        var dago = admDaysAgo(a.lastStudyDate);
+        var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
+        var accMap = { approved: ['ok', '✅ 承認済み'], pending: ['pend', '⏳ 承認待ち'], blocked: ['block', '🚫 停止中'] };
+        var am = accMap[u.access] || accMap.pending;
+        var accChip = '<span class="sfqc-acc-access ' + am[0] + '">' + am[1] + '</span>';
+        var accBtn = (u.access === 'approved')
+          ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
+          : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
+        html +=
+          '<div class="sfqc-acc">' +
+            '<div class="sfqc-acc-head">' +
+              '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + dormantLabel + '</span>' +
+              '<span class="sfqc-acc-stats">' +
+                '<span>解答 <b>' + a.answered + '</b>問</span>' +
+                '<span>正答率 <b>' + a.rate + '%</b></span>' +
+                '<span>試験 <b>' + a.examCount + '</b>回' + passLabel + '</span>' +
+                '<span>学習 <b>' + a.daysActive + '</b>日</span>' +
+                '<span>最終 ' + esc(a.lastStudyDate || '—') + '</span>' +
+              '</span>' +
+              '<span class="sfqc-acc-actions">' +
+                accBtn +
+                '<button class="sfqc-act-detail" data-i="' + i + '">詳細 ▾</button>' +
+              '</span>' +
+            '</div>' +
+            '<div class="sfqc-detail" id="sfqc-det-' + i + '"></div>' +
+          '</div>';
+      });
+    }
     body.innerHTML = html;
 
+    // タブ切替（ダッシュボード／ユーザー／メッセージ）
+    body.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.addEventListener('click', function () { adminTab = b.getAttribute('data-tab'); renderAdmin(); });
+    });
+    // メッセージタブ：DM絞り込み
+    var dmIn = document.getElementById('sfqc-dm-q');
+    if (dmIn) {
+      dmIn.addEventListener('input', function () { dmFilter = dmIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-dm-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
+    }
     // フィルタ/ソート
     var qIn = document.getElementById('sfqc-q');
     if (qIn) {
@@ -1820,6 +1880,57 @@
   function fbCatLabel(k) {
     var m = { bug: '🐞 不具合', answer: '❌ 正解誤り', exp: '📝 解説誤り', choice: '🔀 選択肢', japanese: '🗾 日本語', request: '💡 要望', other: '＊ その他' };
     return m[k] || k || '—';
+  }
+  // チャット配列から最新メッセージを取り出す
+  function lastChatMsg(chat) {
+    if (!Array.isArray(chat) || !chat.length) return null;
+    var m = null; chat.forEach(function (x) { if (x && (!m || (x.ts || 0) > (m.ts || 0))) m = x; });
+    return m;
+  }
+  // メッセージタブ：ユーザーとのDM一覧＋フィードバック（ダッシュボードから分離）
+  function messagesSectionHTML() {
+    var users = adminUsers.map(function (u) {
+      var last = lastChatMsg(u.chat);
+      return { u: u, unread: chatUnreadCount(u.chat, 'admin', u.uid), last: last, lastTs: (last && last.ts) || 0 };
+    });
+    var totalUnread = users.reduce(function (s, x) { return s + x.unread; }, 0);
+    users.sort(function (a, b) {
+      return (b.unread > 0) - (a.unread > 0) || b.lastTs - a.lastTs || (b.u.updated || 0) - (a.u.updated || 0);
+    });
+    var q = dmFilter.trim().toLowerCase();
+    var list = q ? users.filter(function (x) {
+      return (x.u.name || '').toLowerCase().indexOf(q) >= 0 || (x.u.email || '').toLowerCase().indexOf(q) >= 0;
+    }) : users;
+
+    var html = '<div class="sfqc-sec">💬 ダイレクトメッセージ' + (totalUnread ? ' <span class="sfqc-fb-count">未読 ' + totalUnread + '</span>' : '') + '</div>';
+    html += '<div class="sfqc-toolbar">' +
+        '<input id="sfqc-dm-q" class="sfqc-search" type="search" placeholder="🔍 名前・メールで絞り込み" value="' + esc(dmFilter) + '">' +
+        '<span class="sfqc-count">' + list.length + ' / ' + users.length + '人</span>' +
+      '</div>';
+    if (!list.length) {
+      html += '<div class="sfqc-empty">該当する利用者がいません。</div>';
+    }
+    list.forEach(function (x) {
+      var u = x.u, last = x.last;
+      var prev = last ? ((last.from === 'admin' ? 'あなた: ' : '') + (last.msg || '')) : 'メッセージはまだありません';
+      if (prev.length > 42) prev = prev.slice(0, 42) + '…';
+      html +=
+        '<div class="sfqc-dm' + (x.unread ? ' unread' : '') + '">' +
+          '<div class="sfqc-dm-main">' +
+            '<span class="sfqc-dm-name">👤 ' + esc(u.name) + '</span>' +
+            (x.unread ? '<span class="sfqc-dm-badge">' + x.unread + '</span>' : '') +
+            '<span class="sfqc-dm-prev">' + esc(prev) + '</span>' +
+          '</div>' +
+          '<div class="sfqc-dm-act">' +
+            (last ? '<span class="sfqc-dm-time">' + esc(fmtDate(last.ts)) + '</span>' : '') +
+            '<button class="sfqc-act-notice" data-notice-uid="' + esc(u.uid) + '" data-notice-name="' + esc(u.name) + '" title="個別お知らせ">📢</button>' +
+            '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button>' +
+          '</div>' +
+        '</div>';
+    });
+    html += '<div class="sfqc-divider"></div>';
+    html += feedbackSectionHTML();
+    return html;
   }
   function feedbackSectionHTML() {
     var all = adminFeedback;
