@@ -43,7 +43,7 @@
   var lastBroadcast = null, lastNotices = [], lastChat = [], lastRead = {};
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
-  var maintUnsub = null, maintTimer = null, lastMaint = null; // メンテナンス設定
+  var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
   var adminBroadcast = null;       // 管理者ビュー用の現在の一斉お知らせ
 
@@ -305,6 +305,16 @@
       '.sfqc-bc-card .sfqc-bc-msg{font-size:13px;color:#1e293b;white-space:pre-wrap;word-break:break-word;margin:4px 0 8px}' +
       '.sfqc-bc-card .sfqc-bc-meta{font-size:11.5px;color:#475569;display:flex;gap:12px;flex-wrap:wrap;align-items:center}' +
       'body.dark .sfqc-bc-card{background:#312e81;border-color:#4f46e5}body.dark .sfqc-bc-card .sfqc-bc-msg{color:#e2e8f0}body.dark .sfqc-bc-card .sfqc-bc-meta{color:#c7d2fe}' +
+      /* 既読者・未読者の一覧（一斉お知らせ） */
+      '.sfqc-rd{margin-top:8px}' +
+      '.sfqc-rd > summary{cursor:pointer;font-size:12px;font-weight:700;color:#4338ca}' +
+      '.sfqc-rd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}' +
+      '.sfqc-rd-h{font-size:11px;font-weight:800;color:#64748b;margin-bottom:4px}' +
+      '.sfqc-rd-row{font-size:12px;color:#1e293b;padding:2px 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}' +
+      '.sfqc-rd-t{font-size:10px;color:#94a3b8}' +
+      '.sfqc-rd-none{color:#94a3b8}' +
+      'body.dark .sfqc-rd > summary{color:#c7d2fe}body.dark .sfqc-rd-row{color:#e2e8f0}' +
+      '@media(max-width:560px){.sfqc-rd-grid{grid-template-columns:1fr}}' +
       /* メンテナンス：全画面ロック＋予告バナー */
       '#sfqc-maint{position:fixed;inset:0;z-index:100004;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:16px}' +
       '#sfqc-maint.show{display:flex}' +
@@ -971,6 +981,7 @@
     if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
     if (maintUnsub) { maintUnsub(); maintUnsub = null; }
     if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
+    if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     lastBroadcast = null; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null;
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
@@ -1329,19 +1340,31 @@
     var overlay = document.getElementById('sfqc-maint');
     var banner = document.getElementById('sfqc-maint-banner');
     if (!overlay || !banner) return;
-    var st = maintStatus(lastMaint, Date.now());
+    var now = Date.now();
+    var st = maintStatus(lastMaint, now);
     var msg = (lastMaint && lastMaint.msg) || 'ただいまメンテナンスを実施しています。ご不便をおかけします。';
+    var preMin = (lastMaint && lastMaint.preMin != null) ? lastMaint.preMin : 60;
     if (st.active) {
       document.getElementById('sfqc-maint-msg').textContent = msg;
       document.getElementById('sfqc-maint-end').textContent = st.end ? ('終了予定：' + fmtDate(st.end)) : '';
       overlay.classList.add('show'); banner.classList.remove('show');
     } else {
       overlay.classList.remove('show');
-      var preMin = (lastMaint && lastMaint.preMin) || 60;
-      if (st.upcoming && st.upcoming - Date.now() <= preMin * 60000) {
+      if (st.upcoming && st.upcoming - now <= preMin * 60000) {
         banner.textContent = '🛠 ' + fmtDate(st.upcoming) + ' よりメンテナンス予定です（' + msg + '）';
         banner.classList.add('show');
       } else { banner.classList.remove('show'); }
+    }
+    // 次に状態が変わる「境界時刻」ちょうどに再判定する（タイマー＝ほぼリアルタイムで開始/終了を反映）
+    if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
+    var cands = [];
+    if (st.active && st.end) cands.push(st.end);            // 期間終了→ロック解除
+    if (st.upcoming) { cands.push(st.upcoming); cands.push(st.upcoming - preMin * 60000); } // 開始／予告開始
+    var next = 0;
+    cands.forEach(function (t) { if (t > now && (!next || t < next)) next = t; });
+    if (next) {
+      var delay = Math.min(next - now + 500, 21600000); // 最大6時間で再評価（タイマー上限対策）
+      maintBoundaryTimer = setTimeout(checkMaintenance, Math.max(1000, delay));
     }
   }
   function num(v) { var n = parseInt(v, 10); return isFinite(n) ? n : 0; }
@@ -2189,21 +2212,31 @@
       return (x.u.name || '').toLowerCase().indexOf(q) >= 0 || (x.u.email || '').toLowerCase().indexOf(q) >= 0;
     }) : users;
 
-    // 一斉お知らせの状態カード（本文・配信/予約・既読数）
+    // 一斉お知らせの状態カード（本文・配信/予約・既読数・既読者/未読者一覧）
     var html = '<div class="sfqc-sec">📢 一斉お知らせ</div>';
     var bc = adminBroadcast, now = Date.now();
+    var myUid = (currentUser && currentUser.uid) || '';
+    var audience = adminUsers.filter(function (u) { return u.uid !== myUid; }); // 管理者自身は配信対象外
     if (bc && bc.msg) {
-      var readCnt = adminUsers.filter(function (u) { return (u.read && u.read.bc || 0) >= (bc.ts || 0); }).length;
+      var readers = audience.filter(function (u) { return (u.read && u.read.bc || 0) >= (bc.ts || 0); });
+      var unread = audience.filter(function (u) { return (u.read && u.read.bc || 0) < (bc.ts || 0); });
       var scheduled = (bc.publishAt || bc.ts || 0) > now;
       var when = scheduled ? ('🕒 予約：' + fmtDate(bc.publishAt) + '（未配信）') : ('✅ 配信：' + fmtDate(bc.publishAt || bc.ts));
       var bcPrev = bc.msg.length > 90 ? bc.msg.slice(0, 90) + '…' : bc.msg;
+      var readerList = readers.map(function (u) { return '<div class="sfqc-rd-row">✅ ' + esc(u.name) + ' <span class="sfqc-rd-t">' + esc(fmtDate(u.read.bc)) + '</span></div>'; }).join('') || '<div class="sfqc-rd-row sfqc-rd-none">まだ既読の人はいません</div>';
+      var unreadList = unread.map(function (u) { return '<div class="sfqc-rd-row">⬜ ' + esc(u.name) + '</div>'; }).join('') || '<div class="sfqc-rd-row sfqc-rd-none">全員が既読です 🎉</div>';
       html += '<div class="sfqc-bc-card">' +
           '<div class="sfqc-bc-msg">' + esc(bcPrev) + '</div>' +
           '<div class="sfqc-bc-meta">' +
             '<span>' + esc(when) + '</span>' +
-            '<span>👁 既読 <b>' + readCnt + '</b> / ' + adminUsers.length + '人</span>' +
+            '<span>👁 既読 <b>' + readers.length + '</b> / ' + audience.length + '人</span>' +
             '<button class="sfqc-mini" id="sfqc-bc-new">✏️ 新規・編集</button>' +
           '</div>' +
+          '<details class="sfqc-rd"><summary>👥 既読者・未読者を表示</summary>' +
+            '<div class="sfqc-rd-grid">' +
+              '<div><div class="sfqc-rd-h">既読 ' + readers.length + '</div>' + readerList + '</div>' +
+              '<div><div class="sfqc-rd-h">未読 ' + unread.length + '</div>' + unreadList + '</div>' +
+            '</div></details>' +
         '</div>';
     } else {
       html += '<div class="sfqc-bc-card"><div class="sfqc-bc-meta"><span>まだ一斉お知らせはありません。</span>' +
@@ -2222,11 +2255,17 @@
       var u = x.u, last = x.last;
       var prev = last ? ((last.from === 'admin' ? 'あなた: ' : '') + (last.msg || '')) : 'メッセージはまだありません';
       if (prev.length > 42) prev = prev.slice(0, 42) + '…';
-      // 管理者の最後の発言が読まれたか（既読/未読）
+      // 管理者の最後の発言が読まれたか（💬チャット）と、最新の個別お知らせの既読（📢）
       var readChip = '';
       if (last && last.from === 'admin') {
         var rd = (u.read && u.read.chat || 0) >= (last.ts || 0);
-        readChip = '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">' + (rd ? '既読' : '未読') + '</span>';
+        readChip = '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">💬' + (rd ? '既読' : '未読') + '</span>';
+      }
+      var lastNotice = (u.notices && u.notices.length) ? u.notices.reduce(function (m, n) { return (!m || (n.ts || 0) > (m.ts || 0)) ? n : m; }, null) : null;
+      var noticeChip = '';
+      if (lastNotice) {
+        var nrd = (u.read && u.read.notice || 0) >= (lastNotice.ts || 0);
+        noticeChip = '<span class="sfqc-read ' + (nrd ? 'yes' : 'no') + '" title="最新の個別お知らせ">📢' + (nrd ? '既読' : '未読') + '</span>';
       }
       html +=
         '<div class="sfqc-dm' + (x.unread ? ' unread' : '') + '">' +
@@ -2236,7 +2275,7 @@
             '<span class="sfqc-dm-prev">' + esc(prev) + '</span>' +
           '</div>' +
           '<div class="sfqc-dm-act">' +
-            readChip +
+            noticeChip + readChip +
             (last ? '<span class="sfqc-dm-time">' + esc(fmtDate(last.ts)) + '</span>' : '') +
             '<button class="sfqc-act-notice" data-notice-uid="' + esc(u.uid) + '" data-notice-name="' + esc(u.name) + '" title="個別お知らせ">📢</button>' +
             '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button>' +
