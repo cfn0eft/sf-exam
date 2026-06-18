@@ -40,8 +40,12 @@
   /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
   var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
-  var lastBroadcast = null, lastNotices = [], lastChat = [];
+  var lastBroadcast = null, lastNotices = [], lastChat = [], lastRead = {};
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
+  var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
+  var maintUnsub = null, maintTimer = null, lastMaint = null; // メンテナンス設定
+  var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
+  var adminBroadcast = null;       // 管理者ビュー用の現在の一斉お知らせ
 
   /* ---------------- スタイル ---------------- */
   function injectStyle() {
@@ -274,6 +278,39 @@
       'body.dark .sfqc-chat-b.theirs{background:#1e293b;color:#e2e8f0;border-color:#334155}' +
       'body.dark .sfqc-chat-input{background:#1e293b;border-color:#334155}' +
       'body.dark .sfqc-chat-input textarea{background:#0f172a;color:#e2e8f0;border-color:#334155}' +
+      /* 作成モーダル（お知らせの本文＋予約日時）／メンテナンス編集 */
+      '#sfqc-compose{position:fixed;inset:0;z-index:100003;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.7);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:14px}' +
+      '#sfqc-compose.show{display:flex}' +
+      '.sfqc-cmp-card{width:min(94vw,460px);max-height:90vh;overflow:auto;background:#fff;color:#1e293b;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:left}' +
+      '.sfqc-cmp-card h3{margin:0 0 10px;font-size:16px}' +
+      '.sfqc-cmp-card label{display:block;font-size:12px;font-weight:700;color:#475569;margin:12px 0 4px}' +
+      '.sfqc-cmp-card textarea,.sfqc-cmp-card input,.sfqc-cmp-card select{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:8px 10px;font-size:13px;font-family:inherit;color:#1e293b;background:#fff;box-sizing:border-box}' +
+      '.sfqc-cmp-card textarea{min-height:92px;resize:vertical}' +
+      '.sfqc-cmp-row{display:flex;gap:8px;margin-top:16px}' +
+      '.sfqc-cmp-row .sfqc-btn{flex:1}' +
+      '.sfqc-cmp-hint{font-size:11px;color:#64748b;margin:4px 0 0}' +
+      '.sfqc-cmp-dows{display:flex;gap:4px;flex-wrap:wrap}' +
+      '.sfqc-cmp-dow{flex:0 0 auto;border:1px solid #cbd5e1;border-radius:8px;padding:6px 9px;font-size:12px;cursor:pointer;background:#fff;color:#475569}' +
+      '.sfqc-cmp-dow.on{background:#6366f1;color:#fff;border-color:#6366f1}' +
+      '.sfqc-cmp-win{display:flex;align-items:center;gap:8px;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 9px;margin-top:6px}' +
+      '.sfqc-cmp-win button{margin-left:auto;border:none;background:#fee2e2;color:#b91c1c;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer}' +
+      'body.dark .sfqc-cmp-card{background:#1e293b;color:#e2e8f0}body.dark .sfqc-cmp-card textarea,body.dark .sfqc-cmp-card input,body.dark .sfqc-cmp-card select{background:#0f172a;color:#e2e8f0;border-color:#334155}body.dark .sfqc-cmp-card label{color:#cbd5e1}body.dark .sfqc-cmp-win{background:#0f172a;border-color:#334155}' +
+      /* 既読/未読チップ（DM一覧） */
+      '.sfqc-read{font-size:10px;font-weight:800;border-radius:999px;padding:1px 7px;white-space:nowrap}' +
+      '.sfqc-read.yes{background:#dcfce7;color:#15803d}' +
+      '.sfqc-read.no{background:#fee2e2;color:#b91c1c}' +
+      'body.dark .sfqc-read.yes{background:#14532d;color:#bbf7d0}body.dark .sfqc-read.no{background:#7f1d1d;color:#fecaca}' +
+      /* 一斉お知らせの状態カード（メッセージタブ） */
+      '.sfqc-bc-card{background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:12px 14px;margin-bottom:12px}' +
+      '.sfqc-bc-card .sfqc-bc-msg{font-size:13px;color:#1e293b;white-space:pre-wrap;word-break:break-word;margin:4px 0 8px}' +
+      '.sfqc-bc-card .sfqc-bc-meta{font-size:11.5px;color:#475569;display:flex;gap:12px;flex-wrap:wrap;align-items:center}' +
+      'body.dark .sfqc-bc-card{background:#312e81;border-color:#4f46e5}body.dark .sfqc-bc-card .sfqc-bc-msg{color:#e2e8f0}body.dark .sfqc-bc-card .sfqc-bc-meta{color:#c7d2fe}' +
+      /* メンテナンス：全画面ロック＋予告バナー */
+      '#sfqc-maint{position:fixed;inset:0;z-index:100004;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:16px}' +
+      '#sfqc-maint.show{display:flex}' +
+      '#sfqc-maint .sfqc-card{text-align:center}' +
+      '#sfqc-maint-banner{position:fixed;left:0;right:0;top:0;z-index:99980;display:none;background:#b45309;color:#fff;font-size:12.5px;font-weight:700;text-align:center;padding:8px 12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.2)}' +
+      '#sfqc-maint-banner.show{display:block}' +
       '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
       '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
       '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
@@ -446,6 +483,29 @@
     document.getElementById('sfqc-chat-text').addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
     });
+
+    // 作成モーダル（お知らせ作成＋予約 / メンテナンス編集を兼用）
+    var compose = document.createElement('div');
+    compose.id = 'sfqc-compose';
+    compose.innerHTML = '<div class="sfqc-cmp-card" id="sfqc-cmp-card"></div>';
+    compose.addEventListener('click', function (e) { if (e.target === compose) closeCompose(); });
+    document.body.appendChild(compose);
+
+    // メンテナンス：全画面ロック＋予告バナー（管理者は対象外）
+    var maint = document.createElement('div');
+    maint.id = 'sfqc-maint';
+    maint.innerHTML =
+      '<div class="sfqc-card">' +
+        '<p class="sfqc-title">🛠 メンテナンス中</p>' +
+        '<p class="sfqc-sub" id="sfqc-maint-msg"></p>' +
+        '<p class="sfqc-sub" id="sfqc-maint-end" style="font-weight:700;color:#b45309"></p>' +
+        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-maint-reload" style="width:100%">再確認</button>' +
+      '</div>';
+    document.body.appendChild(maint);
+    document.getElementById('sfqc-maint-reload').addEventListener('click', checkMaintenance);
+    var mBanner = document.createElement('div');
+    mBanner.id = 'sfqc-maint-banner';
+    document.body.appendChild(mBanner);
 
     elStatus = document.getElementById('sfqc-status');
     elAdminBtn = document.getElementById('sfqc-admin-btn');
@@ -885,6 +945,7 @@
       var d = (snap.exists && snap.data()) || {};
       lastNotices = Array.isArray(d.notices) ? d.notices : [];
       lastChat = Array.isArray(d.chat) ? d.chat : [];
+      lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
       surfaceNotices();
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
@@ -895,13 +956,25 @@
       lastBroadcast = (snap.exists && snap.data()) || null;
       surfaceNotices();
     }, function () {});
+    // メンテナンス設定を購読＋定期チェック（管理者は対象外）
+    if (maintUnsub) { maintUnsub(); maintUnsub = null; }
+    maintUnsub = db.collection(BROADCAST_COL).doc(MAINT_DOC).onSnapshot(function (snap) {
+      lastMaint = (snap.exists && snap.data()) || null;
+      checkMaintenance();
+    }, function () {});
+    if (maintTimer) clearInterval(maintTimer);
+    maintTimer = setInterval(checkMaintenance, 30000);
   }
   function stopUserMessaging() {
     if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
     if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
     if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
-    lastBroadcast = null; lastNotices = []; lastChat = [];
+    if (maintUnsub) { maintUnsub(); maintUnsub = null; }
+    if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
+    lastBroadcast = null; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null;
     chatOpen = false; closeChat(); showChatFab(false);
+    var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
+    var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
   }
 
   function showChatFab(on) {
@@ -913,14 +986,16 @@
   function surfaceNotices() {
     try {
       if (document.getElementById('sfqc-replies')) return; // 既にポップ表示中
+      var now = Date.now();
+      var due = function (x) { return (x.publishAt || x.ts || 0) <= now; }; // 予約配信：配信時刻を過ぎたものだけ
       var items = [];
       var bcSeen = num(localStorage.getItem(uidKey('sfq_broadcast_seen')));
-      if (lastBroadcast && lastBroadcast.msg && (lastBroadcast.ts || 0) > bcSeen) {
+      if (lastBroadcast && lastBroadcast.msg && due(lastBroadcast) && (lastBroadcast.ts || 0) > bcSeen) {
         items.push({ title: lastBroadcast.title || '📢 お知らせ', msg: lastBroadcast.msg, ts: lastBroadcast.ts || 0, kind: 'bc' });
       }
       var nSeen = num(localStorage.getItem(uidKey('sfq_notice_seen')));
       lastNotices.forEach(function (n) {
-        if (n && n.msg && (n.ts || 0) > nSeen) items.push({ title: '📩 管理者からのお知らせ', msg: n.msg, ts: n.ts || 0, kind: 'notice' });
+        if (n && n.msg && due(n) && (n.ts || 0) > nSeen) items.push({ title: '📩 管理者からのお知らせ', msg: n.msg, ts: n.ts || 0, kind: 'notice' });
       });
       if (!items.length) return;
       items.sort(function (a, b) { return b.ts - a.ts; });
@@ -947,6 +1022,7 @@
         items.forEach(function (r) { if (r.kind === 'bc') maxBc = Math.max(maxBc, r.ts); else maxN = Math.max(maxN, r.ts); });
         if (maxBc) localStorage.setItem(uidKey('sfq_broadcast_seen'), String(Math.max(maxBc, num(localStorage.getItem(uidKey('sfq_broadcast_seen'))))));
         if (maxN) localStorage.setItem(uidKey('sfq_notice_seen'), String(Math.max(maxN, num(localStorage.getItem(uidKey('sfq_notice_seen'))))));
+        writeRead({ bc: maxBc, notice: maxN }); // 既読をクラウドへ記録（管理者が可視化）
       } catch (e) {}
       document.removeEventListener('keydown', onKey);
       if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
@@ -972,7 +1048,19 @@
       var max = num(localStorage.getItem(key));
       (msgs || []).forEach(function (m) { if (m && (m.ts || 0) > max) max = m.ts; });
       localStorage.setItem(key, String(max));
+      if (mode === 'user') writeRead({ chat: max }); // 利用者が読んだら既読を記録
     } catch (e) {}
+  }
+  // 既読タイムスタンプを自 doc の read{bc,notice,chat} に記録（値は増加方向のみ）。管理者ビューで集計表示。
+  function writeRead(patch) {
+    if (!db || !currentUser || isAdmin) return;
+    var cur = lastRead || {}, out = {}, changed = false;
+    ['bc', 'notice', 'chat'].forEach(function (k) {
+      var v = patch[k] || 0; if (v && v > (cur[k] || 0)) { out[k] = v; changed = true; }
+    });
+    if (!changed) return;
+    lastRead = { bc: Math.max(cur.bc || 0, out.bc || 0), notice: Math.max(cur.notice || 0, out.notice || 0), chat: Math.max(cur.chat || 0, out.chat || 0) };
+    db.collection(COLLECTION).doc(currentUser.uid).set({ read: out }, { merge: true }).catch(function () {});
   }
   function refreshChatBadge() {
     var fab = document.getElementById('sfqc-chat-fab');
@@ -1052,28 +1140,209 @@
     }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
   }
 
-  // 管理者：一斉お知らせを送信（broadcast/current を上書き）
-  function sendBroadcast() {
-    if (!isAdmin || !db) return;
-    var msg = (window.prompt('全利用者へ一斉送信するお知らせを入力してください（次回ログイン中の画面にポップ表示されます）', '') || '').trim();
-    if (!msg) return;
-    var rec = { title: '📢 お知らせ', msg: msg.slice(0, 2000), ts: Date.now(), by: currentName || 'admin' };
-    db.collection(BROADCAST_COL).doc('current').set(rec)
-      .then(function () { logAdmin('一斉お知らせ', msg.slice(0, 30)); toastSafe('一斉お知らせを送信しました'); })
-      .catch(function (e) { alert('送信に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
+  // 管理者：一斉お知らせ／個別お知らせの作成（予約配信つき）。作成モーダルを開く。
+  function sendBroadcast() { if (isAdmin && db) openCompose('broadcast'); }
+  function sendNotice(uid, name) { if (isAdmin && db && uid) openCompose('notice', uid, name); }
+
+  // datetime-local 値（'YYYY-MM-DDTHH:MM'）⇔ ms
+  function msToLocalInput(ms) {
+    if (!ms) return '';
+    var d = new Date(ms), p = function (n) { return ('0' + n).slice(-2); };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
   }
-  // 管理者：個別お知らせを送信（対象 doc の notices[] に追記＝本人にポップ）
-  function sendNotice(uid, name) {
-    if (!isAdmin || !db || !uid) return;
-    var msg = (window.prompt('「' + (name || '') + '」さんへのお知らせを入力してください（本人の画面にポップ表示されます）', '') || '').trim();
-    if (!msg) return;
-    var rec = { msg: msg.slice(0, 2000), ts: Date.now(), by: currentName || 'admin' };
-    var FV = firebase.firestore.FieldValue;
-    var ref = db.collection(COLLECTION).doc(uid);
-    ref.update('notices', FV.arrayUnion(rec)).catch(function () {
-      return ref.set({ notices: [rec] }, { merge: true });
-    }).then(function () { logAdmin('個別お知らせ', (name || '') + '：' + msg.slice(0, 20)); toastSafe('お知らせを送信しました'); })
-      .catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
+  function localInputToMs(v) { if (!v) return 0; var t = new Date(v).getTime(); return isFinite(t) ? t : 0; }
+
+  function openCompose(mode, uid, name) {
+    composeCtx = { mode: mode, uid: uid || '', name: name || '' };
+    var card = document.getElementById('sfqc-cmp-card');
+    var heading = (mode === 'broadcast') ? '📢 全員へお知らせ' : ('📩 ' + (name || '利用者') + ' さんへお知らせ');
+    card.innerHTML =
+      '<h3>' + esc(heading) + '</h3>' +
+      '<label>本文</label>' +
+      '<textarea id="sfqc-cmp-text" maxlength="2000" placeholder="お知らせの内容…"></textarea>' +
+      '<label>予約配信（空欄なら今すぐ）</label>' +
+      '<input type="datetime-local" id="sfqc-cmp-when">' +
+      '<p class="sfqc-cmp-hint">指定した日時以降に、利用者の画面へポップ表示されます。</p>' +
+      '<div class="sfqc-cmp-row">' +
+        '<button class="sfqc-btn sfqc-btn-ghost" id="sfqc-cmp-cancel">キャンセル</button>' +
+        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-cmp-send">送信</button>' +
+      '</div>';
+    document.getElementById('sfqc-cmp-cancel').addEventListener('click', closeCompose);
+    document.getElementById('sfqc-cmp-send').addEventListener('click', submitCompose);
+    document.getElementById('sfqc-compose').classList.add('show');
+    var t = document.getElementById('sfqc-cmp-text'); if (t) try { t.focus(); } catch (e) {}
+  }
+  function closeCompose() { var c = document.getElementById('sfqc-compose'); if (c) c.classList.remove('show'); composeCtx = null; }
+  function submitCompose() {
+    if (!composeCtx || !db) return;
+    var msg = (document.getElementById('sfqc-cmp-text').value || '').trim();
+    if (!msg) { alert('本文を入力してください。'); return; }
+    var when = localInputToMs(document.getElementById('sfqc-cmp-when').value);
+    var now = Date.now();
+    var publishAt = (when && when > now) ? when : now;
+    var scheduled = publishAt > now + 1000;
+    if (composeCtx.mode === 'broadcast') {
+      var rec = { title: '📢 お知らせ', msg: msg.slice(0, 2000), ts: now, publishAt: publishAt, by: currentName || 'admin' };
+      db.collection(BROADCAST_COL).doc('current').set(rec).then(function () {
+        adminBroadcast = rec;
+        logAdmin('一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 28));
+        toastSafe(scheduled ? '一斉お知らせを予約しました' : '一斉お知らせを送信しました');
+        closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+      }).catch(function (e) { alert('送信に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
+    } else {
+      var rec2 = { msg: msg.slice(0, 2000), ts: now, publishAt: publishAt, by: currentName || 'admin' };
+      var FV = firebase.firestore.FieldValue;
+      var ref = db.collection(COLLECTION).doc(composeCtx.uid);
+      ref.update('notices', FV.arrayUnion(rec2)).catch(function () {
+        return ref.set({ notices: [rec2] }, { merge: true });
+      }).then(function () {
+        logAdmin('個別お知らせ', (composeCtx.name || '') + '：' + (scheduled ? '[予約] ' : '') + msg.slice(0, 18));
+        toastSafe(scheduled ? 'お知らせを予約しました' : 'お知らせを送信しました');
+        closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+      }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
+    }
+  }
+
+  /* ---------------- メンテナンス（単発＋定期。期間中は非管理者を全画面ロック） ---------------- */
+  // 設定 broadcast/maintenance = {enabled, msg, windows:[{start,end}], recurring:{enabled,dows:[0-6],start:'HH:MM',durMin}, preMin}
+  // 現在がメンテ中か／直近の予定を判定して {active,end,upcoming} を返す
+  function maintStatus(cfg, now) {
+    var res = { active: false, end: 0, upcoming: 0, upEnd: 0 };
+    if (!cfg || !cfg.enabled) return res;
+    (cfg.windows || []).forEach(function (w) {
+      if (!w || !w.start || !w.end) return;
+      if (now >= w.start && now < w.end) { res.active = true; res.end = Math.max(res.end, w.end); }
+      else if (w.start > now && (!res.upcoming || w.start < res.upcoming)) { res.upcoming = w.start; res.upEnd = w.end; }
+    });
+    var r = cfg.recurring;
+    if (r && r.enabled && r.start && r.durMin && r.dows && r.dows.length) {
+      var hm = r.start.split(':'); var hh = +hm[0] || 0, mm = +hm[1] || 0, dur = (+r.durMin || 0) * 60000;
+      for (var off = -1; off <= 7; off++) {
+        var d = new Date(now); d.setDate(d.getDate() + off); d.setHours(hh, mm, 0, 0);
+        if (r.dows.indexOf(d.getDay()) < 0) continue;
+        var s = d.getTime(), e = s + dur;
+        if (now >= s && now < e) { res.active = true; res.end = Math.max(res.end, e); }
+        else if (s > now && (!res.upcoming || s < res.upcoming)) { res.upcoming = s; res.upEnd = e; }
+      }
+    }
+    return res;
+  }
+  function dowLabel(n) { return ['日', '月', '火', '水', '木', '金', '土'][n] || ''; }
+  var maintDraft = null;
+  // 管理者：メンテナンス設定の概要（ダッシュボードタブ）
+  function maintenanceSectionHTML() {
+    var m = lastMaint, html = '<div class="sfqc-sec">🛠 メンテナンス</div><div class="sfqc-bc-card">';
+    if (m && m.enabled) {
+      var st = maintStatus(m, Date.now());
+      var status = st.active ? '🔴 メンテナンス中（終了予定 ' + fmtDate(st.end) + '）'
+        : (st.upcoming ? '🟡 次回予定 ' + fmtDate(st.upcoming) : '🟢 有効（直近の予定なし）');
+      var parts = [];
+      (m.windows || []).forEach(function (w) { if (w && w.start) parts.push(fmtDate(w.start) + '〜' + fmtDate(w.end)); });
+      if (m.recurring && m.recurring.enabled) parts.push('定期：毎週 ' + (m.recurring.dows || []).map(dowLabel).join('・') + ' ' + esc(m.recurring.start) + ' から' + m.recurring.durMin + '分');
+      html += '<div class="sfqc-bc-msg">' + esc(status) + '</div>' +
+        '<div class="sfqc-bc-meta"><span>' + esc(parts.join(' ／ ') || '期間が未設定です') + '</span>' +
+        '<button class="sfqc-mini" id="sfqc-maint-edit">⚙️ 編集</button></div>';
+    } else {
+      html += '<div class="sfqc-bc-meta"><span>メンテナンスは無効です。</span>' +
+        '<button class="sfqc-mini" id="sfqc-maint-edit">⚙️ 設定する</button></div>';
+    }
+    return html + '</div>';
+  }
+  function openMaintEditor() {
+    if (!isAdmin) return;
+    var m = lastMaint || {};
+    maintDraft = {
+      enabled: !!m.enabled,
+      msg: m.msg || 'ただいまメンテナンスを実施しています。しばらくお待ちください。',
+      windows: Array.isArray(m.windows) ? m.windows.map(function (w) { return { start: w.start, end: w.end }; }) : [],
+      recurring: {
+        enabled: !!(m.recurring && m.recurring.enabled),
+        dows: (m.recurring && m.recurring.dows) ? m.recurring.dows.slice() : [],
+        start: (m.recurring && m.recurring.start) || '02:00',
+        durMin: (m.recurring && m.recurring.durMin) || 120
+      },
+      preMin: (m.preMin != null) ? m.preMin : 60
+    };
+    composeCtx = { mode: 'maint' };
+    document.getElementById('sfqc-compose').classList.add('show');
+    renderMaintEditor();
+  }
+  function renderMaintEditor() {
+    var d = maintDraft; if (!d) return;
+    var card = document.getElementById('sfqc-cmp-card');
+    var winRows = d.windows.map(function (w, i) {
+      return '<div class="sfqc-cmp-win"><span>' + esc(fmtDate(w.start)) + ' 〜 ' + esc(fmtDate(w.end)) + '</span><button data-rmwin="' + i + '">削除</button></div>';
+    }).join('');
+    var dowChips = [0, 1, 2, 3, 4, 5, 6].map(function (i) {
+      return '<button class="sfqc-cmp-dow' + (d.recurring.dows.indexOf(i) >= 0 ? ' on' : '') + '" data-dow="' + i + '">' + dowLabel(i) + '</button>';
+    }).join('');
+    card.innerHTML =
+      '<h3>🛠 メンテナンス設定</h3>' +
+      '<label><input type="checkbox" id="sfm-en"' + (d.enabled ? ' checked' : '') + '> メンテナンス機能を有効にする</label>' +
+      '<label>利用者へのメッセージ</label><textarea id="sfm-msg">' + esc(d.msg) + '</textarea>' +
+      '<label>単発の期間</label>' + (winRows || '<p class="sfqc-cmp-hint">未設定</p>') +
+      '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center">' +
+        '<input type="datetime-local" id="sfm-ws" style="flex:1;min-width:150px"><input type="datetime-local" id="sfm-we" style="flex:1;min-width:150px">' +
+        '<button class="sfqc-mini" id="sfm-addwin">＋追加</button></div>' +
+      '<label><input type="checkbox" id="sfm-ren"' + (d.recurring.enabled ? ' checked' : '') + '> 定期メンテナンス（毎週）</label>' +
+      '<div class="sfqc-cmp-dows">' + dowChips + '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:8px">' +
+        '<div style="flex:1"><label style="margin-top:0">開始時刻</label><input type="time" id="sfm-rstart" value="' + esc(d.recurring.start) + '"></div>' +
+        '<div style="flex:1"><label style="margin-top:0">所要（分）</label><input type="number" id="sfm-rdur" min="5" value="' + d.recurring.durMin + '"></div></div>' +
+      '<label>予告バナーを出す時間（分前・0で予告なし）</label><input type="number" id="sfm-pre" min="0" value="' + d.preMin + '">' +
+      '<div class="sfqc-cmp-row"><button class="sfqc-btn sfqc-btn-ghost" id="sfm-cancel">キャンセル</button><button class="sfqc-btn sfqc-btn-primary" id="sfm-save">保存</button></div>';
+    var pull = function () {
+      d.enabled = document.getElementById('sfm-en').checked;
+      d.msg = document.getElementById('sfm-msg').value;
+      d.recurring.enabled = document.getElementById('sfm-ren').checked;
+      d.recurring.start = document.getElementById('sfm-rstart').value || '02:00';
+      d.recurring.durMin = +document.getElementById('sfm-rdur').value || 120;
+      d.preMin = +document.getElementById('sfm-pre').value || 0;
+    };
+    card.querySelectorAll('[data-dow]').forEach(function (b) {
+      b.addEventListener('click', function () { pull(); var i = +b.getAttribute('data-dow'); var p = d.recurring.dows.indexOf(i); if (p >= 0) d.recurring.dows.splice(p, 1); else d.recurring.dows.push(i); renderMaintEditor(); });
+    });
+    card.querySelectorAll('[data-rmwin]').forEach(function (b) {
+      b.addEventListener('click', function () { pull(); d.windows.splice(+b.getAttribute('data-rmwin'), 1); renderMaintEditor(); });
+    });
+    document.getElementById('sfm-addwin').addEventListener('click', function () {
+      pull();
+      var s = localInputToMs(document.getElementById('sfm-ws').value), e = localInputToMs(document.getElementById('sfm-we').value);
+      if (!s || !e || e <= s) { alert('開始・終了日時を正しく指定してください。'); return; }
+      d.windows.push({ start: s, end: e }); d.windows.sort(function (a, b) { return a.start - b.start; }); renderMaintEditor();
+    });
+    document.getElementById('sfm-cancel').addEventListener('click', closeCompose);
+    document.getElementById('sfm-save').addEventListener('click', function () { pull(); saveMaint(); });
+  }
+  function saveMaint() {
+    var d = maintDraft; if (!d || !db) return;
+    var rec = { enabled: !!d.enabled, msg: (d.msg || '').slice(0, 1000), windows: d.windows || [],
+      recurring: { enabled: !!d.recurring.enabled, dows: d.recurring.dows || [], start: d.recurring.start || '02:00', durMin: +d.recurring.durMin || 120 },
+      preMin: +d.preMin || 0, updated: Date.now(), by: currentName || 'admin' };
+    db.collection(BROADCAST_COL).doc(MAINT_DOC).set(rec).then(function () {
+      lastMaint = rec; logAdmin('メンテナンス設定', rec.enabled ? '有効' : '無効'); toastSafe('メンテナンス設定を保存しました');
+      closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+    }).catch(function (e) { alert('保存に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
+  }
+  function checkMaintenance() {
+    if (isAdmin) return; // 管理者は対象外
+    var overlay = document.getElementById('sfqc-maint');
+    var banner = document.getElementById('sfqc-maint-banner');
+    if (!overlay || !banner) return;
+    var st = maintStatus(lastMaint, Date.now());
+    var msg = (lastMaint && lastMaint.msg) || 'ただいまメンテナンスを実施しています。ご不便をおかけします。';
+    if (st.active) {
+      document.getElementById('sfqc-maint-msg').textContent = msg;
+      document.getElementById('sfqc-maint-end').textContent = st.end ? ('終了予定：' + fmtDate(st.end)) : '';
+      overlay.classList.add('show'); banner.classList.remove('show');
+    } else {
+      overlay.classList.remove('show');
+      var preMin = (lastMaint && lastMaint.preMin) || 60;
+      if (st.upcoming && st.upcoming - Date.now() <= preMin * 60000) {
+        banner.textContent = '🛠 ' + fmtDate(st.upcoming) + ' よりメンテナンス予定です（' + msg + '）';
+        banner.classList.add('show');
+      } else { banner.classList.remove('show'); }
+    }
   }
   function num(v) { var n = parseInt(v, 10); return isFinite(n) ? n : 0; }
   function uidKey(base) { return base + '_' + ((currentUser && currentUser.uid) || 'anon'); }
@@ -1375,7 +1644,7 @@
         }
         // 管理者自身の doc から操作ログを取り込む（#4）
         if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-        var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), certs: [] };
+        var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), certs: [] };
         var stores = data.stores;
         if (stores && typeof stores === 'object' && Object.keys(stores).length) {
           Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -1391,7 +1660,11 @@
       adminLogEntries.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
       if (adminLogEntries.length > LOG_CAP) adminLogEntries = adminLogEntries.slice(0, LOG_CAP);
       adminSelApps = {};
-      renderAdmin();
+      // 一斉お知らせとメンテナンス設定も取得（既読集計・編集に使用）
+      db.collection(BROADCAST_COL).doc('current').get().then(function (b) { adminBroadcast = (b.exists && b.data()) || null; })
+        .catch(function () {}).then(function () { return db.collection(BROADCAST_COL).doc(MAINT_DOC).get(); })
+        .then(function (m) { lastMaint = (m && m.exists && m.data()) || null; }).catch(function () {})
+        .then(function () { renderAdmin(); });
     }).catch(function (e) {
       body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
     });
@@ -1515,7 +1788,8 @@
       '</div>';
 
     if (adminTab === 'dash') {
-      // 分析専用（KPI・推移・分野別/問題別・操作ログ）
+      // 分析専用（KPI・推移・分野別/問題別・操作ログ）＋メンテナンス設定
+      html += maintenanceSectionHTML();
       html += adminDashboardHTML();
       html += auditLogHTML();
     } else if (adminTab === 'msg') {
@@ -1590,6 +1864,9 @@
     body.querySelectorAll('[data-tab]').forEach(function (b) {
       b.addEventListener('click', function () { adminTab = b.getAttribute('data-tab'); renderAdmin(); });
     });
+    // 一斉お知らせの作成・編集／メンテナンス編集
+    var bcNew = document.getElementById('sfqc-bc-new'); if (bcNew) bcNew.addEventListener('click', sendBroadcast);
+    var maintEdit = document.getElementById('sfqc-maint-edit'); if (maintEdit) maintEdit.addEventListener('click', openMaintEditor);
     // メッセージタブ：DM絞り込み
     var dmIn = document.getElementById('sfqc-dm-q');
     if (dmIn) {
@@ -1912,7 +2189,28 @@
       return (x.u.name || '').toLowerCase().indexOf(q) >= 0 || (x.u.email || '').toLowerCase().indexOf(q) >= 0;
     }) : users;
 
-    var html = '<div class="sfqc-sec">💬 ダイレクトメッセージ' + (totalUnread ? ' <span class="sfqc-fb-count">未読 ' + totalUnread + '</span>' : '') + '</div>';
+    // 一斉お知らせの状態カード（本文・配信/予約・既読数）
+    var html = '<div class="sfqc-sec">📢 一斉お知らせ</div>';
+    var bc = adminBroadcast, now = Date.now();
+    if (bc && bc.msg) {
+      var readCnt = adminUsers.filter(function (u) { return (u.read && u.read.bc || 0) >= (bc.ts || 0); }).length;
+      var scheduled = (bc.publishAt || bc.ts || 0) > now;
+      var when = scheduled ? ('🕒 予約：' + fmtDate(bc.publishAt) + '（未配信）') : ('✅ 配信：' + fmtDate(bc.publishAt || bc.ts));
+      var bcPrev = bc.msg.length > 90 ? bc.msg.slice(0, 90) + '…' : bc.msg;
+      html += '<div class="sfqc-bc-card">' +
+          '<div class="sfqc-bc-msg">' + esc(bcPrev) + '</div>' +
+          '<div class="sfqc-bc-meta">' +
+            '<span>' + esc(when) + '</span>' +
+            '<span>👁 既読 <b>' + readCnt + '</b> / ' + adminUsers.length + '人</span>' +
+            '<button class="sfqc-mini" id="sfqc-bc-new">✏️ 新規・編集</button>' +
+          '</div>' +
+        '</div>';
+    } else {
+      html += '<div class="sfqc-bc-card"><div class="sfqc-bc-meta"><span>まだ一斉お知らせはありません。</span>' +
+        '<button class="sfqc-mini" id="sfqc-bc-new">📢 作成</button></div></div>';
+    }
+
+    html += '<div class="sfqc-sec">💬 ダイレクトメッセージ' + (totalUnread ? ' <span class="sfqc-fb-count">未読 ' + totalUnread + '</span>' : '') + '</div>';
     html += '<div class="sfqc-toolbar">' +
         '<input id="sfqc-dm-q" class="sfqc-search" type="search" placeholder="🔍 名前・メールで絞り込み" value="' + esc(dmFilter) + '">' +
         '<span class="sfqc-count">' + list.length + ' / ' + users.length + '人</span>' +
@@ -1924,6 +2222,12 @@
       var u = x.u, last = x.last;
       var prev = last ? ((last.from === 'admin' ? 'あなた: ' : '') + (last.msg || '')) : 'メッセージはまだありません';
       if (prev.length > 42) prev = prev.slice(0, 42) + '…';
+      // 管理者の最後の発言が読まれたか（既読/未読）
+      var readChip = '';
+      if (last && last.from === 'admin') {
+        var rd = (u.read && u.read.chat || 0) >= (last.ts || 0);
+        readChip = '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">' + (rd ? '既読' : '未読') + '</span>';
+      }
       html +=
         '<div class="sfqc-dm' + (x.unread ? ' unread' : '') + '">' +
           '<div class="sfqc-dm-main">' +
@@ -1932,6 +2236,7 @@
             '<span class="sfqc-dm-prev">' + esc(prev) + '</span>' +
           '</div>' +
           '<div class="sfqc-dm-act">' +
+            readChip +
             (last ? '<span class="sfqc-dm-time">' + esc(fmtDate(last.ts)) + '</span>' : '') +
             '<button class="sfqc-act-notice" data-notice-uid="' + esc(u.uid) + '" data-notice-name="' + esc(u.name) + '" title="個別お知らせ">📢</button>' +
             '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button>' +
