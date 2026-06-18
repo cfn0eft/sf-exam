@@ -96,7 +96,11 @@
       '.sfqc-adminbody{flex:1;overflow:auto;padding:14px 18px}' +
       '.sfqc-acc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden}' +
       '.sfqc-acc-head{display:flex;align-items:center;gap:12px;padding:12px 14px;flex-wrap:wrap}' +
-      '.sfqc-acc-name{font-weight:700;font-size:15px;min-width:90px}' +
+      '.sfqc-acc-name{font-weight:700;font-size:15px}' +
+      '.sfqc-acc-id{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:90px}' +
+      '.sfqc-acc-id .sfqc-acc-access{margin-left:0}' +
+      '.sfqc-acc-email-line{font-size:12px;color:#64748b;word-break:break-all}' +
+      'body.dark .sfqc-acc-email-line{color:#94a3b8}' +
       '.sfqc-acc-stats{flex:1;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#475569}' +
       '.sfqc-acc-stats b{color:#1e293b}' +
       '.sfqc-acc-actions{display:flex;gap:6px}' +
@@ -283,12 +287,12 @@
       '.sfqc-dm{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;margin-bottom:8px}' +
       '.sfqc-dm.unread{border-color:#c7d2fe;background:#f5f7ff}' +
       '.sfqc-dm-main{display:flex;align-items:center;gap:8px;min-width:0;flex:1}' +
-      '.sfqc-dm-name{font-weight:700;font-size:14px;white-space:nowrap}' +
+      '.sfqc-dm-name{font-weight:700;font-size:14px;white-space:nowrap;color:#0f172a;flex:0 0 auto}' +
       '.sfqc-dm-badge{flex:0 0 auto;min-width:18px;padding:0 6px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;text-align:center}' +
-      '.sfqc-dm-prev{color:#64748b;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}' +
-      '.sfqc-dm-act{display:flex;align-items:center;gap:8px;flex:0 0 auto}' +
+      '.sfqc-dm-prev{color:#64748b;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}' +
+      '.sfqc-dm-act{display:flex;align-items:center;gap:6px;flex:0 0 auto}' +
+      '.sfqc-dm-act button{border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap}' +
       '.sfqc-dm-time{font-size:10px;color:#94a3b8;white-space:nowrap}' +
-      'body.dark .sfqc-dm{background:#1e293b;border-color:#334155}body.dark .sfqc-dm.unread{background:#312e81;border-color:#4f46e5}body.dark .sfqc-dm-prev{color:#94a3b8}' +
       /* 管理者ビュー：スマホ最適化 */
       '@media(max-width:560px){' +
         '.sfqc-adminwrap{inset:6px;border-radius:12px}' +
@@ -304,6 +308,9 @@
         '.sfqc-kpis{grid-template-columns:repeat(2,1fr)}' +
         '.sfqc-tab{padding:7px 12px;font-size:12px}' +
         '.sfqc-toolbar{padding:8px 10px}' +
+        '.sfqc-dm{flex-wrap:wrap}' +
+        '.sfqc-dm-time{display:none}' +
+        '.sfqc-acc-stats span{white-space:nowrap}' +
       '}' +
       /* 管理者ビュー：アカウントのアクセス状態チップ＋承認/停止ボタン */
       '.sfqc-acc-access{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap}' +
@@ -1557,7 +1564,10 @@
         html +=
           '<div class="sfqc-acc">' +
             '<div class="sfqc-acc-head">' +
-              '<span class="sfqc-acc-name">👤 ' + esc(u.name) + emailLabel + accChip + dormantLabel + '</span>' +
+              '<div class="sfqc-acc-id">' +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + dormantLabel +
+              '</div>' +
+              (u.email ? '<span class="sfqc-acc-email-line">' + esc(u.email) + '</span>' : '') +
               '<span class="sfqc-acc-stats">' +
                 '<span>解答 <b>' + a.answered + '</b>問</span>' +
                 '<span>正答率 <b>' + a.rate + '%</b></span>' +
