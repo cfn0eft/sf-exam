@@ -46,6 +46,7 @@
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
   var adminBroadcast = null;       // 管理者ビュー用の現在の一斉お知らせ
+  var adminColUnsub = null, adminRenderTimer = null; // 管理者ビューのライブ購読（DM未読バッジ等の即時反映）
 
   /* ---------------- スタイル ---------------- */
   function injectStyle() {
@@ -1224,8 +1225,10 @@
   // 設定 broadcast/maintenance = {enabled, msg, windows:[{start,end}], recurring:{enabled,dows:[0-6],start:'HH:MM',durMin}, preMin}
   // 現在がメンテ中か／直近の予定を判定して {active,end,upcoming} を返す
   function maintStatus(cfg, now) {
-    var res = { active: false, end: 0, upcoming: 0, upEnd: 0 };
-    if (!cfg || !cfg.enabled) return res;
+    var res = { active: false, end: 0, upcoming: 0, upEnd: 0, full: false };
+    if (!cfg) return res;
+    if (cfg.fullStop) { res.active = true; res.full = true; return res; } // 緊急全停止（ボタンで即時ON/OFF・期間無関係）
+    if (!cfg.enabled) return res;
     (cfg.windows || []).forEach(function (w) {
       if (!w || !w.start || !w.end) return;
       if (now >= w.start && now < w.end) { res.active = true; res.end = Math.max(res.end, w.end); }
@@ -1249,10 +1252,16 @@
   // 管理者：メンテナンス設定の概要（ダッシュボードタブ）
   function maintenanceSectionHTML() {
     var m = lastMaint, html = '<div class="sfqc-sec">🛠 メンテナンス</div><div class="sfqc-bc-card">';
+    // 緊急全停止トグル（ボタンで即時ON/OFF＝全利用者をライブでロック。管理者は対象外）
+    var full = !!(m && m.fullStop);
+    html += '<div class="sfqc-bc-meta" style="margin-bottom:8px">' +
+        '<button class="sfqc-mini" id="sfqc-fullstop" style="background:' + (full ? '#16a34a' : '#dc2626') + ';color:#fff">' + (full ? '✅ 全停止を解除' : '🚨 今すぐ全停止') + '</button>' +
+        '<span style="font-weight:700;color:' + (full ? '#dc2626' : '#15803d') + '">' + (full ? '🔴 緊急全停止中（全利用者をロック）' : '🟢 通常稼働中') + '</span>' +
+      '</div>';
     if (m && m.enabled) {
       var st = maintStatus(m, Date.now());
-      var status = st.active ? '🔴 メンテナンス中（終了予定 ' + fmtDate(st.end) + '）'
-        : (st.upcoming ? '🟡 次回予定 ' + fmtDate(st.upcoming) : '🟢 有効（直近の予定なし）');
+      var status = st.active && !st.full ? '🔴 メンテナンス中（終了予定 ' + fmtDate(st.end) + '）'
+        : (st.upcoming ? '🟡 次回予定 ' + fmtDate(st.upcoming) : '🟢 予約あり（直近の予定なし）');
       var parts = [];
       (m.windows || []).forEach(function (w) { if (w && w.start) parts.push(fmtDate(w.start) + '〜' + fmtDate(w.end)); });
       if (m.recurring && m.recurring.enabled) parts.push('定期：毎週 ' + (m.recurring.dows || []).map(dowLabel).join('・') + ' ' + esc(m.recurring.start) + ' から' + m.recurring.durMin + '分');
@@ -1260,10 +1269,22 @@
         '<div class="sfqc-bc-meta"><span>' + esc(parts.join(' ／ ') || '期間が未設定です') + '</span>' +
         '<button class="sfqc-mini" id="sfqc-maint-edit">⚙️ 編集</button></div>';
     } else {
-      html += '<div class="sfqc-bc-meta"><span>メンテナンスは無効です。</span>' +
+      html += '<div class="sfqc-bc-meta"><span>予約メンテナンスは無効です。</span>' +
         '<button class="sfqc-mini" id="sfqc-maint-edit">⚙️ 設定する</button></div>';
     }
     return html + '</div>';
+  }
+  function toggleFullStop() {
+    if (!isAdmin || !db) return;
+    var on = !(lastMaint && lastMaint.fullStop);
+    if (on && !confirm('🚨 緊急全停止を有効にします。\n全利用者の画面が今すぐロックされます（管理者は対象外）。\n解除も同じボタンから行えます。よろしいですか？')) return;
+    db.collection(BROADCAST_COL).doc(MAINT_DOC).set({ fullStop: on, updated: Date.now(), by: currentName || 'admin' }, { merge: true })
+      .then(function () {
+        lastMaint = lastMaint || {}; lastMaint.fullStop = on;
+        logAdmin('緊急全停止', on ? 'ON' : 'OFF'); toastSafe(on ? '緊急全停止を有効化しました' : '緊急全停止を解除しました');
+        if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+      })
+      .catch(function (e) { alert('変更に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
   }
   function openMaintEditor() {
     if (!isAdmin) return;
@@ -1641,7 +1662,12 @@
   }
 
   function openAdmin() { if (!isAdmin) return; elAdmin.classList.add('show'); loadAdmin(); }
-  function closeAdmin() { if (elAdmin) elAdmin.classList.remove('show'); if (chatMode === 'admin') closeChat(); }
+  function closeAdmin() {
+    if (elAdmin) elAdmin.classList.remove('show');
+    if (chatMode === 'admin') closeChat();
+    if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; } // ライブ購読を停止（無駄な読み取りを避ける）
+    if (adminRenderTimer) { clearTimeout(adminRenderTimer); adminRenderTimer = null; }
+  }
 
   // 1ユーザーの stats/agg を再計算（store を差し替えたあと等に呼ぶ）
   function refreshUser(u) {
@@ -1665,50 +1691,73 @@
     setAdminPending(adminUsers.filter(function (u) { return isApplicant(u) && !(currentUser && u.uid === currentUser.uid); }).length);
   }
 
+  // 全 doc を adminUsers / adminFeedback / adminLog へ取り込む（get・onSnapshot 共用）
+  function ingestAdminDocs(snap) {
+    adminFeedback = [];
+    adminLogEntries = [];
+    var byUid = {};
+    snap.forEach(function (d) {
+      var data = d.data() || {};
+      var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
+      var email = data.email || '';
+      var replies = (data.fbReplies && typeof data.fbReplies === 'object') ? data.fbReplies : {};
+      if (Array.isArray(data.feedback)) {
+        data.feedback.forEach(function (fb) {
+          if (fb && typeof fb === 'object') adminFeedback.push({ uid: d.id, name: nm, email: email, fb: fb, reply: (fb.fid && replies[fb.fid]) || null });
+        });
+      }
+      // 管理者自身の doc から操作ログを取り込む（#4）
+      if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), certs: [] };
+      var stores = data.stores;
+      if (stores && typeof stores === 'object' && Object.keys(stores).length) {
+        Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
+      } else if (data.store) {
+        entry.certs.push({ cert: '(旧)', store: data.store });
+      } else {
+        entry.certs.push({ cert: '—', store: emptyStore() });
+      }
+      byUid[d.id] = entry;
+    });
+    adminUsers = Object.keys(byUid).map(function (k) { return refreshUser(byUid[k]); });
+    adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
+    adminLogEntries.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+    if (adminLogEntries.length > LOG_CAP) adminLogEntries = adminLogEntries.slice(0, LOG_CAP);
+  }
   function loadAdmin() {
     if (!isAdmin || !db) return;
     var body = document.getElementById('sfqc-adm-body');
-    body.innerHTML = '<div class="sfqc-empty">読み込み中…</div>';
-    db.collection(COLLECTION).get().then(function (snap) {
-      adminFeedback = [];
-      adminLogEntries = [];
-      var byUid = {};
-      snap.forEach(function (d) {
-        var data = d.data() || {};
-        var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
-        var email = data.email || '';
-        var replies = (data.fbReplies && typeof data.fbReplies === 'object') ? data.fbReplies : {};
-        if (Array.isArray(data.feedback)) {
-          data.feedback.forEach(function (fb) {
-            if (fb && typeof fb === 'object') adminFeedback.push({ uid: d.id, name: nm, email: email, fb: fb, reply: (fb.fid && replies[fb.fid]) || null });
-          });
-        }
-        // 管理者自身の doc から操作ログを取り込む（#4）
-        if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-        var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), certs: [] };
-        var stores = data.stores;
-        if (stores && typeof stores === 'object' && Object.keys(stores).length) {
-          Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
-        } else if (data.store) {
-          entry.certs.push({ cert: '(旧)', store: data.store });
-        } else {
-          entry.certs.push({ cert: '—', store: emptyStore() });
-        }
-        byUid[d.id] = entry;
-      });
-      adminUsers = Object.keys(byUid).map(function (k) { return refreshUser(byUid[k]); });
-      adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
-      adminLogEntries.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
-      if (adminLogEntries.length > LOG_CAP) adminLogEntries = adminLogEntries.slice(0, LOG_CAP);
-      adminSelApps = {};
-      // 一斉お知らせとメンテナンス設定も取得（既読集計・編集に使用）
-      db.collection(BROADCAST_COL).doc('current').get().then(function (b) { adminBroadcast = (b.exists && b.data()) || null; })
-        .catch(function () {}).then(function () { return db.collection(BROADCAST_COL).doc(MAINT_DOC).get(); })
-        .then(function (m) { lastMaint = (m && m.exists && m.data()) || null; }).catch(function () {})
-        .then(function () { renderAdmin(); });
-    }).catch(function (e) {
-      body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
+    if (body && !adminUsers.length) body.innerHTML = '<div class="sfqc-empty">読み込み中…</div>';
+    adminSelApps = {};
+    if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; }
+    var first = true;
+    // 進捗コレクションをライブ購読（DMの未読バッジ・既読などが「↻更新」なしで即時反映）
+    adminColUnsub = db.collection(COLLECTION).onSnapshot(function (snap) {
+      ingestAdminDocs(snap);
+      if (first) {
+        first = false;
+        // 初回だけ 一斉お知らせ／メンテナンス設定を取得してから描画
+        db.collection(BROADCAST_COL).doc('current').get().then(function (b) { adminBroadcast = (b.exists && b.data()) || null; })
+          .catch(function () {}).then(function () { return db.collection(BROADCAST_COL).doc(MAINT_DOC).get(); })
+          .then(function (m) { lastMaint = (m && m.exists && m.data()) || null; }).catch(function () {})
+          .then(function () { if (elAdmin && elAdmin.classList.contains('show')) renderAdmin(); });
+        return;
+      }
+      scheduleAdminRender(); // 2回目以降＝ライブ更新（入力中などは控える・デバウンス）
+    }, function (e) {
+      if (body && !adminUsers.length) body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
     });
+  }
+  // ライブ再描画（デバウンス＋入力/モーダル操作中は抑止し、操作の邪魔をしない）
+  function scheduleAdminRender() {
+    if (adminRenderTimer) clearTimeout(adminRenderTimer);
+    adminRenderTimer = setTimeout(function () {
+      if (!elAdmin || !elAdmin.classList.contains('show')) return;
+      var ae = document.activeElement;
+      if (ae && (ae.id === 'sfqc-dm-q' || ae.id === 'sfqc-q' || ae.id === 'sfqc-cmp-text' || ae.id === 'sfqc-chat-text')) { syncPendingBadge(); return; }
+      var cmp = document.getElementById('sfqc-compose'); if (cmp && cmp.classList.contains('show')) return;
+      renderAdmin();
+    }, 400);
   }
 
   // 操作ログを記録（#4）。管理者自身の doc に保存（自doc書込はルール上常に可）。
@@ -1908,6 +1957,7 @@
     // 一斉お知らせの作成・編集／メンテナンス編集
     var bcNew = document.getElementById('sfqc-bc-new'); if (bcNew) bcNew.addEventListener('click', sendBroadcast);
     var maintEdit = document.getElementById('sfqc-maint-edit'); if (maintEdit) maintEdit.addEventListener('click', openMaintEditor);
+    var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
     // メッセージタブ：DM絞り込み
     var dmIn = document.getElementById('sfqc-dm-q');
     if (dmIn) {
