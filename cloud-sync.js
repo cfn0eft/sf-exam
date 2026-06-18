@@ -138,7 +138,9 @@
       '.sfqc-kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px}' +
       '.sfqc-kpi .n{font-size:21px;font-weight:800;color:#0f172a;line-height:1.1}' +
       '.sfqc-kpi .l{font-size:10px;color:#64748b;margin-top:3px}' +
-      '.sfqc-dash-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px}' +
+      '.sfqc-dash-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}' +
+      '.sfqc-itbl{min-width:520px}' +
+      '.sfqc-qhist{overflow-x:auto}.sfqc-qhist table{min-width:520px;width:100%;border-collapse:collapse;font-size:12px}' +
       '.sfqc-dom{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px}' +
       '.sfqc-dom .nm{width:140px;flex-shrink:0;font-weight:600;color:#334155}' +
       '.sfqc-dom .bw{flex:1;height:9px;background:#eef2f7;border-radius:6px;overflow:hidden}' +
@@ -155,6 +157,21 @@
       '.sfqc-itbl th{color:#64748b;font-weight:700;font-size:11px}' +
       '.sfqc-itbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}' +
       '.sfqc-itbl .qx{max-width:430px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155}' +
+      /* ダークテーマ：管理パネル全体を暗色で統一 */
+      'body.dark .sfqc-adminwrap{background:#0f172a;color:#e2e8f0}' +
+      'body.dark .sfqc-adminhead{background:#1e293b;border-color:#334155}' +
+      'body.dark .sfqc-adminhead h2{color:#f1f5f9}' +
+      'body.dark .sfqc-acc{background:#1e293b;border-color:#334155}' +
+      'body.dark .sfqc-acc-name{color:#f1f5f9}' +
+      'body.dark .sfqc-acc-stats{color:#94a3b8}body.dark .sfqc-acc-stats b{color:#e2e8f0}' +
+      'body.dark .sfqc-kpi{background:#1e293b;border-color:#334155}body.dark .sfqc-kpi .n{color:#f1f5f9}' +
+      'body.dark .sfqc-dash-card{background:#1e293b;border-color:#334155}' +
+      'body.dark .sfqc-itbl th{color:#94a3b8}body.dark .sfqc-itbl th,body.dark .sfqc-itbl td{border-color:#334155}body.dark .sfqc-itbl .qx{color:#cbd5e1}' +
+      'body.dark .sfqc-fchip{background:#1e293b;color:#cbd5e1;border-color:#334155}' +
+      'body.dark .sfqc-detail{border-color:#334155}' +
+      'body.dark .sfqc-meta{color:#94a3b8}' +
+      'body.dark .sfqc-mini.close{background:#334155;color:#cbd5e1}' +
+      'body.dark .sfqc-sec{color:#94a3b8}' +
       '.sfqc-rate{font-weight:800}.sfqc-rate.lo{color:#dc2626}.sfqc-rate.mi{color:#d97706}.sfqc-rate.hi{color:#16a34a}' +
       '.sfqc-flag{font-size:10px;background:#fee2e2;color:#b91c1c;border-radius:5px;padding:1px 6px;font-weight:700;margin-left:6px}' +
       '.sfqc-itnote{font-size:11px;color:#64748b;margin-top:8px}' +
@@ -1204,7 +1221,9 @@
     var heading = (mode === 'broadcast') ? (editing ? '📢 全体お知らせを編集' : '📢 全体へお知らせ')
       : (editing ? '📩 個別お知らせを編集' : '📩 個別お知らせ');
     var recipientSel = '';
-    if (mode === 'notice' && !composeCtx.uid) {
+    if (mode === 'notice' && composeCtx.uids) {
+      recipientSel = '<p class="sfqc-cmp-hint">宛先：選択中の <b>' + composeCtx.uids.length + '</b> 人へ一括送信</p>';
+    } else if (mode === 'notice' && !composeCtx.uid) {
       var opts = annAudience().slice().sort(function (a, b) { return (a.name || '').localeCompare(b.name || '', 'ja'); })
         .map(function (u) { return '<option value="' + esc(u.uid) + '">' + esc(u.name) + (u.email ? '（' + esc(u.email) + '）' : '') + '</option>'; }).join('');
       recipientSel = '<label>宛先</label><select id="sfqc-cmp-to"><option value="">— 選択 —</option>' + opts + '</select>';
@@ -1248,6 +1267,17 @@
       if (composeCtx.id) { p = col.doc(composeCtx.id).set(rec, { merge: true }); }
       else { rec.ts = now; p = col.add(rec); }
       p.then(function () { logAdmin(composeCtx.id ? '一斉お知らせ編集' : '一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 26)); loadBroadcasts(function () { done(composeCtx && composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました')); }); }).catch(fail);
+    } else if (composeCtx.uids) {
+      // 一括個別お知らせ：選択した各ユーザーの notices に追記
+      var rec3 = function () { return { id: 'n' + Date.now() + Math.floor(Math.random() * 100000), msg: msg, ts: now, rev: now, publishAt: publishAt, by: currentName || 'admin' }; };
+      Promise.all(composeCtx.uids.map(function (uid) {
+        var uu = findUser(uid); var arr2 = (uu && Array.isArray(uu.notices)) ? uu.notices.slice() : []; var r = rec3(); arr2.push(r);
+        return db.collection(COLLECTION).doc(uid).set({ notices: arr2 }, { merge: true }).then(function () { if (uu) uu.notices = arr2; return true; }).catch(function () { return false; });
+      })).then(function (res) {
+        var n = res.filter(Boolean).length; adminSelUsers = {};
+        logAdmin('一括個別お知らせ', n + '人：' + msg.slice(0, 14));
+        done(scheduled ? (n + '人へ予約しました') : (n + '人へ送信しました'));
+      }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
     } else {
       var uid = composeCtx.uid || (document.getElementById('sfqc-cmp-to') && document.getElementById('sfqc-cmp-to').value);
       if (!uid) { alert('宛先を選択してください。'); return; }
@@ -1533,7 +1563,8 @@
   var adminFeedback = [];// フィードバック集約 [{uid,name,email,fb,reply}]（fbは各docの feedback 配列要素）
   var adminLogEntries = []; // 管理者の操作ログ（管理者自身の doc の adminLog を取り込む）#4
   var adminSelApps = {}; // 一括承認の選択状態 {uid:1} #8
-  var fbFilterCert = 'all', fbFilterCat = 'all'; // フィードバックの絞り込み
+  var adminSelUsers = {}; // ユーザータブの一括選択 {uid:1}（一括お知らせ/停止/リセット）
+  var fbFilterCert = 'all', fbFilterCat = 'all', fbOnlyPending = false; // フィードバックの絞り込み（未対応＝未返信）
   var adminFilter = ''; // 名前/メール検索
   var adminSort = 'updated'; // 'updated'|'answered'|'rate'|'days'|'name'
   var adminCert = 'all';     // 資格フィルタ
@@ -1995,6 +2026,7 @@
 
     // ── タブで「ユーザー／ダッシュボード／お知らせ／DM」を分離 ──
     var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
+    var fbPending = adminFeedback.filter(function (r) { return !r.reply; }).length; // 未対応フィードバック
     var tabBtn = function (k, l, badge) {
       return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
         (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
@@ -2003,7 +2035,7 @@
         tabBtn('users', '👥 ユーザー', adminPendingCount || 0) +
         tabBtn('dash', '📊 ダッシュボード', 0) +
         tabBtn('ann', '📢 お知らせ', 0) +
-        tabBtn('dm', '💬 DM', totalUnread || 0) +
+        tabBtn('dm', '💬 DM', (totalUnread + fbPending) || 0) +
       '</div>';
 
     if (adminTab === 'dash') {
@@ -2039,6 +2071,18 @@
           sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
         '</div>';
 
+      // 一括操作バー（表示中ユーザーから選択 → 一括お知らせ/停止/リセット）
+      var present = {}; list.forEach(function (u) { present[u.uid] = 1; });
+      Object.keys(adminSelUsers).forEach(function (k) { if (!present[k]) delete adminSelUsers[k]; });
+      var selN = Object.keys(adminSelUsers).length;
+      html += '<div class="sfqc-app-bulk">' +
+          '<label class="sfqc-app-selall"><input type="checkbox" id="sfqc-usel-all"' + (selN && selN === list.length ? ' checked' : '') + '> すべて選択</label>' +
+          '<span class="sfqc-count">' + selN + ' 人選択</span>' +
+          '<button class="sfqc-mini" id="sfqc-ubulk-notice"' + (selN ? '' : ' disabled') + '>📩 一括お知らせ</button>' +
+          '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-block"' + (selN ? '' : ' disabled') + '>⏸ 一括停止</button>' +
+          '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-reset"' + (selN ? '' : ' disabled') + '>🗑 一括リセット</button>' +
+        '</div>';
+
       if (!list.length) {
         html += '<div class="sfqc-empty">条件に合うアカウントがありません。</div>';
       }
@@ -2059,6 +2103,7 @@
           '<div class="sfqc-acc">' +
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
+                '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
                 '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
@@ -2146,6 +2191,8 @@
     body.querySelectorAll('[data-fbcat]').forEach(function (b) {
       b.addEventListener('click', function () { fbFilterCat = b.getAttribute('data-fbcat'); renderAdmin(); });
     });
+    var fbPend = document.querySelector('[data-fbpending]');
+    if (fbPend) fbPend.addEventListener('click', function () { fbOnlyPending = !fbOnlyPending; renderAdmin(); });
     body.querySelectorAll('.sfqc-fb-done').forEach(function (b) {
       b.addEventListener('click', function () { adminResolveFeedback(+b.getAttribute('data-fi')); });
     });
@@ -2182,6 +2229,15 @@
     });
     var bulkBtn = document.getElementById('sfqc-app-bulk-approve');
     if (bulkBtn) bulkBtn.addEventListener('click', function () { bulkApprove(Object.keys(adminSelApps)); });
+    // ユーザー一括選択＋一括操作
+    body.querySelectorAll('.sfqc-usel').forEach(function (b) {
+      b.addEventListener('change', function () { var uid = b.getAttribute('data-usel-uid'); if (b.checked) adminSelUsers[uid] = 1; else delete adminSelUsers[uid]; renderAdmin(); });
+    });
+    var uselAll = document.getElementById('sfqc-usel-all');
+    if (uselAll) uselAll.addEventListener('change', function () { adminSelUsers = {}; if (uselAll.checked) filterSortUsers().forEach(function (u) { adminSelUsers[u.uid] = 1; }); renderAdmin(); });
+    var ubN = document.getElementById('sfqc-ubulk-notice'); if (ubN) ubN.addEventListener('click', bulkNotice);
+    var ubB = document.getElementById('sfqc-ubulk-block'); if (ubB) ubB.addEventListener('click', bulkBlock);
+    var ubR = document.getElementById('sfqc-ubulk-reset'); if (ubR) ubR.addEventListener('click', bulkResetUsers);
     // フィードバックへの返信(#7)
     body.querySelectorAll('[data-reply-uid]').forEach(function (b) {
       b.addEventListener('click', function () { replyFeedback(b.getAttribute('data-reply-uid'), b.getAttribute('data-reply-fid'), b.getAttribute('data-reply-name')); });
@@ -2364,6 +2420,40 @@
     });
   }
 
+  // ── 選択ユーザーへの一括操作 ──
+  function bulkNotice() {
+    var uids = Object.keys(adminSelUsers); if (!uids.length) return;
+    openCompose({ mode: 'notice', uids: uids }); // 複数宛て個別お知らせ
+  }
+  function bulkBlock() {
+    var uids = Object.keys(adminSelUsers); if (!isAdmin || !db || !uids.length) return;
+    if (!confirm(uids.length + ' 人を一括で「停止」します。よろしいですか？\n（学習できなくなります。解除は各アカウントの「承認」から）')) return;
+    var ts = Date.now();
+    Promise.all(uids.map(function (uid) {
+      return db.collection(COLLECTION).doc(uid).set({ access: 'blocked', updated: ts }, { merge: true })
+        .then(function () { var u = findUser(uid); if (u) u.access = 'blocked'; return true; }).catch(function () { return false; });
+    })).then(function (res) {
+      var n = res.filter(Boolean).length; adminSelUsers = {};
+      logAdmin('一括停止', n + '人'); toastSafe(n + ' 人を停止しました'); renderAdmin();
+    });
+  }
+  function bulkResetUsers() {
+    var uids = Object.keys(adminSelUsers); if (!isAdmin || !db || !uids.length) return;
+    if (!confirm('⚠️ ' + uids.length + ' 人の学習進捗を全資格まとめてリセットします。\nこの操作は取り消せません。本当に実行しますか？')) return;
+    var FP = firebase.firestore.FieldPath, ts = Date.now();
+    Promise.all(uids.map(function (uid) {
+      var u = findUser(uid); var ref = db.collection(COLLECTION).doc(uid);
+      var certs = (u && u.certs) ? u.certs : [];
+      return Promise.all(certs.map(function (c) {
+        var p = (c.cert === '(旧)' || c.cert === '—') ? ref.update('store', emptyStore(), 'updated', ts) : ref.update(new FP('stores', c.cert), emptyStore(), 'updated', ts);
+        return p.catch(function () {});
+      })).then(function () { if (u) { u.certs.forEach(function (c) { c.store = emptyStore(); }); refreshUser(u); } return true; }).catch(function () { return false; });
+    })).then(function (res) {
+      var n = res.filter(Boolean).length; adminSelUsers = {};
+      logAdmin('一括リセット', n + '人'); toastSafe(n + ' 人の進捗をリセットしました'); renderAdmin();
+    });
+  }
+
   function resetAccount(uid, cert, name) {
     if (!isAdmin || !db) return;
     if (!confirm('「' + name + '」［' + cert + '］の進捗をリセットします。よろしいですか？')) return;
@@ -2508,11 +2598,14 @@
   }
   function feedbackSectionHTML() {
     var all = adminFeedback;
-    var head = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">🛠 フィードバック / 不具合報告 <span class="sfqc-fb-count">' + all.length + '件</span></div>' +
+    var pending = all.filter(function (r) { return !r.reply; }).length; // 未対応＝未返信
+    var head = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">🛠 フィードバック / 不具合報告 <span class="sfqc-fb-count">' + all.length + '件</span>' +
+      (pending ? ' <span class="sfqc-read no">未対応 ' + pending + '</span>' : '') + '</div>' +
       '<div class="sfqc-fb-dl"><button class="sfqc-mini fb-dl" id="sfqc-fb-json">⬇ JSON</button><button class="sfqc-mini fb-dl" id="sfqc-fb-csv">⬇ CSV</button></div></div>';
     if (!all.length) return head + '<div class="sfqc-empty">まだ報告はありません。</div><div class="sfqc-divider"></div>';
 
     var list = all.filter(function (r) {
+      if (fbOnlyPending && r.reply) return false;
       if (fbFilterCert !== 'all' && (r.fb.cert || '') !== fbFilterCert) return false;
       if (fbFilterCat !== 'all' && (r.fb.cat || '') !== fbFilterCat) return false;
       return true;
@@ -2523,7 +2616,9 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (fbFilterCert === ck ? ' on' : '') + '" data-fbcert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var catChips = '<button class="sfqc-fchip' + (fbFilterCat === 'all' ? ' on' : '') + '" data-fbcat="all">すべて</button>';
     Object.keys(catSet).forEach(function (ck) { catChips += '<button class="sfqc-fchip' + (fbFilterCat === ck ? ' on' : '') + '" data-fbcat="' + esc(ck) + '">' + esc(fbCatLabel(ck)) + '</button>'; });
-    var bar = '<div class="sfqc-toolbar sfqc-toolbar2"><span class="sfqc-sort-label">資格:</span>' + certChips +
+    var bar = '<div class="sfqc-toolbar sfqc-toolbar2">' +
+      '<button class="sfqc-fchip' + (fbOnlyPending ? ' on' : '') + '" data-fbpending="1">⚠️ 未対応のみ</button>' +
+      '<span class="sfqc-sort-label">資格:</span>' + certChips +
       '<span class="sfqc-sort-label">種類:</span>' + catChips +
       '<span class="sfqc-count">' + list.length + ' / ' + all.length + '件</span></div>';
 
