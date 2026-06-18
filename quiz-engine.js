@@ -431,22 +431,37 @@ function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;
 let tbTab='guide';
 function switchTbTab(t){
   tbTab=t;
-  const ids=['guide','nav','cmp'];
+  const ids=['guide','nav','cmp','figs'];
   ids.forEach(k=>{
     const pane=document.getElementById('tb-'+k); if(pane)pane.style.display=(t===k?'':'none');
     const btn=document.getElementById('tt-'+k); if(btn)btn.classList.toggle('on',t===k);
   });
-  if(t==='cmp'){
-    renderCompare();
-    // 学習ガイド専用UIは比較表タブでは非表示（sf-admin側の挙動は維持）
-    const chNav=document.getElementById('ch-nav'); if(chNav)chNav.style.display='none';
-    const sw=document.querySelector('#pg-textbook .search-wrap'); if(sw)sw.style.display='none';
-    const mf=document.getElementById('tb-mark-filter'); if(mf)mf.style.display='none';
-  } else {
-    const chNav=document.getElementById('ch-nav'); if(chNav)chNav.style.display='';
-    const sw=document.querySelector('#pg-textbook .search-wrap'); if(sw)sw.style.display='';
-    // mark-filter は renderTextbook 内で表示制御しているので、ここでは触らない
-  }
+  if(t==='cmp')renderCompare();
+  if(t==='figs')renderFigGallery();
+  // 学習ガイド専用UI（章ナビ・検索・読了フィルタ）は guide / nav タブだけで表示
+  const guideUI=(t==='guide'||t==='nav');
+  const chNav=document.getElementById('ch-nav'); if(chNav)chNav.style.display=guideUI?'':'none';
+  const sw=document.querySelector('#pg-textbook .search-wrap'); if(sw)sw.style.display=guideUI?'':'none';
+  // mark-filter は guide/nav では renderTextbook が制御するため触らない。それ以外は隠す
+  if(!guideUI){const mf=document.getElementById('tb-mark-filter'); if(mf)mf.style.display='none';}
+}
+// ===== 図解ギャラリー（教科書タブ・この資格で使う図を一覧） =====
+function renderFigGallery(){
+  const el=document.getElementById('tb-figs'); if(!el)return;
+  const pre=(CFG.slug||'')+'/';
+  const seen={},items=[];
+  Object.keys(FIGS).forEach(k=>{
+    if(k.indexOf(pre)!==0)return;
+    const svg=FIGS[k]; if(!svg||seen[svg])return; seen[svg]=1; // 別名（同一SVG）は1点に集約
+    const name=k.slice(pre.length);
+    const m=svg.match(/aria-label="([^"]*)"/);
+    items.push({name:name,cap:(m&&m[1])?m[1]:name});
+  });
+  if(!items.length){el.innerHTML='<div class="cram-empty">🖼️ この資格の図解は準備中です。</div>';return;}
+  items.sort((a,b)=>a.cap.localeCompare(b.cap,'ja'));
+  let h='<div class="fig-gallery-note">この資格で使われている図解 '+items.length+' 点。タップで拡大できます。</div><div class="fig-gallery">';
+  items.forEach(it=>{h+='<div class="fig-gcard">'+figHTML(it.name,it.cap)+'</div>';});
+  el.innerHTML=h+'</div>';
 }
 // ===== COMPARE（比較表ハブ） =====
 function renderCompare(){
