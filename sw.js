@@ -3,19 +3,19 @@
  * 方針: 同一オリジン = キャッシュ優先＋裏で更新 / クロスオリジン(Firebase等) = ネットワーク優先。
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
  */
-const CACHE = 'sf-exam-v66';
+const CACHE = 'sf-exam-v67';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=64',
+  './maintenance.js?v=65',
   './manifest.webmanifest',
-  './quiz.css?v=64',
-  './quiz-engine.js?v=64',
-  './changelog.js?v=64',
-  './figures.js?v=64',
+  './quiz.css?v=65',
+  './quiz-engine.js?v=65',
+  './changelog.js?v=65',
+  './figures.js?v=65',
   './firebase-config.js',
-  './cloud-sync.js?v=64',
+  './cloud-sync.js?v=65',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   // 学習データ：初回訪問からオフラインで学べるようプリキャッシュ（allSettledなので失敗してもinstallは継続）
