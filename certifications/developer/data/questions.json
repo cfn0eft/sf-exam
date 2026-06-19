@@ -23,7 +23,8 @@
       "データモデル"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "rollup-summary"
   },
   {
     "id": 2,
@@ -48,7 +49,8 @@
       "データモデル"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 3,
@@ -72,7 +74,8 @@
       "項目"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "rollup-summary"
   },
   {
     "id": 4,
@@ -169,7 +172,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "governor-limits"
   },
   {
     "id": 8,
@@ -268,7 +272,8 @@
       "リレーション変換"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "relationships"
   },
   {
     "id": 12,
@@ -292,7 +297,8 @@
       "統合"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "external-objects"
   },
   {
     "id": 13,
@@ -317,7 +323,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "apex-security"
   },
   {
     "id": 14,
@@ -367,7 +374,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "trigger-context"
   },
   {
     "id": 16,
@@ -443,7 +451,8 @@
       "ベストプラクティス"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 19,
@@ -468,7 +477,8 @@
       "CPU時間"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 20,
@@ -517,7 +527,8 @@
       "親子関係"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 22,
@@ -542,7 +553,8 @@
       "親子関係"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 23,
@@ -567,7 +579,8 @@
       "FIND"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 24,
@@ -592,7 +605,8 @@
       "ワークフロー"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "order-of-execution"
   },
   {
     "id": 25,
@@ -617,7 +631,8 @@
       "トリガ再実行"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "order-of-execution"
   },
   {
     "id": 26,
@@ -643,7 +658,8 @@
       "制約"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 27,
@@ -668,7 +684,8 @@
       "enqueueJob"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 28,
@@ -693,7 +710,8 @@
       "QueryLocator"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 29,
@@ -718,7 +736,8 @@
       "定期実行"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 30,
@@ -793,7 +812,8 @@
       "使い分け"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 33,
@@ -894,7 +914,8 @@
       "親子通信"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "lwc-communication"
   },
   {
     "id": 37,
@@ -1240,7 +1261,8 @@
       "非同期テスト"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 51,
@@ -1314,7 +1336,8 @@
       "Test.setMock"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 54,
@@ -1387,7 +1410,8 @@
       "本番"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "sandbox-types"
   },
   {
     "id": 57,
@@ -1413,7 +1437,8 @@
       "リリース"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 58,
@@ -1438,7 +1463,8 @@
       "環境"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "sandbox-types"
   },
   {
     "id": 59,
@@ -1463,7 +1489,8 @@
       "リフレッシュ"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 60,
@@ -1487,7 +1514,8 @@
       "ソース駆動開発"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 61,
@@ -1512,7 +1540,8 @@
       "データモデル"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 62,
@@ -1561,7 +1590,8 @@
       "データ連携"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "import-tools"
   },
   {
     "id": 64,
@@ -1636,7 +1666,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 67,
@@ -1811,7 +1842,8 @@
       "イベント分岐"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "trigger-context"
   },
   {
     "id": 74,
@@ -1861,7 +1893,8 @@
       "ハンドラ"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 76,
@@ -1886,7 +1919,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "import-tools"
   },
   {
     "id": 77,
@@ -1911,7 +1945,8 @@
       "AggregateResult"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 78,
@@ -1961,7 +1996,8 @@
       "SOQL"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "soql-relationships"
   },
   {
     "id": 80,
@@ -1986,7 +2022,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 81,
@@ -2011,7 +2048,8 @@
       "非同期処理"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 82,
@@ -2036,7 +2074,8 @@
       "非同期処理"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 83,
@@ -2362,7 +2401,8 @@
       "変更セット"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 96,
@@ -2387,7 +2427,8 @@
       "変更セット"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 97,
@@ -2409,7 +2450,8 @@
       "管理パッケージ",
       "名前空間",
       "AppExchange",
-      "配布"
+      "配布",
+      "パッケージ"
     ],
     "source": "gen",
     "diff": 2
@@ -2437,7 +2479,8 @@
       "前提条件"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 99,
@@ -2487,7 +2530,8 @@
       "デバッグ"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "soql-relationships"
   },
   {
     "id": 101,
@@ -2761,7 +2805,8 @@
       "ストレージ"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 112,
@@ -2861,7 +2906,8 @@
       "5階層"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 116,
@@ -2886,7 +2932,8 @@
       "SOQL"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "soql-relationships"
   },
   {
     "id": 117,
@@ -2911,7 +2958,8 @@
       "相対日付"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 118,
@@ -2936,7 +2984,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 119,
@@ -2961,7 +3010,8 @@
       "OFFSET"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "soql-relationships"
   },
   {
     "id": 120,
@@ -2986,7 +3036,8 @@
       "SOQL"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "soql-relationships"
   },
   {
     "id": 121,
@@ -3036,7 +3087,8 @@
       "非同期処理"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "async-apex"
   },
   {
     "id": 123,
@@ -3061,7 +3113,8 @@
       "非同期処理"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 124,
@@ -3110,7 +3163,8 @@
       "自動化"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "flow-types"
   },
   {
     "id": 126,
@@ -3135,7 +3189,8 @@
       "項目更新"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "flow-types"
   },
   {
     "id": 127,
@@ -3160,7 +3215,8 @@
       "自動化"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "flow-types"
   },
   {
     "id": 128,
@@ -3185,7 +3241,8 @@
       "例外"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "flow-types"
   },
   {
     "id": 129,
@@ -3210,7 +3267,8 @@
       "フロー"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "flow-types"
   },
   {
     "id": 130,
@@ -3235,7 +3293,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 131,
@@ -3560,7 +3619,8 @@
       "DX"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 144,
@@ -3585,7 +3645,8 @@
       "メタデータ"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 145,
@@ -3610,7 +3671,8 @@
       "スクラッチ組織"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 146,
@@ -3710,7 +3772,8 @@
       "変更セット"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 150,
@@ -3735,7 +3798,8 @@
       "考慮事項"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 151,
@@ -3810,7 +3874,8 @@
       "セキュリティ"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 154,
@@ -3835,7 +3900,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "apex-security"
   },
   {
     "id": 155,
@@ -4010,7 +4076,8 @@
       "コンテキスト変数"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 162,
@@ -4035,7 +4102,8 @@
       "バルク化"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "soql-relationships"
   },
   {
     "id": 163,
@@ -4060,7 +4128,8 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 164,
@@ -4160,7 +4229,8 @@
       "start"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 168,
@@ -4185,7 +4255,8 @@
       "制約"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "async-apex"
   },
   {
     "id": 169,
@@ -4285,7 +4356,8 @@
       "トリガ"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "rollup-summary"
   },
   {
     "id": 173,
@@ -4335,7 +4407,8 @@
       "ガバナ制限"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "governor-limits"
   },
   {
     "id": 175,
@@ -4360,7 +4433,8 @@
       "バルク化"
     ],
     "source": "gen",
-    "diff": 1
+    "diff": 1,
+    "expFig": "governor-limits"
   },
   {
     "id": 176,
@@ -4585,7 +4659,8 @@
       "composed"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "lwc-communication"
   },
   {
     "id": 185,
@@ -4635,7 +4710,8 @@
       "CRUD"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 187,
@@ -4710,7 +4786,8 @@
       "項目バインド"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 190,
@@ -4860,7 +4937,8 @@
       "テスト"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 196,
@@ -4935,7 +5013,8 @@
       "テスト"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "test-execution"
   },
   {
     "id": 199,
@@ -4985,7 +5064,8 @@
       "リリース"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 201,
@@ -5010,7 +5090,8 @@
       "DX"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 202,
@@ -5035,7 +5116,8 @@
       "リリース"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "deployment"
   },
   {
     "id": 203,
@@ -5060,7 +5142,8 @@
       "環境"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 204,
@@ -5085,7 +5168,8 @@
       "環境"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 205,
@@ -5135,7 +5219,8 @@
       "真実の源"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 207,
@@ -5261,7 +5346,8 @@
       "__x"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "external-objects"
   },
   {
     "id": 212,
@@ -5287,7 +5373,8 @@
       "セキュリティ"
     ],
     "source": "gen",
-    "diff": 3
+    "diff": 3,
+    "expFig": "apex-security"
   },
   {
     "id": 213,
@@ -5313,7 +5400,8 @@
       "ジョブチェーン"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "async-apex"
   },
   {
     "id": 214,
@@ -5365,7 +5453,8 @@
       "ベストプラクティス"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 216,
@@ -5391,7 +5480,8 @@
       "FLS"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 217,
@@ -5417,7 +5507,8 @@
       "親子通信"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "lwc-communication"
   },
   {
     "id": 218,
@@ -5443,7 +5534,8 @@
       "ソース駆動"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 301,
@@ -5524,7 +5616,8 @@
       "CPU時間"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "async-apex"
   },
   {
     "id": 304,
@@ -5550,7 +5643,8 @@
       "例外"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "governor-limits"
   },
   {
     "id": 305,
@@ -5629,7 +5723,8 @@
       "Apex"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 308,
@@ -5681,7 +5776,8 @@
       "sfdx"
     ],
     "source": "tyson",
-    "diff": 1
+    "diff": 1,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 310,
@@ -5761,7 +5857,8 @@
       "サンドボックス"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 313,
@@ -5787,7 +5884,8 @@
       "データモデル"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "rollup-summary"
   },
   {
     "id": 314,
@@ -5813,7 +5911,8 @@
       "emptyRecycleBin"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "governor-limits"
   },
   {
     "id": 315,
@@ -5868,7 +5967,8 @@
       "テストデータ"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 317,
@@ -5946,7 +6046,8 @@
       "Full"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 320,
@@ -5997,7 +6098,8 @@
       "テスト実行"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 322,
@@ -6128,7 +6230,8 @@
       "インポート"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "import-tools"
   },
   {
     "id": 327,
@@ -6178,7 +6281,8 @@
       "isInsert"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 329,
@@ -6204,7 +6308,8 @@
       "セキュリティ"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 330,
@@ -6255,7 +6360,8 @@
       "主従関係"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 332,
@@ -6304,10 +6410,12 @@
     "keywords": [
       "Apexトリガー",
       "プロセスビルダー",
-      "項目更新"
+      "項目更新",
+      "自動化"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 334,
@@ -6410,7 +6518,8 @@
       "リレーション"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "external-objects"
   },
   {
     "id": 338,
@@ -6436,7 +6545,8 @@
       "編集権限"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 339,
@@ -6511,7 +6621,8 @@
       "DML"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 342,
@@ -6536,7 +6647,8 @@
       "リレーション"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "rollup-summary"
   },
   {
     "id": 343,
@@ -6612,7 +6724,8 @@
       "サンドボックス"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 346,
@@ -6637,7 +6750,8 @@
       "Trigger.new"
     ],
     "source": "tyson",
-    "diff": 1
+    "diff": 1,
+    "expFig": "trigger-context"
   },
   {
     "id": 347,
@@ -6688,7 +6802,8 @@
       "開発者コンソール"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 349,
@@ -6738,7 +6853,8 @@
       "プラットフォーム基礎"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "governor-limits"
   },
   {
     "id": 351,
@@ -6763,7 +6879,8 @@
       "項目更新"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "trigger-context"
   },
   {
     "id": 352,
@@ -6891,7 +7008,8 @@
       "テストデータ"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 357,
@@ -6941,7 +7059,8 @@
       "Apexクラス"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 359,
@@ -6992,7 +7111,8 @@
       "主従関係"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "rollup-summary"
   },
   {
     "id": 361,
@@ -7017,7 +7137,8 @@
       "共有"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 362,
@@ -7042,7 +7163,8 @@
       "宣言型"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 363,
@@ -7067,7 +7189,8 @@
       "ガバナ制限"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 364,
@@ -7117,7 +7240,8 @@
       "可視性"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 366,
@@ -7223,7 +7347,8 @@
       "主従関係"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 370,
@@ -7273,7 +7398,8 @@
       "レコード所有者"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 372,
@@ -7298,7 +7424,8 @@
       "スキーマ設計"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 373,
@@ -7509,7 +7636,8 @@
       "重複防止"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "import-tools"
   },
   {
     "id": 381,
@@ -7774,7 +7902,8 @@
       "デプロイ"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 391,
@@ -7851,7 +7980,8 @@
       "テストクラス"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 394,
@@ -8057,7 +8187,8 @@
       "デプロイメント接続"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 402,
@@ -8134,7 +8265,8 @@
       "isUpdateable"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 405,
@@ -8160,7 +8292,8 @@
       "開発者コンソール"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 406,
@@ -8510,7 +8643,8 @@
       "設定"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 419,
@@ -8694,7 +8828,8 @@
       "アノテーション"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "test-execution"
   },
   {
     "id": 426,
@@ -8775,7 +8910,8 @@
       "リレーション"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "rollup-summary"
   },
   {
     "id": 429,
@@ -8802,7 +8938,8 @@
       "Apexクラス"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "apex-security"
   },
   {
     "id": 430,
@@ -9015,7 +9152,8 @@
       "サンドボックス"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 438,
@@ -9068,7 +9206,8 @@
       "データモデル"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 440,
@@ -9094,7 +9233,8 @@
       "一括化"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "trigger-context"
   },
   {
     "id": 441,
@@ -9277,7 +9417,8 @@
       "一意キー"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "import-tools"
   },
   {
     "id": 448,
@@ -9436,7 +9577,8 @@
       "デプロイ"
     ],
     "source": "tyson",
-    "diff": 1
+    "diff": 1,
+    "expFig": "deployment"
   },
   {
     "id": 454,
@@ -9567,7 +9709,8 @@
       "カスタムオブジェクト"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 459,
@@ -9619,7 +9762,8 @@
       "トリガ"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "async-apex"
   },
   {
     "id": 461,
@@ -9646,7 +9790,8 @@
       "テンプレート"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 462,
@@ -9672,7 +9817,8 @@
       "Before Insert"
     ],
     "source": "tyson",
-    "diff": 1
+    "diff": 1,
+    "expFig": "trigger-context"
   },
   {
     "id": 463,
@@ -9723,7 +9869,8 @@
       "本番環境"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 465,
@@ -9749,7 +9896,8 @@
       "トリガー"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "trigger-context"
   },
   {
     "id": 466,
@@ -9774,7 +9922,8 @@
       "DmlException"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "trigger-context"
   },
   {
     "id": 467,
@@ -10059,7 +10208,8 @@
       "Visualforce"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "async-apex"
   },
   {
     "id": 478,
@@ -10240,7 +10390,8 @@
       "デプロイ"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 485,
@@ -10265,7 +10416,8 @@
       "開発環境"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 486,
@@ -10290,7 +10442,8 @@
       "添付ファイル"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "import-tools"
   },
   {
     "id": 487,
@@ -10367,7 +10520,8 @@
       "自動化"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 490,
@@ -10571,7 +10725,8 @@
       "Dev Hub"
     ],
     "source": "tyson",
-    "diff": 1
+    "diff": 1,
+    "expFig": "declarative-vs-code"
   },
   {
     "id": 498,
@@ -10648,7 +10803,8 @@
       "Ant移行ツール"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "deployment"
   },
   {
     "id": 501,
@@ -10674,7 +10830,8 @@
       "積み上げ集計"
     ],
     "source": "tyson",
-    "diff": 3
+    "diff": 3,
+    "expFig": "rollup-summary"
   },
   {
     "id": 502,
@@ -10906,7 +11063,8 @@
       "レコードロック"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 511,
@@ -10956,7 +11114,8 @@
       "自動化"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "flow-types"
   },
   {
     "id": 513,
@@ -11006,7 +11165,8 @@
       "リレーション"
     ],
     "source": "tyson",
-    "diff": 2
+    "diff": 2,
+    "expFig": "relationships"
   },
   {
     "id": 515,

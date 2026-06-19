@@ -20,9 +20,17 @@
           11,
           61,
           115,
-          116
+          116,
+          337,
+          342,
+          361,
+          374,
+          428,
+          434,
+          514
         ],
-        "fullContent": "**定義**\n\nオブジェクト間を結ぶ仕組み。主従関係と参照関係が基本で、多対多は接合オブジェクトで表現する。\n\n**試験のポイント**\n\n- 主従: カスケード削除・所有者/共有の継承・積み上げ集計が可能\n- 参照: 疎結合。削除時は「参照項目をクリア」か「削除を許可しない」を選ぶ\n- SOQL では子→親は最大5階層、親→子（サブクエリ）は1階層たどれる"
+        "fullContent": "**定義**\n\nオブジェクト間を結ぶ仕組み。主従関係と参照関係が基本で、多対多は接合オブジェクトで表現する。\n\n**試験のポイント**\n\n- 主従: カスケード削除・所有者/共有の継承・積み上げ集計が可能\n- 参照: 疎結合。削除時は「参照項目をクリア」か「削除を許可しない」を選ぶ\n- SOQL では子→親は最大5階層、親→子（サブクエリ）は1階層たどれる",
+        "fig": "relationships"
       },
       {
         "title": "数式項目とクロスオブジェクト数式",
@@ -37,7 +45,9 @@
         "questions": [
           4,
           102,
-          112
+          112,
+          342,
+          434
         ],
         "fullContent": "**定義**\n\n参照時に計算される読み取り専用の項目。\n\n**試験のポイント**\n\n- 保存されず参照時計算。型は作成時に選ぶ\n- 親の項目をたどるクロスオブジェクト数式が頻出"
       },
@@ -55,9 +65,18 @@
           5,
           6,
           105,
-          106
+          106,
+          306,
+          394,
+          410,
+          422,
+          432,
+          445,
+          455,
+          472
         ],
-        "fullContent": "**定義**\n\nList（順序付き）・Set（重複なし）・Map（キー/値）の3種。\n\n**試験のポイント**\n\n- バルク処理は SOQL を Map 化して ID で引く\n- 独自順序の並べ替えは Comparable（compareTo）を実装"
+        "fullContent": "**定義**\n\nList（順序付き）・Set（重複なし）・Map（キー/値）の3種。\n\n**試験のポイント**\n\n- バルク処理は SOQL を Map 化して ID で引く\n- 独自順序の並べ替えは Comparable（compareTo）を実装",
+        "fig": "governor-limits"
       },
       {
         "title": "ガバナ制限",
@@ -76,9 +95,20 @@
           66,
           130,
           174,
-          175
+          175,
+          303,
+          304,
+          314,
+          341,
+          350,
+          363,
+          385,
+          387,
+          422,
+          440
         ],
-        "fullContent": "**定義**\n\nトランザクション単位のリソース上限。\n\n**試験のポイント**\n\n- 主要値（SOQL100/DML150/行50000/CPU10秒/ヒープ6MB）を暗記\n- Limits クラスで残量確認、バルク化で回避\n- LimitException は捕捉不可で即トランザクション終了"
+        "fullContent": "**定義**\n\nトランザクション単位のリソース上限。\n\n**試験のポイント**\n\n- 主要値（SOQL100/DML150/行50000/CPU10秒/ヒープ6MB）を暗記\n- Limits クラスで残量確認、バルク化で回避\n- LimitException は捕捉不可で即トランザクション終了",
+        "fig": "governor-limits"
       },
       {
         "title": "プリミティブ型と null・型操作",
@@ -98,7 +128,13 @@
           108,
           110,
           159,
-          160
+          160,
+          373,
+          384,
+          400,
+          420,
+          443,
+          479
         ],
         "fullContent": "**定義**\n\nApex の基本型。既定で null 初期化される。\n\n**試験のポイント**\n\n- Boolean も null 初期化（if 判定で NPE 注意）\n- 整数除算の切り捨て、instanceof / 安全ナビゲーション ?."
       },
@@ -119,7 +155,13 @@
           70,
           71,
           72,
-          193
+          193,
+          352,
+          373,
+          417,
+          426,
+          507,
+          515
         ],
         "fullContent": "**定義**\n\nクラス・修飾子・継承・プロパティ。\n\n**試験のポイント**\n\n- 既定 private、virtual/override、static final 定数\n- インターフェースはメソッドの契約（Batchable 等もこれ）"
       },
@@ -136,7 +178,20 @@
         "questions": [
           9,
           72,
-          124
+          124,
+          305,
+          328,
+          343,
+          346,
+          390,
+          393,
+          395,
+          402,
+          408,
+          415,
+          416,
+          431,
+          452
         ],
         "fullContent": "**定義**\n\nトランザクション単位で値を保持する変数。\n\n**試験のポイント**\n\n- 再帰トリガの抑止に使う定番パターン\n- 永続的な設定値の保持には使えない"
       },
@@ -153,7 +208,20 @@
         "questions": [
           65,
           109,
-          154
+          154,
+          301,
+          302,
+          306,
+          307,
+          308,
+          315,
+          327,
+          335,
+          367,
+          368,
+          373,
+          375,
+          376
         ],
         "fullContent": "**定義**\n\n実行時にスキーマや項目を扱う手法。\n\n**試験のポイント**\n\n- describe で項目情報・FLS を確認\n- get/put で動的に値を読み書き"
       },
@@ -170,9 +238,11 @@
         "questions": [
           12,
           111,
-          211
+          211,
+          337
         ],
-        "fullContent": "**定義**\n\n外部参照（外部オブジェクト）と大量保管（ビッグオブジェクト）。\n\n**試験のポイント**\n\n- 「コピーせず参照」→外部オブジェクト、「数十億件保管」→ビッグオブジェクト"
+        "fullContent": "**定義**\n\n外部参照（外部オブジェクト）と大量保管（ビッグオブジェクト）。\n\n**試験のポイント**\n\n- 「コピーせず参照」→外部オブジェクト、「数十億件保管」→ビッグオブジェクト",
+        "fig": "external-objects"
       },
       {
         "title": "共有とセキュリティ（OWD / 権限セット / FLS / with sharing）",
@@ -192,9 +262,18 @@
           153,
           163,
           164,
-          212
+          212,
+          307,
+          308,
+          329,
+          349,
+          358,
+          361,
+          429,
+          448
         ],
-        "fullContent": "**定義**\n\nレコード・オブジェクト・項目の3層のアクセス制御。\n\n**試験のポイント**\n\n- OWD→共有ルール/階層、プロファイル/権限セット、FLS\n- with sharing は共有のみ。FLS は WITH SECURITY_ENFORCED"
+        "fullContent": "**定義**\n\nレコード・オブジェクト・項目の3層のアクセス制御。\n\n**試験のポイント**\n\n- OWD→共有ルール/階層、プロファイル/権限セット、FLS\n- with sharing は共有のみ。FLS は WITH SECURITY_ENFORCED",
+        "fig": "apex-security"
       },
       {
         "title": "カスタムメタデータ型・カスタム設定・カスタム権限",
@@ -210,7 +289,14 @@
           14,
           64,
           155,
-          169
+          169,
+          349,
+          373,
+          400,
+          418,
+          420,
+          442,
+          443
         ],
         "fullContent": "**定義**\n\nハードコードを避けて設定値・機能フラグを保持する仕組み。\n\n**試験のポイント**\n\n- 値ごと移行＝カスタムメタデータ、ユーザー別＝階層カスタム設定、機能ON/OFF＝カスタム権限"
       },
@@ -227,9 +313,235 @@
         "questions": [
           101,
           103,
-          104
+          104,
+          367,
+          386,
+          423,
+          471,
+          494
         ],
         "fullContent": "**定義**\n\nレコードタイプ・選択リスト・レコードID。\n\n**試験のポイント**\n\n- 18桁は15桁＋チェックサムで同一レコード\n- 制限付き選択リストでデータ品質を担保"
+      },
+      {
+        "title": "主従関係と参照関係の使い分け",
+        "jaName": "主従関係と参照関係",
+        "enName": "Master-Detail vs Lookup",
+        "definition": "2レコードを結ぶ標準リレーション。主従関係は親削除で子もカスケード削除され、子は所有者・共有を親から継承し、親側に積み上げ集計を作れる。参照関係は疎結合で、親削除時に「参照をクリア」か「削除禁止」を選べ、子が独自の所有者・共有を持つ。",
+        "examPoints": [
+          "主従＝カスケード削除・所有者/共有は親に従う・積み上げ集計が可能",
+          "参照＝疎結合・子が独自の所有者・親削除時はクリアか削除禁止",
+          "参照→主従への変換は、参照が空の子レコードが1件でもあると不可",
+          "1オブジェクトに主従は最大2つ（多対多の接合に使う）"
+        ],
+        "questions": [
+          1,
+          2,
+          3,
+          11,
+          61,
+          313,
+          329,
+          331,
+          360,
+          361,
+          369,
+          371,
+          372,
+          439
+        ],
+        "fullContent": "**定義**\n\n2レコードを結ぶ標準リレーション。主従関係は親削除で子もカスケード削除され、子は所有者・共有を親から継承し、親側に積み上げ集計を作れる。参照関係は疎結合で、親削除時に「参照をクリア」か「削除禁止」を選べ、子が独自の所有者・共有を持つ。\n\n**試験のポイント**\n\n- 主従＝カスケード削除・所有者/共有は親に従う・積み上げ集計が可能\n- 参照＝疎結合・子が独自の所有者・親削除時はクリアか削除禁止\n- 参照→主従への変換は、参照が空の子レコードが1件でもあると不可\n- 1オブジェクトに主従は最大2つ（多対多の接合に使う）",
+        "fig": "relationships"
+      },
+      {
+        "title": "多対多と接合（ジャンクション）オブジェクト",
+        "jaName": "多対多",
+        "enName": "Many-to-Many / Junction Object",
+        "definition": "多対多の関連は、2つの主従関係を持つ接合（ジャンクション、連結）オブジェクトで表現する。1つ目の主従が主オブジェクト、2つ目が詳細側になり、両親のレコードを横断して関連を保持する。受講者⇔コース、機械⇔部品のような関係に使う。",
+        "examPoints": [
+          "多対多＝接合オブジェクト＋2つの主従関係",
+          "1つ目の主従が主（所有者・共有・キュー）を決める",
+          "両親どちらの削除でも接合レコードは削除される",
+          "接合の両親側にそれぞれ積み上げ集計を作成できる"
+        ],
+        "questions": [
+          2,
+          331,
+          369
+        ],
+        "fullContent": "**定義**\n\n多対多の関連は、2つの主従関係を持つ接合（ジャンクション、連結）オブジェクトで表現する。1つ目の主従が主オブジェクト、2つ目が詳細側になり、両親のレコードを横断して関連を保持する。受講者⇔コース、機械⇔部品のような関係に使う。\n\n**試験のポイント**\n\n- 多対多＝接合オブジェクト＋2つの主従関係\n- 1つ目の主従が主（所有者・共有・キュー）を決める\n- 両親どちらの削除でも接合レコードは削除される\n- 接合の両親側にそれぞれ積み上げ集計を作成できる",
+        "fig": "relationships"
+      },
+      {
+        "title": "データモデル設計とスキーマビルダー",
+        "jaName": "データモデル",
+        "enName": "Data Model & Schema Builder",
+        "definition": "オブジェクト・項目・リレーションでビジネスを表す設計。スキーマビルダーは既存スキーマを図で確認しながら、カスタムオブジェクト・カスタム項目・リレーションをドラッグ＆ドロップで新規作成できる宣言的ツール。ただし項目の削除やページレイアウト編集はできない。",
+        "examPoints": [
+          "スキーマビルダーはオブジェクト/項目/リレーションの作成・俯瞰に使う",
+          "スキーマビルダーでは項目の削除やレイアウト編集はできない",
+          "まず宣言的（オブジェクトマネージャ/スキーマビルダー）で設計する",
+          "標準・カスタムを問わずリレーションを線で可視化できる"
+        ],
+        "questions": [
+          1,
+          2,
+          61,
+          62,
+          313,
+          320,
+          372,
+          415,
+          428,
+          439,
+          458,
+          494,
+          512
+        ],
+        "fullContent": "**定義**\n\nオブジェクト・項目・リレーションでビジネスを表す設計。スキーマビルダーは既存スキーマを図で確認しながら、カスタムオブジェクト・カスタム項目・リレーションをドラッグ＆ドロップで新規作成できる宣言的ツール。ただし項目の削除やページレイアウト編集はできない。\n\n**試験のポイント**\n\n- スキーマビルダーはオブジェクト/項目/リレーションの作成・俯瞰に使う\n- スキーマビルダーでは項目の削除やレイアウト編集はできない\n- まず宣言的（オブジェクトマネージャ/スキーマビルダー）で設計する\n- 標準・カスタムを問わずリレーションを線で可視化できる"
+      },
+      {
+        "title": "積み上げ集計項目",
+        "jaName": "積み上げ集計",
+        "enName": "Roll-Up Summary Field",
+        "definition": "主従関係の親側に作成し、子レコードの件数・合計・最小・最大を自動集計する読み取り専用項目。参照関係では作成できない。複数通貨組織では、通貨項目の積み上げは親レコードの通貨に換算して集計される。",
+        "examPoints": [
+          "積み上げ集計は主従関係の親側にのみ作成（参照関係は不可）",
+          "COUNT / SUM / MIN / MAX を子レコードから集計",
+          "子の変更で親側が再計算され、処理順序の後半で走る",
+          "複数通貨では親の通貨に換算して合算される"
+        ],
+        "questions": [
+          1,
+          3,
+          172,
+          313,
+          342,
+          360,
+          428,
+          501,
+          514
+        ],
+        "fullContent": "**定義**\n\n主従関係の親側に作成し、子レコードの件数・合計・最小・最大を自動集計する読み取り専用項目。参照関係では作成できない。複数通貨組織では、通貨項目の積み上げは親レコードの通貨に換算して集計される。\n\n**試験のポイント**\n\n- 積み上げ集計は主従関係の親側にのみ作成（参照関係は不可）\n- COUNT / SUM / MIN / MAX を子レコードから集計\n- 子の変更で親側が再計算され、処理順序の後半で走る\n- 複数通貨では親の通貨に換算して合算される",
+        "fig": "rollup-summary"
+      },
+      {
+        "title": "外部IDとupsert",
+        "jaName": "外部ID",
+        "enName": "External ID & Upsert",
+        "definition": "外部システムの主キーを保持するカスタム項目属性。外部IDにすると検索インデックスが付き、データローダや API の upsert で「既存があれば更新・なければ作成」の照合キーに使える。一意（ユニーク）設定と併用すると重複を防げる。テキスト・数値・メール型で指定可能。",
+        "examPoints": [
+          "外部ID＝外部キーを保持し upsert の照合キーにする",
+          "upsert は外部IDで既存判定（Id がなくても更新できる）",
+          "ユニーク属性と併用して重複レコードを防止",
+          "統合・データ移行で重複作成を避ける定番"
+        ],
+        "questions": [
+          63,
+          76,
+          326,
+          380,
+          447
+        ],
+        "fullContent": "**定義**\n\n外部システムの主キーを保持するカスタム項目属性。外部IDにすると検索インデックスが付き、データローダや API の upsert で「既存があれば更新・なければ作成」の照合キーに使える。一意（ユニーク）設定と併用すると重複を防げる。テキスト・数値・メール型で指定可能。\n\n**試験のポイント**\n\n- 外部ID＝外部キーを保持し upsert の照合キーにする\n- upsert は外部IDで既存判定（Id がなくても更新できる）\n- ユニーク属性と併用して重複レコードを防止\n- 統合・データ移行で重複作成を避ける定番",
+        "fig": "import-tools"
+      },
+      {
+        "title": "標準オブジェクトの必須項目",
+        "jaName": "必須項目",
+        "enName": "Required Standard Fields",
+        "definition": "オブジェクトごとに、レコード作成時に必ず値が要る標準項目がある。取引先責任者（Contact）では姓（LastName）が必須。Apex でプログラム的に作成する場合もこれらを満たさないと DML が失敗する。条件付き必須は入力規則や動的フォームで実現する。",
+        "examPoints": [
+          "Contact の必須標準項目は LastName（姓）",
+          "必須を満たさない insert は DmlException で失敗",
+          "プログラム作成でも UI と同じ必須チェックが効く",
+          "「特定条件のときだけ必須」は入力規則で実装"
+        ],
+        "questions": [
+          336,
+          354,
+          362,
+          386
+        ],
+        "fullContent": "**定義**\n\nオブジェクトごとに、レコード作成時に必ず値が要る標準項目がある。取引先責任者（Contact）では姓（LastName）が必須。Apex でプログラム的に作成する場合もこれらを満たさないと DML が失敗する。条件付き必須は入力規則や動的フォームで実現する。\n\n**試験のポイント**\n\n- Contact の必須標準項目は LastName（姓）\n- 必須を満たさない insert は DmlException で失敗\n- プログラム作成でも UI と同じ必須チェックが効く\n- 「特定条件のときだけ必須」は入力規則で実装"
+      },
+      {
+        "title": "複数選択リスト項目",
+        "jaName": "複数選択リスト",
+        "enName": "Multi-Select Picklist",
+        "definition": "複数の値を同時に選べる選択リスト。選択した値は Apex では1つの String にセミコロン区切りで格納される。String.split(';') で配列化し、contains/includes で判定する。SOQL では INCLUDES / EXCLUDES 演算子で絞り込む。",
+        "examPoints": [
+          "Apex 上ではセミコロン区切りの1つの文字列として扱う",
+          "分割は String.split、判定は contains/includes",
+          "SOQL の絞り込みは INCLUDES / EXCLUDES",
+          "個々の値の取り回しに注意（単一選択リストと挙動が違う）"
+        ],
+        "questions": [
+          378
+        ],
+        "fullContent": "**定義**\n\n複数の値を同時に選べる選択リスト。選択した値は Apex では1つの String にセミコロン区切りで格納される。String.split(';') で配列化し、contains/includes で判定する。SOQL では INCLUDES / EXCLUDES 演算子で絞り込む。\n\n**試験のポイント**\n\n- Apex 上ではセミコロン区切りの1つの文字列として扱う\n- 分割は String.split、判定は contains/includes\n- SOQL の絞り込みは INCLUDES / EXCLUDES\n- 個々の値の取り回しに注意（単一選択リストと挙動が違う）"
+      },
+      {
+        "title": "抽象クラスと継承（abstract / virtual / override）",
+        "jaName": "abstract/virtual",
+        "enName": "Abstract & Inheritance",
+        "definition": "abstract クラスはインスタンス化できず、abstract メソッド（本体なし）を子に実装させる雛形。virtual クラス/メソッドは継承・オーバーライド（override）を許可する。子で親メソッドを差し替えるには親 virtual/abstract＋子 override が必須。interface は実装の契約のみを定義する。",
+        "examPoints": [
+          "abstract クラスは new できない（共通実装＋未実装メソッドの雛形）",
+          "オーバーライドは親 virtual/abstract＋子 override が必須",
+          "virtual は既定実装あり・abstract は実装を子に強制",
+          "interface はメソッドシグネチャの契約（多重実装可）"
+        ],
+        "questions": [
+          70,
+          343,
+          352,
+          358,
+          429,
+          459,
+          488,
+          507
+        ],
+        "fullContent": "**定義**\n\nabstract クラスはインスタンス化できず、abstract メソッド（本体なし）を子に実装させる雛形。virtual クラス/メソッドは継承・オーバーライド（override）を許可する。子で親メソッドを差し替えるには親 virtual/abstract＋子 override が必須。interface は実装の契約のみを定義する。\n\n**試験のポイント**\n\n- abstract クラスは new できない（共通実装＋未実装メソッドの雛形）\n- オーバーライドは親 virtual/abstract＋子 override が必須\n- virtual は既定実装あり・abstract は実装を子に強制\n- interface はメソッドシグネチャの契約（多重実装可）"
+      },
+      {
+        "title": "制御構文（ループと条件分岐）",
+        "jaName": "制御構文",
+        "enName": "Control Flow",
+        "definition": "Apex のフロー制御。if/else if/else の条件分岐、for（従来型・コレクション型・SOQL for）、while、do-while（条件判定前に必ず1回実行）がある。SOQL for ループはクエリ結果を分割取得してヒープを節約する。ループ内での SOQL/DML はガバナ制限超過の典型。",
+        "examPoints": [
+          "do-while は条件判定の前に必ず1回実行される",
+          "SOQL for ループは大量データをバッチ取得しヒープを節約",
+          "ループ内 SOQL/DML は禁止（バルク化する）",
+          "整数同士の除算は切り捨て（5/2 は 2）"
+        ],
+        "questions": [
+          301,
+          306,
+          335,
+          340,
+          471
+        ],
+        "fullContent": "**定義**\n\nApex のフロー制御。if/else if/else の条件分岐、for（従来型・コレクション型・SOQL for）、while、do-while（条件判定前に必ず1回実行）がある。SOQL for ループはクエリ結果を分割取得してヒープを節約する。ループ内での SOQL/DML はガバナ制限超過の典型。\n\n**試験のポイント**\n\n- do-while は条件判定の前に必ず1回実行される\n- SOQL for ループは大量データをバッチ取得しヒープを節約\n- ループ内 SOQL/DML は禁止（バルク化する）\n- 整数同士の除算は切り捨て（5/2 は 2）"
+      },
+      {
+        "title": "Schema describe と FLS チェック",
+        "jaName": "describe",
+        "enName": "Schema Describe",
+        "definition": "Schema クラスでオブジェクト・項目のメタ情報を実行時に取得する。DescribeSObjectResult（getDescribe()）で isAccessible/isCreateable/isUpdateable/isDeletable を確認し、項目は DescribeFieldResult で FLS を判定する。動的にアクセス可否を確かめてから DML する防御的設計に使う。",
+        "examPoints": [
+          "DescribeSObjectResult でオブジェクトの CRUD 可否を取得",
+          "isAccessible/isUpdateable 等でユーザー権限をコードで確認",
+          "getGlobalDescribe→getDescribe().fields.getMap() で項目を動的取得",
+          "WITH SECURITY_ENFORCED や stripInaccessible と役割を区別"
+        ],
+        "questions": [
+          154,
+          367,
+          404,
+          423,
+          442
+        ],
+        "fullContent": "**定義**\n\nSchema クラスでオブジェクト・項目のメタ情報を実行時に取得する。DescribeSObjectResult（getDescribe()）で isAccessible/isCreateable/isUpdateable/isDeletable を確認し、項目は DescribeFieldResult で FLS を判定する。動的にアクセス可否を確かめてから DML する防御的設計に使う。\n\n**試験のポイント**\n\n- DescribeSObjectResult でオブジェクトの CRUD 可否を取得\n- isAccessible/isUpdateable 等でユーザー権限をコードで確認\n- getGlobalDescribe→getDescribe().fields.getMap() で項目を動的取得\n- WITH SECURITY_ENFORCED や stripInaccessible と役割を区別"
       }
     ]
   },
@@ -250,10 +562,23 @@
         "questions": [
           15,
           73,
+          113,
           161,
-          113
+          305,
+          328,
+          343,
+          346,
+          390,
+          393,
+          395,
+          402,
+          408,
+          415,
+          416,
+          452
         ],
-        "fullContent": "**定義**\n\nトリガの実行状態とレコードを保持する変数群。\n\n**試験のポイント**\n\n- new/old・newMap/oldMap、isBefore/isAfter×操作種別\n- delete は old のみ、insert は new のみ"
+        "fullContent": "**定義**\n\nトリガの実行状態とレコードを保持する変数群。\n\n**試験のポイント**\n\n- new/old・newMap/oldMap、isBefore/isAfter×操作種別\n- delete は old のみ、insert は new のみ",
+        "fig": "trigger-context"
       },
       {
         "title": "トリガの設計とバルク化",
@@ -275,9 +600,17 @@
           124,
           162,
           175,
-          215
+          215,
+          305,
+          328,
+          343,
+          346,
+          390,
+          393,
+          395
         ],
-        "fullContent": "**定義**\n\nトリガをバルクセーフ・保守可能に書く設計原則。\n\n**試験のポイント**\n\n- 1トリガ集約・バルク化・before の項目設定・addError"
+        "fullContent": "**定義**\n\nトリガをバルクセーフ・保守可能に書く設計原則。\n\n**試験のポイント**\n\n- 1トリガ集約・バルク化・before の項目設定・addError",
+        "fig": "governor-limits"
       },
       {
         "title": "SOQL",
@@ -299,9 +632,15 @@
           118,
           119,
           120,
-          166
+          166,
+          317,
+          381,
+          423,
+          436,
+          452
         ],
-        "fullContent": "**定義**\n\nレコード取得のクエリ言語。\n\n**試験のポイント**\n\n- リレーション走査・集計・バインド・日付リテラル・ロック"
+        "fullContent": "**定義**\n\nレコード取得のクエリ言語。\n\n**試験のポイント**\n\n- リレーション走査・集計・バインド・日付リテラル・ロック",
+        "fig": "soql-relationships"
       },
       {
         "title": "SOSL と動的 SOQL",
@@ -316,9 +655,20 @@
         "questions": [
           23,
           78,
-          165
+          165,
+          317,
+          381,
+          392,
+          423,
+          432,
+          436,
+          449,
+          452,
+          457,
+          513
         ],
-        "fullContent": "**定義**\n\n横断検索の SOSL と文字列クエリの動的 SOQL。\n\n**試験のポイント**\n\n- SOSL=FIND/RETURNING、動的SOQL=注入対策必須"
+        "fullContent": "**定義**\n\n横断検索の SOSL と文字列クエリの動的 SOQL。\n\n**試験のポイント**\n\n- SOSL=FIND/RETURNING、動的SOQL=注入対策必須",
+        "fig": "soql-relationships"
       },
       {
         "title": "DML と Database メソッド",
@@ -334,7 +684,15 @@
           20,
           31,
           76,
-          114
+          114,
+          304,
+          311,
+          314,
+          332,
+          341,
+          351,
+          446,
+          492
         ],
         "fullContent": "**定義**\n\nレコードを操作する DML と Database クラス。\n\n**試験のポイント**\n\n- 部分成功・upsert/merge・Savepoint の使い分け"
       },
@@ -354,7 +712,8 @@
           25,
           172
         ],
-        "fullContent": "**定義**\n\nレコード保存時の決まった実行順序。\n\n**試験のポイント**\n\n- before→入力規則→保存→after→WF→集計再計算の流れを暗記"
+        "fullContent": "**定義**\n\nレコード保存時の決まった実行順序。\n\n**試験のポイント**\n\n- before→入力規則→保存→after→WF→集計再計算の流れを暗記",
+        "fig": "order-of-execution"
       },
       {
         "title": "MIXED_DML と例外処理",
@@ -369,7 +728,20 @@
         "questions": [
           30,
           121,
-          199
+          199,
+          304,
+          311,
+          314,
+          315,
+          317,
+          341,
+          351,
+          375,
+          413,
+          436,
+          444,
+          446,
+          451
         ],
         "fullContent": "**定義**\n\n混在 DML の制約と例外ハンドリング。\n\n**試験のポイント**\n\n- MIXED_DML は非同期分離、捕捉済み例外で DML は残る"
       },
@@ -395,9 +767,15 @@
           123,
           167,
           168,
-          213
+          213,
+          301,
+          302,
+          303,
+          306,
+          307
         ],
-        "fullContent": "**定義**\n\n4種の非同期処理の使い分け。\n\n**試験のポイント**\n\n- 軽量=future、状態/チェーン/コールアウト=Queueable、大量=Batch、定時=Schedulable"
+        "fullContent": "**定義**\n\n4種の非同期処理の使い分け。\n\n**試験のポイント**\n\n- 軽量=future、状態/チェーン/コールアウト=Queueable、大量=Batch、定時=Schedulable",
+        "fig": "async-apex"
       },
       {
         "title": "フロー（種別と保存前・フォルト・サブフロー）",
@@ -418,9 +796,13 @@
           127,
           128,
           129,
-          173
+          173,
+          409,
+          493,
+          502
         ],
-        "fullContent": "**定義**\n\n宣言的な自動化ツール。\n\n**試験のポイント**\n\n- 種別と保存前更新・フォルトパス・サブフロー・宣言的優先"
+        "fullContent": "**定義**\n\n宣言的な自動化ツール。\n\n**試験のポイント**\n\n- 種別と保存前更新・フォルトパス・サブフロー・宣言的優先",
+        "fig": "flow-types"
       },
       {
         "title": "プラットフォームイベントとコールアウト",
@@ -439,7 +821,10 @@
           84,
           122,
           174,
-          214
+          214,
+          460,
+          467,
+          506
         ],
         "fullContent": "**定義**\n\nイベント駆動の統合と外部 HTTP 連携。\n\n**試験のポイント**\n\n- 疎結合=プラットフォームイベント、コールアウトは非同期＋モック"
       },
@@ -456,7 +841,20 @@
         "questions": [
           83,
           170,
-          171
+          171,
+          301,
+          302,
+          306,
+          307,
+          308,
+          315,
+          327,
+          335,
+          368,
+          373,
+          375,
+          376,
+          384
         ],
         "fullContent": "**定義**\n\n外部・フロー・メールから Apex を呼ぶための公開方法。\n\n**試験のポイント**\n\n- REST/Invocable/InboundEmail/AuraEnabled の用途を区別"
       },
@@ -471,9 +869,178 @@
           "制限到達前の安全な設計に活用"
         ],
         "questions": [
-          130
+          130,
+          314,
+          426
         ],
         "fullContent": "**定義**\n\nガバナ制限の上限/消費量を取得するクラス。\n\n**試験のポイント**\n\n- 残数＝上限−消費。制限前の防御的分岐に使う"
+      },
+      {
+        "title": "Batch Apex（大量データの分割処理）",
+        "jaName": "Batch Apex",
+        "enName": "Batch Apex",
+        "definition": "Database.Batchable を実装し、start（QueryLocator で対象を返す）→execute（既定200件ずつ処理）→finish の3段で最大5,000万件を分割処理する非同期。各 execute は別トランザクションで制限がリセットされる。execute をまたいで値を保持するには Database.Stateful を実装する。",
+        "examPoints": [
+          "start は QueryLocator（最大5,000万件）か Iterable を返す",
+          "execute は既定200件ずつ・各実行は別トランザクション",
+          "execute 間で状態を保持＝Database.Stateful（static は不可）",
+          "Database.executeBatch(b, scopeSize) でバッチサイズを指定"
+        ],
+        "questions": [
+          28,
+          80,
+          81,
+          111,
+          123,
+          167,
+          477
+        ],
+        "fullContent": "**定義**\n\nDatabase.Batchable を実装し、start（QueryLocator で対象を返す）→execute（既定200件ずつ処理）→finish の3段で最大5,000万件を分割処理する非同期。各 execute は別トランザクションで制限がリセットされる。execute をまたいで値を保持するには Database.Stateful を実装する。\n\n**試験のポイント**\n\n- start は QueryLocator（最大5,000万件）か Iterable を返す\n- execute は既定200件ずつ・各実行は別トランザクション\n- execute 間で状態を保持＝Database.Stateful（static は不可）\n- Database.executeBatch(b, scopeSize) でバッチサイズを指定",
+        "fig": "async-apex"
+      },
+      {
+        "title": "AsyncApexJob とジョブ監視",
+        "jaName": "AsyncApexJob",
+        "enName": "AsyncApexJob",
+        "definition": "非同期ジョブ（@future 以外の Batch/Queueable/Schedulable）の状態を保持する標準オブジェクト。enqueueJob/executeBatch が返すジョブ ID で AsyncApexJob を SOQL すれば、Status・JobItemsProcessed・NumberOfErrors などを後から確認できる。Apex ジョブモニタにも表示される。",
+        "examPoints": [
+          "ジョブ ID で AsyncApexJob を SOQL し進捗/結果を確認",
+          "Status（Queued/Processing/Completed/Failed 等）を追跡",
+          "@future はジョブ ID を返さない（監視は AsyncApexJob で限定的）",
+          "設定の Apex ジョブで UI からも状態を確認できる"
+        ],
+        "questions": [
+          123
+        ],
+        "fullContent": "**定義**\n\n非同期ジョブ（@future 以外の Batch/Queueable/Schedulable）の状態を保持する標準オブジェクト。enqueueJob/executeBatch が返すジョブ ID で AsyncApexJob を SOQL すれば、Status・JobItemsProcessed・NumberOfErrors などを後から確認できる。Apex ジョブモニタにも表示される。\n\n**試験のポイント**\n\n- ジョブ ID で AsyncApexJob を SOQL し進捗/結果を確認\n- Status（Queued/Processing/Completed/Failed 等）を追跡\n- @future はジョブ ID を返さない（監視は AsyncApexJob で限定的）\n- 設定の Apex ジョブで UI からも状態を確認できる"
+      },
+      {
+        "title": "自動化の使い分け（フロー / Apex）",
+        "jaName": "自動化",
+        "enName": "Automation: Flow vs Apex",
+        "definition": "「まず宣言的（フロー）、無理ならコード（Apex）」が原則。保存時の項目更新・関連レコード操作・通知はレコードトリガフローで賄える。複雑なロジック・大量データ・コールアウト・厳密な順序制御・再帰制御が要るときに Apex トリガを選ぶ。ワークフロー/プロセスビルダーは新規非推奨。",
+        "examPoints": [
+          "宣言的で実現できるなら Apex を書かない（保守コスト）",
+          "同一レコードの項目更新は before-save フローが高速",
+          "コールアウト・複雑分岐・大量処理・厳密順序は Apex",
+          "ワークフロー/プロセスビルダーは廃止方向（フローへ移行）"
+        ],
+        "questions": [
+          16,
+          32,
+          125,
+          126,
+          127,
+          313,
+          333,
+          351,
+          362,
+          458,
+          489,
+          493,
+          512
+        ],
+        "fullContent": "**定義**\n\n「まず宣言的（フロー）、無理ならコード（Apex）」が原則。保存時の項目更新・関連レコード操作・通知はレコードトリガフローで賄える。複雑なロジック・大量データ・コールアウト・厳密な順序制御・再帰制御が要るときに Apex トリガを選ぶ。ワークフロー/プロセスビルダーは新規非推奨。\n\n**試験のポイント**\n\n- 宣言的で実現できるなら Apex を書かない（保守コスト）\n- 同一レコードの項目更新は before-save フローが高速\n- コールアウト・複雑分岐・大量処理・厳密順序は Apex\n- ワークフロー/プロセスビルダーは廃止方向（フローへ移行）",
+        "fig": "declarative-vs-code"
+      },
+      {
+        "title": "Apex トリガとトリガー処理",
+        "jaName": "Apexトリガ",
+        "enName": "Apex Triggers",
+        "definition": "レコードの DML 前後に動く Apex。before（保存前・同一レコードの項目を直接代入可）と after（保存後・ID 確定・関連レコード操作）がある。1オブジェクト1トリガ＋ハンドラで順序を管理し、SOQL/DML はループ外で一括（バルク化）。保存中止は addError()。",
+        "examPoints": [
+          "同一レコードの項目更新は before で直接代入（DML 不要）",
+          "after は ID 確定後・関連レコード作成や集計に使う",
+          "1オブジェクト1トリガ＋ハンドラで実行順序を制御",
+          "保存を止めてエラー表示は addError()、再帰抑止は static"
+        ],
+        "questions": [
+          30,
+          32,
+          333,
+          351,
+          440,
+          458,
+          465,
+          466,
+          503
+        ],
+        "fullContent": "**定義**\n\nレコードの DML 前後に動く Apex。before（保存前・同一レコードの項目を直接代入可）と after（保存後・ID 確定・関連レコード操作）がある。1オブジェクト1トリガ＋ハンドラで順序を管理し、SOQL/DML はループ外で一括（バルク化）。保存中止は addError()。\n\n**試験のポイント**\n\n- 同一レコードの項目更新は before で直接代入（DML 不要）\n- after は ID 確定後・関連レコード作成や集計に使う\n- 1オブジェクト1トリガ＋ハンドラで実行順序を制御\n- 保存を止めてエラー表示は addError()、再帰抑止は static",
+        "fig": "trigger-context"
+      },
+      {
+        "title": "スケジュールフロー（定時処理）",
+        "jaName": "スケジュールフロー",
+        "enName": "Scheduled Flow",
+        "definition": "指定した日時・頻度で自動起動する宣言的フロー。コードを書かずに「毎日深夜、条件に一致するレコードを一括処理」を実現する。大量・複雑になる場合は Schedulable + Batch Apex を選ぶ。レコードトリガフロー（保存時）とは起動契機が異なる。",
+        "examPoints": [
+          "宣言的な定時一括処理＝スケジュールフロー",
+          "起動契機は日時/頻度（保存時ではない）",
+          "大量・複雑処理は Schedulable＋Batch Apex に切り替え",
+          "実行ユーザーのコンテキストと制限に注意"
+        ],
+        "questions": [
+          127
+        ],
+        "fullContent": "**定義**\n\n指定した日時・頻度で自動起動する宣言的フロー。コードを書かずに「毎日深夜、条件に一致するレコードを一括処理」を実現する。大量・複雑になる場合は Schedulable + Batch Apex を選ぶ。レコードトリガフロー（保存時）とは起動契機が異なる。\n\n**試験のポイント**\n\n- 宣言的な定時一括処理＝スケジュールフロー\n- 起動契機は日時/頻度（保存時ではない）\n- 大量・複雑処理は Schedulable＋Batch Apex に切り替え\n- 実行ユーザーのコンテキストと制限に注意",
+        "fig": "flow-types"
+      },
+      {
+        "title": "Apex REST サービス",
+        "jaName": "Apex REST",
+        "enName": "Apex REST",
+        "definition": "@RestResource(urlMapping='/path/*') を付けた global クラスで、@HttpGet/@HttpPost/@HttpPut/@HttpPatch/@HttpDelete メソッドを公開し、外部から REST で呼べるカスタム Web サービスを作る。RestContext.request/response で要求・応答を扱う。SOAP 公開は webservice キーワード。",
+        "examPoints": [
+          "REST 公開＝@RestResource＋@HttpGet/Post/Put/Patch/Delete",
+          "クラスは global、URL は urlMapping で指定",
+          "RestContext で要求パラメータ・本文・応答を操作",
+          "フロー連携は @InvocableMethod、Lightning は @AuraEnabled"
+        ],
+        "questions": [
+          171,
+          433
+        ],
+        "fullContent": "**定義**\n\n@RestResource(urlMapping='/path/*') を付けた global クラスで、@HttpGet/@HttpPost/@HttpPut/@HttpPatch/@HttpDelete メソッドを公開し、外部から REST で呼べるカスタム Web サービスを作る。RestContext.request/response で要求・応答を扱う。SOAP 公開は webservice キーワード。\n\n**試験のポイント**\n\n- REST 公開＝@RestResource＋@HttpGet/Post/Put/Patch/Delete\n- クラスは global、URL は urlMapping で指定\n- RestContext で要求パラメータ・本文・応答を操作\n- フロー連携は @InvocableMethod、Lightning は @AuraEnabled"
+      },
+      {
+        "title": "承認プロセスとレコードロック",
+        "jaName": "承認プロセス",
+        "enName": "Approval Process & Record Lock",
+        "definition": "申請されたレコードを承認/却下で進める宣言的プロセス。承認待ちの間レコードはロックされ、通常ユーザーは編集できない。ロック中に編集できるのは管理者と、現在の承認ステップに割り当てられた承認者（設定で許可した場合）。ロック/ロック解除は承認プロセスのアクションで制御する。",
+        "examPoints": [
+          "承認申請するとレコードはロックされる",
+          "ロック中の編集は管理者と現承認者（許可時）に限られる",
+          "ロック/解除は承認プロセスの「レコードロック」アクションで設定",
+          "Approval.lock/unlock で Apex からも制御可能"
+        ],
+        "questions": [
+          338,
+          510
+        ],
+        "fullContent": "**定義**\n\n申請されたレコードを承認/却下で進める宣言的プロセス。承認待ちの間レコードはロックされ、通常ユーザーは編集できない。ロック中に編集できるのは管理者と、現在の承認ステップに割り当てられた承認者（設定で許可した場合）。ロック/ロック解除は承認プロセスのアクションで制御する。\n\n**試験のポイント**\n\n- 承認申請するとレコードはロックされる\n- ロック中の編集は管理者と現承認者（許可時）に限られる\n- ロック/解除は承認プロセスの「レコードロック」アクションで設定\n- Approval.lock/unlock で Apex からも制御可能",
+        "fig": "approval-process"
+      },
+      {
+        "title": "入力規則と条件付き必須",
+        "jaName": "入力規則",
+        "enName": "Validation Rules",
+        "definition": "保存時に数式が true ならエラーを出してレコード保存を止める宣言的なデータ品質ルール。処理順序では before トリガの後に評価される。「ある条件のときだけ別項目を必須にする（条件付き必須）」は入力規則で表現でき、Apex を書かずに実現できる。",
+        "examPoints": [
+          "入力規則は数式が true でエラー→保存を中止",
+          "処理順序では before トリガの後・保存の前に評価",
+          "条件付き必須は入力規則で宣言的に実装",
+          "API/データローダ経由の保存にも適用される"
+        ],
+        "questions": [
+          24,
+          305,
+          330,
+          354,
+          362,
+          386,
+          510
+        ],
+        "fullContent": "**定義**\n\n保存時に数式が true ならエラーを出してレコード保存を止める宣言的なデータ品質ルール。処理順序では before トリガの後に評価される。「ある条件のときだけ別項目を必須にする（条件付き必須）」は入力規則で表現でき、Apex を書かずに実現できる。\n\n**試験のポイント**\n\n- 入力規則は数式が true でエラー→保存を中止\n- 処理順序では before トリガの後・保存の前に評価\n- 条件付き必須は入力規則で宣言的に実装\n- API/データローダ経由の保存にも適用される"
       }
     ]
   },
@@ -492,7 +1059,16 @@
         ],
         "questions": [
           33,
-          193
+          193,
+          357,
+          379,
+          397,
+          456,
+          469,
+          474,
+          478,
+          491,
+          505
         ],
         "fullContent": "**定義**\n\nLWC の公開プロパティとリアクティビティ。\n\n**試験のポイント**\n\n- @api・@track・setter での副作用"
       },
@@ -510,7 +1086,19 @@
           34,
           35,
           133,
-          134
+          134,
+          301,
+          302,
+          306,
+          307,
+          308,
+          315,
+          327,
+          335,
+          368,
+          373,
+          375,
+          376
         ],
         "fullContent": "**定義**\n\nApex データ取得の2方式。\n\n**試験のポイント**\n\n- 読み取り=@wire、変更=命令的、再取得=refreshApex"
       },
@@ -532,9 +1120,19 @@
           88,
           184,
           185,
-          217
+          217,
+          357,
+          379,
+          397,
+          456,
+          469,
+          474,
+          478,
+          491,
+          505
         ],
-        "fullContent": "**定義**\n\nコンポーネント間の通信手段。\n\n**試験のポイント**\n\n- CustomEvent・LMS・NavigationMixin・Toast の使い分け"
+        "fullContent": "**定義**\n\nコンポーネント間の通信手段。\n\n**試験のポイント**\n\n- CustomEvent・LMS・NavigationMixin・Toast の使い分け",
+        "fig": "lwc-communication"
       },
       {
         "title": "Lightning Data Service（record-form / uiRecordApi）",
@@ -557,9 +1155,16 @@
           179,
           180,
           186,
-          216
+          216,
+          302,
+          318,
+          322,
+          382,
+          388,
+          414
         ],
-        "fullContent": "**定義**\n\nApex 不要のレコードアクセス基盤。\n\n**試験のポイント**\n\n- フォーム系・ワイヤアダプタ・uiRecordAPI の使い分け"
+        "fullContent": "**定義**\n\nApex 不要のレコードアクセス基盤。\n\n**試験のポイント**\n\n- フォーム系・ワイヤアダプタ・uiRecordAPI の使い分け",
+        "fig": "lwc-communication"
       },
       {
         "title": "テンプレートディレクティブとライフサイクル",
@@ -577,7 +1182,9 @@
           86,
           183,
           185,
-          192
+          192,
+          383,
+          461
         ],
         "fullContent": "**定義**\n\nテンプレート構文とコンポーネントのライフサイクル。\n\n**試験のポイント**\n\n- key・lwc:if・slot・connectedCallback"
       },
@@ -594,7 +1201,9 @@
         "questions": [
           38,
           141,
-          190
+          190,
+          418,
+          478
         ],
         "fullContent": "**定義**\n\nコンポーネントの配置先を定義するメタ設定。\n\n**試験のポイント**\n\n- targets の値で配置サーフェスが決まる"
       },
@@ -615,7 +1224,10 @@
           136,
           186,
           187,
-          188
+          188,
+          456,
+          480,
+          506
         ],
         "fullContent": "**定義**\n\nAura のイベント・メソッド・データアクセス。\n\n**試験のポイント**\n\n- イベント2種・aura:method・recordData・enqueueAction・LWC互換は一方向"
       },
@@ -633,7 +1245,19 @@
           42,
           43,
           45,
-          137
+          137,
+          318,
+          332,
+          347,
+          353,
+          355,
+          359,
+          364,
+          366,
+          374,
+          383,
+          391,
+          396
         ],
         "fullContent": "**定義**\n\nVisualforce のコントローラ3種。\n\n**試験のポイント**\n\n- 標準/カスタム/拡張・リストコントローラ・getter"
       },
@@ -654,7 +1278,17 @@
           138,
           139,
           140,
-          189
+          189,
+          332,
+          347,
+          353,
+          355,
+          359,
+          364,
+          366,
+          374,
+          383,
+          391
         ],
         "fullContent": "**定義**\n\nVisualforce の主要タグとビューステート。\n\n**試験のポイント**\n\n- inputField・rerender・renderAs・transient・$Resource"
       },
@@ -671,7 +1305,13 @@
         "questions": [
           46,
           142,
-          191
+          191,
+          302,
+          318,
+          322,
+          382,
+          388,
+          414
         ],
         "fullContent": "**定義**\n\nデザインシステムとセキュリティアーキテクチャ。\n\n**試験のポイント**\n\n- 見た目＝SLDS、分離保護＝LWS、外部JS＝loadScript"
       },
@@ -686,7 +1326,8 @@
           "デバイスやユーザー属性も条件にできる"
         ],
         "questions": [
-          47
+          47,
+          456
         ],
         "fullContent": "**定義**\n\n宣言的なコンポーネント表示制御。\n\n**試験のポイント**\n\n- 項目値での出し分けは表示条件で宣言的に"
       },
@@ -703,9 +1344,48 @@
         "questions": [
           132,
           181,
-          182
+          182,
+          456
         ],
         "fullContent": "**定義**\n\nSLDS 内蔵の再利用 UI 部品。\n\n**試験のポイント**\n\n- datatable 行アクション・input 検証・spinner"
+      },
+      {
+        "title": "Lightning コンポーネントバンドル",
+        "jaName": "Lightningコンポーネント",
+        "enName": "Lightning Component Bundle",
+        "definition": "LWC のバンドルは HTML テンプレート・JavaScript・*.js-meta.xml（設定）を中心に、CSS・SVG アイコン・追加 JS などのリソースで構成される。Lightning Experience・モバイル・Experience Cloud（コミュニティ）・アプリビルダー・クイックアクション・標準ボタンの上書きなど多くの面で利用できる。",
+        "examPoints": [
+          "バンドル必須＝HTML・JS・js-meta.xml（CSS/SVG は任意）",
+          "利用面＝Lightning Experience／モバイル／Experience Cloud 等",
+          "配置先は js-meta.xml の targets と isExposed で制御",
+          "標準ボタンの上書き（アクションオーバーライド）にも使える"
+        ],
+        "questions": [
+          46,
+          323,
+          334,
+          490
+        ],
+        "fullContent": "**定義**\n\nLWC のバンドルは HTML テンプレート・JavaScript・*.js-meta.xml（設定）を中心に、CSS・SVG アイコン・追加 JS などのリソースで構成される。Lightning Experience・モバイル・Experience Cloud（コミュニティ）・アプリビルダー・クイックアクション・標準ボタンの上書きなど多くの面で利用できる。\n\n**試験のポイント**\n\n- バンドル必須＝HTML・JS・js-meta.xml（CSS/SVG は任意）\n- 利用面＝Lightning Experience／モバイル／Experience Cloud 等\n- 配置先は js-meta.xml の targets と isExposed で制御\n- 標準ボタンの上書き（アクションオーバーライド）にも使える"
+      },
+      {
+        "title": "クイックアクションと Chatter フィード",
+        "jaName": "クイックアクション",
+        "enName": "Quick Actions & Chatter Feed",
+        "definition": "クイックアクションはレコード作成・更新・カスタム LWC 起動などを1クリックで行うボタン。オブジェクト固有の「作成アクション」で関連レコードを素早く作れる。作成時にフィード（Chatter）へ自動投稿するには、アクションの設定で「フィード項目を作成」を有効にするのが最も簡単。",
+        "examPoints": [
+          "作成アクション＝関連レコードを素早く作成",
+          "作成時の Chatter 投稿は「フィード項目を作成」設定が最簡単",
+          "グローバル/オブジェクト固有アクションがある",
+          "カスタム LWC/VF をアクションとして起動できる"
+        ],
+        "questions": [
+          141,
+          322,
+          324,
+          370
+        ],
+        "fullContent": "**定義**\n\nクイックアクションはレコード作成・更新・カスタム LWC 起動などを1クリックで行うボタン。オブジェクト固有の「作成アクション」で関連レコードを素早く作れる。作成時にフィード（Chatter）へ自動投稿するには、アクションの設定で「フィード項目を作成」を有効にするのが最も簡単。\n\n**試験のポイント**\n\n- 作成アクション＝関連レコードを素早く作成\n- 作成時の Chatter 投稿は「フィード項目を作成」設定が最簡単\n- グローバル/オブジェクト固有アクションがある\n- カスタム LWC/VF をアクションとして起動できる"
       }
     ]
   },
@@ -726,9 +1406,15 @@
         "questions": [
           48,
           197,
-          205
+          205,
+          339,
+          390,
+          405,
+          453,
+          496
         ],
-        "fullContent": "**定義**\n\nリリースに必要なテストカバレッジ。\n\n**試験のポイント**\n\n- 75%全体・トリガ1行・全成功。テストコードは分母外"
+        "fullContent": "**定義**\n\nリリースに必要なテストカバレッジ。\n\n**試験のポイント**\n\n- 75%全体・トリガ1行・全成功。テストコードは分母外",
+        "fig": "deployment"
       },
       {
         "title": "テストデータの用意",
@@ -744,7 +1430,19 @@
           49,
           51,
           93,
-          194
+          194,
+          310,
+          316,
+          325,
+          330,
+          356,
+          412,
+          419,
+          425,
+          437,
+          450,
+          468,
+          481
         ],
         "fullContent": "**定義**\n\nテストで使うデータの作り方。\n\n**試験のポイント**\n\n- データ分離・@testSetup・Test.loadData・SeeAllData は回避"
       },
@@ -760,9 +1458,22 @@
         ],
         "questions": [
           50,
-          52
+          52,
+          312,
+          321,
+          363,
+          412,
+          418,
+          419,
+          425,
+          468,
+          475,
+          496,
+          498,
+          508
         ],
-        "fullContent": "**定義**\n\nテスト内のガバナ制限とユーザーコンテキスト制御。\n\n**試験のポイント**\n\n- startTest/stopTest と runAs の役割を区別"
+        "fullContent": "**定義**\n\nテスト内のガバナ制限とユーザーコンテキスト制御。\n\n**試験のポイント**\n\n- startTest/stopTest と runAs の役割を区別",
+        "fig": "test-execution"
       },
       {
         "title": "モックとアサーション",
@@ -781,9 +1492,12 @@
           94,
           195,
           198,
-          199
+          199,
+          339,
+          444
         ],
-        "fullContent": "**定義**\n\nテストの擬似化と結果検証。\n\n**試験のポイント**\n\n- CalloutMock・Stub API・Assert・例外/負/バルクの観点"
+        "fullContent": "**定義**\n\nテストの擬似化と結果検証。\n\n**試験のポイント**\n\n- CalloutMock・Stub API・Assert・例外/負/バルクの観点",
+        "fig": "test-execution"
       },
       {
         "title": "変更セット",
@@ -803,9 +1517,12 @@
           96,
           149,
           150,
-          202
+          202,
+          345,
+          401
         ],
-        "fullContent": "**定義**\n\n関連組織間の宣言的リリース。\n\n**試験のポイント**\n\n- 追加のみ・依存手動・検証＋クイックデプロイ・失敗で全ロールバック"
+        "fullContent": "**定義**\n\n関連組織間の宣言的リリース。\n\n**試験のポイント**\n\n- 追加のみ・依存手動・検証＋クイックデプロイ・失敗で全ロールバック",
+        "fig": "deployment"
       },
       {
         "title": "Sandbox の種類",
@@ -822,7 +1539,8 @@
           59,
           203
         ],
-        "fullContent": "**定義**\n\n4種の Sandbox。\n\n**試験のポイント**\n\n- データ量とリフレッシュ間隔で使い分け（Full=全/29日 等）"
+        "fullContent": "**定義**\n\n4種の Sandbox。\n\n**試験のポイント**\n\n- データ量とリフレッシュ間隔で使い分け（Full=全/29日 等）",
+        "fig": "sandbox-types"
       },
       {
         "title": "Salesforce DX とスクラッチ組織",
@@ -843,9 +1561,14 @@
           204,
           206,
           210,
-          218
+          218,
+          309,
+          418,
+          497,
+          509
         ],
-        "fullContent": "**定義**\n\nソース駆動開発の仕組み。\n\n**試験のポイント**\n\n- スクラッチ組織・ソース形式・push/pull・Git が真実の源"
+        "fullContent": "**定義**\n\nソース駆動開発の仕組み。\n\n**試験のポイント**\n\n- スクラッチ組織・ソース形式・push/pull・Git が真実の源",
+        "fig": "declarative-vs-code"
       },
       {
         "title": "パッケージ（管理 / 未管理 / アンロック）",
@@ -861,7 +1584,8 @@
         "questions": [
           97,
           143,
-          205
+          205,
+          349
         ],
         "fullContent": "**定義**\n\n3種のパッケージ。\n\n**試験のポイント**\n\n- 管理/未管理/アンロックの特徴と用途を区別"
       },
@@ -878,9 +1602,13 @@
         "questions": [
           95,
           200,
-          201
+          201,
+          345,
+          354,
+          401
         ],
-        "fullContent": "**定義**\n\nメタデータをリリースする手段の使い分け。\n\n**試験のポイント**\n\n- 変更セット/Metadata API/DX とテストレベル"
+        "fullContent": "**定義**\n\nメタデータをリリースする手段の使い分け。\n\n**試験のポイント**\n\n- 変更セット/Metadata API/DX とテストレベル",
+        "fig": "deployment"
       },
       {
         "title": "デバッグツール",
@@ -899,9 +1627,11 @@
           100,
           146,
           147,
-          208
+          208,
+          389
         ],
-        "fullContent": "**定義**\n\n実行調査のためのツール群。\n\n**試験のポイント**\n\n- デバッグログ/ログレベル・チェックポイント・リプレイデバッガ"
+        "fullContent": "**定義**\n\n実行調査のためのツール群。\n\n**試験のポイント**\n\n- デバッグログ/ログレベル・チェックポイント・リプレイデバッガ",
+        "fig": "order-of-execution"
       },
       {
         "title": "監査と通知",
@@ -931,9 +1661,182 @@
         ],
         "questions": [
           196,
-          209
+          209,
+          348,
+          393,
+          412,
+          419,
+          425,
+          426,
+          453,
+          468,
+          496,
+          508
         ],
         "fullContent": "**定義**\n\nテストクラスの性質。\n\n**試験のポイント**\n\n- コードサイズ制限外・本番配置・isRunningTest の乱用回避"
+      },
+      {
+        "title": "デバッグログとログレベル・トレースフラグ",
+        "jaName": "デバッグログ",
+        "enName": "Debug Logs & Levels",
+        "definition": "対象ユーザーにトレースフラグを設定し、カテゴリ別のログレベルでデバッグログを収集する。レベルは NONE<ERROR<WARN<INFO<DEBUG<FINE<FINER<FINEST。System.debug を見るには最低 DEBUG が必要。1ログにサイズ上限があり超過分は切り捨て、保持期間も限られる。設定の[デバッグログ]や開発者コンソールで管理する。",
+        "examPoints": [
+          "本番のユーザー操作調査＝対象にトレースフラグを設定して収集",
+          "System.debug を表示する最小レベルは DEBUG",
+          "最も詳細なレベルは FINEST（ログ量増・上限切り捨てに注意）",
+          "ログのフィルター/保持期間は設定の[デバッグログ]で管理"
+        ],
+        "questions": [
+          44,
+          55,
+          99,
+          100,
+          146,
+          147,
+          148,
+          207,
+          208,
+          312,
+          321,
+          344,
+          348,
+          377
+        ],
+        "fullContent": "**定義**\n\n対象ユーザーにトレースフラグを設定し、カテゴリ別のログレベルでデバッグログを収集する。レベルは NONE<ERROR<WARN<INFO<DEBUG<FINE<FINER<FINEST。System.debug を見るには最低 DEBUG が必要。1ログにサイズ上限があり超過分は切り捨て、保持期間も限られる。設定の[デバッグログ]や開発者コンソールで管理する。\n\n**試験のポイント**\n\n- 本番のユーザー操作調査＝対象にトレースフラグを設定して収集\n- System.debug を表示する最小レベルは DEBUG\n- 最も詳細なレベルは FINEST（ログ量増・上限切り捨てに注意）\n- ログのフィルター/保持期間は設定の[デバッグログ]で管理",
+        "fig": "order-of-execution"
+      },
+      {
+        "title": "Apex リプレイデバッガ",
+        "jaName": "リプレイデバッガ",
+        "enName": "Apex Replay Debugger",
+        "definition": "収集済みのデバッグログを VS Code（Salesforce 拡張）で再生し、行単位でステップ実行しながら変数やヒープの状態を確認できるデバッガ。実行中ではなく「記録されたログ」を再生する点が特徴。本番で再現が難しい不具合の事後解析に向く。",
+        "examPoints": [
+          "記録済みデバッグログを再生してステップ実行",
+          "VS Code の Salesforce 拡張で利用",
+          "実行時ではなくログの事後解析（リプレイ）",
+          "チェックポイント（ヒープ捕捉）と組み合わせる"
+        ],
+        "questions": [
+          147,
+          210
+        ],
+        "fullContent": "**定義**\n\n収集済みのデバッグログを VS Code（Salesforce 拡張）で再生し、行単位でステップ実行しながら変数やヒープの状態を確認できるデバッガ。実行中ではなく「記録されたログ」を再生する点が特徴。本番で再現が難しい不具合の事後解析に向く。\n\n**試験のポイント**\n\n- 記録済みデバッグログを再生してステップ実行\n- VS Code の Salesforce 拡張で利用\n- 実行時ではなくログの事後解析（リプレイ）\n- チェックポイント（ヒープ捕捉）と組み合わせる"
+      },
+      {
+        "title": "デプロイ手段とテストレベル",
+        "jaName": "デプロイ",
+        "enName": "Deployment & Test Levels",
+        "definition": "本番リリースは「組織全体カバレッジ75%以上＋全テスト成功」が必須。変更セットは UI で関連組織間に、Metadata API（CLI/Ant＋package.xml）はスクリプト/CI-CD に向く。テストレベル（NoTestRun/RunSpecifiedTests/RunLocalTests/RunAllTestsInOrg）で実行範囲を制御する。ページレイアウトやコードなど大半のメタデータがデプロイ対象。",
+        "examPoints": [
+          "本番デプロイ要件＝全体75%＋全テスト成功",
+          "RunSpecifiedTests は対象クラスが個別に75%必要",
+          "Metadata API はページレイアウト等の多くのメタデータを移行",
+          "検証（Validate）＋クイックデプロイで本番反映を高速化"
+        ],
+        "questions": [
+          104,
+          390,
+          401,
+          453,
+          464,
+          465,
+          484,
+          489,
+          500
+        ],
+        "fullContent": "**定義**\n\n本番リリースは「組織全体カバレッジ75%以上＋全テスト成功」が必須。変更セットは UI で関連組織間に、Metadata API（CLI/Ant＋package.xml）はスクリプト/CI-CD に向く。テストレベル（NoTestRun/RunSpecifiedTests/RunLocalTests/RunAllTestsInOrg）で実行範囲を制御する。ページレイアウトやコードなど大半のメタデータがデプロイ対象。\n\n**試験のポイント**\n\n- 本番デプロイ要件＝全体75%＋全テスト成功\n- RunSpecifiedTests は対象クラスが個別に75%必要\n- Metadata API はページレイアウト等の多くのメタデータを移行\n- 検証（Validate）＋クイックデプロイで本番反映を高速化",
+        "fig": "deployment"
+      },
+      {
+        "title": "Salesforce CLI・Ant 移行ツール（CI/CD・ソース駆動）",
+        "jaName": "Salesforce CLI",
+        "enName": "Salesforce CLI & Ant",
+        "definition": "Salesforce CLI（sf/sfdx）はメタデータの取得・デプロイ、スクラッチ組織管理、テスト実行をコマンドで行い、CI/CD パイプラインからスクリプト実行できる。Ant 移行ツールは Metadata API を使う Java/Ant ベースの旧来 CLI。どちらも自動デプロイのスクリプト化に使える（開発者コンソールは不可）。",
+        "examPoints": [
+          "自動デプロイのスクリプト化＝Salesforce CLI／Ant 移行ツール",
+          "CI/CD では CLI でデプロイ＋テストを自動実行",
+          "ソース駆動開発では Git が信頼できる唯一の情報源",
+          "開発者コンソールはデプロイ自動化には使えない"
+        ],
+        "questions": [
+          143,
+          200,
+          206,
+          210,
+          218,
+          489,
+          497,
+          500
+        ],
+        "fullContent": "**定義**\n\nSalesforce CLI（sf/sfdx）はメタデータの取得・デプロイ、スクラッチ組織管理、テスト実行をコマンドで行い、CI/CD パイプラインからスクリプト実行できる。Ant 移行ツールは Metadata API を使う Java/Ant ベースの旧来 CLI。どちらも自動デプロイのスクリプト化に使える（開発者コンソールは不可）。\n\n**試験のポイント**\n\n- 自動デプロイのスクリプト化＝Salesforce CLI／Ant 移行ツール\n- CI/CD では CLI でデプロイ＋テストを自動実行\n- ソース駆動開発では Git が信頼できる唯一の情報源\n- 開発者コンソールはデプロイ自動化には使えない"
+      },
+      {
+        "title": "サンドボックスの選択",
+        "jaName": "サンドボックス",
+        "enName": "Sandbox Selection",
+        "definition": "Developer（メタのみ・1日更新）、Developer Pro（メタのみ・容量大・1日）、Partial Copy（メタ＋テンプレのサンプルデータ・5日）、Full（本番の完全コピー・29日）。チームの各人が本番同構成で個別開発するなら Developer/Developer Pro、サンプルデータ付き結合は Partial Copy、性能/負荷/ステージングは Full。",
+        "examPoints": [
+          "本番同等の負荷/性能/ステージング＝Full（29日）",
+          "サンプルデータ付き結合/UAT＝Partial Copy（5日）",
+          "個々の開発者の作業環境＝Developer/Developer Pro（1日）",
+          "Full だけが本番の全データを含む"
+        ],
+        "questions": [
+          59,
+          203,
+          312,
+          319,
+          345,
+          357,
+          437,
+          461,
+          485
+        ],
+        "fullContent": "**定義**\n\nDeveloper（メタのみ・1日更新）、Developer Pro（メタのみ・容量大・1日）、Partial Copy（メタ＋テンプレのサンプルデータ・5日）、Full（本番の完全コピー・29日）。チームの各人が本番同構成で個別開発するなら Developer/Developer Pro、サンプルデータ付き結合は Partial Copy、性能/負荷/ステージングは Full。\n\n**試験のポイント**\n\n- 本番同等の負荷/性能/ステージング＝Full（29日）\n- サンプルデータ付き結合/UAT＝Partial Copy（5日）\n- 個々の開発者の作業環境＝Developer/Developer Pro（1日）\n- Full だけが本番の全データを含む",
+        "fig": "sandbox-types"
+      },
+      {
+        "title": "データのバックアップとエクスポート",
+        "jaName": "データエクスポート",
+        "enName": "Data Export & Backup",
+        "definition": "データエクスポートサービス（設定＞データのエクスポート）は、添付ファイルを含む組織データを CSV（ZIP）で週次/月次に書き出すバックアップ手段。手動またはスケジュールで実行する。データローダの export でも抽出でき、大量・自動化では CLI/API を使う。",
+        "examPoints": [
+          "組織データの一括バックアップ＝データエクスポートサービス",
+          "添付ファイルを含めてエクスポートできる",
+          "週次/月次のスケジュール書き出しに対応",
+          "データローダ/API でも抽出可（用途で使い分け）"
+        ],
+        "questions": [
+          486
+        ],
+        "fullContent": "**定義**\n\nデータエクスポートサービス（設定＞データのエクスポート）は、添付ファイルを含む組織データを CSV（ZIP）で週次/月次に書き出すバックアップ手段。手動またはスケジュールで実行する。データローダの export でも抽出でき、大量・自動化では CLI/API を使う。\n\n**試験のポイント**\n\n- 組織データの一括バックアップ＝データエクスポートサービス\n- 添付ファイルを含めてエクスポートできる\n- 週次/月次のスケジュール書き出しに対応\n- データローダ/API でも抽出可（用途で使い分け）",
+        "fig": "import-tools"
+      },
+      {
+        "title": "@TestVisible とテストの可視性",
+        "jaName": "TestVisible",
+        "enName": "@TestVisible",
+        "definition": "@TestVisible アノテーションを付けると、private/protected のメンバ（メソッド・変数）をテストクラスからだけ参照できる。本番コードの公開範囲を広げずに、内部実装を直接テストできる。テストでない通常コードからは従来どおりアクセスできない。",
+        "examPoints": [
+          "@TestVisible＝private/protected をテストからのみ可視化",
+          "本番の公開範囲を変えずに内部をテストできる",
+          "通常コードからのアクセス可否は変わらない",
+          "private メソッドのテストに有効（過剰な public 化を避ける）"
+        ],
+        "questions": [
+          68,
+          312,
+          316,
+          321,
+          348,
+          356,
+          365,
+          390,
+          393,
+          405,
+          425
+        ],
+        "fullContent": "**定義**\n\n@TestVisible アノテーションを付けると、private/protected のメンバ（メソッド・変数）をテストクラスからだけ参照できる。本番コードの公開範囲を広げずに、内部実装を直接テストできる。テストでない通常コードからは従来どおりアクセスできない。\n\n**試験のポイント**\n\n- @TestVisible＝private/protected をテストからのみ可視化\n- 本番の公開範囲を変えずに内部をテストできる\n- 通常コードからのアクセス可否は変わらない\n- private メソッドのテストに有効（過剰な public 化を避ける）"
       }
     ]
   }
