@@ -52,8 +52,10 @@ let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={},eQTime={}
 let eN=EXAM_N,eTimed=true,eBudget=EXAM_MIN*60;
 // filters
 let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
-// 出典フィルタ（tyson=タイソンブログ / gen=生成 / all=両方）
-let srcFilter=(function(){try{const v=localStorage.getItem('sfq_src');return (v==='tyson'||v==='gen')?v:'all';}catch(e){return 'all';}})();
+// 出典フィルタ（tyson=タイソンブログ / gen=生成 / jpnshiken=jpnshiken / all=すべて）
+const SRC_KEYS=['tyson','gen','jpnshiken'];
+const SRC_LABEL={tyson:'タイソン',gen:'生成',jpnshiken:'jpnshiken'};
+let srcFilter=(function(){try{const v=localStorage.getItem('sfq_src');return SRC_KEYS.includes(v)?v:'all';}catch(e){return 'all';}})();
 function inScope(q){return srcFilter==='all'||(q&&q.source===srcFilter);}
 function scopedQ(){return allQ.filter(inScope);}
 // vocab
@@ -297,7 +299,7 @@ function applyFilters(){
 }
 // 出典フィルタの切替（HTMLのchipから呼ばれる）
 function setSrcFilter(v){
-  if(v!=='all'&&v!=='tyson'&&v!=='gen')v='all';
+  if(v!=='all'&&!SRC_KEYS.includes(v))v='all';
   srcFilter=v;
   try{localStorage.setItem('sfq_src',v);}catch(e){}
   syncSrcChips();
@@ -306,17 +308,14 @@ function setSrcFilter(v){
   try{homeStats();}catch(e){}
 }
 function syncSrcChips(){
-  ['all','tyson','gen'].forEach(s=>{
+  ['all'].concat(SRC_KEYS).forEach(s=>{
     const c=document.getElementById('chip-src-'+s);
     if(c)c.classList.toggle('on',s===srcFilter);
   });
   // 件数表示
-  const ta=allQ.filter(q=>q.source==='tyson').length;
-  const ga=allQ.filter(q=>q.source==='gen').length;
   const setBadge=(id,n)=>{const el=document.getElementById(id);if(el)el.textContent=n?' '+n:'';};
   setBadge('src-all-count',allQ.length);
-  setBadge('src-tyson-count',ta);
-  setBadge('src-gen-count',ga);
+  SRC_KEYS.forEach(s=>setBadge('src-'+s+'-count',allQ.filter(q=>q.source===s).length));
 }
 function syncCShufChip(){const c=document.getElementById('chip-cshuf');if(c)c.classList.toggle('on',cshufOn());}
 function toggleCShuf(){localStorage.setItem('sfq_cshuf',cshufOn()?'0':'1');syncCShufChip();toast(cshufOn()?'🔀 選択肢順をシャッフル':'選択肢順を固定');}
@@ -2237,7 +2236,7 @@ function renderMypage(){
     +'<div class="card">'
     +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
     +'<div class="mp-opt"><span class="mp-ic">🔠</span><span class="mp-main">文字サイズ<div class="mp-osub">問題・選択肢・解説などの本文</div></span><span class="mp-seg">'+seg(fs==='small','小',"applyFontSize('small');renderMypage()")+seg(fs==='normal','標準',"applyFontSize('normal');renderMypage()")+seg(fs==='large','大',"applyFontSize('large');renderMypage()")+'</span></div>'
-    +((allQ.some(q=>q&&q.source==='tyson')&&allQ.some(q=>q&&q.source==='gen'))?('<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+seg(sf==='tyson',"タイソン","setSrcFilter('tyson');renderMypage()")+seg(sf==='gen',"生成","setSrcFilter('gen');renderMypage()")+'</span></div>'):'')
+    +((function(){const avail=SRC_KEYS.filter(s=>allQ.some(q=>q&&q.source===s));if(avail.length<2)return '';return '<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+avail.map(s=>seg(sf===s,SRC_LABEL[s],"setSrcFilter('"+s+"');renderMypage()")).join('')+'</span></div>';})())
     +'<div class="mp-opt"><span class="mp-ic">⌨️</span><span class="mp-main">キーボード操作<div class="mp-osub">PCショートカット一覧（<b>?</b> キーでも開く）</div></span><span class="mp-seg"><button onclick="toggleShortcutHelp(true)">表示</button></span></div>'
     +'<div class="mp-opt"><span class="mp-ic">💾</span><span class="mp-main">バックアップ<div class="mp-osub">進捗をファイルに保存／復元（端末移行・消失対策）</div></span><span class="mp-seg"><button onclick="exportProgress()">書出</button><button onclick="document.getElementById(\'mp-import\').click()">読込</button></span></div>'
     +'<input type="file" id="mp-import" accept="application/json,.json" style="display:none" onchange="importProgress(this)">'
