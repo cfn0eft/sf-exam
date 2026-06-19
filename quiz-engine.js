@@ -118,6 +118,29 @@ function needsReview(id){const h=store.hist[id];if(!h)return false;if(isWrong(id
 function isLowConfCorrect(id){const h=store.hist[id];return !!(h&&h.last==='c'&&h.lc===1);}
 function isBm(id){return store.bm.includes(id);}
 function togBm(id){const i=store.bm.indexOf(id);if(i>=0)store.bm.splice(i,1);else store.bm.push(id);save();}
+// 管理者用: ブックマークした問題（問題・選択肢・答えのみ）をCSVで書き出す
+function exportBookmarksCsv(){
+  const qs=(store.bm||[]).map(function(id){return allQ.find(function(q){return q.id===id;});}).filter(Boolean);
+  if(!qs.length){toast('ブックマークした問題がありません');return;}
+  const esc=function(x){var v=String(x==null?'':x);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+  const lines=[['ID','問題','選択肢','答え'].join(',')];
+  qs.forEach(function(q){
+    lines.push([
+      'Q'+q.id,
+      q.question,
+      (q.choices||[]).join('\n'),
+      (q.answers||[]).join(' / ')
+    ].map(esc).join(','));
+  });
+  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const slug=(certName||SKEY||'quiz').replace(/[^\w\-]+/g,'_');
+  const a=document.createElement('a');
+  a.href=url;a.download='sfquiz_bookmarks_'+slug+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  toast('★ '+qs.length+'問をCSVで書き出しました');
+}
 function getVM(k){return store.vm[k]||0;}
 function setVM(k,v){store.vm[k]=v;save();}
 
@@ -2192,6 +2215,7 @@ function renderMypage(){
     accHtml='<div class="acct"><div class="mp-avatar">👤</div><div><div class="mp-name">'+escH(acc.name||'ユーザー')+'</div>'
       +'<div class="mp-asub"><span class="mp-dot"></span>'+escH(acc.status||'同期済み')+(acc.email?' ・ ID: '+escH(acc.email.split('@')[0]):'')+'</div></div></div>'
       +'<div class="mp-aact">'+(acc.isAdmin?'<button class="mp-b mp-admin" onclick="window.__sfqOpenAdmin&&window.__sfqOpenAdmin()">👑 管理者ビュー</button>':'')
+      +(acc.isAdmin?'<button class="mp-b mp-bmcsv" onclick="exportBookmarksCsv()" title="ブックマークした問題の問題・選択肢・答えをCSVで書き出します">★ ブックマークCSV</button>':'')
       +'<button class="mp-b mp-logout" onclick="window.__sfqLogout&&window.__sfqLogout()">ログアウト</button></div>';
   }else if(acc.local){
     accHtml='<div class="acct"><div class="mp-avatar" style="background:linear-gradient(135deg,#64748b,#94a3b8)">💻</div><div><div class="mp-name">ローカルモード</div><div class="mp-asub">この端末内に保存（クラウド同期なし）</div></div></div>';

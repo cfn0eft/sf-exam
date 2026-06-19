@@ -831,9 +831,10 @@ body{
 .mp-name{font-size:18px;font-weight:800}
 .mp-asub{font-size:12px;color:var(--text-sub);display:flex;align-items:center;gap:6px;margin-top:2px}
 .mp-dot{width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;flex-shrink:0}
-.mp-aact{display:flex;gap:8px;margin-top:14px}
-.mp-b{flex:1;border:none;border-radius:10px;padding:11px;font-weight:700;font-size:13px;cursor:pointer}
+.mp-aact{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.mp-b{flex:1 1 120px;border:none;border-radius:10px;padding:11px;font-weight:700;font-size:13px;cursor:pointer}
 .mp-admin{background:var(--warning-light);color:var(--warning)}
+.mp-bmcsv{background:var(--success-light);color:var(--success)}
 .mp-logout{background:var(--danger-light);color:var(--danger)}
 .mp-sumtop{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .mp-ring{width:64px;height:64px;position:relative;flex-shrink:0}
