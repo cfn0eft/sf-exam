@@ -2215,8 +2215,8 @@ function renderMypage(){
     accHtml='<div class="acct"><div class="mp-avatar">👤</div><div><div class="mp-name">'+escH(acc.name||'ユーザー')+'</div>'
       +'<div class="mp-asub"><span class="mp-dot"></span>'+escH(acc.status||'同期済み')+(acc.email?' ・ ID: '+escH(acc.email.split('@')[0]):'')+'</div></div></div>'
       +'<div class="mp-aact">'+(acc.isAdmin?'<button class="mp-b mp-admin" onclick="window.__sfqOpenAdmin&&window.__sfqOpenAdmin()">👑 管理者ビュー</button>':'')
-      +(acc.isAdmin?'<button class="mp-b mp-bmcsv" onclick="exportBookmarksCsv()" title="ブックマークした問題の問題・選択肢・答えをCSVで書き出します">★ ブックマークCSV</button>':'')
-      +'<button class="mp-b mp-logout" onclick="window.__sfqLogout&&window.__sfqLogout()">ログアウト</button></div>';
+      +'<button class="mp-b mp-logout" onclick="window.__sfqLogout&&window.__sfqLogout()">ログアウト</button></div>'
+      +(acc.isAdmin?'<div class="mp-admtools"><button class="mp-csvlink" onclick="exportBookmarksCsv()" title="ブックマークした問題の問題・選択肢・答えをCSVで書き出します">★ ブックマークをCSVで書き出し</button></div>':'');
   }else if(acc.local){
     accHtml='<div class="acct"><div class="mp-avatar" style="background:linear-gradient(135deg,#64748b,#94a3b8)">💻</div><div><div class="mp-name">ローカルモード</div><div class="mp-asub">この端末内に保存（クラウド同期なし）</div></div></div>';
   }else{
