@@ -736,6 +736,143 @@ window.SFQ_FIGURES = {
 +'<text class="t-indigo" x="314" y="324" font-size="12.5">ナビゲーション</text>'
 +'<text class="sub" x="314" y="341" font-size="11">Lightning アプリ単位（アプリケーションマネージャ）で構成</text>'
 +'<line class="ln" x1="232" y1="339" x2="296" y2="328" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
++'</svg>',
+
+/* ============================ developer（新規） ============================ */
+
+'developer/async-apex':
+'<svg viewBox="0 0 700 360" role="img" aria-label="非同期 Apex の使い分け">'
++'<rect class="fig" x="1" y="1" width="698" height="358" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">非同期 Apex の使い分け</text>'
++'<text class="sub" x="24" y="58" font-size="13">「何をしたいか」で4つから選ぶ（同期で収まらない／別トランザクションにしたいとき）</text>'
++'<rect class="b-blue" x="24" y="80" width="320" height="118" rx="11"/>'
++'<text class="t-blue" x="40" y="106" font-size="14">@future</text>'
++'<text class="ink" x="40" y="130" font-size="12">軽量な非同期・トリガからのコールアウト</text>'
++'<text class="sub" x="40" y="151" font-size="11">引数はプリミティブのみ／戻り値 void</text>'
++'<text class="sub" x="40" y="170" font-size="11">チェーン不可（future から future は不可）</text>'
++'<text class="sub" x="40" y="189" font-size="11">callout=true で外部 HTTP コールアウト</text>'
++'<rect class="b-teal" x="356" y="80" width="320" height="118" rx="11"/>'
++'<text class="t-teal" x="372" y="106" font-size="14">Queueable</text>'
++'<text class="ink" x="372" y="130" font-size="12">sObject 保持・ジョブのチェーン</text>'
++'<text class="sub" x="372" y="151" font-size="11">System.enqueueJob で起動</text>'
++'<text class="sub" x="372" y="170" font-size="11">Database.AllowsCallouts でコールアウト</text>'
++'<text class="sub" x="372" y="189" font-size="11">1段ずつチェーン可（複雑な型を渡せる）</text>'
++'<rect class="b-purple" x="24" y="210" width="320" height="120" rx="11"/>'
++'<text class="t-purple" x="40" y="236" font-size="14">Batch Apex</text>'
++'<text class="ink" x="40" y="260" font-size="12">大量データ（最大5,000万件）の分割処理</text>'
++'<text class="sub" x="40" y="281" font-size="11">start=QueryLocator／execute／finish</text>'
++'<text class="sub" x="40" y="300" font-size="11">Database.Stateful で状態保持</text>'
++'<text class="sub" x="40" y="319" font-size="11">各 execute は別トランザクション</text>'
++'<rect class="b-amber" x="356" y="210" width="320" height="120" rx="11"/>'
++'<text class="t-amber" x="372" y="236" font-size="14">Schedulable</text>'
++'<text class="ink" x="372" y="260" font-size="12">定時実行（CRON）</text>'
++'<text class="sub" x="372" y="281" font-size="11">System.schedule＋CRON 式</text>'
++'<text class="sub" x="372" y="300" font-size="11">Batch を起動するのも定番</text>'
++'<text class="sub" x="372" y="319" font-size="11">スケジュール済みは最大100件</text>'
++'<text class="sub" x="24" y="350" font-size="11">※ 非同期は CPU 60秒・ヒープ 12MB・SOQL 200 と一部緩和される</text>'
++'</svg>',
+
+'developer/trigger-context':
+'<svg viewBox="0 0 700 330" role="img" aria-label="トリガのコンテキスト変数">'
++'<rect class="fig" x="1" y="1" width="698" height="328" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">トリガのコンテキスト変数</text>'
++'<text class="sub" x="24" y="58" font-size="13">操作で Trigger.new / Trigger.old が使えるかが決まる（before は new を変更できる）</text>'
++'<rect class="box" x="24" y="74" width="200" height="38" rx="8"/><text class="ink" x="124" y="98" font-size="13" text-anchor="middle">操作</text>'
++'<rect class="b-blue" x="232" y="74" width="210" height="38" rx="8"/><text class="t-blue" x="337" y="98" font-size="12.5" text-anchor="middle">Trigger.new / newMap</text>'
++'<rect class="b-teal" x="450" y="74" width="226" height="38" rx="8"/><text class="t-teal" x="563" y="98" font-size="12.5" text-anchor="middle">Trigger.old / oldMap</text>'
++'<rect class="box" x="24" y="118" width="200" height="38" rx="7"/><text class="ink" x="40" y="142" font-size="12">insert</text>'
++'<text class="ink" x="337" y="142" font-size="12" text-anchor="middle">あり（after は読取専用）</text>'
++'<text class="sub" x="563" y="142" font-size="12" text-anchor="middle">null</text>'
++'<rect class="box" x="24" y="162" width="200" height="38" rx="7"/><text class="ink" x="40" y="186" font-size="12">update</text>'
++'<text class="ink" x="337" y="186" font-size="12" text-anchor="middle">あり</text>'
++'<text class="ink" x="563" y="186" font-size="12" text-anchor="middle">あり（新旧比較）</text>'
++'<rect class="box" x="24" y="206" width="200" height="38" rx="7"/><text class="ink" x="40" y="230" font-size="12">delete</text>'
++'<text class="sub" x="337" y="230" font-size="12" text-anchor="middle">null</text>'
++'<text class="ink" x="563" y="230" font-size="12" text-anchor="middle">あり</text>'
++'<rect class="box" x="24" y="250" width="200" height="38" rx="7"/><text class="ink" x="40" y="274" font-size="12">undelete</text>'
++'<text class="ink" x="337" y="274" font-size="12" text-anchor="middle">あり</text>'
++'<text class="sub" x="563" y="274" font-size="12" text-anchor="middle">null</text>'
++'<rect class="b-amber" x="24" y="296" width="652" height="26" rx="7"/><text class="ink" x="40" y="314" font-size="11.5">before で項目をセット＝DML 不要。保存中止は addError()。同一レコード更新は before-update が定石。</text>'
++'</svg>',
+
+'developer/test-execution':
+'<svg viewBox="0 0 700 300" role="img" aria-label="テスト実行の制御">'
++'<defs><marker id="te-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
++'<rect class="fig" x="1" y="1" width="698" height="298" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">テスト実行の制御（startTest / stopTest / runAs）</text>'
++'<text class="sub" x="24" y="58" font-size="13">startTest〜stopTest は「新しいガバナ制限」で対象を実行し、非同期を確定させる（1回のみ）</text>'
++'<rect class="b-slate" x="24" y="82" width="150" height="64" rx="10"/><text class="ink" x="99" y="110" font-size="12" text-anchor="middle">@testSetup /</text><text class="ink" x="99" y="128" font-size="12" text-anchor="middle">テストデータ作成</text>'
++'<rect class="b-blue" x="196" y="82" width="150" height="64" rx="10"/><text class="t-blue" x="271" y="108" font-size="12.5" text-anchor="middle">Test.startTest()</text><text class="sub" x="271" y="128" font-size="10.5" text-anchor="middle">制限カウンタをリセット</text>'
++'<rect class="b-teal" x="368" y="82" width="150" height="64" rx="10"/><text class="t-teal" x="443" y="108" font-size="12.5" text-anchor="middle">対象コード実行</text><text class="sub" x="443" y="128" font-size="10.5" text-anchor="middle">新しい制限枠で動く</text>'
++'<rect class="b-purple" x="540" y="82" width="136" height="64" rx="10"/><text class="t-purple" x="608" y="108" font-size="12.5" text-anchor="middle">Test.stopTest()</text><text class="sub" x="608" y="128" font-size="10.5" text-anchor="middle">非同期を同期的に確定</text>'
++'<line class="ln" x1="174" y1="114" x2="194" y2="114" stroke-width="2.2" marker-end="url(#te-ar)"/>'
++'<line class="ln" x1="346" y1="114" x2="366" y2="114" stroke-width="2.2" marker-end="url(#te-ar)"/>'
++'<line class="ln" x1="518" y1="114" x2="538" y2="114" stroke-width="2.2" marker-end="url(#te-ar)"/>'
++'<rect class="b-amber" x="24" y="166" width="320" height="116" rx="10"/>'
++'<text class="t-amber" x="40" y="190" font-size="13">System.runAs(user)</text>'
++'<text class="ink" x="40" y="213" font-size="12">指定ユーザーの共有（レコード）を適用</text>'
++'<text class="sub" x="40" y="234" font-size="11">FLS / CRUD は強制しない（共有のみ）</text>'
++'<text class="sub" x="40" y="253" font-size="11">MIXED_DML の回避にも使える</text>'
++'<text class="sub" x="40" y="272" font-size="11">テスト専用（本番ロジックでは不可）</text>'
++'<rect class="box" x="356" y="166" width="320" height="116" rx="10"/>'
++'<text class="t-teal" x="372" y="190" font-size="13">検証（アサーション）</text>'
++'<text class="ink" x="372" y="213" font-size="12">Assert.areEqual(expected, actual)</text>'
++'<text class="sub" x="372" y="234" font-size="11">第1＝期待値・第2＝実際の値</text>'
++'<text class="sub" x="372" y="253" font-size="11">正常系／異常系／バルク(200件)を網羅</text>'
++'<text class="sub" x="372" y="272" font-size="11">stopTest 後に非同期の結果を assert</text>'
++'</svg>',
+
+'developer/lwc-communication':
+'<svg viewBox="0 0 700 340" role="img" aria-label="LWC のコンポーネント間通信">'
++'<defs><marker id="lc-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
++'<rect class="fig" x="1" y="1" width="698" height="338" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">LWC のコンポーネント間通信</text>'
++'<text class="sub" x="24" y="58" font-size="13">親子は @api / CustomEvent、階層をまたぐ通信は Lightning Message Service</text>'
++'<rect class="b-blue" x="270" y="76" width="160" height="52" rx="10"/><text class="ink" x="350" y="107" font-size="13" text-anchor="middle">親コンポーネント</text>'
++'<rect class="b-teal" x="120" y="196" width="160" height="52" rx="10"/><text class="ink" x="200" y="227" font-size="13" text-anchor="middle">子 A</text>'
++'<rect class="b-teal" x="420" y="196" width="160" height="52" rx="10"/><text class="ink" x="500" y="227" font-size="13" text-anchor="middle">子 B</text>'
++'<line class="ln" x1="300" y1="128" x2="220" y2="194" stroke-width="2.2" marker-end="url(#lc-ar)"/>'
++'<text class="t-blue" x="150" y="160" font-size="11">親→子 @api</text>'
++'<text class="sub" x="150" y="176" font-size="10">プロパティ／メソッド</text>'
++'<line class="ln" x1="480" y1="194" x2="400" y2="128" stroke-width="2.2" marker-end="url(#lc-ar)"/>'
++'<text class="t-teal" x="440" y="160" font-size="11">子→親 CustomEvent</text>'
++'<text class="sub" x="440" y="176" font-size="10">dispatchEvent → on&lt;event&gt;</text>'
++'<rect class="b-purple" x="120" y="282" width="460" height="44" rx="10"/>'
++'<text class="t-purple" x="350" y="303" font-size="12.5" text-anchor="middle">Lightning Message Service（階層外・兄弟間）</text>'
++'<text class="sub" x="350" y="319" font-size="10.5" text-anchor="middle">publish / subscribe ＋ メッセージチャネル（connected で購読・disconnected で解除）</text>'
++'<line class="ln" x1="200" y1="248" x2="200" y2="280" stroke-width="2" marker-end="url(#lc-ar)"/>'
++'<line class="ln" x1="500" y1="248" x2="500" y2="280" stroke-width="2" marker-end="url(#lc-ar)"/>'
++'</svg>',
+
+'developer/apex-security':
+'<svg viewBox="0 0 700 320" role="img" aria-label="Apex のセキュリティ3層">'
++'<rect class="fig" x="1" y="1" width="698" height="318" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">Apex のセキュリティ3層</text>'
++'<text class="sub" x="24" y="58" font-size="13">with sharing が守るのは「共有」だけ。CRUD・FLS は別途チェックが必要</text>'
++'<rect class="b-blue" x="24" y="80" width="652" height="64" rx="11"/>'
++'<text class="t-blue" x="44" y="106" font-size="14">① レコード（共有）</text>'
++'<text class="ink" x="44" y="130" font-size="12">OWD → 共有ルール／ロール階層／手動共有　｜　Apex: with sharing / without / inherited</text>'
++'<rect class="b-teal" x="24" y="156" width="652" height="64" rx="11"/>'
++'<text class="t-teal" x="44" y="182" font-size="14">② オブジェクト（CRUD）</text>'
++'<text class="ink" x="44" y="206" font-size="12">プロファイル／権限セット　｜　isCreateable / isUpdateable / isDeletable で確認</text>'
++'<rect class="b-purple" x="24" y="232" width="652" height="64" rx="11"/>'
++'<text class="t-purple" x="44" y="258" font-size="14">③ 項目（FLS）</text>'
++'<text class="ink" x="44" y="282" font-size="12">WITH SECURITY_ENFORCED ／ Security.stripInaccessible ／ isAccessible・isUpdateable</text>'
++'</svg>',
+
+'developer/soql-relationships':
+'<svg viewBox="0 0 700 300" role="img" aria-label="SOQL のリレーション走査">'
++'<rect class="fig" x="1" y="1" width="698" height="298" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">SOQL のリレーション走査</text>'
++'<text class="sub" x="24" y="58" font-size="13">子→親はドット表記、親→子はサブクエリ（複数形のリレーション名）</text>'
++'<rect class="b-blue" x="24" y="80" width="652" height="92" rx="11"/>'
++'<text class="t-blue" x="44" y="106" font-size="14">子 → 親（ドット・最大5階層）</text>'
++'<text class="ink" x="44" y="132" font-size="12.5">SELECT Name, Account.Name, Account.Owner.Alias FROM Contact</text>'
++'<text class="sub" x="44" y="156" font-size="11">参照／主従の親項目をたどる。__c 項目は __r でリレーション名にする</text>'
++'<rect class="b-teal" x="24" y="184" width="652" height="92" rx="11"/>'
++'<text class="t-teal" x="44" y="210" font-size="14">親 → 子（サブクエリ・1階層）</text>'
++'<text class="ink" x="44" y="236" font-size="12.5">SELECT Name, (SELECT LastName FROM Contacts) FROM Account</text>'
++'<text class="sub" x="44" y="260" font-size="11">子リレーション名は複数形（カスタムは Children__r）。SOQL に JOIN/UNION はない</text>'
 +'</svg>'
 
 };
@@ -747,3 +884,17 @@ window.SFQ_FIGURES['app-builder/approval-process'] = window.SFQ_FIGURES['sf-admi
 window.SFQ_FIGURES['sf-admin/governor-limits'] = window.SFQ_FIGURES['app-builder/governor-limits'];
 window.SFQ_FIGURES['sf-admin/order-of-execution'] = window.SFQ_FIGURES['app-builder/order-of-execution'];
 window.SFQ_FIGURES['sf-admin/mobile-app'] = window.SFQ_FIGURES['app-builder/mobile-app'];
+
+/* developer で流用する図（同一SVGを別名で参照） */
+window.SFQ_FIGURES['developer/relationships'] = window.SFQ_FIGURES['app-builder/relationships'];
+window.SFQ_FIGURES['developer/rollup-summary'] = window.SFQ_FIGURES['app-builder/rollup-summary'];
+window.SFQ_FIGURES['developer/governor-limits'] = window.SFQ_FIGURES['app-builder/governor-limits'];
+window.SFQ_FIGURES['developer/order-of-execution'] = window.SFQ_FIGURES['app-builder/order-of-execution'];
+window.SFQ_FIGURES['developer/sandbox-types'] = window.SFQ_FIGURES['sf-admin/sandbox-types'];
+window.SFQ_FIGURES['developer/external-objects'] = window.SFQ_FIGURES['app-builder/external-objects'];
+window.SFQ_FIGURES['developer/deployment'] = window.SFQ_FIGURES['app-builder/deployment'];
+window.SFQ_FIGURES['developer/flow-types'] = window.SFQ_FIGURES['app-builder/flow-types'];
+window.SFQ_FIGURES['developer/record-triggered-flow'] = window.SFQ_FIGURES['app-builder/record-triggered-flow'];
+window.SFQ_FIGURES['developer/declarative-vs-code'] = window.SFQ_FIGURES['app-builder/declarative-vs-code'];
+window.SFQ_FIGURES['developer/approval-process'] = window.SFQ_FIGURES['sf-admin/approval-process'];
+window.SFQ_FIGURES['developer/import-tools'] = window.SFQ_FIGURES['sf-admin/import-tools'];
