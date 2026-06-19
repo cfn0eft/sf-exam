@@ -10279,7 +10279,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "sandbox-types"
   },
   {
     "id": 391,
@@ -10332,7 +10333,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 393,
@@ -10439,7 +10441,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 3
+    "diff": 3,
+    "expFig": "approval-process"
   },
   {
     "id": 397,
@@ -10516,7 +10519,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 400,
@@ -10543,7 +10547,8 @@
     "domain": "obj",
     "multi": true,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "mobile-app"
   },
   {
     "id": 401,
@@ -10569,7 +10574,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 402,
@@ -10621,7 +10627,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "profile-permset"
   },
   {
     "id": 404,
@@ -10647,7 +10654,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 405,
@@ -10673,7 +10681,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "automation-tools"
   },
   {
     "id": 406,
@@ -10699,7 +10708,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "profile-permset"
   },
   {
     "id": 407,
@@ -10725,7 +10735,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 408,
@@ -10741,7 +10752,7 @@
       "それぞれのオブジェクトの共有モデルをプライベートに設定します。"
     ],
     "explanation": "それぞれの選択肢について説明します。\n\n□ 共有モデルをパブリック読み取り/書き込み：不正解です。全員が全レコードを見られてしまい、要件と逆です。\n\n□ 共有モデルをプライベートに設定：正解です。組織の共有設定（OWD）をプライベートにすると、ユーザーは自分のレコード（と階層上位分）のみ閲覧でき、レポートも共有設定を尊重して各自の財務レコードだけを表示します。\n\n□ ユーザーごとにフィルタした複数レポートを作成：不正解です。拡張性がなく、共有設定で根本制御すべきです。\n\n□ Apex 共有でレコードを非表示：不正解です。Apex 共有はアクセスを「付与」する仕組みで、非表示にするものではありません。\n\n参考：組織の共有設定（OWD）",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&type=5",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_sharing_owd.htm&type=5",
     "keywords": [
       "組織の共有設定",
       "OWD",
@@ -10751,7 +10762,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "record-access"
   },
   {
     "id": 409,
@@ -10777,7 +10789,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 410,
@@ -10803,7 +10816,8 @@
     "domain": "service",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "automation-tools"
   },
   {
     "id": 411,
@@ -10856,7 +10870,8 @@
     "domain": "service",
     "multi": true,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "case-automation"
   },
   {
     "id": 413,
@@ -10898,7 +10913,7 @@
       "信頼できるIP範囲"
     ],
     "explanation": "それぞれの選択肢について説明します。\n\n□ カスタムプロファイル：不正解です。プロファイルだけでは、端末ごとの本人確認のスキップは実現できません。\n\n□ 信頼済み IP 範囲：正解です。社内ネットワークの IP 範囲を信頼済みに登録すると、その範囲からのログインで端末確認コードを求められず、別の PC でも追加認証なしでログインできます。\n\n□ 多要素認証：不正解です。むしろ認証ステップが増え、効率化の要件に反します。\n\n□ 権限セット：不正解です。機能アクセスの付与で、ログイン時の本人確認スキップには使いません。\n\n参考：信頼済み IP 範囲（ネットワークアクセス）",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_overview_sessions.htm&language=ja&type=5",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_networkaccess.htm&type=5",
     "keywords": [
       "信頼済み IP 範囲",
       "ネットワークアクセス",
@@ -10908,7 +10923,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "security-layers"
   },
   {
     "id": 415,
@@ -10934,7 +10950,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "mobile-app"
   },
   {
     "id": 416,
@@ -10960,7 +10977,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 417,
@@ -11028,7 +11046,7 @@
       "所有者ベースの共有"
     ],
     "explanation": "それぞれの選択肢について説明します。\n\n□ 条件に基づく共有：不正解です。レコードの項目値で共有する方式で、この「所有者（チーム）単位で横展開」の要件には所有者ベースが適切です。\n\n□ 所有者ベースの共有：正解です。プライベート OWD では同階層の同僚同士は互いのレコードを見られません。「チーム A のメンバーが所有するレコードをチーム B と共有」する所有者ベースの共有ルールで横方向のアクセスを付与します。\n\n□ 階層的な共有：不正解です。上位マネージャーへの可視性のみで、同階層の別チームには展開されません。\n\n□ 手動共有：不正解です。レコードごとの手作業で、チーム間の自動的・恒常的な共有には不向きです。\n\n参考：所有者ベースの共有ルール",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&type=5",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_about_sharing_rules.htm&type=5",
     "keywords": [
       "共有ルール",
       "所有者ベース",
@@ -11038,7 +11056,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "record-access"
   },
   {
     "id": 420,
@@ -11064,7 +11083,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 421,
@@ -11117,7 +11137,8 @@
     "domain": "obj",
     "multi": true,
     "source": "jpnshiken",
-    "diff": 3
+    "diff": 3,
+    "expFig": "lead-conversion"
   },
   {
     "id": 423,
@@ -11143,7 +11164,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "security-layers"
   },
   {
     "id": 424,
@@ -11170,7 +11192,8 @@
     "domain": "auto",
     "multi": true,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 425,
@@ -11301,7 +11324,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "mobile-app"
   },
   {
     "id": 430,
@@ -11379,7 +11403,8 @@
     "domain": "service",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "case-automation"
   },
   {
     "id": 433,
@@ -11405,7 +11430,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 434,
@@ -11484,7 +11510,8 @@
     "domain": "obj",
     "multi": true,
     "source": "jpnshiken",
-    "diff": 3
+    "diff": 3,
+    "expFig": "relationships"
   },
   {
     "id": 437,
@@ -11536,7 +11563,8 @@
     "domain": "service",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "case-automation"
   },
   {
     "id": 439,
@@ -11552,7 +11580,7 @@
       "共有ルール"
     ],
     "explanation": "それぞれの選択肢について説明します。\n\n□ 項目レベルセキュリティ：不正解です。項目の表示制御で、レコードの可視性の付与ではありません。\n\n□ 共有ルール：正解です。OWD がプライベートのとき、役割階層は上位への可視性しか与えません。共有ルールでプライベートの例外を作り、横断的・別ブランチのレコードを副社長が閲覧できるようにします。\n\n□ 権限セット：不正解です。機能アクセスの付与で、所有者横断のレコード可視性の付与には共有ルールを使います。\n\n□ 制限ルール：不正解です。アクセスをさらに絞る仕組みで、可視性の拡大には使いません。\n\n参考：共有ルール",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.perm_sets_overview.htm&type=5",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_about_sharing_rules.htm&type=5",
     "keywords": [
       "共有ルール",
       "OWD",
@@ -11562,7 +11590,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "record-access"
   },
   {
     "id": 440,
@@ -11588,7 +11617,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 441,
@@ -11614,7 +11644,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 442,
@@ -11640,7 +11671,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "automation-tools"
   },
   {
     "id": 443,
@@ -11718,7 +11750,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 446,
@@ -11770,7 +11803,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 448,
@@ -11821,7 +11855,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 3
+    "diff": 3,
+    "expFig": "approval-process"
   },
   {
     "id": 450,
@@ -11847,7 +11882,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "automation-tools"
   },
   {
     "id": 451,
@@ -11926,7 +11962,8 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   },
   {
     "id": 454,
@@ -11981,7 +12018,8 @@
     "domain": "obj",
     "multi": true,
     "source": "jpnshiken",
-    "diff": 3
+    "diff": 3,
+    "expFig": "relationships"
   },
   {
     "id": 456,
@@ -12007,7 +12045,8 @@
     "domain": "agf",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "agentforce"
   },
   {
     "id": 457,
@@ -12033,7 +12072,8 @@
     "domain": "cfg",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 3
+    "diff": 3,
+    "expFig": "profile-permset"
   },
   {
     "id": 458,
@@ -12138,6 +12178,7 @@
     "domain": "auto",
     "multi": false,
     "source": "jpnshiken",
-    "diff": 2
+    "diff": 2,
+    "expFig": "approval-process"
   }
 ]
