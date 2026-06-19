@@ -1511,9 +1511,17 @@
     var preMsg = (lastMaint && lastMaint.preMsg) || '';
     var preMin = (lastMaint && lastMaint.preMin != null) ? lastMaint.preMin : 60;
     if (st.active) {
-      document.getElementById('sfqc-maint-msg').textContent = msg;
-      document.getElementById('sfqc-maint-end').textContent = st.end ? ('終了予定：' + fmtDate(st.end)) : '';
-      overlay.classList.add('show'); banner.classList.remove('show');
+      // プレビュー合言葉を知っている端末はメンテ中でも素通り（中身の確認用）
+      if (window.SFQ_hasPreview && window.SFQ_hasPreview()) {
+        overlay.classList.remove('show'); banner.classList.remove('show'); applyBannerOffset(0);
+        return;
+      }
+      // メンテ中：リッチな全画面メンテ画面 (maintenance.html) へ転送（管理者は冒頭で return 済み）。
+      // 終了予定・メッセージ・緊急全停止かを sessionStorage で引き継ぐ。
+      try { sessionStorage.setItem('sfq_maint', JSON.stringify({ msg: msg, end: st.end || 0, full: !!st.full, ts: now })); } catch (e) {}
+      var maintUrl = (HOME_URL || 'index.html').replace(/index\.html(?:[?#].*)?$/, 'maintenance.html');
+      location.replace(maintUrl);
+      return;
     } else {
       overlay.classList.remove('show');
       if (st.upcoming && st.upcoming - now <= preMin * 60000) {
