@@ -336,6 +336,48 @@ window.SFQ_FIGURES = {
 +'<text class="sub" x="350" y="364" font-size="12" text-anchor="middle">フローの「承認申請」アクションから自動で申請することもできる</text>'
 +'</svg>',
 
+'sf-admin/agentforce':
+'<svg viewBox="0 0 700 410" role="img" aria-label="Agentforce のしくみ">'
++'<defs><marker id="af-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
++'<rect class="fig" x="1" y="1" width="698" height="408" rx="14"/>'
++'<text class="ttl" x="24" y="36" font-size="19">Agentforce のしくみ</text>'
++'<text class="sub" x="24" y="58" font-size="13">トピック＝守備範囲／アクション＝できる操作。信頼レイヤーが安全性を担保し、ループで推論しながら目的を達成</text>'
++'<rect class="b-blue" x="24" y="80" width="206" height="84" rx="11"/>'
++'<text class="t-blue" x="36" y="106" font-size="14">トピック</text>'
++'<text class="ink" x="36" y="128" font-size="11.5">対応分野・指示</text>'
++'<text class="sub" x="36" y="148" font-size="11">発話例で意図を識別</text>'
++'<rect class="b-teal" x="247" y="80" width="206" height="84" rx="11"/>'
++'<text class="t-teal" x="259" y="106" font-size="14">アクション</text>'
++'<text class="ink" x="259" y="128" font-size="11.5">できる操作</text>'
++'<text class="sub" x="259" y="148" font-size="11">フロー / Apex / プロンプト</text>'
++'<rect class="b-indigo" x="470" y="80" width="206" height="84" rx="11"/>'
++'<text class="t-indigo" x="482" y="106" font-size="14">グラウンディング</text>'
++'<text class="ink" x="482" y="128" font-size="11.5">信頼できる組織データを参照</text>'
++'<text class="sub" x="482" y="148" font-size="11">実行ユーザーの権限・FLS を尊重</text>'
++'<rect class="b-amber" x="24" y="180" width="652" height="56" rx="11"/>'
++'<text class="t-amber" x="40" y="206" font-size="14">Einstein Trust Layer（信頼レイヤー）</text>'
++'<text class="ink" x="40" y="226" font-size="12">プロンプトインジェクション検査 ・ 機密データのマスキング ・ 監査ログで安全性を確保</text>'
++'<text class="ink" x="24" y="270" font-size="14" font-weight="700">推論ループ（多段階・状況に応じて適応）</text>'
++'<rect class="b-slate" x="24" y="282" width="150" height="72" rx="11"/>'
++'<text class="ink" x="99" y="312" font-size="12.5" font-weight="700" text-anchor="middle">①要求を理解</text>'
++'<text class="sub" x="99" y="334" font-size="11" text-anchor="middle">ユーザーの意図</text>'
++'<rect class="b-blue" x="192" y="282" width="150" height="72" rx="11"/>'
++'<text class="ink" x="267" y="312" font-size="12.5" font-weight="700" text-anchor="middle">②アクション選択</text>'
++'<text class="sub" x="267" y="334" font-size="11" text-anchor="middle">推論して決める</text>'
++'<rect class="b-teal" x="360" y="282" width="150" height="72" rx="11"/>'
++'<text class="ink" x="435" y="312" font-size="12.5" font-weight="700" text-anchor="middle">③実行</text>'
++'<text class="sub" x="435" y="334" font-size="11" text-anchor="middle">アクションを呼び出し</text>'
++'<rect class="b-amber" x="528" y="282" width="150" height="72" rx="11"/>'
++'<text class="ink" x="603" y="306" font-size="12.5" font-weight="700" text-anchor="middle">④結果を評価</text>'
++'<text class="sub" x="603" y="326" font-size="11" text-anchor="middle">不十分なら</text>'
++'<text class="sub" x="603" y="342" font-size="11" text-anchor="middle">追加情報を要求</text>'
++'<line class="ln" x1="174" y1="318" x2="190" y2="318" stroke-width="2.4" marker-end="url(#af-ar)"/>'
++'<line class="ln" x1="342" y1="318" x2="358" y2="318" stroke-width="2.4" marker-end="url(#af-ar)"/>'
++'<line class="ln" x1="510" y1="318" x2="526" y2="318" stroke-width="2.4" marker-end="url(#af-ar)"/>'
++'<path class="ln" d="M603,354 L603,384 L267,384 L267,356" fill="none" stroke-width="2.2" marker-end="url(#af-ar)"/>'
++'<text class="sub" x="435" y="400" font-size="11" text-anchor="middle">不十分なら前のステップへ戻り、入力を補って再試行（エージェントループ）</text>'
++'</svg>',
+
 /* ============================ app-builder ============================ */
 
 'app-builder/governor-limits':
