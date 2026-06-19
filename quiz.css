@@ -134,7 +134,7 @@ body{
   font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-bottom:8px;
 }
 .mbadge{background:var(--warning-light);color:var(--warning)}
-.qtext{font-size:15px;line-height:1.7;margin-bottom:16px;font-weight:500}
+.qtext{font-size:15px;line-height:1.7;margin-bottom:16px;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
 .choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .choice{
   display:flex;align-items:center;gap:12px;padding:14px;
