@@ -214,7 +214,7 @@ function handleKey(e){
       if(!sRevealed){toggleConf();e.preventDefault();}
     }else if(e.key==='Enter'){
       e.preventDefault();
-      if(!sRevealed){if(sSel.length>0)checkAnswer();}
+      if(!sRevealed){if(sSel.length===q.answers.length)checkAnswer();}
       else nextSQ();
     }else if(e.key==='h'||e.key==='H'){
       if(!sRevealed){showHint();e.preventDefault();}
@@ -1039,7 +1039,7 @@ function renderSQ(){
     item.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();selChoice(oi,isM);}});
     choicesEl.appendChild(item);
   });
-  document.getElementById('s-check').disabled=true;
+  {const _ck=document.getElementById('s-check');_ck.disabled=true;_ck.textContent=isM?('あと'+q.answers.length+'つ選択'):'解答する';}
   const cf=document.getElementById('s-conf');if(cf)cf.classList.remove('on');
   const expEl=document.getElementById('s-exp');
   expEl.className='exp-box';expEl.innerHTML='';expEl.setAttribute('aria-live','polite');
@@ -1054,7 +1054,8 @@ function renderSQ(){
 }
 function selChoice(idx,isM){
   if(sRevealed)return;
-  if(isM){const p=sSel.indexOf(idx);if(p>=0)sSel.splice(p,1);else sSel.push(idx);}
+  const q=sQueue[sCur];const need=q?q.answers.length:1;
+  if(isM){const p=sSel.indexOf(idx);if(p>=0)sSel.splice(p,1);else{if(sSel.length>=need){toast(need+'つまで選べます');return;}sSel.push(idx);}}
   else sSel=[idx];
   document.querySelectorAll('#s-choices .choice').forEach(item=>{
     const oi=+item.dataset.oi,on=sSel.includes(oi);
@@ -1062,7 +1063,10 @@ function selChoice(idx,isM){
     item.setAttribute('aria-pressed',on?'true':'false');
     item.querySelector('.cmark').textContent=on?(isM?'✓':item.dataset.num):item.dataset.num;
   });
-  document.getElementById('s-check').disabled=sSel.length===0;
+  // 複数選択は必要数ちょうど選ぶまで解答へ進めない
+  const chk=document.getElementById('s-check');
+  chk.disabled=sSel.length!==need;
+  if(isM){const rem=need-sSel.length;chk.textContent=rem>0?'あと'+rem+'つ選択':'解答する';}
 }
 function toggleConf(){
   if(sRevealed)return;
@@ -1634,8 +1638,8 @@ function renderNavPalette(){
 }
 function selEChoice(idx,isM){
   if(!eAns[eCur])eAns[eCur]=[];
-  const s=eAns[eCur];
-  if(isM){const p=s.indexOf(idx);if(p>=0)s.splice(p,1);else s.push(idx);}
+  const s=eAns[eCur];const need=eQ[eCur].answers.length;
+  if(isM){const p=s.indexOf(idx);if(p>=0)s.splice(p,1);else{if(s.length>=need){toast(need+'つまで選べます');return;}s.push(idx);}}
   else eAns[eCur]=[idx];
   renderEQ();
 }
