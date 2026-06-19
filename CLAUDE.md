@@ -5,7 +5,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
 - ローカル: `C:\Users\Nerod\ドキュメント\sf-exam`
-- 対応資格: Administrator (合格済) / Platform App Builder (現在のフォーカス) / Developer (未着手)
+- 対応資格: Administrator (合格済) / Platform App Builder (現在のフォーカス) / Developer (公開済・433問)
 
 ---
 
@@ -51,9 +51,9 @@ sf-exam/
 |---|---|---|---|---|---|---|
 | Administrator | sf-admin | 60 | 105 | 65 | sfq_v4 | 8 (cfg/obj/auto/data/sales/service/prod/agf) |
 | App Builder | app-builder | 60 | 105 | 63 | sfqab_v1 | 5 (fund/data/logic/ui/deploy) |
-| Developer ※骨組みのみ | developer | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
+| Developer | developer | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
 
-Developer は 2026-06-11 にシェル＋domains.json（公式4分野: 基礎23/自動化とロジック30/UI25/テスト・リリース22）まで作成済み。**問題が0問のため LP の `CERTS` には未掲載**（公開は問題バッチ追加後に LP へ1行足すだけ）。
+Developer は公式4分野（基礎23/自動化とロジック30/UI25/テスト・リリース22）で **2026-06-13 に LP 公開済み**。問題は **433問**（生成オリジナル218問＋タイソンブログ由来215問 id301-515、2026-06-19 追加）。出題設定に出典フィルタ（タイソン／生成）あり。
 
 Admin 8分野の公式ブループリント (2025/12/15改訂): Configuration15/ObjectManager&LightningAppBuilder15/Automation15/Data&Analytics17/Sales&Marketing10/Service&Support10/Productivity&Collaboration10/Agentforce8。
 
@@ -232,7 +232,7 @@ git push origin main
 
 ## 残タスク（2026-06-11 時点）
 
-- **Developer の問題作成**：骨組み（シェル＋4分野）は完成済み。残りは questions/vocab/navmap 等のコンテンツを公式ソース第一で分野ごとにバッチ作成し、完成後 LP の `CERTS` に1行追加して公開。
+- **Developer の問題拡充**：433問（生成218＋タイソン215）公開済み。タイソン215問の reference_url は developer.salesforce.com の安定した公式ガイド11種に集約しているため、高頻度論点は今後より具体的な公式URLへ精緻化の余地あり。vocab/navmap のさらなる拡充も可。
 - （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig`（または `vocab.json` の `fig`）に図名を入れ、`validate-data.js` で参照確認するだけ（現在23点＋エイリアス5）。
 - （バックログ）ケーススタディ（#25）のさらなる拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現在 sf-admin 6件・app-builder 5件）。
 
