@@ -91,8 +91,11 @@ function validateCert(slug, figKeys) {
     });
     if (!!q.case !== !!q.scenario) err(tag + ' case と scenario は両方セットで指定する');
     // Distractor 品質: 正解だけ突出して長いと長さで答えがバレる（運用ルール「全選択肢を同程度の文長に」）
+    // ※ 選択肢がコードスニペットの問題は、長さの均等化が技術的に成立しないため検査対象外
     const wrongs = q.choices.filter((c) => !q.answers.includes(c));
-    if (wrongs.length && Array.isArray(q.answers) && q.answers.every((a) => typeof a === 'string')) {
+    const looksCode = (s) => /[{};=]|=>|::|\.\w+\(|\)\s*\./.test(String(s));
+    const codeChoices = q.choices.some(looksCode);
+    if (!codeChoices && wrongs.length && Array.isArray(q.answers) && q.answers.every((a) => typeof a === 'string')) {
       const aLen = Math.max(...q.answers.map((a) => a.length));
       const wMax = Math.max(...wrongs.map((w) => w.length));
       if (aLen > wMax * 1.8 && aLen > 40) warn(tag + ' 正解が不正解より突出して長い（' + aLen + '字 vs 最長' + wMax + '字）');

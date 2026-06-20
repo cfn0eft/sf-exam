@@ -1274,3 +1274,14 @@ body[data-fs=small] .cdef{font-size:12px}
 .les-nav .btn{flex:1}
 .les-finish{flex:1}
 
+/* アクセシビリティ: モーション低減設定を尊重（アニメ・トランジションをほぼ無効化し、紙吹雪は非表示） */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .confetti{display:none !important}
+}
+
