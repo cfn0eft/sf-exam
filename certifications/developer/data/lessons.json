@@ -1,0 +1,55 @@
+[
+  {
+    "id": "fund-01",
+    "title": "Lesson 1: Salesforce 開発の全体像 — データモデルと Apex の基礎",
+    "domain": "fund",
+    "est": 12,
+    "slides": [
+      {
+        "title": "このレッスンのゴール",
+        "body": "Platform Developer I は、Salesforce 上で **Apex・SOQL・トリガ・LWC** などを使って機能を作る開発者向けの認定資格です。\n\n試験は **60問・105分・合格ライン68%**。出題は公式の4分野から出ます。\n\n### 出題される4分野\n- 🧱 開発者の基礎（23%）… データモデル・Apex・ガバナ制限\n- ⚙️ プロセスの自動化とロジック（30%）… トリガ・SOQL・非同期\n- 🖥️ ユーザーインターフェース（25%）… LWC・Aura・Visualforce\n- 🚀 テスト・デバッグ・リリース（22%）\n\n> このレッスンでは、いちばん土台になる「開発者の基礎」をイチから学びます。"
+      },
+      {
+        "title": "オブジェクトと項目（データの入れ物）",
+        "body": "Salesforce のデータは **オブジェクト** という入れ物に保存します。表計算でいうと、オブジェクト＝表、**レコード**＝行、**項目（フィールド）**＝列です。\n\n| 種類 | 例 | API参照名 |\n|---|---|---|\n| 標準オブジェクト | 取引先 Account・商談 Opportunity | Account |\n| カスタムオブジェクト | 自分で作る Course など | Course`__c` |\n\n- 標準＝最初から用意されている。カスタム＝管理者や開発者が追加する\n- カスタムのオブジェクト名・項目名は、API 参照名の末尾が **`__c`** になる\n\n> まずは「データをどう置くか（モデル）」を決めるのが開発の出発点です。"
+      },
+      {
+        "title": "リレーション：主従関係 vs 参照関係",
+        "body": "オブジェクト同士は **リレーション（関連）** でつなぎます。代表は2種類です。\n\n| 観点 | 主従関係 Master-Detail | 参照関係 Lookup |\n|---|---|---|\n| 親の必須 | 必須 | 任意 |\n| 親を削除すると | 子も削除（カスケード） | 子は残る（既定） |\n| 共有・所有 | 子は親を継承 | 子は独立 |\n| 積み上げ集計 | **使える** | 使えない |\n\n- 強く結びつけたい → 主従関係\n- ゆるくつなぎたい → 参照関係\n\n> ⚠️ 積み上げ集計（Roll-Up Summary）を作るには **主従関係が前提**。ここはよく問われます。",
+        "fig": "relationships",
+        "figCap": "主従関係と参照関係"
+      },
+      {
+        "title": "Apex の基礎：型とコレクション",
+        "body": "**Apex** は Salesforce 専用のプログラミング言語です。Java に似た **型付き言語** で、クラウド上（サーバー側）で動きます。大文字・小文字は区別しません。\n\n### よく使うコレクション\n- **List**…順序あり・重複OK（配列のように使う）\n- **Set**…重複を許さない・順序なし\n- **Map**…キーと値のペア（辞書のように使う）\n\n> 「重複を許さない」のは Set、「ID から値を引きたい」なら Map、と覚えます。",
+        "code": "List<String> names = new List<String>{'A','B','A'};  // 3件（重複OK）\nSet<String>  uniq  = new Set<String>{'A','B','A'};   // 2件（重複は消える）\n\n// 取引先 ID をキーに、対応する取引先をすぐ引けるようにする\nMap<Id, Account> byId =\n    new Map<Id, Account>([SELECT Id, Name FROM Account]);\nAccount a = byId.get(someAccountId);"
+      },
+      {
+        "title": "ガバナ制限と「一括化（バルク化）」",
+        "body": "Salesforce は1つの基盤を多数の組織で共有する **マルチテナント** です。誰かの暴走コードが全体を遅くしないよう、1トランザクションごとに **ガバナ制限** があります。\n\n### 代表的な制限（同期処理）\n- SOQL クエリ：**100回**\n- DML ステートメント：**150回**\n- ヒープ（メモリ）：6MB\n\nだから **ループの中で SOQL や DML を呼ばない**。ループの外で「まとめて1回」処理する（バルク化）のが鉄則です。\n\n> ⚠️ ループ内クエリは、件数が増えると簡単に制限超過で失敗します。",
+        "fig": "governor-limits",
+        "figCap": "ガバナ制限とループ外の一括処理",
+        "code": "// ❌ NG：ループの中でクエリ（件数が増えると制限超過）\nfor (Contact c : contacts) {\n    Account a = [SELECT Name FROM Account WHERE Id = :c.AccountId];\n}\n\n// ✅ OK：ループの外でまとめて取得し、Map で引く\nSet<Id> ids = new Set<Id>();\nfor (Contact c : contacts) ids.add(c.AccountId);\nMap<Id, Account> byId =\n    new Map<Id, Account>([SELECT Name FROM Account WHERE Id IN :ids]);"
+      },
+      {
+        "title": "SOQL でリレーションをたどる",
+        "body": "**SOQL**（Salesforce Object Query Language）はデータを取り出す言語です。リレーションをたどって関連データも取得できます。\n\n- **子 → 親**：ドット表記（最大5階層）。例 `Account.Name`\n- **親 → 子**：サブクエリ（子リレーション名は複数形）\n- カスタムのリレーションは末尾を **`__r`** にする\n- SOQL に **JOIN や UNION はありません**\n\n> 子から親は「ドットでたどる」、親から子は「カッコ内のサブクエリ」と整理します。",
+        "fig": "soql-relationships",
+        "figCap": "SOQL のリレーション走査",
+        "code": "// 子 → 親：Contact から親 Account の名前をたどる\nSELECT Name, Account.Name, Account.Owner.Alias FROM Contact\n\n// 親 → 子：Account から子 Contacts をサブクエリで取得\nSELECT Name, (SELECT LastName FROM Contacts) FROM Account"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "おつかれさまでした。ここまでで学んだ\n\n- オブジェクトと項目／リレーション（主従 vs 参照）\n- Apex の型とコレクション（List / Set / Map）\n- ガバナ制限とバルク化\n\nを、関連する練習問題で確認しましょう。下のボタンから6問に挑戦できます。\n\n> 間違えても大丈夫。解説を読んだら、もう一度このレッスンに戻ってこよう。",
+        "checkIds": [
+          1,
+          2,
+          3,
+          5,
+          6,
+          7
+        ]
+      }
+    ]
+  }
+]
