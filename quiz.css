@@ -277,6 +277,8 @@ body{
 .nm-table th{background:var(--border);padding:7px 8px;text-align:left;font-weight:700;font-size:11px}
 .nm-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
 .nm-table tr:last-child td{border-bottom:none}
+.tbk-xref{color:var(--primary);font-weight:600;text-decoration:none;border-bottom:1px dotted var(--primary);cursor:pointer}
+.tbk-xref:hover{text-decoration:none;border-bottom-style:solid}
 .path-code{
   font-family:monospace;font-size:11px;background:var(--bg);
   padding:2px 6px;border-radius:4px;color:var(--text-sub);display:inline-block;margin-bottom:4px;
