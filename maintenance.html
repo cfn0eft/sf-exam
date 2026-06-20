@@ -121,7 +121,7 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   var CFG = {
     start:   '2026-06-21T02:00:00+09:00',
     end:     '2026-06-21T05:00:00+09:00',
-    id:      'MNT-20260621-01',
+    id:      '',   // 空なら開始日から MNT-YYYYMMDD-01 を自動採番（管理者ビューからの設定が最優先）
     tasks:   ['データベースの最適化', 'サーバー構成の更新', 'セキュリティ更新の適用'],
     contact: ''
   };
@@ -130,15 +130,19 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   var startMs = CFG.start ? Date.parse(CFG.start) : NaN;
   var endMs   = CFG.end   ? Date.parse(CFG.end)   : NaN;
   var liveMsg = '';
+  var liveId = '';
+  var liveTasks = null;
   var firestoreActive = null;  // null=未取得 / true=メンテ中 / false=解除
   var cameFromLive = false;    // cloud-sync のライブ切替から転送されてきたか
 
-  /* cloud-sync からの引き継ぎ（実際の終了予定・メッセージ・緊急全停止か） */
+  /* cloud-sync からの引き継ぎ（実際の終了予定・メッセージ・管理番号・作業内容・緊急全停止か） */
   try {
     var hand = JSON.parse(sessionStorage.getItem('sfq_maint') || 'null');
     if (hand) {
       cameFromLive = true;
       if (hand.msg) liveMsg = hand.msg;
+      if (hand.id) liveId = hand.id;
+      if (Array.isArray(hand.tasks) && hand.tasks.length) liveTasks = hand.tasks;
       if (hand.full) { endMs = NaN; }        // 緊急全停止＝終了未定
       else if (hand.end) { endMs = hand.end; }
     }
@@ -148,13 +152,27 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   var jstFmt = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
   var jstTime = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false });
 
-  /* 静的部分（作業内容・管理番号・問い合わせ先・予定枠）を描画 */
-  (function initStatic() {
-    var ul = $('m-tasks');
-    (CFG.tasks && CFG.tasks.length ? CFG.tasks : ['システムメンテナンス']).forEach(function (t) {
+  /* 作業内容リストの描画（ライブ→CFG の順に優先） */
+  function renderTasks(arr) {
+    var ul = $('m-tasks'); if (!ul) return; ul.innerHTML = '';
+    (arr && arr.length ? arr : ['システムメンテナンス']).forEach(function (t) {
       var li = document.createElement('li'); li.textContent = t; ul.appendChild(li);
     });
-    $('m-id').textContent = CFG.id || '—';
+  }
+  /* YYYYMMDD(JST) 文字列 */
+  function maintDateStr(ms) {
+    try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ms).replace(/-/g, ''); }
+    catch (e) { var d = new Date(ms); return '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
+  }
+  /* 管理番号が未設定なら開始日(JST)から MNT-YYYYMMDD-01 を自動採番 */
+  function autoMaintId() {
+    return 'MNT-' + maintDateStr(isFinite(startMs) ? startMs : Date.now()) + '-01';
+  }
+
+  /* 静的部分（作業内容・管理番号・問い合わせ先・予定枠）を描画 */
+  (function initStatic() {
+    renderTasks(liveTasks || CFG.tasks);
+    $('m-id').textContent = liveId || CFG.id || autoMaintId();
     if (liveMsg) $('m-sub').innerHTML = esc(liveMsg);
     if (isFinite(endMs)) {
       var head = (isFinite(startMs) && !cameFromLive) ? (jstFmt.format(startMs) + '〜' + jstTime.format(endMs)) : ('〜' + jstFmt.format(endMs));
@@ -215,14 +233,36 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   }
 
   /* ---- Firestore ライブ購読：管理者がメンテ解除した瞬間に自動復帰 ---- */
+  // 都度メンテのキュー（旧 windows + enabled ゲートも吸収）
+  function maintQueue(cfg) {
+    if (!cfg) return [];
+    if (Array.isArray(cfg.queue)) return cfg.queue;
+    if (Array.isArray(cfg.windows)) return (cfg.enabled === false) ? [] : cfg.windows;
+    return [];
+  }
+  function maintEntryInfo(cfg, w) {
+    var g = cfg || {};
+    return {
+      id: (w && w.id) || g.id || '',
+      msg: (w && w.msg) || g.msg || '',
+      tasks: (w && Array.isArray(w.tasks) && w.tasks.length) ? w.tasks : (Array.isArray(g.tasks) ? g.tasks : [])
+    };
+  }
+  function maintRecurInfo(cfg, occMs) {
+    var r = (cfg && cfg.recurring) || {};
+    return {
+      id: r.id || ('MNT-' + maintDateStr(occMs) + '-R'),
+      msg: r.msg || (cfg && cfg.msg) || '',
+      tasks: (Array.isArray(r.tasks) && r.tasks.length) ? r.tasks : ((cfg && cfg.tasks) || [])
+    };
+  }
   function maintStatus(cfg, now) {
-    var res = { active: false, end: 0 };
+    var res = { active: false, end: 0, entry: null };
     if (!cfg) return res;
-    if (cfg.fullStop) { res.active = true; return res; }
-    if (!cfg.enabled) return res;
-    (cfg.windows || []).forEach(function (w) {
+    if (cfg.fullStop) { res.active = true; res.entry = maintEntryInfo(cfg, null); return res; }
+    maintQueue(cfg).forEach(function (w) {
       if (!w || !w.start || !w.end) return;
-      if (now >= w.start && now < w.end) { res.active = true; res.end = Math.max(res.end, w.end); }
+      if (now >= w.start && now < w.end) { res.active = true; if (w.end > res.end) { res.end = w.end; res.entry = maintEntryInfo(cfg, w); } }
     });
     var r = cfg.recurring;
     if (r && r.enabled && r.start && r.durMin && r.dows && r.dows.length) {
@@ -231,9 +271,10 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
         var d = new Date(now); d.setDate(d.getDate() + off); d.setHours(hh, mm, 0, 0);
         if (r.dows.indexOf(d.getDay()) < 0) continue;
         var s = d.getTime(), e = s + dur;
-        if (now >= s && now < e) { res.active = true; res.end = Math.max(res.end, e); }
+        if (now >= s && now < e) { res.active = true; if (e > res.end) { res.end = e; res.entry = maintRecurInfo(cfg, s); } }
       }
     }
+    if (res.active && !res.entry) res.entry = maintEntryInfo(cfg, null);
     return res;
   }
 
@@ -254,7 +295,10 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
         var st = maintStatus(cfg, Date.now());
         firestoreActive = !!st.active;
         if (st.active) {
-          if (cfg && cfg.msg) { liveMsg = cfg.msg; $('m-sub').innerHTML = esc(liveMsg); }
+          var ent = st.entry || {};
+          if (ent.msg) { liveMsg = ent.msg; $('m-sub').innerHTML = esc(liveMsg); }
+          if (ent.id) { $('m-id').textContent = ent.id; }
+          if (ent.tasks && ent.tasks.length) { renderTasks(ent.tasks); }
           if (!(hand && hand.full) && st.end) { endMs = st.end; }
           render();
         } else {
