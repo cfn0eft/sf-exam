@@ -51,5 +51,741 @@
         ]
       }
     ]
+  },
+  {
+    "id": "fund-02",
+    "title": "Lesson 2: データモデル設計を極める",
+    "domain": "fund",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "要件に合うデータモデルを設計できることは、開発者の基礎の中心テーマです。\n\n### 今回のテーマ\n- 主従／参照／**多対多（ジャンクション）** の使い分け\n- **積み上げ集計（Roll-Up Summary）**\n- **数式項目**とクロスオブジェクト数式\n- **外部ID** と upsert\n- レコードタイプと選択リスト\n\n> 「どの関連を選ぶか」で、削除の挙動・集計の可否・共有が決まります。"
+      },
+      {
+        "title": "多対多は接合（ジャンクション）オブジェクト",
+        "body": "「1人が複数コースを受講し、1コースに複数人」のような **多対多** は、2つの主従関係を持つ **ジャンクションオブジェクト** で表します。\n\n- ジャンクションは **2つの主従関係** を持つ専用オブジェクト\n- 最初に作った主従が **主担当（primary）**＝レコードの所有・共有・削除を支配\n- 2番目が **副担当（secondary）**\n\n> 例：受講登録（Enrollment）が、受講者 と コース をつなぐジャンクション。",
+        "fig": "relationships",
+        "figCap": "主従・参照・多対多の関係"
+      },
+      {
+        "title": "積み上げ集計と数式項目",
+        "body": "どちらも **保存される値を計算で求める** 仕組みですが、対象が違います。\n\n| | 積み上げ集計 Roll-Up | 数式項目 Formula |\n|---|---|---|\n| 何を集計 | 子レコードを **COUNT/SUM/MIN/MAX** | 同一/親レコードの項目を計算 |\n| 必要な関連 | **主従関係**が必須 | 参照でも可（クロスオブジェクト数式） |\n| 保存 | 親に物理的に保存 | 参照時に都度計算（保存しない） |\n\n- クロスオブジェクト数式は **親の項目** を最大10階層まで参照できる（子→親方向）\n- 参照関係でも数式で親の値は見られるが、**集計（合計・件数）は積み上げ＝主従が必要**\n\n> ⚠️ 「合計や件数を親に持ちたい」→ 主従関係＋積み上げ集計、と直結で覚えます。",
+        "fig": "rollup-summary",
+        "figCap": "積み上げ集計のしくみ"
+      },
+      {
+        "title": "外部ID と upsert",
+        "body": "**外部ID** は、外部システムのキー（例：基幹システムの社員番号）を保持する項目です。重複防止やデータ連携の突合に使います。\n\n- 外部IDにできる型：**テキスト・数値・メール**（＋一意・大文字小文字を区別しない設定が可能）\n- **upsert** は「あれば更新・なければ作成」。外部IDを指定すると、ID が分からなくても突合できる\n- インポートや連携でレコードを重複させない要になる\n\n> upsert + 外部ID は「連携でレコードを二重に作らない」定番パターン。",
+        "code": "// 外部ID項目 ExtId__c をキーに upsert（あれば更新・なければ作成）\nList<Account> accs = new List<Account>{\n    new Account(Name='Acme', ExtId__c='A-100')\n};\nupsert accs Account.ExtId__c;"
+      },
+      {
+        "title": "レコードタイプと選択リスト",
+        "body": "**レコードタイプ** は、同じオブジェクトに対してプロセスや画面、選択リスト値を出し分ける仕組みです。\n\n- レコードタイプごとに **選択リストの値** やページレイアウト、ビジネスプロセスを変えられる\n- ユーザーには **プロファイル/権限セット** でレコードタイプを割り当てる\n- 選択リストは **値セット（グローバル値セット）** を共有して一元管理できる\n- 複数選択リストは複数値を保持するが、レポートや数式での扱いに注意\n\n> 「営業案件と保守案件で入力項目を変えたい」→ レコードタイプで出し分け。"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "データモデル設計の要点を問題で確認しましょう。\n\n- 主従／参照／多対多の挙動\n- 積み上げ集計・数式項目\n- 外部IDとupsert・レコードタイプ",
+        "checkIds": [
+          11,
+          331,
+          342,
+          4,
+          63,
+          103
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fund-03",
+    "title": "Lesson 3: Apex 言語を使いこなす",
+    "domain": "fund",
+    "est": 14,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "Apex の言語仕様で、試験に頻出のポイントを押さえます。\n\n### 今回のテーマ\n- プリミティブ型と **null**・型変換\n- コレクションの使い分け（再確認）\n- クラスとアクセス修飾子・**継承**（abstract / virtual / override）\n- **static** 変数とトリガ再帰の制御\n- **動的 Apex**（describe / sObject.get）\n\n> Apex は型付き・大文字小文字を区別しない・サーバー側で動く、が大前提。"
+      },
+      {
+        "title": "型と null の落とし穴",
+        "body": "Apex のプリミティブ型と null の扱いは、コード読解問題で狙われます。\n\n- 数値は **Integer / Long / Decimal / Double**。通貨や割り算の精度は **Decimal**\n- オブジェクト型の変数や、未代入の **Boolean は null**（false ではない）\n- null の Boolean を if 条件に使うと **NullPointerException**\n- String の比較は `==`（参照でなく値）で大文字小文字を区別、`equalsIgnoreCase` で無視\n\n> ⚠️ 「Boolean b; if(b){…}」は b が null なので実行時エラー。初期化を忘れない。",
+        "code": "Boolean isActive;            // 既定は null（false ではない）\n// if (isActive) { ... }     // ← NullPointerException\nDecimal price = 10 / 3;       // Integer 同士だと 3。精度が要るなら…\nDecimal p2 = 10.0 / 3;        // 3.333...（小数で計算）"
+      },
+      {
+        "title": "クラス・アクセス修飾子・継承",
+        "body": "Apex のクラス設計でよく問われる修飾子です。\n\n### アクセス修飾子\n- **private**（既定）／**public**（同一名前空間）／**global**（名前空間外・管理パッケージ公開）／**protected**\n\n### 継承\n- **virtual**：継承・オーバーライドを許可する親\n- **abstract**：インスタンス化できない・未実装メソッドを持てる\n- **override**：子で親メソッドを上書き\n- **interface**：実装すべきメソッドの契約だけを定義\n\n> global は「外部や管理パッケージから使わせる」とき。普段は public/private で十分。",
+        "code": "public virtual class Animal {\n    public virtual String sound() { return '...'; }\n}\npublic class Dog extends Animal {\n    public override String sound() { return 'Bow'; }\n}"
+      },
+      {
+        "title": "static とトリガ再帰の制御",
+        "body": "**static** 変数は「クラスに1つ」で、**同一トランザクション内**で値が保たれます（インスタンスごとではない）。\n\n- これを使うと、トリガが連鎖して **同じ処理を二度走らせない**（再帰制御）ことができる\n- トランザクションをまたぐと static はリセットされる\n\n> 「トリガが更新→また発火」で無限ループしそうなとき、static フラグで一度だけ実行。",
+        "code": "public class TriggerGuard {\n    public static Boolean alreadyRun = false;\n}\n// トリガ側\nif (!TriggerGuard.alreadyRun) {\n    TriggerGuard.alreadyRun = true;\n    // 本処理は1回だけ\n}"
+      },
+      {
+        "title": "動的 Apex（describe / sObject.get）",
+        "body": "実行時にオブジェクトや項目の情報を扱うのが **動的 Apex** です。\n\n- **Schema describe**：オブジェクト/項目のメタ情報（ラベル・型・参照可否）を取得\n- 項目の **isAccessible() / isUpdateable()** で FLS を確認できる\n- `sObject.get('Field__c')` / `put()` で **項目名を文字列で** 読み書き\n\n> 汎用部品や、項目が動的に変わる処理で活躍。FLS チェックの手段としても重要。",
+        "code": "SObjectType t = Schema.getGlobalDescribe().get('Account');\nMap<String, Schema.SObjectField> fields =\n    t.getDescribe().fields.getMap();\nBoolean canRead = fields.get('AnnualRevenue').getDescribe().isAccessible();\n\nAccount a = [SELECT Name FROM Account LIMIT 1];\nObject n = a.get('Name');        // 文字列で項目アクセス"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "Apex 言語の要点を問題で確認しましょう。\n\n- 型と null・コレクション\n- 継承（abstract/virtual/override）・アクセス修飾子\n- static・動的Apex（describe）",
+        "checkIds": [
+          10,
+          67,
+          70,
+          72,
+          154,
+          68
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fund-04",
+    "title": "Lesson 4: セキュリティとデータアクセス",
+    "domain": "fund",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "「誰が・どのデータに・どこまで」アクセスできるかは、開発でも必ず意識します。\n\n### 今回のテーマ\n- アクセスの **3層**（オブジェクト → 項目 → レコード）\n- Apex の **共有モード**（with / without / inherited sharing）\n- **CRUD / FLS** をコードで尊重する\n- カスタムメタデータ型・カスタム設定・カスタム権限\n- 外部オブジェクトとマルチテナント\n\n> Apex は既定で共有設定を無視して動くため、明示的に守る意識が要ります。"
+      },
+      {
+        "title": "アクセスの3層",
+        "body": "Salesforce のアクセスは段階的に決まります。\n\n1. **オブジェクト**：プロファイル/権限セットの CRUD（作成・参照・編集・削除）\n2. **項目**：項目レベルセキュリティ（**FLS**）で項目ごとに参照/編集\n3. **レコード**：組織の共有設定（**OWD**）→ ロール階層 → 共有ルール → 手動共有\n\n- 広げる方向：OWD（非公開が最も厳しい）から、階層やルールで開放していく\n- 「見える人を広げる」ことはできるが、OWD より狭くはできない\n\n> ⚠️ オブジェクトで参照できても、FLS で項目が隠れていれば値は見えない。",
+        "fig": "apex-security",
+        "figCap": "オブジェクト・項目・レコードの3層"
+      },
+      {
+        "title": "Apex の共有モード",
+        "body": "Apex クラスは指定しないと **実行ユーザーの共有設定を無視** して全レコードを操作できます（システムコンテキスト）。\n\n| 宣言 | 挙動 |\n|---|---|\n| **with sharing** | 実行ユーザーの共有（OWD/ルール）を尊重 |\n| **without sharing** | 共有を無視して全件操作 |\n| **inherited sharing** | 呼び出し元の共有モードを引き継ぐ（既定で安全側） |\n\n- 共有モードはレコード（行）アクセスの話。**CRUD/FLS は別途チェックが必要**\n- 画面に出すデータは原則 with sharing\n\n> 「実行者が見られる範囲だけ扱いたい」→ with sharing。",
+        "code": "public with sharing class AccountService {\n    public List<Account> myAccounts() {\n        // 実行ユーザーが見られる Account だけ返る\n        return [SELECT Id, Name FROM Account];\n    }\n}"
+      },
+      {
+        "title": "CRUD / FLS をコードで守る",
+        "body": "with sharing でも、**項目やオブジェクトの権限（CRUD/FLS）は自動では守られません**。明示的に確認します。\n\n- describe の `isAccessible / isUpdateable / isCreateable` で判定\n- **`Security.stripInaccessible()`** で、権限の無い項目を自動除去\n- SOQL の `WITH SECURITY_ENFORCED` で参照時に FLS を強制\n\n> 「ユーザーが編集できない項目を Apex が勝手に更新」を防ぐのが狙い。",
+        "code": "// 参照権限の無い項目を自動的に取り除く\nSObjectAccessDecision d = Security.stripInaccessible(\n    AccessType.READABLE,\n    [SELECT Name, AnnualRevenue FROM Account]);\nList<Account> safe = d.getRecords();"
+      },
+      {
+        "title": "設定値の置き場と外部データ",
+        "body": "ハードコードを避け、設定を「データ」として持つ仕組みがあります。\n\n| 仕組み | 用途 | デプロイ |\n|---|---|---|\n| **カスタムメタデータ型** | しきい値・マッピング等。テストから参照可 | **メタデータ（変更セット/パッケージで運ぶ）** |\n| **カスタム設定** | 組織/ユーザー単位の設定。SOQL不要で取得 | データ |\n| **カスタム権限** | 機能のON/OFFを権限で制御 | メタデータ |\n\n- **外部オブジェクト**：外部システムのデータを **コピーせず** リアルタイム参照（OData/Apex Connector）\n- マルチテナントだからこそ、設定外出し＝環境差を吸収しやすい\n\n> ⚠️ Apex で参照するしきい値は、カスタムメタデータ型にすると変更セットで安全に運べる。",
+        "fig": "external-objects",
+        "figCap": "外部オブジェクトによる外部データ参照"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "セキュリティとデータアクセスの要点を問題で確認しましょう。\n\n- アクセス3層・with/without sharing\n- CRUD/FLS・カスタムメタデータ\n- 外部オブジェクト・マルチテナント",
+        "checkIds": [
+          151,
+          152,
+          448,
+          12,
+          211,
+          350
+        ]
+      }
+    ]
+  },
+  {
+    "id": "logic-01",
+    "title": "Lesson 5: トリガの基礎",
+    "domain": "logic",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "**Apex トリガ**は、レコードの保存（挿入・更新・削除・復元）に合わせて自動でコードを動かす仕組みです。\n\n### 今回のテーマ\n- トリガイベントと **before / after** の違い\n- **コンテキスト変数**（Trigger.new など）\n- 1トリガ／オブジェクトの **ハンドラパターン**\n\n> フローでは難しい複雑なロジックや、大量データの厳密な制御は Apex トリガの出番。"
+      },
+      {
+        "title": "before と after の使い分け",
+        "body": "トリガは保存処理の前後どちらでも動かせます。\n\n| | before | after |\n|---|---|---|\n| タイミング | DBに保存する**前** | 保存した**後** |\n| 主な用途 | **自分のレコードの項目を補正/検証** | 関連レコードの作成、ID参照、メール等 |\n| 保存 | 値を変えるだけでOK（DML不要） | 自分を変えるには追加DMLが必要 |\n\n- 自レコードの値を入れる/直すだけなら **before**（DML 不要で効率的）\n- 採番された Id や関連処理が必要なら **after**\n\n> ⚠️ after で自分の項目を変えたいときは追加 update が必要。原則 before で。"
+      },
+      {
+        "title": "コンテキスト変数",
+        "body": "トリガ内では、状況を表す **コンテキスト変数** が使えます。\n\n- **Trigger.new** … 新しい値のリスト（insert/update で利用）\n- **Trigger.old** … 変更前の値（update/delete で利用）\n- **Trigger.newMap / oldMap** … Id をキーにした Map\n- **Trigger.isBefore / isAfter / isInsert / isUpdate / isDelete**\n\n> ⚠️ delete では Trigger.new は使えない（old のみ）。insert では old が無い。",
+        "fig": "trigger-context",
+        "figCap": "トリガのコンテキスト変数"
+      },
+      {
+        "title": "トリガはバルクで書く",
+        "body": "トリガは **一度に複数レコード** を受け取ります（最大200件/まとめ）。1件想定で書くと、データローダや一括更新で破綻します。\n\n- **Trigger.new をループ** して処理する\n- ループ内で SOQL/DML を呼ばない（Lesson 6 で詳述）\n- 1件でも200件でも同じく動くコードにする\n\n> 「常に複数件が来る」前提で書くのがトリガの基本作法。",
+        "code": "trigger ContactTrigger on Contact (before insert) {\n    for (Contact c : Trigger.new) {       // 必ずループで\n        if (String.isBlank(c.LastName)) {\n            c.LastName = '(no name)';     // before なので代入だけでOK\n        }\n    }\n}"
+      },
+      {
+        "title": "1オブジェクト1トリガ＋ハンドラ",
+        "body": "同じオブジェクトに複数トリガがあると、**実行順序が保証されません**。ベストプラクティスは「1オブジェクトにつき1トリガ」。\n\n- トリガ本体は薄く保ち、ロジックは **ハンドラクラス** に委譲\n- イベント（before/after × insert/update…）で処理を振り分ける\n- テスト・再利用・再帰制御がしやすくなる\n\n> 実装の良し悪しを問う問題では「1トリガ＋ハンドラ」「バルク化」が正解の軸。",
+        "code": "trigger AccountTrigger on Account (before insert, after update) {\n    AccountTriggerHandler.run(Trigger.operationType, Trigger.new, Trigger.oldMap);\n}"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "トリガの基礎を問題で確認しましょう。\n\n- before/after・コンテキスト変数\n- バルク化・ハンドラパターン",
+        "checkIds": [
+          15,
+          16,
+          73,
+          161,
+          328,
+          346
+        ]
+      }
+    ]
+  },
+  {
+    "id": "logic-02",
+    "title": "Lesson 6: 保存時の処理順序とバルク化",
+    "domain": "logic",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "レコード保存時には、多くの処理が **決まった順序** で走ります。順序を知らないと「なぜ上書きされた？」が説明できません。\n\n### 今回のテーマ\n- **保存時の処理順序（Order of Execution）**\n- トリガの **再帰** を防ぐ\n- ガバナ制限に強い **バルク化** の型\n\n> 順序とバルク化は、ロジック分野の超頻出テーマ。"
+      },
+      {
+        "title": "保存時の処理順序（概要）",
+        "body": "おおまかな流れ（一部抜粋）：\n\n1. レコードを読み込み、**システム検証**（必須・型）\n2. **before トリガ**\n3. カスタム **入力規則**・重複ルール\n4. レコードを保存（まだコミットしない）\n5. **after トリガ**\n6. **積み上げ集計**・**ワークフロー項目更新**（再度 before/after が走り得る）\n7. **フロー（保存後）**・**エスカレーション**\n8. コミット → **コミット後**にメール送信・**非同期処理（@future 等）** がキューに入る\n\n> ⚠️ 入力規則は before トリガの **後**。ワークフロー項目更新はトリガを **再発火** させ得る。",
+        "fig": "order-of-execution",
+        "figCap": "保存時の処理順序"
+      },
+      {
+        "title": "再帰トリガを止める",
+        "body": "項目更新やワークフローでレコードが再保存されると、**トリガがもう一度発火**して無限ループになることがあります。\n\n- **static 変数のフラグ** で「1トランザクションに1回だけ」実行する\n- Trigger.old と比較して **変化した時だけ** 処理する（無駄打ち防止）\n\n> Lesson 3 の static フラグが、ここで効いてきます。",
+        "code": "public class AccountTriggerHandler {\n    private static Boolean run = false;\n    public static void handle(List<Account> news) {\n        if (run) return;     // 2回目以降は抜ける\n        run = true;\n        // 本処理…\n    }\n}"
+      },
+      {
+        "title": "バルク化の型（クエリ→Map→ループ）",
+        "body": "ガバナ制限を超えない王道パターンです。\n\n1. **ループの外**で、必要なレコードを **1回の SOQL** でまとめて取得\n2. **Map** に詰めて引けるようにする\n3. ループ内は **メモリ上の Map から get** するだけ\n4. 変更は **List に貯めて、ループの外で1回 DML**\n\n> 「クエリとDMLはループの外」。この一文が試験でもっとも問われる原則。",
+        "code": "Set<Id> accIds = new Set<Id>();\nfor (Opportunity o : Trigger.new) accIds.add(o.AccountId);\n\nMap<Id, Account> accs = new Map<Id, Account>(\n    [SELECT Id, Name FROM Account WHERE Id IN :accIds]);\n\nList<Opportunity> toUpdate = new List<Opportunity>();\nfor (Opportunity o : Trigger.new) {\n    o.Description = accs.get(o.AccountId).Name;  // Mapから取得\n    toUpdate.add(o);\n}\n// update は1回（ここでは before なので不要なケースも）"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "処理順序とバルク化を問題で確認しましょう。\n\n- Order of Execution・入力規則/項目更新の位置\n- 再帰制御・ループ外のクエリ/DML",
+        "checkIds": [
+          75,
+          305,
+          487,
+          18,
+          175,
+          452
+        ]
+      }
+    ]
+  },
+  {
+    "id": "logic-03",
+    "title": "Lesson 7: SOQL / SOSL / 動的SOQL",
+    "domain": "logic",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "データ取得の言語を使いこなします。\n\n### 今回のテーマ\n- **SOQL** のリレーション照会・集計・FOR UPDATE\n- **SOSL**（全文検索）との違い\n- **動的 SOQL** と **SOQLインジェクション** 対策\n\n> 「いつ SOQL／いつ SOSL」「インジェクションをどう防ぐ」が頻出。"
+      },
+      {
+        "title": "SOQL のリレーション照会と集計",
+        "body": "- **子→親**：ドット（`Account.Name`、最大5階層、カスタムは `__r`）\n- **親→子**：サブクエリ（子リレーション名・複数形）\n- **集計**：`COUNT() / SUM() / GROUP BY / HAVING`（結果は **AggregateResult**）\n- **FOR UPDATE**：取得行をロックして更新競合を防ぐ\n- バインド変数 `:変数` で値を安全に渡す\n\n> ⚠️ SOQL に JOIN/UNION は無い。関連はリレーション名でたどる。",
+        "fig": "soql-relationships",
+        "figCap": "SOQL のリレーション走査",
+        "code": "// 集計：取引先ごとの商談件数\nfor (AggregateResult ar :\n     [SELECT AccountId, COUNT(Id) cnt FROM Opportunity GROUP BY AccountId]) {\n    System.debug(ar.get('cnt'));\n}"
+      },
+      {
+        "title": "SOQL と SOSL の違い",
+        "body": "| | SOQL | SOSL |\n|---|---|---|\n| 目的 | 特定オブジェクトを**正確に**取得 | 複数オブジェクトを**横断全文検索** |\n| 戻り | List<sObject> | List<List<sObject>> |\n| 向き | 条件が明確・関連をたどる | キーワードであいまい検索 |\n\n- 「Account の特定条件」→ SOQL\n- 「複数オブジェクトから \"Acme\" を含むものを横断検索」→ SOSL\n\n> 全文・横断・あいまい＝SOSL、と覚える。",
+        "code": "List<List<SObject>> r = [FIND 'Acme*' IN ALL FIELDS\n    RETURNING Account(Name), Contact(LastName)];\nList<Account> accs = (List<Account>) r[0];"
+      },
+      {
+        "title": "動的SOQLとインジェクション対策",
+        "body": "実行時に文字列でクエリを組み立てるのが **動的 SOQL**（`Database.query`）。便利ですが、ユーザー入力をそのまま連結すると **SOQLインジェクション** の危険があります。\n\n- 可能なら **バインド変数 `:var`** を使う（最も安全）\n- 文字列連結が避けられないときは **`String.escapeSingleQuotes()`**\n- 取得対象は許可リストで検証する\n\n> ⚠️ 「ユーザー入力をクエリ文字列に直接連結」は典型的な脆弱パターン。",
+        "code": "String key = userInput;             // 信用できない入力\n// ✅ バインドが第一選択\nList<Account> a = [SELECT Id FROM Account WHERE Name = :key];\n// ✅ 動的にせざるを得ないときはエスケープ\nString q = 'SELECT Id FROM Account WHERE Name = \\'' +\n           String.escapeSingleQuotes(key) + '\\'';\nList<Account> b = Database.query(q);"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "SOQL/SOSL の要点を問題で確認しましょう。\n\n- リレーション照会・集計・FOR UPDATE\n- SOQL vs SOSL・インジェクション対策",
+        "checkIds": [
+          21,
+          77,
+          115,
+          116,
+          78,
+          449
+        ]
+      }
+    ]
+  },
+  {
+    "id": "logic-04",
+    "title": "Lesson 8: DML と例外処理",
+    "domain": "logic",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "データの書き込み（DML）と、失敗時の備え（例外処理）を学びます。\n\n### 今回のテーマ\n- **DML文** と **Database メソッド** の違い（allOrNone）\n- **MIXED_DML** エラー\n- 例外の種類と **try / catch / finally**・カスタム例外\n\n> 「一部だけ成功させたい」「失敗を握って記録したい」を実現する道具立て。"
+      },
+      {
+        "title": "DML文 vs Database メソッド",
+        "body": "| | DML文（insert 等） | Database.insert 等 |\n|---|---|---|\n| 一部失敗時 | **全件ロールバック**（例外） | `allOrNone=false` で**成功分は確定** |\n| 結果 | 例外で受ける | **SaveResult[]** で1件ずつ成否を確認 |\n| 用途 | 全件成功が前提 | 部分成功を許容・失敗を記録 |\n\n- 「全部成功か全部失敗か」→ DML文\n- 「通る分は通して、失敗をログしたい」→ `Database.insert(list, false)`\n\n> ⚠️ allOrNone=false は **例外を投げない**ので、SaveResult の確認を忘れない。",
+        "code": "Database.SaveResult[] rs = Database.insert(accs, false); // 部分成功OK\nfor (Database.SaveResult r : rs) {\n    if (!r.isSuccess()) {\n        for (Database.Error e : r.getErrors())\n            System.debug(e.getMessage());\n    }\n}"
+      },
+      {
+        "title": "MIXED_DML を避ける",
+        "body": "**設定オブジェクト**（User・Group・権限関連など）と **通常オブジェクト** を、**同じトランザクションで** DML すると **MIXED_DML_OPERATION** エラーになります。\n\n- 片方を **@future** などで **別トランザクション** に分離する\n- テストでも `System.runAs` で分けると回避できる\n\n> 「User を作って、同時に Account も insert」でハマる典型。分離が定石。"
+      },
+      {
+        "title": "例外処理（try / catch / finally）",
+        "body": "実行時の失敗は **例外** として投げられます。\n\n- 代表例外：**DmlException / NullPointerException / QueryException / ListException / LimitException**\n- **LimitException** など一部は **catch できない**（ガバナ制限超過）\n- `finally` は成功・失敗に関わらず必ず実行\n- **カスタム例外** は `class MyException extends Exception {}` で定義\n\n> ⚠️ 「ガバナ制限超過は catch して継続」はできない。設計で超えないようにする。",
+        "code": "public class MyException extends Exception {}\ntry {\n    insert acc;\n} catch (DmlException e) {\n    System.debug('DML失敗: ' + e.getMessage());\n    throw new MyException('登録に失敗しました', e);\n} finally {\n    // 後始末（必ず実行）\n}"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "DML と例外処理を問題で確認しましょう。\n\n- DML文 vs Database メソッド（部分成功）\n- MIXED_DML・例外の種類・try/catch",
+        "checkIds": [
+          20,
+          311,
+          76,
+          30,
+          315,
+          451
+        ]
+      }
+    ]
+  },
+  {
+    "id": "logic-05",
+    "title": "Lesson 9: 非同期 Apex",
+    "domain": "logic",
+    "est": 14,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "重い処理・外部連携・大量データは、**非同期 Apex** で別トランザクションに逃がします。\n\n### 今回のテーマ\n- **@future / Queueable / Batch / Schedulable** の使い分け\n- 非同期での **コールアウト**\n- ジョブの監視（AsyncApexJob）\n\n> 「より高いガバナ制限」「あとで実行」「大量分割」が非同期の価値。"
+      },
+      {
+        "title": "4つの非同期の使い分け",
+        "body": "| 種類 | 向いている用途 | 特徴 |\n|---|---|---|\n| **@future** | 軽い分離・コールアウト | 引数は**プリミティブのみ**・連鎖や監視は不可 |\n| **Queueable** | 順序/連鎖が要る処理 | **sObjectを渡せる**・**ジョブID返却**・チェーン可 |\n| **Batch** | **大量データ**を分割処理 | start/execute/finish・バッチサイズ指定 |\n| **Schedulable** | **定時実行** | スケジュール登録（単体/Batchと併用） |\n\n> 「巨大データ」→Batch、「連鎖・監視したい」→Queueable、「定時」→Schedulable。",
+        "fig": "async-apex",
+        "figCap": "非同期Apexの使い分け"
+      },
+      {
+        "title": "非同期でのコールアウト",
+        "body": "外部Webサービス呼び出し（**コールアウト**）には制約があります。\n\n- **DMLの後に同期コールアウト不可**（\"uncommitted work pending\"）→ 非同期に逃がす\n- @future は `(callout=true)` を付ける\n- Queueable は `Database.AllowsCallouts` を実装\n\n> ⚠️ トリガから外部APIを叩くなら、@future(callout=true) か Queueable 経由が定石。",
+        "code": "public class SyncJob implements Queueable, Database.AllowsCallouts {\n    public void execute(QueueableContext ctx) {\n        HttpRequest req = new HttpRequest();\n        req.setEndpoint('callout:MyNamedCred/api');\n        req.setMethod('GET');\n        HttpResponse res = new Http().send(req);\n    }\n}\nSystem.enqueueJob(new SyncJob());"
+      },
+      {
+        "title": "Batch Apex とジョブ監視",
+        "body": "**Batch Apex** は大量レコードを **チャンク（既定200件）** に分けて処理します。\n\n- `start`（対象を返す）→ `execute`（チャンクごと）→ `finish`（後処理）\n- 各チャンクは **別トランザクション**＝ガバナ制限がリセットされる\n- 進行状況は **AsyncApexJob** を SOQL で監視できる\n\n> 「数十万件を一括更新」はトリガでなく Batch。状態は AsyncApexJob で確認。",
+        "code": "public class AccountBatch implements Database.Batchable<SObject> {\n    public Database.QueryLocator start(Database.BatchableContext bc) {\n        return Database.getQueryLocator([SELECT Id FROM Account]);\n    }\n    public void execute(Database.BatchableContext bc, List<Account> scope) { /*…*/ }\n    public void finish(Database.BatchableContext bc) { /*…*/ }\n}\nDatabase.executeBatch(new AccountBatch(), 200);"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "非同期 Apex を問題で確認しましょう。\n\n- future/Queueable/Batch/Schedulable の選択\n- 非同期コールアウト・ジョブ監視",
+        "checkIds": [
+          26,
+          27,
+          28,
+          81,
+          168,
+          174
+        ]
+      }
+    ]
+  },
+  {
+    "id": "logic-06",
+    "title": "Lesson 10: 宣言的自動化との使い分け",
+    "domain": "logic",
+    "est": 12,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "Salesforce では、**フロー（宣言的）** と **Apex（コード）** を適材適所で使い分けます。\n\n### 今回のテーマ\n- **フローの種別** と保存前フロー\n- フローから Apex を呼ぶ **InvocableMethod**\n- 宣言的 vs コードの **判断基準**\n\n> 公式の指針は「まず宣言的、足りなければコード」。"
+      },
+      {
+        "title": "フローの種別",
+        "body": "代表的なフロー：\n\n- **画面フロー**：ユーザー操作を伴うウィザード\n- **レコードトリガフロー**：保存に応じて自動実行（**保存前**／保存後）\n- **スケジュールフロー**：定時にバッチ的に実行\n- **自動起動フロー**：他から呼ばれる部品（サブフロー）\n\n> **保存前（before-save）フロー** は同レコードの項目更新が速く、トリガの代替になりやすい。",
+        "fig": "flow-types",
+        "figCap": "フローの種別"
+      },
+      {
+        "title": "レコードトリガフローと実行位置",
+        "body": "レコードトリガフローは、保存時の処理順序の中で動きます。\n\n- **保存前（before-save）**：自分の項目を更新（追加DML不要・高速）。Apexのbeforeトリガ相当\n- **保存後（after-save）**：関連レコード作成、メール、外部連携など\n\n> ⚠️ 「同じレコードの項目を入れるだけ」なら保存前フローが効率的。",
+        "fig": "record-triggered-flow",
+        "figCap": "レコードトリガフローのタイミング"
+      },
+      {
+        "title": "フローから Apex を呼ぶ",
+        "body": "フローでは難しい処理は、**@InvocableMethod** を付けた Apex を **アクション** として呼び出せます。\n\n- 複雑な計算・コールアウト・大量処理を Apex に委譲\n- 入出力は Invocable 変数でやり取り\n- 宣言的な保守性と、コードの表現力を両立できる\n\n> 「フロー主体だが一部だけコードが要る」ときの橋渡し。",
+        "code": "public class GreetingAction {\n    @InvocableMethod(label='あいさつ生成')\n    public static List<String> run(List<String> names) {\n        List<String> out = new List<String>();\n        for (String n : names) out.add('こんにちは ' + n);\n        return out;\n    }\n}"
+      },
+      {
+        "title": "宣言的 vs コードの判断",
+        "body": "| まず宣言的（フロー） | コード（Apex）が必要 |\n|---|---|\n| 標準的な自動化・項目更新 | 複雑な分岐/ループ・大量データ |\n| 保守を管理者に寄せたい | 外部連携・厳密なトランザクション制御 |\n| 変更頻度が高い | 高度なテスト/再利用が要る |\n\n- 公式の優先順位：**No-code → Low-code（フロー）→ Pro-code（Apex）**\n- 同種の自動化を **重複** させない（フローとトリガの二重実行に注意）\n\n> 「できるだけ宣言的に、足りない所だけコード」が試験の基本姿勢。",
+        "fig": "declarative-vs-code",
+        "figCap": "宣言的とコードの使い分け"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "宣言的自動化との使い分けを問題で確認しましょう。\n\n- フロー種別・保存前フロー\n- InvocableMethod・フロー vs Apex",
+        "checkIds": [
+          128,
+          173,
+          493,
+          83,
+          502,
+          125
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ui-01",
+    "title": "Lesson 11: LWC の基礎",
+    "domain": "ui",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "**Lightning Web Components（LWC）** は、標準Web技術（HTML/JS）で作る現行の UI フレームワークです。\n\n### 今回のテーマ\n- コンポーネントの **3ファイル構成**\n- **@api / @track** とリアクティビティ\n- テンプレートディレクティブと **ライフサイクル**\n\n> 新規開発は原則 LWC。軽量・高速・標準準拠がメリット。"
+      },
+      {
+        "title": "コンポーネントの構成",
+        "body": "1つのコンポーネントは同名フォルダの **バンドル** です。\n\n- `xxx.html`（テンプレート）\n- `xxx.js`（**LightningElement を継承**したクラス）\n- `xxx.js-meta.xml`（公開先 targets・isExposed）\n- 任意で `xxx.css`\n\n- JS のプロパティは HTML から `{prop}` で参照\n- 命名はキャメルケース → HTML 属性はケバブケース（`myValue` → `my-value`）\n\n> meta.xml で **isExposed=true** と targets を書かないと、ビルダーに出てこない。",
+        "code": "// helloWorld.js\nimport { LightningElement } from 'lwc';\nexport default class HelloWorld extends LightningElement {\n    greeting = 'World';\n}"
+      },
+      {
+        "title": "@api と @track・リアクティビティ",
+        "body": "- **@api**：**公開プロパティ/メソッド**。親や App Builder から値を渡せる\n- フィールドは既定で **リアクティブ**（値が変われば再描画）\n- **@track**：オブジェクト/配列の **中身の変化** を追跡したいとき（プリミティブには不要）\n- ゲッター（`get xxx()`）で算出値を返せる\n\n> ⚠️ プリミティブの再代入は @track 不要。@api はコンポーネントの「入力端子」。",
+        "code": "import { LightningElement, api } from 'lwc';\nexport default class Greeting extends LightningElement {\n    @api name;                 // 親から渡される公開プロパティ\n    get upper() { return (this.name || '').toUpperCase(); }\n}"
+      },
+      {
+        "title": "テンプレートディレクティブとライフサイクル",
+        "body": "### よく使うディレクティブ\n- 条件：`if:true / if:false`（新しい `lwc:if / lwc:else`）\n- 繰り返し：`for:each` ＋ `key=`（一意キー必須）\n\n### ライフサイクルフック\n- **constructor** → **connectedCallback**（DOM挿入時・初期化/データ取得）→ **renderedCallback**（描画後）→ **disconnectedCallback**\n\n> 初期データ取得は **connectedCallback**。renderedCallback は何度も呼ばれる点に注意。",
+        "code": "<template>\n    <template if:true={hasItems}>\n        <template for:each={items} for:item=\"it\">\n            <p key={it.id}>{it.name}</p>\n        </template>\n    </template>\n</template>"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "LWC の基礎を問題で確認しましょう。\n\n- 構成・@api/@track・リアクティビティ\n- ディレクティブ・ライフサイクル",
+        "checkIds": [
+          35,
+          38,
+          193,
+          217,
+          505,
+          33
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ui-02",
+    "title": "Lesson 12: LWC のデータとイベント",
+    "domain": "ui",
+    "est": 13,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "コンポーネントに **サーバーのデータ** を載せ、**部品間で通信** させます。\n\n### 今回のテーマ\n- **@wire** と **命令的 Apex 呼び出し**\n- **CustomEvent**（子→親）・プロパティ（親→子）\n- 兄弟間通信・メタ設定\n\n> データの取り方とイベントの向きが、UI 分野の中心。"
+      },
+      {
+        "title": "@wire と命令的 Apex",
+        "body": "Apex メソッドは **@AuraEnabled(cacheable=true)** にすると LWC から呼べます。\n\n| | @wire | 命令的（imperative） |\n|---|---|---|\n| 呼び出し | プロパティ/関数に**自動**で結線 | ボタン等で**任意のタイミング**に呼ぶ |\n| キャッシュ | cacheable で効く | 必要なら自前 |\n| 向き | 取得（読み取り）中心 | 取得・更新どちらも |\n\n> 「画面表示と同時に取得」→@wire、「クリックで取得/更新」→命令的。",
+        "code": "import { LightningElement, wire } from 'lwc';\nimport getAccounts from '@salesforce/apex/AccountCtrl.getAccounts';\nexport default class AccList extends LightningElement {\n    @wire(getAccounts) accounts;   // 自動結線\n}"
+      },
+      {
+        "title": "コンポーネント間の通信",
+        "body": "- **親 → 子**：子の **@api プロパティ** に値を渡す\n- **子 → 親**：**CustomEvent** を `dispatchEvent` し、親は `on○○` で受ける\n- **兄弟/離れた部品**：**Lightning Message Service（LMS）** を使う\n\n> ⚠️ イベント名は **小文字**・親のハンドラは `onmyevent`。",
+        "fig": "lwc-communication",
+        "figCap": "LWC のコンポーネント間通信",
+        "code": "// 子：イベントを発火\nthis.dispatchEvent(new CustomEvent('selected', { detail: this.recordId }));\n// 親テンプレート：<c-child onselected={handleSelected}></c-child>\nhandleSelected(e) { this.selectedId = e.detail; }"
+      },
+      {
+        "title": "メタ設定（公開先）",
+        "body": "`js-meta.xml` で、どこに置けるかを決めます。\n\n- **isExposed**：true でビルダー等に公開\n- **targets**：`lightning__RecordPage / AppPage / HomePage` など\n- **targetConfigs**：プロパティをビルダーで編集可能にする\n\n> コンポーネントがビルダーに出てこない時は、まず meta.xml を疑う。",
+        "code": "<targets>\n    <target>lightning__RecordPage</target>\n    <target>lightning__AppPage</target>\n</targets>"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "LWC のデータとイベントを問題で確認しましょう。\n\n- @wire/命令的Apex・CustomEvent\n- 親子/兄弟通信・targets",
+        "checkIds": [
+          34,
+          133,
+          36,
+          184,
+          180,
+          141
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ui-03",
+    "title": "Lesson 13: Lightning Data Service と SLDS",
+    "domain": "ui",
+    "est": 12,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "Apex を書かずにレコードを読み書きする **Lightning Data Service（LDS）** と、見た目を統一する **SLDS** を学びます。\n\n### 今回のテーマ\n- **LDS**（lightning-record-form / uiRecordApi）\n- 基盤（base）コンポーネント\n- **SLDS** とセキュリティ\n\n> 単一レコードの CRUD は、まず LDS で Apex レス。"
+      },
+      {
+        "title": "Lightning Data Service",
+        "body": "LDS はレコードを **共有キャッシュ** 経由で扱い、**Apex 不要**でCRUDできます。\n\n- `lightning-record-form / record-edit-form / record-view-form`\n- ワイヤアダプタ `getRecord / createRecord / updateRecord / deleteRecord`（**uiRecordApi**）\n- **FLS と共有を自動で考慮**し、更新は他コンポーネントにも自動反映\n\n> ⚠️ 単一レコードの編集に Apex を書くのは過剰。まず LDS を検討。",
+        "code": "<lightning-record-form\n    record-id={recordId}\n    object-api-name=\"Account\"\n    fields={fields}\n    onsuccess={handleSaved}>\n</lightning-record-form>"
+      },
+      {
+        "title": "基盤コンポーネントと SLDS",
+        "body": "- **lightning- 基盤コンポーネント**（`lightning-input / -button / -datatable`）はアクセシビリティとスタイルを内蔵\n- **SLDS（Salesforce Lightning Design System）**：公式デザインのCSSユーティリティ\n- 独自CSSは **Shadow DOM** でカプセル化される（外に漏れにくい）\n\n> 基盤コンポーネントを使えば、SLDS のルックを自前で書かずに済む。"
+      },
+      {
+        "title": "UI でのセキュリティ",
+        "body": "- LDS・基盤コンポーネントは **FLS/共有を尊重**する\n- 一方、**Apex（@AuraEnabled）経由**で出すデータは **自分で CRUD/FLS を守る**必要がある（Lesson 4）\n- **Lightning Web Security（LWS）** がコンポーネント間を隔離\n\n> ⚠️ 「LWC だから安全」ではない。Apex 経由のデータは FLS チェックが要る。",
+        "code": "// Apex 側で FLS を尊重して返す\n@AuraEnabled(cacheable=true)\npublic static List<Account> getAccounts() {\n    return [SELECT Name, AnnualRevenue FROM Account WITH SECURITY_ENFORCED];\n}"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "LDS と SLDS を問題で確認しましょう。\n\n- LDS（record-form/uiRecordApi）・自動FLS\n- 基盤コンポーネント・UIのセキュリティ",
+        "checkIds": [
+          37,
+          89,
+          186,
+          216,
+          189,
+          388
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ui-04",
+    "title": "Lesson 14: Aura コンポーネント",
+    "domain": "ui",
+    "est": 11,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "**Aura** は LWC より前の世代のフレームワークです。既存資産の保守や、LWC で未対応の一部機能で登場します。\n\n### 今回のテーマ\n- Aura の **バンドル構成**\n- **AuraEnabled** と属性\n- **イベント**（コンポーネント/アプリケーション）と LWC 相互運用\n\n> 新規は LWC、ただし Aura の基礎も問われる。"
+      },
+      {
+        "title": "Aura のバンドル",
+        "body": "Aura コンポーネントは複数ファイルのバンドルです。\n\n- `.cmp`（マークアップ）／`Controller.js`／`Helper.js`／`Renderer.js`\n- 属性は `<aura:attribute>` で宣言（型・既定値）\n- Apex メソッドは **@AuraEnabled** を付けて公開\n\n> 値の保持は `<aura:attribute>`、ロジックは Controller/Helper に分ける。",
+        "code": "<aura:component controller=\"AccountCtrl\">\n    <aura:attribute name=\"accounts\" type=\"Account[]\"/>\n    <aura:handler name=\"init\" value=\"{!this}\" action=\"{!c.doInit}\"/>\n</aura:component>"
+      },
+      {
+        "title": "Aura のイベント",
+        "body": "Aura のイベントは2種類です。\n\n| | コンポーネントイベント | アプリケーションイベント |\n|---|---|---|\n| 伝播 | 発火元から**親方向** | 購読する**全コンポーネント** |\n| 用途 | 親子の限定的通知 | 広範なブロードキャスト |\n\n- 使い分けは「狭く親へ＝コンポーネント」「広く全体＝アプリケーション」\n\n> ⚠️ アプリケーションイベントは便利だが多用すると追跡しづらい。"
+      },
+      {
+        "title": "LWC との相互運用",
+        "body": "- **Aura は LWC を子として内包できる**（Aura の中に LWC を置ける）\n- 逆に **LWC は Aura を内包できない**\n- 段階的に LWC へ移行するときの定石は「外側 Aura・内側 LWC」\n\n> 「LWC を既存 Aura に組み込む」は可、「Aura を LWC に組み込む」は不可。"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "Aura を問題で確認しましょう。\n\n- バンドル構成・AuraEnabled\n- イベント2種・LWC相互運用",
+        "checkIds": [
+          41,
+          136,
+          187,
+          188,
+          506,
+          397
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ui-05",
+    "title": "Lesson 15: Visualforce",
+    "domain": "ui",
+    "est": 12,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "**Visualforce** は古くからあるページ生成フレームワーク。帳票（PDF）や既存資産でまだ使われます。\n\n### 今回のテーマ\n- **MVC** と コントローラの種類\n- **StandardSetController** とページネーション\n- **ViewState**・静的リソース・PDF\n\n> 「標準コントローラ／拡張／カスタム」の使い分けが頻出。"
+      },
+      {
+        "title": "コントローラの種類",
+        "body": "| 種類 | 内容 |\n|---|---|\n| **標準コントローラ** | `standardController=\"Account\"`。CRUD/共有/FLSを標準提供 |\n| **コントローラ拡張** | 標準に Apex 機能を追加（`extensions=`） |\n| **カスタムコントローラ** | すべて Apex で制御（標準機能なし） |\n\n- 標準の動作で足りる→標準コントローラ\n- 標準＋αの処理→拡張\n- 独自ロジック主体→カスタム\n\n> ⚠️ 標準コントローラは共有/FLSを尊重。カスタムは自前で守る。",
+        "code": "<apex:page standardController=\"Account\" extensions=\"AccountExt\">\n    {!Account.Name}\n</apex:page>"
+      },
+      {
+        "title": "一覧とページネーション",
+        "body": "複数レコードの一覧・ページ送りには **StandardSetController** を使います。\n\n- リストビュー、選択、ページング（`next/previous`、`setPageSize`）を提供\n- 大量データを分割表示できる\n- 命令的に SOQL を組んで渡すことも可能\n\n> 「一覧＋ページ送り」を標準機能で実装するなら StandardSetController。",
+        "code": "public ApexPages.StandardSetController con {\n    get {\n        if (con == null) {\n            con = new ApexPages.StandardSetController(\n                [SELECT Name FROM Account LIMIT 1000]);\n            con.setPageSize(20);\n        }\n        return con;\n    }\n    set;\n}"
+      },
+      {
+        "title": "ViewState・静的リソース・PDF",
+        "body": "- **ViewState**：フォームの状態をページに保持。**大きすぎると遅く・上限超過**（不要な項目を持たない）\n- **静的リソース**：画像/CSS/JS/ZIP を保存して `$Resource` で参照\n- **PDF出力**：`<apex:page renderAs=\"pdf\">` で帳票化（CSS/レイアウトに制約あり）\n\n> ⚠️ ViewState 肥大は Visualforce の典型的な性能問題。transient で持たせない。",
+        "code": "<apex:page renderAs=\"pdf\">\n    <h1>請求書</h1>\n    <apex:image value=\"{!$Resource.Logo}\"/>\n</apex:page>"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "Visualforce を問題で確認しましょう。\n\n- 標準/拡張/カスタムコントローラ\n- StandardSetController・ViewState・PDF",
+        "checkIds": [
+          42,
+          43,
+          45,
+          347,
+          140,
+          139
+        ]
+      }
+    ]
+  },
+  {
+    "id": "deploy-01",
+    "title": "Lesson 16: テストクラスを書く",
+    "domain": "deploy",
+    "est": 14,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "Apex は **テストがないと本番にデプロイできません**。テストは品質保証であり、リリースの前提条件です。\n\n### 今回のテーマ\n- テストクラスの構成・**Test.startTest/stopTest**\n- **テストデータ**（@testSetup / SeeAllData=false / Test.loadData）\n- **アサーション**・HTTPモック・**カバレッジ要件**\n\n> 「自分でデータを作る・境界をassertする・例外も検証する」が良いテスト。"
+      },
+      {
+        "title": "テストの基本構成",
+        "body": "- クラス/メソッドに **@isTest** を付ける\n- パターンは **準備（given）→ 実行（when）→ 検証（then）**\n- **Test.startTest() / stopTest()** で囲むと、その中は **新しいガバナ制限** が与えられ、非同期も stopTest で完了する\n- **System.runAs(user)** で特定ユーザー権限・共有を再現／MIXED_DML回避\n\n> ⚠️ 非同期処理の結果を検証するには startTest/stopTest で囲むのが定石。",
+        "code": "@isTest\nprivate class AccountServiceTest {\n    @isTest static void createsAccount() {\n        Test.startTest();\n        AccountService.create('Acme');\n        Test.stopTest();\n        System.assertEquals(1,\n            [SELECT COUNT() FROM Account WHERE Name='Acme']);\n    }\n}"
+      },
+      {
+        "title": "テストデータの用意",
+        "body": "テストは原則 **組織のデータに依存しない**（自分で作る）ように書きます。\n\n- **@testSetup** メソッドで共通データを1回作成（各テストにロールバックで提供）\n- **(SeeAllData=false)**（既定）＝組織データを見ない。true は原則避ける\n- 大量データは **Test.loadData** ＋ **静的リソース(CSV)** で投入\n- **Test.isRunningTest()** で実行時にテスト判定\n\n> ⚠️ SeeAllData=true は組織データに依存して壊れやすい。既定の false を保つ。",
+        "code": "@testSetup static void setup() {\n    insert new Account(Name='Seed');\n}\n// CSV(静的リソース)から投入\nList<sObject> rows = Test.loadData(Account.sObjectType, 'AccountsCsv');"
+      },
+      {
+        "title": "アサーションとモック",
+        "body": "- **System.assert / assertEquals / assertNotEquals** で期待値を必ず検証（実行するだけのテストはNG）\n- 例外パスは try/catch して `System.assert(false)` に到達しないことを確認\n- **コールアウト**は `Test.setMock(HttpCalloutMock.class, …)` で擬似応答\n- 負荷は **正常系・異常系・一括（200件）** を網羅\n\n> 「カバレッジを上げるだけ」でなく **assert で振る舞いを固定** するのが目的。",
+        "code": "Test.setMock(HttpCalloutMock.class, new MyHttpMock());\nTest.startTest();\nString body = CalloutService.call();   // モック応答が返る\nTest.stopTest();\nSystem.assertEquals('OK', body);"
+      },
+      {
+        "title": "カバレッジ要件",
+        "body": "本番デプロイには **コードカバレッジ** の条件があります。\n\n- 本番への配置は **組織全体で 75% 以上**\n- 各 **トリガは最低 1% 以上**（実質、意味のあるテストが必要）\n- カバレッジは「行が実行されたか」。**assert が無くても%は上がる**が、品質の担保にはならない\n\n> ⚠️ 「75%」「トリガは最低1%」は数字で問われる。assert 無しはアンチパターン。"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "テストクラスを問題で確認しましょう。\n\n- startTest/stopTest・runAs\n- テストデータ・SeeAllData・カバレッジ",
+        "checkIds": [
+          52,
+          54,
+          49,
+          197,
+          205,
+          412
+        ]
+      }
+    ]
+  },
+  {
+    "id": "deploy-02",
+    "title": "Lesson 17: デバッグ",
+    "domain": "deploy",
+    "est": 11,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "不具合の原因を素早く突き止める道具を学びます。\n\n### 今回のテーマ\n- **デバッグログ**・**ログレベル**・トレースフラグ\n- **開発者コンソール**\n- チェックポイント／Apex リプレイデバッガ\n\n> 「どのカテゴリを・どの詳細度で取るか」を選べることが重要。"
+      },
+      {
+        "title": "デバッグログとトレースフラグ",
+        "body": "- **System.debug(LoggingLevel, msg)** でログ出力\n- **トレースフラグ** を設定したユーザー/クラスの実行でログが記録される\n- ログには上限サイズ・保持期間があり、超過分は切れる\n- ログのカテゴリ（DB / Apex Code / Callout / Validation など）ごとに詳細度を設定\n\n> ⚠️ トレースフラグが無い／期限切れだとログが残らない。"
+      },
+      {
+        "title": "ログレベルの選び方",
+        "body": "各カテゴリのログレベル（詳細度）：\n\n`NONE < ERROR < WARN < INFO < DEBUG < FINE < FINER < FINEST`\n\n- **FINEST** が最も詳細（SOQL/変数も多く出る）が、ログが肥大・打ち切られやすい\n- 原因に応じてカテゴリだけ上げる（例：SOQL は Database を FINEST）\n- 出し過ぎは見づらく、上限超過で肝心の行が切れる\n\n> ⚠️ 「とりあえず全部 FINEST」は逆効果。必要なカテゴリだけ上げる。",
+        "code": "System.debug(LoggingLevel.ERROR, '想定外: ' + e.getMessage());"
+      },
+      {
+        "title": "開発者コンソールとリプレイ",
+        "body": "- **開発者コンソール**：ログ閲覧、匿名 Apex 実行、SOQL 実行、テスト実行、**チェックポイント**設定\n- **チェックポイント**：指定行でヒープ/変数の状態をキャプチャ\n- **Apex リプレイデバッガ**：ログを基に、後から行単位で実行を再生・ステップ実行\n\n> 「ログを見る」だけでなく「状態を覗く（チェックポイント/リプレイ）」手段も押さえる。"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "デバッグを問題で確認しましょう。\n\n- デバッグログ・トレースフラグ\n- ログレベル・開発者コンソール",
+        "checkIds": [
+          55,
+          147,
+          208,
+          344,
+          100,
+          148
+        ]
+      }
+    ]
+  },
+  {
+    "id": "deploy-03",
+    "title": "Lesson 18: サンドボックスとリリース手段",
+    "domain": "deploy",
+    "est": 12,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "本番に安全に届けるための「環境」と「運び方」を学びます。\n\n### 今回のテーマ\n- **サンドボックス** の種類と選び方\n- **変更セット** によるリリース\n- Metadata API / Ant・**テストレベル**\n\n> 「どのサンドボックス」「どの運搬手段」を要件から選べることが目標。"
+      },
+      {
+        "title": "サンドボックスの種類",
+        "body": "| 種類 | データ | 用途 | リフレッシュ |\n|---|---|---|---|\n| **Developer** | 本番データなし（設定のみ） | 個人開発 | 1日 |\n| **Developer Pro** | データなし・容量大 | 開発/単体テスト | 1日 |\n| **Partial Copy** | 本番の**一部サンプル** | 統合/QA | 5日 |\n| **Full** | 本番の**完全コピー** | UAT/性能/ステージング | 29日 |\n\n> ⚠️ 本番同等データでの最終確認は **Full**。軽い開発は **Developer**。",
+        "fig": "sandbox-types",
+        "figCap": "サンドボックスの種類"
+      },
+      {
+        "title": "変更セットでのリリース",
+        "body": "**変更セット** は、接続された組織間（本番⇄サンドボックス）でメタデータを運ぶ宣言的な手段です。\n\n- **送信側で送信用、受信側でインバウンド**を検証→配置\n- **組織間に「配置の接続」** が必要（本番とそのサンドボックス間など）\n- 依存メタデータを含め忘れると配置に失敗\n\n> ⚠️ 変更セットは **接続済みの組織間のみ**。無関係な組織には使えない。",
+        "fig": "deployment",
+        "figCap": "デプロイ（変更セット/メタデータ）"
+      },
+      {
+        "title": "Metadata API とテストレベル",
+        "body": "- **Metadata API / Ant 移行ツール / SFDX**：ファイルベースでメタデータを運ぶ（CI/CDや大規模に向く）\n- 本番配置時の **テストレベル**：\n  - **RunLocalTests**（自組織のテスト）／**RunAllTestsInOrg**／**RunSpecifiedTests**\n- 本番は実質テスト実行とカバレッジ達成が必須\n\n> 「宣言的に手早く＝変更セット」「自動化/再現性＝Metadata API/DX」。"
+      },
+      {
+        "title": "理解度チェック",
+        "body": "サンドボックスとリリースを問題で確認しましょう。\n\n- サンドボックス種類・変更セット\n- Metadata API・テストレベル",
+        "checkIds": [
+          319,
+          461,
+          56,
+          95,
+          201,
+          464
+        ]
+      }
+    ]
+  },
+  {
+    "id": "deploy-04",
+    "title": "Lesson 19: Salesforce DX・パッケージ・CI/CD",
+    "domain": "deploy",
+    "est": 12,
+    "slides": [
+      {
+        "title": "このレッスンで学ぶこと",
+        "body": "現代的な **ソース駆動開発** とパッケージングを学び、コースを締めくくります。\n\n### 今回のテーマ\n- **Salesforce DX**・スクラッチ組織・Dev Hub\n- **Salesforce CLI**\n- **パッケージ3種**・データのバックアップ\n\n> 「ソースを正本に、環境は使い捨て」が DX の発想。"
+      },
+      {
+        "title": "DX とスクラッチ組織",
+        "body": "**Salesforce DX** は、メタデータをソース（ファイル）として Git で管理する開発モデルです。\n\n- **スクラッチ組織**：定義ファイルから作る **使い捨ての開発/テスト組織**（既定で短命）\n- 作成には **Dev Hub**（本番/Developer Edition で有効化）が必要\n- ソースを push/pull し、組織は作っては壊す\n\n> ⚠️ スクラッチ組織は一時的。正本はあくまで **ソース（リポジトリ）**。"
+      },
+      {
+        "title": "Salesforce CLI",
+        "body": "**Salesforce CLI（sf / sfdx）** が DX の中心ツールです。\n\n- 組織認証、スクラッチ組織作成、**ソースの deploy/retrieve**、テスト実行、パッケージ操作\n- スクリプト化できるので **CI/CD** に組み込みやすい\n- 旧 Ant 移行ツールの役割もカバー\n\n> CI で「テスト→配置」を自動化する基盤が CLI。",
+        "code": "# 例：ソースを組織へ配置し、ローカルテストを実行\nsf project deploy start --test-level RunLocalTests"
+      },
+      {
+        "title": "パッケージ3種とバックアップ",
+        "body": "| パッケージ | 特徴 | 主な用途 |\n|---|---|---|\n| **未管理** | 編集可・更新管理なし | テンプレート配布 |\n| **管理** | 名前空間・**バージョン管理/保護**・AppExchange | 製品配布（ISV） |\n| **アンロック** | ソース駆動・社内のモジュール管理 | 自社開発の構造化 |\n\n- **データのバックアップ**：データエクスポートサービス（週次/月次）、Data Loader、レポート\n- メタデータは Git、データはエクスポートで守る\n\n> ⚠️ AppExchange 配布・知財保護＝**管理**、社内モジュール化＝**アンロック**。"
+      },
+      {
+        "title": "理解度チェック＆修了",
+        "body": "最終レッスンです。DX とリリースを確認しましょう。\n\n- DX・スクラッチ組織・CLI\n- パッケージ3種・バックアップ\n\nこれで全19レッスン＝公式4分野を **イチから** 通しました。あとは練習問題と模試で仕上げれば、合格圏です。おつかれさまでした！🎓",
+        "checkIds": [
+          60,
+          98,
+          204,
+          218,
+          210,
+          500
+        ]
+      }
+    ]
   }
 ]
