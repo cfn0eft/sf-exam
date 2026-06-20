@@ -25,7 +25,7 @@ sf-exam/
 ├── manifest.webmanifest  # PWA
 ├── sw.js                 # Service Worker（更新は tools/bump-version.js で。現在 v37／アセット ?v=35）
 ├── tools/                # 開発ツール（下記「開発ツール・CI」参照。サイト配信には含まれない）
-├── .github/workflows/ci.yml  # push/PR 毎に validate-data + test-engine を実行
+├── .github/workflows/ci.yml  # push/PR 毎に validate-data + test-engine + test-cloud-sync を実行
 ├── docs/HISTORY.md       # 過去リリースの実装メモ（CLAUDE.md から退避したアーカイブ）
 └── certifications/
     └── {slug}/
@@ -33,10 +33,11 @@ sf-exam/
         └── data/
             ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig/expFig（figures.js図名）／diff（難易度1=易2=標準3=難）／case+scenario（ケーススタディ束ね）。解説は解答後に全文をまとめて表示
             ├── domains.json     # {domains:[{code,name,weight,emoji}], map?}
-            ├── vocab.json       # 章配列 {chapter,terms:[{title,jaName,enName,definition,examPoints[],questions[],fullContent}]}（用語に任意で fig）
+            ├── vocab.json       # 章配列 {chapter,terms:[{title,jaName,enName,definition,examPoints[],questions[]}]}（用語に任意で fig）
             ├── navmap.json      # [{title,content}] 設定マップ
             ├── cram.json        # [{title,content}] 直前対策（教科書タブ）
-            └── compare.json     # [{title,domain,content}] 比較表（教科書タブ）
+            ├── compare.json     # [{title,domain,content}] 比較表（教科書タブ）
+            └── lessons.json     # [{title,…}] 授業（スライド学習）。無い資格は空配列扱い（ホーム導線も非表示）
 ```
 
 **ロジックを直すのは `quiz-engine.js` の1ファイルだけ。各資格の中身は `data/*.json` を編集する。**
@@ -75,11 +76,12 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 - `node tools/validate-data.js` — データ・アセット整合の一括検証。questions/vocab 等のスキーマ、`fig`/`expFig` が figures.js に実在するか、`case`⇔`scenario` 対応、キャッシュ版数3点セットの整合、主要JSの構文、changelog 形式。**データや図を編集したら必ず実行**（エラーで exit 1）
 - `node tools/test-engine.js` — エンジン純粋ロジックのスモークテスト（SRS・難易度推定・復習判定・XP/レベル・模試抽出・store 正規化・重複回避・逆算ペース）。DOMスタブ＋vm でエンジンを丸ごと読み込んで検証。**quiz-engine.js を編集したら必ず実行**
+- `node tools/test-cloud-sync.js` — クラウド同期・管理者ビューの集計ロジックのスモークテスト。**cloud-sync.js を編集したら必ず実行**
 - `node tools/bump-version.js` — キャッシュ無効化3点セット（sw.js CACHE / SHELL の ?v= / 各HTMLの ?v=）を一括繰り上げ。`--dry` で確認のみ。**手作業での版数更新は廃止**
 - `node tools/feedback-to-tasks.js <json>` — 管理者ビューで⬇JSONしたフィードバックを、対応優先度順の Markdown チェックリストに変換（Claude に貼って修正作業を依頼する用）
 - `node tools/check-links.js` — 全問題の `reference_url` の死活チェック（404/410 のみエラー。help.salesforce.com の 403 はボット対策なので警告扱い）
 
-`.github/workflows/ci.yml` が push / PR 毎に validate-data + test-engine を自動実行する。`check-links.yml` は週1（月曜 6:00 JST）＋手動実行。
+`.github/workflows/ci.yml` が push / PR 毎に validate-data + test-engine + test-cloud-sync を自動実行する。`check-links.yml` は週1（月曜 6:00 JST）＋手動実行。
 
 ---
 

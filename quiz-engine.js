@@ -426,7 +426,11 @@ function mdInline(s){
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
     .replace(/`(.+?)`/g,'<code>$1</code>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>');
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,function(_,txt,url){
+      // term:用語名 はアプリ内の学習ガイド（用語集）へジャンプ。それ以外は通常の外部リンク
+      if(/^term:/.test(url)) return '<a href="#" class="tbk-xref" onclick="gotoTerm(decodeURIComponent(\''+encodeURIComponent(url.slice(5))+'\'));return false;">'+txt+'</a>';
+      return '<a href="'+url+'" target="_blank">'+txt+'</a>';
+    });
 }
 function mdBlock(text){
   if(!text)return'';
@@ -939,6 +943,29 @@ function showTD(ci,ti){
 function closeTD(){
   document.getElementById('td-view').classList.remove('on');
   document.getElementById('tb-list').style.display='';
+}
+// 用語名から学習ガイド（教科書タブ）の該当用語へジャンプ。ナビマップの相互参照リンク等から呼ぶ
+function gotoTerm(label){
+  if(!label)return;
+  const norm=s=>String(s||'').replace(/\s/g,'');
+  const L=norm(label);
+  const keysOf=t=>[t.title,t.jaName,t.enName].filter(Boolean).map(norm);
+  let found=null;
+  // ①完全一致
+  for(let ci=0;ci<CHDATA.length&&!found;ci++)
+    for(let ti=0;ti<CHDATA[ci].terms.length;ti++)
+      if(keysOf(CHDATA[ci].terms[ti]).some(k=>k===L)){found=[ci,ti];break;}
+  // ②部分一致（ラベルが用語を含む／用語がラベルを含む）
+  for(let ci=0;ci<CHDATA.length&&!found;ci++)
+    for(let ti=0;ti<CHDATA[ci].terms.length;ti++)
+      if(keysOf(CHDATA[ci].terms[ti]).some(k=>k&&(L.includes(k)||k.includes(L)))){found=[ci,ti];break;}
+  goTo('textbook');switchTbTab('guide');
+  if(found){showTD(found[0],found[1]);}
+  else{ // フォールバック：見つからなければ検索に流す
+    const inp=document.getElementById('tb-search');
+    if(inp){inp.value=label;tbSearch(label);}
+    toast('「'+label+'」に近い用語を表示');
+  }
 }
 function jumpQ(qid){
   const q=allQ.find(q=>q.id===qid);if(!q){toast('問題が見つかりません');return;}

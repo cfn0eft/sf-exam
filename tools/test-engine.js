@@ -50,7 +50,7 @@ const sandbox = {
   fetch: () => Promise.reject(new Error('no network in test')),
   setTimeout, clearTimeout, setInterval: () => 0, clearInterval() {},
   confirm: () => true, alert() {},
-  addEventListener() {}, removeEventListener() {},
+  addEventListener() {}, removeEventListener() {}, scrollTo() {},
 };
 sandbox.window = sandbox;
 sandbox.window.CERT_CONFIG = { certName: 'テスト資格', examN: 60, examMin: 105, pass: 65, storageKey: 'sfq_test' };
@@ -236,6 +236,21 @@ t('PWAショートカット: 不明な ?go= は何もしない', () => {
   run('handleLaunchShortcut()');   // 例外にならず無視されること
   run('location.search=""');
   run('handleLaunchShortcut()');
+});
+
+t('gotoTerm: 用語名から学習ガイドの該当用語へジャンプ（完全・部分一致＋検索フォールバック）', () => {
+  run('CHDATA=[{chapter:"第1章: テスト",terms:[' +
+      '{title:"validation",jaName:"入力規則",enName:"Validation Rule",definition:"x"},' +
+      '{title:"layout",jaName:"ページレイアウト",definition:"y"}]}]');
+  run('gotoTerm("入力規則")');            // 完全一致（jaName）
+  eq(run('tdCi'), 0, '章index');
+  eq(run('tdTi'), 0, '入力規則の用語index');
+  run('gotoTerm("Validation Rule")');     // 完全一致（enName・空白無視）
+  eq(run('tdTi'), 0, 'enName一致でも入力規則');
+  run('gotoTerm("ページレイアウト")');
+  eq(run('tdTi'), 1, 'ページレイアウトの用語index');
+  run('gotoTerm("___存在しない用語___")'); // 未一致→検索フォールバック
+  eq(run('document.getElementById("tb-search").value'), '___存在しない用語___', '検索ボックスへフォールバック');
 });
 
 console.log('\n' + (fail ? '❌ 失敗 ' + fail + '件 / 成功 ' + pass + '件' : '✅ 全 ' + pass + '件成功'));
