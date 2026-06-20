@@ -1450,7 +1450,8 @@
       ? '毎週 ' + (m.recurring.dows || []).map(dowLabel).join('・') + ' ' + esc(m.recurring.start) + 'から' + m.recurring.durMin + '分'
       : '無効';
     html += '<div class="sfqc-bc-meta"><span>🗓 都度メンテ：キュー <b>' + future.length + '</b> 件</span>' +
-        '<button class="sfqc-mini" id="sfqc-maint-edit-queue">⚙️ 都度メンテを管理</button></div>' +
+        '<span style="display:flex;gap:6px"><button class="sfqc-mini" id="sfqc-maint-new">➕ 新規作成</button>' +
+        '<button class="sfqc-mini" id="sfqc-maint-queue">📋 キューを管理</button></span></div>' +
       '<div class="sfqc-bc-meta"><span>🔁 定期メンテ：' + esc(rec) + '</span>' +
         '<button class="sfqc-mini" id="sfqc-maint-edit-recur">⚙️ 定期メンテを管理</button></div>';
     return html + '</div>';
@@ -1490,15 +1491,35 @@
       msg: m.msg || '',
       tasks: Array.isArray(m.tasks) ? m.tasks.slice() : [],
       idDate: m.idDate || '',
-      idSeq: +m.idSeq || 0
+      idSeq: +m.idSeq || 0,
+      editIdx: -1, entryStart: 0, entryEnd: 0   // 都度メンテのフォーム状態（-1=新規 / 0以上=編集中の index）
     };
   }
   // 都度メンテ（キュー）の入力・管理画面
-  function openQueueEditor() {
+  // 都度メンテ：新規作成（フォーム）
+  function openQueueNew() {
     if (!isAdmin) return;
-    buildMaintDraft(); maintDraft.mode = 'queue'; maintAutoNumberEntry();
+    buildMaintDraft(); maintDraft.mode = 'queue-form'; maintDraft.editIdx = -1;
+    maintDraft.entry = { id: '', msg: '', tasks: [] }; maintDraft.entryStart = 0; maintDraft.entryEnd = 0;
+    maintAutoNumberEntry();
     composeCtx = { mode: 'maint' };
     document.getElementById('sfqc-compose').classList.add('show');
+    renderMaintEditor();
+  }
+  // 都度メンテ：キューを管理（各件の編集・削除）
+  function openQueueList() {
+    if (!isAdmin) return;
+    buildMaintDraft(); maintDraft.mode = 'queue-list';
+    composeCtx = { mode: 'maint' };
+    document.getElementById('sfqc-compose').classList.add('show');
+    renderMaintEditor();
+  }
+  // キューの1件をフォームに読み込んで編集
+  function editQueueEntry(i) {
+    var d = maintDraft; if (!d || !d.queue[i]) return;
+    var w = d.queue[i];
+    d.entry = { id: w.id || '', msg: w.msg || '', tasks: Array.isArray(w.tasks) ? w.tasks.slice() : [] };
+    d.entryStart = w.start; d.entryEnd = w.end; d.editIdx = i; d.mode = 'queue-form';
     renderMaintEditor();
   }
   // 定期メンテの入力・管理画面
@@ -1525,26 +1546,24 @@
       });
     });
   }
-  // 都度メンテ（キュー）と定期メンテで入力画面を分ける
+  // 入力画面の振り分け：定期 / 都度キュー一覧 / 都度フォーム（新規・編集）
   function renderMaintEditor() {
     var d = maintDraft; if (!d) return;
-    if (d.mode === 'recurring') renderMaintRecurring(); else renderMaintQueue();
+    if (d.mode === 'recurring') renderMaintRecurring();
+    else if (d.mode === 'queue-list') renderQueueList();
+    else renderQueueForm();
   }
-  // ── 都度メンテ（キュー）の入力・管理 ──
-  function renderMaintQueue() {
+  // ── 都度メンテ：新規作成 / 編集フォーム ──
+  function renderQueueForm() {
     var d = maintDraft; if (!d) return;
     var card = document.getElementById('sfqc-cmp-card');
-    var qRows = d.queue.length ? d.queue.map(function (w, i) {
-      return '<div class="sfqc-cmp-win"><span><b>' + esc(w.id || '(番号なし)') + '</b><br>' + esc(fmtDate(w.start)) + ' 〜 ' + esc(fmtDate(w.end)) + '</span><button data-rmq="' + i + '">削除</button></div>';
-    }).join('') : '<p class="sfqc-cmp-hint">キューは空です。下のフォームから追加してください。</p>';
+    var editing = d.editIdx >= 0;
     card.innerHTML =
-      '<h3>🗓 都度メンテ（キュー）</h3>' +
-      '<p class="sfqc-cmp-hint">単発のメンテナンスを1件ずつ登録します。各件が自分の番号・作業内容・メッセージを持ちます。</p>' +
-      qRows +
-      '<div class="sfqc-sec" style="margin-top:10px">＋ キューに追加</div>' +
+      '<h3>' + (editing ? '✏️ 都度メンテを編集' : '➕ 都度メンテを新規作成') + '</h3>' +
       '<label>対象期間</label>' +
       '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-        '<input type="datetime-local" id="sfm-q-ws" style="flex:1;min-width:150px"><input type="datetime-local" id="sfm-q-we" style="flex:1;min-width:150px"></div>' +
+        '<input type="datetime-local" id="sfm-q-ws" value="' + esc(msToLocalInput(d.entryStart)) + '" style="flex:1;min-width:150px">' +
+        '<input type="datetime-local" id="sfm-q-we" value="' + esc(msToLocalInput(d.entryEnd)) + '" style="flex:1;min-width:150px"></div>' +
       '<label>管理番号（自動採番・編集できます）</label>' +
       '<div style="display:flex;gap:6px;align-items:center">' +
         '<input type="text" id="sfm-q-id" value="' + esc(d.entry.id || '') + '" placeholder="MNT-YYYYMMDD-01" style="flex:1">' +
@@ -1554,45 +1573,83 @@
       '<label>作業内容（テンプレ適用後に編集できます）</label>' +
       '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' + maintTplBtns('q') + '</div>' +
       '<textarea id="sfm-q-tasks" placeholder="データベースの最適化&#10;サーバー構成の更新&#10;セキュリティ更新の適用">' + esc((d.entry.tasks || []).join('\n')) + '</textarea>' +
-      '<button class="sfqc-btn sfqc-btn-primary" id="sfm-q-add" style="width:100%;margin-top:4px">＋ キューに追加</button>' +
+      '<div class="sfqc-cmp-row"><button class="sfqc-btn sfqc-btn-ghost" id="sfm-cancel">' + (editing ? '← キューへ戻る' : '閉じる') + '</button>' +
+        '<button class="sfqc-btn sfqc-btn-primary" id="sfm-q-save">' + (editing ? '更新' : 'キューに追加') + '</button></div>';
+    var pull = function () {
+      var g = function (id) { return document.getElementById(id); };
+      if (g('sfm-q-id')) d.entry.id = (g('sfm-q-id').value || '').trim().slice(0, 40);
+      if (g('sfm-q-msg')) d.entry.msg = g('sfm-q-msg').value;
+      if (g('sfm-q-tasks')) d.entry.tasks = maintSplitTasks(g('sfm-q-tasks').value);
+      d.entryStart = localInputToMs(g('sfm-q-ws').value) || 0;
+      d.entryEnd = localInputToMs(g('sfm-q-we').value) || 0;
+    };
+    bindMaintTpl(card, d, pull);
+    document.getElementById('sfm-q-genid').addEventListener('click', function () { pull(); maintAutoNumberEntry(d.entryStart || Date.now()); renderMaintEditor(); });
+    document.getElementById('sfm-cancel').addEventListener('click', function () {
+      if (editing) { d.mode = 'queue-list'; d.editIdx = -1; renderMaintEditor(); } else closeCompose();
+    });
+    document.getElementById('sfm-q-save').addEventListener('click', function () {
+      pull();
+      var s = d.entryStart, e = d.entryEnd;
+      if (!s || !e || e <= s) { alert('対象期間（開始・終了日時）を正しく指定してください。'); return; }
+      if (!editing) {
+        var ds = maintDateStr(s), autoLike = /^MNT-\d{8}-\d{2}$/.test(d.entry.id || '');
+        if (!d.entry.id || (autoLike && d.entry.id.indexOf('MNT-' + ds + '-') !== 0)) maintAutoNumberEntry(s);
+      }
+      var ent = { id: d.entry.id || '', start: s, end: e, msg: d.entry.msg || '', tasks: (d.entry.tasks || []).slice() };
+      if (editing) d.queue[d.editIdx] = ent; else d.queue.push(ent);
+      d.queue.sort(function (a, b) { return a.start - b.start; });
+      saveMaint({ keepOpen: true, toast: editing ? '更新しました' : 'キューに追加しました', after: function () {
+        d.mode = 'queue-list'; d.editIdx = -1; d.entry = { id: '', msg: '', tasks: [] }; d.entryStart = 0; d.entryEnd = 0; renderMaintEditor();
+      } });
+    });
+  }
+  // ── 都度メンテ：キューを管理（編集・削除） ──
+  function renderQueueList() {
+    var d = maintDraft; if (!d) return;
+    var card = document.getElementById('sfqc-cmp-card');
+    var nowMs = Date.now();
+    var rows = d.queue.length ? d.queue.map(function (w, i) {
+      var live = w.start <= nowMs && nowMs < w.end, past = w.end <= nowMs;
+      var badge = live ? '🔴 実施中 ' : (past ? '✅ 終了 ' : '🕒 予定 ');
+      return '<div class="sfqc-cmp-win" style="align-items:flex-start">' +
+        '<span><b>' + esc(w.id || '(番号なし)') + '</b><br>' +
+        '<span style="font-size:11px;color:#64748b">' + badge + '</span>' + esc(fmtDate(w.start)) + ' 〜 ' + esc(fmtDate(w.end)) + '</span>' +
+        '<span style="display:flex;gap:6px;flex-shrink:0"><button data-edq="' + i + '">編集</button><button data-rmq="' + i + '">削除</button></span></div>';
+    }).join('') : '<p class="sfqc-cmp-hint">キューは空です。「➕ 新規作成」から追加してください。</p>';
+    card.innerHTML =
+      '<h3>📋 都度メンテのキュー</h3>' +
+      '<p class="sfqc-cmp-hint">登録済みの単発メンテナンスです。各件を編集・削除できます。</p>' +
+      '<button class="sfqc-btn sfqc-btn-primary" id="sfm-q-new" style="width:100%;margin-bottom:10px">➕ 新規作成</button>' +
+      rows +
       '<div class="sfqc-sec">⚙️ 共通（予告・既定）</div>' +
       '<label>予告バナーのメッセージ（開始前に表示・空欄なら日時のみ）</label>' +
       '<textarea id="sfm-premsg" placeholder="例）まもなくメンテナンスを開始します。キリの良いところで学習を終えてください。">' + esc(d.preMsg) + '</textarea>' +
       '<label>予告バナーを出す時間（分前・0で予告なし）</label><input type="number" id="sfm-pre" min="0" value="' + d.preMin + '">' +
       '<label>既定メッセージ（各メンテで未指定のとき）</label>' +
       '<textarea id="sfm-msg" placeholder="例）ただいまメンテナンスを実施しています。しばらくお待ちください。">' + esc(d.msg || '') + '</textarea>' +
-      '<label>既定の作業内容（各メンテで未指定のとき）</label>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' + maintTplBtns('g') + '</div>' +
-      '<textarea id="sfm-g-tasks" placeholder="（既定の作業内容）">' + esc((d.tasks || []).join('\n')) + '</textarea>' +
-      '<div class="sfqc-cmp-row"><button class="sfqc-btn sfqc-btn-ghost" id="sfm-cancel">閉じる</button><button class="sfqc-btn sfqc-btn-primary" id="sfm-save">保存</button></div>';
-    var pull = function () {
+      '<div class="sfqc-cmp-row"><button class="sfqc-btn sfqc-btn-ghost" id="sfm-cancel">閉じる</button><button class="sfqc-btn sfqc-btn-primary" id="sfm-save-common">共通設定を保存</button></div>';
+    var pullCommon = function () {
       var g = function (id) { return document.getElementById(id); };
-      if (g('sfm-q-id')) d.entry.id = (g('sfm-q-id').value || '').trim().slice(0, 40);
-      if (g('sfm-q-msg')) d.entry.msg = g('sfm-q-msg').value;
-      if (g('sfm-q-tasks')) d.entry.tasks = maintSplitTasks(g('sfm-q-tasks').value);
       if (g('sfm-premsg')) d.preMsg = g('sfm-premsg').value;
       if (g('sfm-pre')) d.preMin = +g('sfm-pre').value || 0;
       if (g('sfm-msg')) d.msg = g('sfm-msg').value;
-      if (g('sfm-g-tasks')) d.tasks = maintSplitTasks(g('sfm-g-tasks').value);
     };
-    card.querySelectorAll('[data-rmq]').forEach(function (b) {
-      b.addEventListener('click', function () { pull(); d.queue.splice(+b.getAttribute('data-rmq'), 1); renderMaintEditor(); });
+    document.getElementById('sfm-q-new').addEventListener('click', function () {
+      pullCommon(); d.entry = { id: '', msg: '', tasks: [] }; d.entryStart = 0; d.entryEnd = 0; d.editIdx = -1; maintAutoNumberEntry(); d.mode = 'queue-form'; renderMaintEditor();
     });
-    bindMaintTpl(card, d, pull);
-    document.getElementById('sfm-q-genid').addEventListener('click', function () { pull(); maintAutoNumberEntry(localInputToMs(document.getElementById('sfm-q-ws').value) || Date.now()); renderMaintEditor(); });
-    document.getElementById('sfm-q-add').addEventListener('click', function () {
-      pull();
-      var s = localInputToMs(document.getElementById('sfm-q-ws').value), e = localInputToMs(document.getElementById('sfm-q-we').value);
-      if (!s || !e || e <= s) { alert('対象期間（開始・終了日時）を正しく指定してください。'); return; }
-      var ds = maintDateStr(s), autoLike = /^MNT-\d{8}-\d{2}$/.test(d.entry.id || '');
-      if (!d.entry.id || (autoLike && d.entry.id.indexOf('MNT-' + ds + '-') !== 0)) maintAutoNumberEntry(s); // 番号未指定/開始日と不一致の自動番号は開始日で採り直す
-      d.queue.push({ id: d.entry.id || '', start: s, end: e, msg: d.entry.msg || '', tasks: (d.entry.tasks || []).slice() });
-      d.queue.sort(function (a, b) { return a.start - b.start; });
-      d.entry = { id: '', msg: '', tasks: [] }; maintAutoNumberEntry(s); // 次のエントリの番号を用意（同日なら連番）
-      renderMaintEditor();
+    card.querySelectorAll('[data-edq]').forEach(function (b) {
+      b.addEventListener('click', function () { pullCommon(); editQueueEntry(+b.getAttribute('data-edq')); });
+    });
+    card.querySelectorAll('[data-rmq]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!confirm('このメンテナンスをキューから削除しますか？')) return;
+        pullCommon(); d.queue.splice(+b.getAttribute('data-rmq'), 1);
+        saveMaint({ keepOpen: true, toast: '削除しました', after: function () { renderMaintEditor(); } });
+      });
     });
     document.getElementById('sfm-cancel').addEventListener('click', closeCompose);
-    document.getElementById('sfm-save').addEventListener('click', function () { pull(); saveMaint(); });
+    document.getElementById('sfm-save-common').addEventListener('click', function () { pullCommon(); saveMaint({ toast: '共通設定を保存しました' }); });
   }
   // ── 定期メンテの入力・管理 ──
   function renderMaintRecurring() {
@@ -1630,7 +1687,8 @@
     document.getElementById('sfm-cancel').addEventListener('click', closeCompose);
     document.getElementById('sfm-save').addEventListener('click', function () { pull(); saveMaint(); });
   }
-  function saveMaint() {
+  function saveMaint(opts) {
+    opts = opts || {};
     var d = maintDraft; if (!d || !db) return;
     var rec = {
       // 都度メンテのキュー（各エントリが自分の番号・作業内容・メッセージを持つ）
@@ -1645,8 +1703,10 @@
       updated: Date.now(), by: currentName || 'admin'
     };
     db.collection(BROADCAST_COL).doc(MAINT_DOC).set(rec).then(function () {
-      lastMaint = rec; logAdmin('メンテナンス設定', '都度' + rec.queue.length + '件/定期' + (rec.recurring.enabled ? 'ON' : 'OFF')); toastSafe('メンテナンス設定を保存しました');
-      closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+      lastMaint = rec; logAdmin('メンテナンス設定', '都度' + rec.queue.length + '件/定期' + (rec.recurring.enabled ? 'ON' : 'OFF')); toastSafe(opts.toast || 'メンテナンス設定を保存しました');
+      if (!opts.keepOpen) closeCompose();
+      if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+      if (opts.after) opts.after();
     }).catch(function (e) { alert('保存に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
   }
   // バナー表示中の重なり対策：本文・上部バー（sticky）・アカウントバッジ（fixed）を h ぶん下げる
@@ -2327,7 +2387,8 @@
     body.querySelectorAll('[data-bcdel]').forEach(function (b) { b.addEventListener('click', function () { deleteBroadcast(b.getAttribute('data-bcdel')); }); });
     body.querySelectorAll('[data-ntedit]').forEach(function (b) { b.addEventListener('click', function () { var p = b.getAttribute('data-ntedit').split('|'); editNotice(p[0], p[1]); }); });
     body.querySelectorAll('[data-ntdel]').forEach(function (b) { b.addEventListener('click', function () { var p = b.getAttribute('data-ntdel').split('|'); deleteNotice(p[0], p[1]); }); });
-    var maintEditQ = document.getElementById('sfqc-maint-edit-queue'); if (maintEditQ) maintEditQ.addEventListener('click', openQueueEditor);
+    var maintNew = document.getElementById('sfqc-maint-new'); if (maintNew) maintNew.addEventListener('click', openQueueNew);
+    var maintQ = document.getElementById('sfqc-maint-queue'); if (maintQ) maintQ.addEventListener('click', openQueueList);
     var maintEditR = document.getElementById('sfqc-maint-edit-recur'); if (maintEditR) maintEditR.addEventListener('click', openRecurringEditor);
     var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
     // メッセージタブ：DM絞り込み
