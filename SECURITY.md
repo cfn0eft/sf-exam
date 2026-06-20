@@ -23,12 +23,11 @@ GitHub Pages で配信される**静的サイト**で、ログインと学習進
 ## 脆弱性の報告 / Reporting a Vulnerability
 
 セキュリティ上の問題を見つけた場合は、**公開の Issue や Pull Request には書かず**、
-以下のいずれかの非公開チャネルで報告してください（責任ある開示にご協力ください）。
+以下の非公開チャネルで報告してください（責任ある開示にご協力ください）。
 
-1. **推奨: GitHub の非公開脆弱性報告**
-   リポジトリの **Security → Report a vulnerability**（Private vulnerability reporting）から報告してください。
-   ※ この機能はリポジトリの Settings → Code security で有効化できます。
-2. **メール:** `<セキュリティ連絡先メールアドレスをここに記入>`
+**GitHub の非公開脆弱性報告（Private vulnerability reporting）を利用してください。**
+リポジトリの **Security → Report a vulnerability** から報告できます。
+※ この機能はリポジトリの Settings → Code security で有効化できます。
 
 ### 報告に含めてほしい情報
 - 影響を受ける箇所（URL／ファイル／コミット）
@@ -71,10 +70,20 @@ GitHub Pages で配信される**静的サイト**で、ログインと学習進
 秘密情報ではありません（[Firebase 公式ドキュメント](https://firebase.google.com/docs/projects/api-keys)参照）。
 実際のアクセス制御は **Firestore セキュリティルール**で行います。したがって、この API キーが
 リポジトリ／配信ファイルに含まれていること自体は脆弱性ではありません。
+- API キーは Google Cloud Console で **HTTP リファラー制限**を設定しており、
+`https://cfn0eft.github.io/*` と `http://localhost/*` からのリクエストのみ許可しています。
 - ユーザー認証と学習進捗は Firebase Authentication / Cloud Firestore に保存されます。
 本サイトは**学習進捗以外の機微な個人情報を収集・保存しない**方針です。
 - 学習進捗はブラウザの `localStorage` にも保存されます（端末ローカル）。
+- **データの分離**: 各ユーザーの学習進捗は Firestore の `progress/{uid}` に保存され、
+セキュリティルールにより**本人の uid に一致する読み書きのみ**を許可しています。
+- **利用承認制（ホワイトリスト方式）**: 学習機能の利用には管理者の承認が必要です。
+新規アカウントは「承認待ち（pending）」として作成され、**管理者だけが承認（approved）を付与できます**
+（Firestore ルールにより、本人が自分を `approved` に変更することはできません）。
+- ⚠️ **問題データ（`questions.json` など）は GitHub Pages 上の静的公開ファイル**です。
+そのため上記の利用承認制は、アプリ上の**体験・UI レベルのアクセス制限**であり、
+配信ファイルへの URL 直アクセスによる取得までを防ぐものではありません。
 
 ---
 
-最終更新: 2026-05-26
+最終更新: 2026-06-20
