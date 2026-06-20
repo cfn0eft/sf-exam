@@ -375,7 +375,9 @@
     ],
     "source": "gen",
     "diff": 1,
-    "expFig": "trigger-context"
+    "expFig": "trigger-context",
+    "case": "dev-trigger",
+    "scenario": "Universal Containers の開発者として、商談（Opportunity）の業務自動化を Apex トリガで実装します。次の各要件に対して、最適なトリガの設計・実装を選んでください。"
   },
   {
     "id": 16,
@@ -400,7 +402,9 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "case": "dev-trigger",
+    "scenario": "Universal Containers の開発者として、商談（Opportunity）の業務自動化を Apex トリガで実装します。次の各要件に対して、最適なトリガの設計・実装を選んでください。"
   },
   {
     "id": 17,
@@ -425,7 +429,9 @@
       "Apex"
     ],
     "source": "gen",
-    "diff": 2
+    "diff": 2,
+    "case": "dev-trigger",
+    "scenario": "Universal Containers の開発者として、商談（Opportunity）の業務自動化を Apex トリガで実装します。次の各要件に対して、最適なトリガの設計・実装を選んでください。"
   },
   {
     "id": 18,
@@ -452,7 +458,9 @@
     ],
     "source": "gen",
     "diff": 2,
-    "expFig": "governor-limits"
+    "expFig": "governor-limits",
+    "case": "dev-trigger",
+    "scenario": "Universal Containers の開発者として、商談（Opportunity）の業務自動化を Apex トリガで実装します。次の各要件に対して、最適なトリガの設計・実装を選んでください。"
   },
   {
     "id": 19,
@@ -659,7 +667,9 @@
     ],
     "source": "gen",
     "diff": 2,
-    "expFig": "async-apex"
+    "expFig": "async-apex",
+    "case": "dev-async",
+    "scenario": "Cloud Kicks の開発者として、大量データの一括処理と外部システム連携を非同期 Apex で実装します。次の各要件に対して、最適な非同期処理の設計・実装を選んでください。"
   },
   {
     "id": 27,
@@ -2049,7 +2059,9 @@
     ],
     "source": "gen",
     "diff": 2,
-    "expFig": "async-apex"
+    "expFig": "async-apex",
+    "case": "dev-async",
+    "scenario": "Cloud Kicks の開発者として、大量データの一括処理と外部システム連携を非同期 Apex で実装します。次の各要件に対して、最適な非同期処理の設計・実装を選んでください。"
   },
   {
     "id": 82,
@@ -3088,7 +3100,9 @@
     ],
     "source": "gen",
     "diff": 3,
-    "expFig": "async-apex"
+    "expFig": "async-apex",
+    "case": "dev-async",
+    "scenario": "Cloud Kicks の開発者として、大量データの一括処理と外部システム連携を非同期 Apex で実装します。次の各要件に対して、最適な非同期処理の設計・実装を選んでください。"
   },
   {
     "id": 123,
@@ -4230,7 +4244,9 @@
     ],
     "source": "gen",
     "diff": 2,
-    "expFig": "async-apex"
+    "expFig": "async-apex",
+    "case": "dev-async",
+    "scenario": "Cloud Kicks の開発者として、大量データの一括処理と外部システム連携を非同期 Apex で実装します。次の各要件に対して、最適な非同期処理の設計・実装を選んでください。"
   },
   {
     "id": 168,

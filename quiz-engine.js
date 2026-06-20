@@ -1371,6 +1371,8 @@ function nbReviewAll(){const ls=scopedQ().filter(function(q){return needsReview(
 // 紙吹雪エフェクト（バッジ・目標・ミッション・合格時）
 function celebrate(){
   try{
+    // モーション低減を希望する利用者には紙吹雪を出さない（アクセシビリティ）
+    if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     var c=document.createElement('div');c.className='confetti';
     var cols=['#0176d3','#2e844a','#dd7a01','#ba0517','#7b5ea7','#0b827c'];
     for(var i=0;i<64;i++){var p=document.createElement('i');p.style.left=(Math.random()*100)+'%';p.style.background=cols[i%cols.length];p.style.animationDelay=(Math.random()*0.6).toFixed(2)+'s';p.style.animationDuration=(1.8+Math.random()*1.2).toFixed(2)+'s';c.appendChild(p);}
