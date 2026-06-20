@@ -245,7 +245,9 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     return {
       id: (w && w.id) || g.id || '',
       msg: (w && w.msg) || g.msg || '',
-      tasks: (w && Array.isArray(w.tasks) && w.tasks.length) ? w.tasks : (Array.isArray(g.tasks) ? g.tasks : [])
+      tasks: (w && Array.isArray(w.tasks) && w.tasks.length) ? w.tasks : (Array.isArray(g.tasks) ? g.tasks : []),
+      preMsg: (w && w.preMsg) || g.preMsg || '',
+      preMin: (w && w.preMin != null) ? w.preMin : ((g.preMin != null) ? g.preMin : 60)
     };
   }
   function maintRecurInfo(cfg, occMs) {
@@ -253,7 +255,9 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     return {
       id: r.id || ('MNT-' + maintDateStr(occMs) + '-R'),
       msg: r.msg || (cfg && cfg.msg) || '',
-      tasks: (Array.isArray(r.tasks) && r.tasks.length) ? r.tasks : ((cfg && cfg.tasks) || [])
+      tasks: (Array.isArray(r.tasks) && r.tasks.length) ? r.tasks : ((cfg && cfg.tasks) || []),
+      preMsg: r.preMsg || (cfg && cfg.preMsg) || '',
+      preMin: (r.preMin != null) ? r.preMin : ((cfg && cfg.preMin != null) ? cfg.preMin : 60)
     };
   }
   function maintStatus(cfg, now) {
