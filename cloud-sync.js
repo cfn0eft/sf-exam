@@ -1939,8 +1939,10 @@
     var c = dashDomCache[slug];
     if (c) return c.loaded ? c : null;
     dashDomCache[slug] = { loaded: false };
+    // データの基準パスはページ役割で変わる: クイズページ(client)は ../<slug>/ ／ ルートLP(gateway)は certifications/<slug>/
+    var base = (ROLE === 'client') ? '../' : 'certifications/';
     var grab = function (path) { return fetch(path).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
-    Promise.all([grab('../' + slug + '/data/domains.json'), grab('../' + slug + '/data/questions.json')]).then(function (res) {
+    Promise.all([grab(base + slug + '/data/domains.json'), grab(base + slug + '/data/questions.json')]).then(function (res) {
       var domj = res[0], qs = res[1] || [];
       var defs = domj ? (Array.isArray(domj) ? domj : (domj.domains || [])) : [];
       var domBy = {};
