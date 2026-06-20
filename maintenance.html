@@ -159,13 +159,14 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
       var li = document.createElement('li'); li.textContent = t; ul.appendChild(li);
     });
   }
+  /* YYYYMMDD(JST) 文字列 */
+  function maintDateStr(ms) {
+    try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ms).replace(/-/g, ''); }
+    catch (e) { var d = new Date(ms); return '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
+  }
   /* 管理番号が未設定なら開始日(JST)から MNT-YYYYMMDD-01 を自動採番 */
   function autoMaintId() {
-    var base = isFinite(startMs) ? startMs : Date.now();
-    var ds;
-    try { ds = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(base).replace(/-/g, ''); }
-    catch (e) { var d = new Date(base); ds = '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
-    return 'MNT-' + ds + '-01';
+    return 'MNT-' + maintDateStr(isFinite(startMs) ? startMs : Date.now()) + '-01';
   }
 
   /* 静的部分（作業内容・管理番号・問い合わせ先・予定枠）を描画 */
@@ -232,14 +233,36 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   }
 
   /* ---- Firestore ライブ購読：管理者がメンテ解除した瞬間に自動復帰 ---- */
+  // 都度メンテのキュー（旧 windows + enabled ゲートも吸収）
+  function maintQueue(cfg) {
+    if (!cfg) return [];
+    if (Array.isArray(cfg.queue)) return cfg.queue;
+    if (Array.isArray(cfg.windows)) return (cfg.enabled === false) ? [] : cfg.windows;
+    return [];
+  }
+  function maintEntryInfo(cfg, w) {
+    var g = cfg || {};
+    return {
+      id: (w && w.id) || g.id || '',
+      msg: (w && w.msg) || g.msg || '',
+      tasks: (w && Array.isArray(w.tasks) && w.tasks.length) ? w.tasks : (Array.isArray(g.tasks) ? g.tasks : [])
+    };
+  }
+  function maintRecurInfo(cfg, occMs) {
+    var r = (cfg && cfg.recurring) || {};
+    return {
+      id: r.id || ('MNT-' + maintDateStr(occMs) + '-R'),
+      msg: r.msg || (cfg && cfg.msg) || '',
+      tasks: (Array.isArray(r.tasks) && r.tasks.length) ? r.tasks : ((cfg && cfg.tasks) || [])
+    };
+  }
   function maintStatus(cfg, now) {
-    var res = { active: false, end: 0 };
+    var res = { active: false, end: 0, entry: null };
     if (!cfg) return res;
-    if (cfg.fullStop) { res.active = true; return res; }
-    if (!cfg.enabled) return res;
-    (cfg.windows || []).forEach(function (w) {
+    if (cfg.fullStop) { res.active = true; res.entry = maintEntryInfo(cfg, null); return res; }
+    maintQueue(cfg).forEach(function (w) {
       if (!w || !w.start || !w.end) return;
-      if (now >= w.start && now < w.end) { res.active = true; res.end = Math.max(res.end, w.end); }
+      if (now >= w.start && now < w.end) { res.active = true; if (w.end > res.end) { res.end = w.end; res.entry = maintEntryInfo(cfg, w); } }
     });
     var r = cfg.recurring;
     if (r && r.enabled && r.start && r.durMin && r.dows && r.dows.length) {
@@ -248,9 +271,10 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
         var d = new Date(now); d.setDate(d.getDate() + off); d.setHours(hh, mm, 0, 0);
         if (r.dows.indexOf(d.getDay()) < 0) continue;
         var s = d.getTime(), e = s + dur;
-        if (now >= s && now < e) { res.active = true; res.end = Math.max(res.end, e); }
+        if (now >= s && now < e) { res.active = true; if (e > res.end) { res.end = e; res.entry = maintRecurInfo(cfg, s); } }
       }
     }
+    if (res.active && !res.entry) res.entry = maintEntryInfo(cfg, null);
     return res;
   }
 
@@ -271,9 +295,10 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
         var st = maintStatus(cfg, Date.now());
         firestoreActive = !!st.active;
         if (st.active) {
-          if (cfg && cfg.msg) { liveMsg = cfg.msg; $('m-sub').innerHTML = esc(liveMsg); }
-          if (cfg && cfg.id) { $('m-id').textContent = cfg.id; }
-          if (cfg && Array.isArray(cfg.tasks) && cfg.tasks.length) { renderTasks(cfg.tasks); }
+          var ent = st.entry || {};
+          if (ent.msg) { liveMsg = ent.msg; $('m-sub').innerHTML = esc(liveMsg); }
+          if (ent.id) { $('m-id').textContent = ent.id; }
+          if (ent.tasks && ent.tasks.length) { renderTasks(ent.tasks); }
           if (!(hand && hand.full) && st.end) { endMs = st.end; }
           render();
         } else {
