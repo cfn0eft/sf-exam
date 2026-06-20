@@ -10,7 +10,7 @@
 ![PWA](https://img.shields.io/badge/PWA-offline_ready-5A0FC8?logo=pwa&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_+_Firestore-FFCA28?logo=firebase&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-deployed-222?logo=github)
-![Questions](https://img.shields.io/badge/総問題数-1051-1f6feb)
+![Questions](https://img.shields.io/badge/総問題数-1434-1f6feb)
 ![No Build](https://img.shields.io/badge/build_step-none-success)
 
 </div>
@@ -51,12 +51,12 @@
 
 | 資格 | 試験コード | 問題数 | 分野 | 用語 | 合格ライン |
 |---|---|---:|---:|---:|---:|
-| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **388 問** | 8 分野（Agentforce 含む） | 94 語 | 65% |
+| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **460 問** | 8 分野（Agentforce 含む） | 94 語 | 65% |
 | **Salesforce 認定 Platform アプリケーションビルダー** | — | **445 問** | 5 分野 | 83 語 | 63% |
-| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **218 問** | 4 分野 | 48 語 | 68% |
+| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **529 問** | 4 分野 | 75 語 | 68% |
 
 いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
-アドミン／アプリビルダーは「出典」フィルタでタイソンブログ由来の問題と AI 生成問題を切り替えられます（デベロッパーは全問オリジナル作成）。
+3 資格とも「出典」フィルタでタイソンブログ由来の問題と AI 生成問題を切り替えられます。
 
 ---
 
@@ -113,7 +113,8 @@ sf-exam/
    │       ├─ domains.json     # 分野定義＋公式ウェイト
    │       ├─ vocab.json       # 用語帳（定義・試験ポイント・関連問題）
    │       ├─ navmap.json      # 設定画面マップ
-   │       └─ cram.json / compare.json  # 直前対策・比較表（任意）
+   │       ├─ cram.json / compare.json  # 直前対策・比較表（任意）
+   │       └─ lessons.json     # イチから授業（スライド学習・任意）
    ├─ app-builder/
    │   └─ …（同じ構成）
    └─ developer/
