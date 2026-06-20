@@ -1377,6 +1377,27 @@
     return res;
   }
   function dowLabel(n) { return ['日', '月', '火', '水', '木', '金', '土'][n] || ''; }
+  // 作業内容テンプレート（テンプレ適用後に自由編集できる）
+  var MAINT_TASK_TEMPLATES = [
+    { label: '🔧 定期メンテ', tasks: ['データベースの最適化', 'サーバー構成の更新', 'セキュリティ更新の適用'] },
+    { label: '🚀 機能リリース', tasks: ['新機能のリリース', 'データ移行と整合性チェック', 'リリース後の動作確認'] },
+    { label: '🚨 緊急対応', tasks: ['緊急セキュリティパッチの適用', '障害原因の調査と復旧', '影響範囲の確認'] },
+    { label: '🗄️ DB作業', tasks: ['データベースのバックアップ', 'インデックスの再構築', 'パフォーマンスの改善'] },
+    { label: '🧹 クリア', tasks: [] }
+  ];
+  // 管理番号の自動採番：MNT-YYYYMMDD(JST)-NN（同じ日付で採番するたび連番を繰り上げ）
+  function maintDateStr(ms) {
+    try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ms).replace(/-/g, ''); }
+    catch (e) { var d = new Date(ms); return '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
+  }
+  function maintAutoNumber() {
+    var d = maintDraft; if (!d) return;
+    var base = (d.windows && d.windows[0] && d.windows[0].start) ? d.windows[0].start : Date.now();
+    var ds = maintDateStr(base);
+    var seq = (d.idDate === ds) ? ((+d.idSeq || 0) + 1) : 1;
+    d.idDate = ds; d.idSeq = seq;
+    d.id = 'MNT-' + ds + '-' + ('0' + seq).slice(-2);
+  }
   var maintDraft = null;
   // 管理者：メンテナンス設定の概要（ダッシュボードタブ）
   function maintenanceSectionHTML() {
@@ -1429,8 +1450,13 @@
         start: (m.recurring && m.recurring.start) || '02:00',
         durMin: (m.recurring && m.recurring.durMin) || 120
       },
-      preMin: (m.preMin != null) ? m.preMin : 60
+      preMin: (m.preMin != null) ? m.preMin : 60,
+      id: m.id || '',
+      tasks: Array.isArray(m.tasks) ? m.tasks.slice() : [],
+      idDate: m.idDate || '',
+      idSeq: +m.idSeq || 0
     };
+    if (!maintDraft.id) maintAutoNumber();   // 未採番なら開始日から自動採番
     composeCtx = { mode: 'maint' };
     document.getElementById('sfqc-compose').classList.add('show');
     renderMaintEditor();
@@ -1449,6 +1475,15 @@
       '<label><input type="checkbox" id="sfm-en"' + (d.enabled ? ' checked' : '') + '> メンテナンス機能を有効にする</label>' +
       '<label>メンテナンス中のメッセージ（ロック画面に表示）</label><textarea id="sfm-msg" placeholder="例）ただいまメンテナンスを実施しています。しばらくお待ちください。">' + esc(d.msg) + '</textarea>' +
       '<label>予告バナーのメッセージ（開始前に表示・空欄なら日時のみ）</label><textarea id="sfm-premsg" placeholder="例）まもなくメンテナンスを開始します。キリの良いところで学習を終えてください。">' + esc(d.preMsg) + '</textarea>' +
+      '<label>管理番号（自動採番・編集できます）</label>' +
+      '<div style="display:flex;gap:6px;align-items:center">' +
+        '<input type="text" id="sfm-id" value="' + esc(d.id || '') + '" placeholder="MNT-YYYYMMDD-01" style="flex:1">' +
+        '<button class="sfqc-mini" id="sfm-genid" type="button">🔄 自動採番</button></div>' +
+      '<label>作業内容（1行に1項目・テンプレ適用後に編集できます）</label>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' +
+        MAINT_TASK_TEMPLATES.map(function (t, i) { return '<button class="sfqc-mini" type="button" data-tpl="' + i + '">' + esc(t.label) + '</button>'; }).join('') +
+      '</div>' +
+      '<textarea id="sfm-tasks" placeholder="データベースの最適化&#10;サーバー構成の更新&#10;セキュリティ更新の適用">' + esc((d.tasks || []).join('\n')) + '</textarea>' +
       '<label>単発の期間</label>' + (winRows || '<p class="sfqc-cmp-hint">未設定</p>') +
       '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center">' +
         '<input type="datetime-local" id="sfm-ws" style="flex:1;min-width:150px"><input type="datetime-local" id="sfm-we" style="flex:1;min-width:150px">' +
@@ -1464,6 +1499,8 @@
       d.enabled = document.getElementById('sfm-en').checked;
       d.msg = document.getElementById('sfm-msg').value;
       d.preMsg = document.getElementById('sfm-premsg').value;
+      var idEl = document.getElementById('sfm-id'); if (idEl) d.id = (idEl.value || '').trim().slice(0, 40);
+      var tkEl = document.getElementById('sfm-tasks'); if (tkEl) d.tasks = (tkEl.value || '').split('\n').map(function (s) { return s.trim().slice(0, 80); }).filter(Boolean).slice(0, 8);
       d.recurring.enabled = document.getElementById('sfm-ren').checked;
       d.recurring.start = document.getElementById('sfm-rstart').value || '02:00';
       d.recurring.durMin = +document.getElementById('sfm-rdur').value || 120;
@@ -1481,6 +1518,15 @@
       if (!s || !e || e <= s) { alert('開始・終了日時を正しく指定してください。'); return; }
       d.windows.push({ start: s, end: e }); d.windows.sort(function (a, b) { return a.start - b.start; }); renderMaintEditor();
     });
+    document.getElementById('sfm-genid').addEventListener('click', function () { pull(); maintAutoNumber(); renderMaintEditor(); });
+    card.querySelectorAll('[data-tpl]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        pull();
+        var t = MAINT_TASK_TEMPLATES[+b.getAttribute('data-tpl')]; if (!t) return;
+        if (t.tasks.length && d.tasks && d.tasks.length && !confirm('現在の作業内容をテンプレート「' + t.label + '」で置き換えますか？')) return;
+        d.tasks = t.tasks.slice(); renderMaintEditor();
+      });
+    });
     document.getElementById('sfm-cancel').addEventListener('click', closeCompose);
     document.getElementById('sfm-save').addEventListener('click', function () { pull(); saveMaint(); });
   }
@@ -1488,7 +1534,9 @@
     var d = maintDraft; if (!d || !db) return;
     var rec = { enabled: !!d.enabled, msg: (d.msg || '').slice(0, 1000), preMsg: (d.preMsg || '').slice(0, 1000), windows: d.windows || [],
       recurring: { enabled: !!d.recurring.enabled, dows: d.recurring.dows || [], start: d.recurring.start || '02:00', durMin: +d.recurring.durMin || 120 },
-      preMin: +d.preMin || 0, updated: Date.now(), by: currentName || 'admin' };
+      preMin: +d.preMin || 0,
+      id: (d.id || '').slice(0, 40), tasks: Array.isArray(d.tasks) ? d.tasks.slice(0, 8) : [], idDate: d.idDate || '', idSeq: +d.idSeq || 0,
+      updated: Date.now(), by: currentName || 'admin' };
     db.collection(BROADCAST_COL).doc(MAINT_DOC).set(rec).then(function () {
       lastMaint = rec; logAdmin('メンテナンス設定', rec.enabled ? '有効' : '無効'); toastSafe('メンテナンス設定を保存しました');
       closeCompose(); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
@@ -1518,7 +1566,7 @@
       }
       // メンテ中：リッチな全画面メンテ画面 (maintenance.html) へ転送（管理者は冒頭で return 済み）。
       // 終了予定・メッセージ・緊急全停止かを sessionStorage で引き継ぐ。
-      try { sessionStorage.setItem('sfq_maint', JSON.stringify({ msg: msg, end: st.end || 0, full: !!st.full, ts: now })); } catch (e) {}
+      try { sessionStorage.setItem('sfq_maint', JSON.stringify({ msg: msg, end: st.end || 0, full: !!st.full, id: (lastMaint && lastMaint.id) || '', tasks: (lastMaint && lastMaint.tasks) || null, ts: now })); } catch (e) {}
       var maintUrl = (HOME_URL || 'index.html').replace(/index\.html(?:[?#].*)?$/, 'maintenance.html');
       location.replace(maintUrl);
       return;
