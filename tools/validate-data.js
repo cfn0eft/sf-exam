@@ -133,6 +133,38 @@ function validateCert(slug, figKeys) {
       });
     } catch (e) { err(f + ' が読めない: ' + e.message); }
   });
+
+  // lessons.json（任意・授業スライド）。ある資格だけ検証する
+  // [{id, title, domain?, est?, slides:[{title, body?, code?, fig?, figCap?, checkIds?[]}]}]
+  const lpath = path.join(dir, 'lessons.json');
+  if (fs.existsSync(lpath)) {
+    let lessons = null;
+    try { lessons = readJSON(lpath); } catch (e) { err('lessons.json が読めない: ' + e.message); }
+    if (lessons && !Array.isArray(lessons)) err('lessons.json が配列でない');
+    else if (lessons) {
+      const lids = new Set();
+      let slideN = 0;
+      lessons.forEach((l, i) => {
+        const tag = 'lesson[' + (l && l.id != null ? l.id : i) + ']';
+        if (!l.id || !/^[\w-]+$/.test(String(l.id))) err(tag + ' id が無い/不正（英数とハイフンのみ・onclickに直接埋め込むため）');
+        else if (lids.has(l.id)) err('lessons id 重複: ' + l.id);
+        else lids.add(l.id);
+        if (!l.title) err(tag + ' title がない');
+        if (l.domain && !codes.has(l.domain)) err(tag + ' 未知の domain: ' + l.domain);
+        if (!Array.isArray(l.slides) || !l.slides.length) { err(tag + ' slides が空'); return; }
+        l.slides.forEach((s, si) => {
+          slideN++;
+          if (!s.title) err(tag + ' slides[' + si + '] title がない');
+          if (s.fig && !figKeys.has(slug + '/' + s.fig)) err(tag + ' slides[' + si + '] fig が figures.js にない: ' + slug + '/' + s.fig);
+          if (s.checkIds != null) {
+            if (!Array.isArray(s.checkIds)) err(tag + ' slides[' + si + '] checkIds が配列でない');
+            else s.checkIds.forEach((qid) => { if (!ids.has(qid)) err(tag + ' slides[' + si + '] checkIds に存在しない問題ID: ' + qid); });
+          }
+        });
+      });
+      info('  lessons: ' + lessons.length + '本 ' + slideN + 'スライド');
+    }
+  }
 }
 
 /* ---- キャッシュ版数の3点セット整合 ---- */

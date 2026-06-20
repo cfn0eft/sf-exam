@@ -6,7 +6,8 @@
  * 機能・配置・UI は全資格共通（sf-admin のフル機能を踏襲）。
  * HTML の inline onclick が依存するためグローバル関数のまま（IIFEで包まない）。
  * ===================================================================== */
-let QDATA=[], CHDATA=[], NAVDATA=[], CRAMDATA=[], COMPDATA=[];
+let QDATA=[], CHDATA=[], NAVDATA=[], CRAMDATA=[], COMPDATA=[], LESSDATA=[];
+let lesCur=null, lesIdx=0;   // レッスン（授業）：現在のレッスンid / 表示中スライド番号
 const CFG=(typeof window!=='undefined'&&window.CERT_CONFIG)||{};
 const EXAM_N=CFG.examN||60, EXAM_MIN=CFG.examMin||105, PASS=CFG.pass||65, SKEY=CFG.storageKey||'sfq_default';
 const DATA_DIR=CFG.dataDir||'data/';
@@ -74,12 +75,12 @@ function freshFirst(list){const rec=recentExamIds();if(!rec.size)return shuffle(
 // --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
-  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[]};
+  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 // --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
-window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
+window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; if(!store.lessons||typeof store.lessons!=='object')store.lessons={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function recH(id,ok,low){
@@ -163,6 +164,7 @@ async function loadCertData(){
   NAVDATA=(await gj('navmap.json'))||[];
   CRAMDATA=(await gj('cram.json'))||[];
   COMPDATA=(await gj('compare.json'))||[];
+  LESSDATA=(await gj('lessons.json'))||[];   // 授業（スライド学習）。無い資格は空配列のまま
   allQ=[...QDATA];filtQ=[...allQ];
   // 共有 localStorage の出典指定が、この資格に存在しない出典なら 'all' 扱いに（保存はしない＝他資格の設定は維持）
   if(srcFilter!=='all'&&!allQ.some(q=>q&&q.source===srcFilter))srcFilter='all';
@@ -367,6 +369,7 @@ function homeStats(){
   try{renderResumeBanner();}catch(e){}
   try{renderNews();}catch(e){}
   try{renderGame();}catch(e){}
+  try{revealLessonEntry();}catch(e){}
   renderPlan();
 }
 
@@ -384,6 +387,7 @@ function goTo(name){
   if(name==='stats')renderStats();
   if(name==='vocab')initVocab();
   if(name==='cram')renderCram();
+  if(name==='lessons')renderLessonList();
   if(name==='mypage')renderMypage();
   if(name==='textbook'){
     document.getElementById('td-view').classList.remove('on');
@@ -2312,9 +2316,113 @@ function renderExamAcq(pass){
   else host.innerHTML='';
 }
 
+// ===== レッスン（授業：スライド学習）=====
+// data/lessons.json が無い資格では LESSDATA=[] となり、ホームの導線も非表示。
+// lessons.json: [{id, title, domain, est?, slides:[{title, body?(Markdown), code?, fig?, figCap?, checkIds?[]}]}]
+function lessonsAvailable(){return Array.isArray(LESSDATA)&&LESSDATA.length>0;}
+function lessonById(id){return (LESSDATA||[]).find(function(l){return l&&l.id===id;});}
+function lessonProg(id){if(!store.lessons)store.lessons={};return store.lessons[id]||{done:0,last:0};}
+// ホームの「イチから授業」導線は lessons.json がある資格だけ出す
+function revealLessonEntry(){const b=document.getElementById('lesson-entry');if(b)b.style.display=lessonsAvailable()?'':'none';}
+
+// レッスン一覧（進捗バッジ付き）
+function renderLessonList(){
+  const el=document.getElementById('les-list'); if(!el)return;
+  const player=document.getElementById('les-player'); if(player)player.style.display='none';
+  el.style.display='';
+  if(!lessonsAvailable()){el.innerHTML='<div class="cram-empty">🎓 この資格の授業は準備中です。</div>';return;}
+  let h='<div class="les-intro">🎓 スライドを順番にめくって、基礎からイチから学べます。各レッスンの最後に理解度チェックがあります。</div>';
+  LESSDATA.forEach(function(l){
+    if(!l||!l.id)return;
+    const p=lessonProg(l.id), dd=domainDef(l.domain), n=(l.slides||[]).length;
+    let badge='';
+    if(p.done)badge='<span class="les-done">✓ 修了</span>';
+    else if((p.last||0)>0)badge='<span class="les-pos">途中 '+Math.min((p.last||0)+1,n)+'/'+n+'</span>';
+    h+='<button class="les-card" onclick="openLesson(\''+l.id+'\')">'
+      +'<div class="les-card-top"><span class="les-dom">'+escH((dd&&dd.emoji)||'📘')+' '+escH((dd&&dd.name)||'')+'</span>'+badge+'</div>'
+      +'<div class="les-card-title">'+escH(l.title||'')+'</div>'
+      +'<div class="les-card-meta">🖼️ '+n+'枚'+(l.est?' ・ 約'+l.est+'分':'')+'</div>'
+      +'</button>';
+  });
+  el.innerHTML=h;
+  window.scrollTo(0,0);
+}
+
+// レッスンを開く（前回の続きから）
+function openLesson(id){
+  const l=lessonById(id); if(!l){toast('レッスンが見つかりません');return;}
+  lesCur=id;
+  const p=lessonProg(id), n=(l.slides||[]).length;
+  lesIdx=p.done?0:Math.max(0,Math.min(p.last||0,n-1));
+  goTo('lessons');
+  renderLessonSlide();
+}
+
+// 現在のスライドを描画（描画のたびに「最後に見たスライド」を保存＝中断再開に対応）
+function renderLessonSlide(){
+  const l=lessonById(lesCur); if(!l)return;
+  const list=document.getElementById('les-list'); if(list)list.style.display='none';
+  const player=document.getElementById('les-player'); if(!player)return;
+  player.style.display='';
+  const slides=l.slides||[], n=slides.length;
+  if(lesIdx<0)lesIdx=0; if(lesIdx>n-1)lesIdx=n-1;
+  const s=slides[lesIdx]||{}, isLast=lesIdx===n-1;
+  // 進捗保存
+  if(!store.lessons)store.lessons={};
+  const prog=store.lessons[lesCur]||(store.lessons[lesCur]={done:0,last:0});
+  if(lesIdx>(prog.last||0)){prog.last=lesIdx;save();}
+  // ドット（タップで該当スライドへ）
+  let dots='';
+  for(let i=0;i<n;i++)dots+='<span class="les-dot'+(i===lesIdx?' on':(i<lesIdx?' seen':''))+'" onclick="lesGo('+i+')"></span>';
+  // 本文（図解→本文Markdown→コード→理解度チェック）
+  let body='';
+  if(s.fig)body+=figHTML(s.fig,s.figCap||'');
+  if(s.body)body+='<div class="les-body">'+cramMd(s.body)+'</div>';
+  if(s.code)body+='<pre class="les-code"><code>'+escH(s.code)+'</code></pre>';
+  if(Array.isArray(s.checkIds)&&s.checkIds.length)
+    body+='<button class="btn bp les-check" onclick="lessonCheck(\''+lesCur+'\','+lesIdx+')">📝 関連問題を解く（'+s.checkIds.length+'問）</button>';
+  // ナビ
+  const prevBtn='<button class="btn bg" '+(lesIdx===0?'disabled':'')+' onclick="lesNav(-1)">‹ 前へ</button>';
+  const nextBtn=isLast
+    ? '<button class="btn bs- les-finish" onclick="finishLesson()">✓ 修了する</button>'
+    : '<button class="btn bp" onclick="lesNav(1)">次へ ›</button>';
+  player.innerHTML=
+    '<div class="les-head"><button class="les-back" onclick="exitLesson()">‹ 一覧</button>'
+    +'<span class="les-htitle">'+escH(l.title||'')+'</span>'
+    +'<span class="les-count">'+(lesIdx+1)+' / '+n+'</span></div>'
+    +'<div class="les-dots">'+dots+'</div>'
+    +'<div class="card les-slide"><h2 class="les-stitle">'+escH(s.title||'')+'</h2>'+body+'</div>'
+    +'<div class="les-nav">'+prevBtn+nextBtn+'</div>';
+  window.scrollTo(0,0);
+}
+function lesNav(d){lesGo(lesIdx+d);}
+function lesGo(i){const l=lessonById(lesCur);if(!l)return;const n=(l.slides||[]).length;lesIdx=Math.max(0,Math.min(n-1,i));renderLessonSlide();}
+function exitLesson(){renderLessonList();}
+// 修了：done=1 にして修了ボーナス XP。一覧に戻る
+function finishLesson(){
+  if(!lesCur)return;
+  if(!store.lessons)store.lessons={};
+  const prog=store.lessons[lesCur]||(store.lessons[lesCur]={done:0,last:0});
+  const already=prog.done;
+  prog.done=1;
+  if(!already){store.xp=(store.xp||0)+20;toast('🎓 レッスン修了！ +20XP');}
+  else toast('🎓 おさらい完了');
+  save();
+  try{homeStats();}catch(e){}
+  renderLessonList();
+}
+// 理解度チェック：このスライドの checkIds の問題だけで学習セッションを開始
+function lessonCheck(id,idx){
+  const l=lessonById(id); if(!l)return;
+  const s=(l.slides||[])[idx]||{}, ids=s.checkIds||[];
+  const qs=ids.map(function(x){return allQ.find(function(q){return q.id===x;});}).filter(Boolean);
+  if(!qs.length){toast('関連問題が見つかりません');return;}
+  beginStudyWith(qs);
+}
+
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[]};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
 // ===== SRS（間隔反復・SM-2簡易版）=====
