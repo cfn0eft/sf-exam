@@ -358,6 +358,13 @@
       '#sfqc-maint .sfqc-card{text-align:center}' +
       '#sfqc-maint-banner{position:fixed;left:0;right:0;top:0;z-index:99980;display:none;background:#b45309;color:#fff;font-size:12.5px;font-weight:700;text-align:center;padding:8px 12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.2)}' +
       '#sfqc-maint-banner.show{display:block}' +
+      /* 新バージョン検知の更新トースト（タップで即リロード） */
+      '#sfqc-swtoast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(24px);z-index:99986;display:flex;align-items:center;gap:10px;background:#0176d3;color:#fff;font-size:13px;font-weight:700;padding:10px 10px 10px 16px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);opacity:0;transition:opacity .25s,transform .25s;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;max-width:92vw}' +
+      '#sfqc-swtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}' +
+      '.sfqc-swtoast-btn{background:#fff;color:#0176d3;border:none;border-radius:9px;padding:6px 13px;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap}' +
+      '.sfqc-swtoast-btn:hover{background:#eaf4ff}' +
+      '.sfqc-swtoast-x{background:transparent;border:none;color:#fff;font-size:18px;line-height:1;cursor:pointer;padding:0 4px;opacity:.85}' +
+      '.sfqc-swtoast-x:hover{opacity:1}' +
       '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
       '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
       '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
@@ -698,6 +705,39 @@
     }).catch(function () {});
   }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
+
+  /* 新バージョン検知 → 更新トースト（タップで即リロード）。
+     SW は skipWaiting で即アクティブ化されるが、開いているページは旧コードのまま動くため、
+     新バージョンが入ったら通知して、利用者の操作で確実にリロードさせる（自動リロードはしない＝学習中の中断防止）。 */
+  function showSWUpdateToast() {
+    if (document.getElementById('sfqc-swtoast')) return;
+    var t = document.createElement('div'); t.id = 'sfqc-swtoast';
+    t.innerHTML = '<span>🔄 新しいバージョンがあります</span>' +
+      '<button class="sfqc-swtoast-btn" id="sfqc-swtoast-go">今すぐ更新</button>' +
+      '<button class="sfqc-swtoast-x" id="sfqc-swtoast-x" aria-label="閉じる">×</button>';
+    document.body.appendChild(t);
+    try { requestAnimationFrame(function () { t.classList.add('show'); }); } catch (e) { t.classList.add('show'); }
+    var go = document.getElementById('sfqc-swtoast-go');
+    if (go) go.addEventListener('click', function () { try { location.reload(); } catch (e) { location.href = location.href; } });
+    var x = document.getElementById('sfqc-swtoast-x');
+    if (x) x.addEventListener('click', function () { t.classList.remove('show'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 300); });
+  }
+  function setupSWUpdate() {
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      navigator.serviceWorker.ready.then(function (reg) {
+        if (!reg) return;
+        if (reg.waiting && navigator.serviceWorker.controller) showSWUpdateToast(); // 既に更新が待機中
+        reg.addEventListener('updatefound', function () {
+          var nw = reg.installing; if (!nw) return;
+          nw.addEventListener('statechange', function () {
+            // 既存コントローラがいる状態で新SWが installed＝更新（初回インストールは controller が無いので除外）
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) showSWUpdateToast();
+          });
+        });
+      }).catch(function () {});
+    } catch (e) {}
+  }
 
   /* ---------------- ヘルパー ---------------- */
   function idToEmail(id) { var c = sanitizeId(id); return c ? c + '@' + LOGIN_DOMAIN : ''; }
@@ -1084,24 +1124,28 @@
       showNoticeModal(items);
     } catch (e) {}
   }
-  function showNoticeModal(items) {
+  // items を1つのモーダルで表示。opts.preview=true のときは管理者向け「送信プレビュー」（既読は記録しない）
+  function showNoticeModal(items, opts) {
+    var preview = !!(opts && opts.preview);
     var old = document.getElementById('sfqc-replies'); if (old && old.parentNode) old.parentNode.removeChild(old);
     var wrap = document.createElement('div'); wrap.id = 'sfqc-replies';
     var rows = items.map(function (r) {
       return '<div class="sfqc-rep-item"><div class="sfqc-rep-ts">' + esc(r.title) + '・' + esc(fmtDate(r.ts)) + '</div><div class="sfqc-rep-msg">' + esc(r.msg) + '</div></div>';
     }).join('');
     wrap.innerHTML = '<div class="sfqc-card sfqc-rep-card">' +
-        '<p class="sfqc-title">📢 管理者からのお知らせ</p>' +
-        '<p class="sfqc-sub">新しいお知らせが届きました。</p>' +
+        '<p class="sfqc-title">' + (preview ? '📢 お知らせのプレビュー' : '📢 管理者からのお知らせ') + '</p>' +
+        '<p class="sfqc-sub">' + (preview ? 'これは利用者の画面に表示される内容です。' : '新しいお知らせが届きました。') + '</p>' +
         '<div class="sfqc-rep-list">' + rows + '</div>' +
-        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-rep-ok" style="width:100%;margin-top:10px">確認しました</button>' +
+        '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-rep-ok" style="width:100%;margin-top:10px">' + (preview ? '閉じる' : '確認しました') + '</button>' +
       '</div>';
     document.body.appendChild(wrap);
     var onKey;
     var dismiss = function () {
-      var now = Date.now(), bcm = {}, ntm = {};
-      items.forEach(function (r) { if (r.kind === 'bc') bcm[r.id] = now; else ntm[r.id] = now; });
-      writeRead({ bcm: bcm, ntm: ntm }); // 既読をクラウドへ記録（管理者が可視化）
+      if (!preview) {
+        var now = Date.now(), bcm = {}, ntm = {};
+        items.forEach(function (r) { if (r.kind === 'bc') bcm[r.id] = now; else ntm[r.id] = now; });
+        writeRead({ bcm: bcm, ntm: ntm }); // 既読をクラウドへ記録（管理者が可視化）
+      }
       document.removeEventListener('keydown', onKey);
       if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
     };
@@ -1292,7 +1336,7 @@
       var p;
       if (composeCtx.id) { p = col.doc(composeCtx.id).set(rec, { merge: true }); }
       else { rec.ts = now; p = col.add(rec); }
-      p.then(function () { logAdmin(composeCtx.id ? '一斉お知らせ編集' : '一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 26)); loadBroadcasts(function () { done(composeCtx && composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました')); }); }).catch(fail);
+      p.then(function () { logAdmin(composeCtx.id ? '一斉お知らせ編集' : '一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 26)); if (!composeCtx.id) previewAnnouncement(msg); loadBroadcasts(function () { done(composeCtx && composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました')); }); }).catch(fail);
     } else if (composeCtx.uids) {
       // 一括個別お知らせ：選択した各ユーザーの notices に追記
       var rec3 = function () { return { id: 'n' + Date.now() + Math.floor(Math.random() * 100000), msg: msg, ts: now, rev: now, publishAt: publishAt, by: currentName || 'admin' }; };
@@ -1302,6 +1346,7 @@
       })).then(function (res) {
         var n = res.filter(Boolean).length; adminSelUsers = {};
         logAdmin('一括個別お知らせ', n + '人：' + msg.slice(0, 14));
+        previewAnnouncement(msg);
         done(scheduled ? (n + '人へ予約しました') : (n + '人へ送信しました'));
       }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
     } else {
@@ -1319,9 +1364,15 @@
       db.collection(COLLECTION).doc(uid).set({ notices: arr }, { merge: true }).then(function () {
         if (u) u.notices = arr;
         logAdmin(composeCtx.id ? '個別お知らせ編集' : '個別お知らせ', (u && u.name || '') + '：' + msg.slice(0, 16));
+        if (!composeCtx.id) previewAnnouncement(msg);
         done(composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました'));
       }).catch(function (e) { alert('保存に失敗しました: ' + (e && e.message)); });
     }
+  }
+  // 送信直後に管理者自身の画面へ「送信プレビュー」をポップ（利用者に表示される見た目を確認）
+  function previewAnnouncement(msg) {
+    var n = Date.now();
+    showNoticeModal([{ kind: 'bc', id: 'preview', title: '📢 お知らせ', msg: msg, ts: n, rev: n }], { preview: true });
   }
   // 全体お知らせの編集/削除、個別お知らせの編集/削除
   function editBroadcast(id) { var b = adminBroadcasts.filter(function (x) { return x.id === id; })[0]; if (b) openCompose({ mode: 'broadcast', id: id, msg: b.msg, publishAt: b.publishAt }); }
@@ -3087,6 +3138,7 @@
     HOME_URL = window.SFQ_HOME_URL || 'index.html';
 
     buildUI();
+    setupSWUpdate();   // 新バージョン検知 → 更新トースト（全ページ・全環境で有効）
 
     // マイページ（エンジン側）がアカウント情報・操作を取得するための橋渡し。
     window.__sfqAccount = function () {
