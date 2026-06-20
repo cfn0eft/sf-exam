@@ -5539,7 +5539,6 @@
   },
   {
     "id": 301,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice1",
     "question": "デバッグログに書き込まれるときのxの値は何ですか。\n\nInteger x = 0;\ndo {\n    x = 1;\n    x++;\n} while (x < 1);\nSystem.debug(x);",
     "choices": [
       "0",
@@ -5565,7 +5564,6 @@
   },
   {
     "id": 302,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice2",
     "question": "LightningコンポーネントからApexメソッドおよびプロパティへのアクセスを可能にするアノテーションはどれですか。",
     "choices": [
       "@RestResource",
@@ -5591,7 +5589,6 @@
   },
   {
     "id": 303,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice3",
     "question": "非同期Apexを実行して、ガバナ制限と実行制限が緩和されるものはどれですか。3つ選びなさい。",
     "choices": [
       "ヒープの合計サイズ",
@@ -5621,7 +5618,6 @@
   },
   {
     "id": 304,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice4",
     "question": "現在取引先が100個ある場合に、開発者コンソールを使用して次のコードを実行します。\n\nAccount myAccount = new Account(Name = 'MyAccount');\ninsert myAccount;\nFor(Integer x = 0; x < 250; x++) {\n   Account newAccount = new Account(Name = 'MyAccount' + x);\n    try {\n        Insert newAccount;\n    } catch (Exception ex) {\n        System.debug(ex);\n    }\n   insert new Account(Name = 'myAccount');\n}\n\nこのコードの実行後、組織にはいくつの取引先がありますか。",
     "choices": [
       "101",
@@ -5648,7 +5644,6 @@
   },
   {
     "id": 305,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice5",
     "question": "トリガーの実行順序で、beforeトリガーが実行された後、およびafterトリガーが実行される前に、どのステップが発生しますか。正確な順序を答えなさい。\n\n1. システム検証ステップが再度実行され、ユーザー定義の入力規則がチェックされます。\n2. beforeトリガー\n3. afterトリガー\n4. レコードはデータベースに保存されますが、まだコミットされていません。\n5. 重複ルールを実行します。",
     "choices": [
       "1→2→5→3→4",
@@ -5674,7 +5669,6 @@
   },
   {
     "id": 306,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice6",
     "question": "レコードセット内のレコード数が不明な場合、開発者は.size()または.length()メソッド呼び出しを実行せずに、レコードセット内のすべてのレコードに対して実行するコードセットを実装するためにどの制御ステートメントを使用する必要がありますか。",
     "choices": [
       "For(init_stmt, exit_condition; increment_stmt) { }",
@@ -5700,7 +5694,6 @@
   },
   {
     "id": 307,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice7",
     "question": "共有に関する正確な説明はどれですか。2つ選びなさい。",
     "choices": [
       "内部クラスまたは外部クラスのいずれかを共有と同様に宣言できますが、両方は宣言できません。",
@@ -5728,7 +5721,6 @@
   },
   {
     "id": 308,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice8",
     "question": "開発者には、コードブロックを共有ありまたはなしで実行するかどうかを示すwith sharingおよびwithout sharingを省略したコードブロックがあります。Salesforce組織でコードを実行するユーザーの組織全体のデフォルトおよび共有設定に自動的に従うものは次のうちどれですか。",
     "choices": [
       "Apexトリガー",
@@ -5754,7 +5746,6 @@
   },
   {
     "id": 309,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice9",
     "question": "SalesforceDXを使用する場合、スクラッチ組織を作成・管理するために開発者は何を有効にする必要がありますか。",
     "choices": [
       "Production",
@@ -5781,7 +5772,6 @@
   },
   {
     "id": 310,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice10",
     "question": "開発者は、取引先を操作するApexメソッドに十分なテストカバレッジがあることを確認する必要があります。開発者はテストデータを作成する必要があります。このテストデータをSalesforceに読み込むための好ましい方法は何ですか。2つ選びなさい。",
     "choices": [
       "CSVファイルを使用する",
@@ -5808,7 +5798,6 @@
   },
   {
     "id": 311,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice11",
     "question": "開発者はオブジェクトProperty__cのレコードを作成する必要があります。\n\n開発者は次のコードブロックを使用します。\n\nList<Property__c> propertiesToCreate = helperClass.CreateProperties();\ntry {\n    /*Question*/\n} catch (Exception exp) {\n    //Exception handling\n}\n\nレコードにエラーが発生して作成に失敗した場合でも、開発者は「/*Question*/」どのようなコードを挿入すれば、少なくともいくつかのレコードを作成することができるでしょうか。",
     "choices": [
       "Database.insert(propertiesToCreate, System.ALLOW_PARTIAL);",
@@ -5834,7 +5823,6 @@
   },
   {
     "id": 312,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice12",
     "question": "サンドボックスで作業する開発者は、新しいテストクラスを実行するために何を使用する必要がありますか。2つ選びなさい。",
     "choices": [
       "REST APIおよびApexTestRunメソッド",
@@ -5862,7 +5850,6 @@
   },
   {
     "id": 313,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice13",
     "question": "Universal Containers社は、注文管理アプリケーションを実装しました。各注文は1つ以上の注文明細項目を持つことができます。注文明細オブジェクトは、主従関係を通じて注文オブジェクトに関連しています。各注文明細について、合計価格は注文明細の価格に注文数量を掛け合わせることで計算されます。注文レコード上のすべての注文明細項目の合計を取得するためのベストプラクティスは何ですか。",
     "choices": [
       "クイックアクション",
@@ -5889,7 +5876,6 @@
   },
   {
     "id": 314,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice14",
     "question": "開発者は次の匿名コードブロックを実行します。結果は次の選択肢のうちのどれになりますか。\n\nList <Account> acc =[SELECT Id FROM Account LIMIT 10]; \nDelete acc;\nDatabase.emptyRecycleBin(acc);\nsystem.debug(Limits.getDMLStatements() + '、' + Limits.getLimitDMLStatements());",
     "choices": [
       "2、150",
@@ -5916,7 +5902,6 @@
   },
   {
     "id": 315,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice15",
     "question": "カスタム例外「RecordNotFoundException」は、次のブロックコードによって定義されます。\n\npublic class RecordNotFoundException extends Exception() {\n\n}\n\n開発者はどのステートメントを使用してカスタム例外をスローできますか。2つ選びなさい。",
     "choices": [
       "throw new RecordNotFoundException(\"problem occured\");",
@@ -5943,7 +5928,6 @@
   },
   {
     "id": 316,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice16",
     "question": "Apexテストクラスを作成するときに使用できるメソッドは何ですか。2つ選びなさい。",
     "choices": [
       "開発者コンソールで無視するエラータイプを選択するメソッド",
@@ -5972,7 +5956,6 @@
   },
   {
     "id": 317,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice17",
     "question": "次のクエリを実行します。\n\nContact con = [SELECT ID,FirstName,LastName,Email FROM Contact WHERE LastName = 'Smith'];\n\n姓が「Smith」のレコードがない場合、クエリは何を返しますか。",
     "choices": [
       "空の値を持つ取引先責任者",
@@ -5998,7 +5981,6 @@
   },
   {
     "id": 318,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice18",
     "question": "Lightningコンポーネントフレームワークでは、クライアント側のコントローラーロジックはどこに含まれていますか。",
     "choices": [
       "Apex",
@@ -6024,7 +6006,6 @@
   },
   {
     "id": 319,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice19",
     "question": "Full Sandboxには当てはまらないが、Partial Copy Sandboxに当てはまるものはどれですか。2つ選びなさい。",
     "choices": [
       "より頻繁に更新される",
@@ -6051,7 +6032,6 @@
   },
   {
     "id": 320,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice20",
     "question": "開発者は、取引先オブジェクトの不要なカスタム項目をスキーマビルダーを使用して削除するには、どうすればよいでしょうか。",
     "choices": [
       "コード内のすべての参照を削除すると、スキーマビルダーからカスタム項目が削除されます。",
@@ -6076,7 +6056,6 @@
   },
   {
     "id": 321,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice21",
     "question": "開発者は、すべてのテストが合格しているかどうかを知る必要があります。開発者はどの機能を使用できますか。2つ選びなさい。",
     "choices": [
       "開発者コンソール",
@@ -6103,7 +6082,6 @@
   },
   {
     "id": 322,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice22",
     "question": "Salesforce Lightning環境において、ユーザーページレイアウトのアクションに関係なく、ユーザープロファイルページに表示される標準的なChatterアクションは何ですか。2つ選びなさい。",
     "choices": [
       "投稿",
@@ -6130,7 +6108,6 @@
   },
   {
     "id": 323,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice23",
     "question": "Lightningコンポーネントバンドルに含めることができるリソースはどれですか。2つ選びなさい。",
     "choices": [
       "Apexクラス",
@@ -6156,7 +6133,6 @@
   },
   {
     "id": 324,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice24",
     "question": "ユーザーが特定のオブジェクト用の作成アクションを使って新しいデータを作成する場合、その新しいデータに関連する情報がどのタイムラインに表示されますか。3つ選びなさい。",
     "choices": [
       "レコードを作成したユーザーのChatterフィード",
@@ -6184,7 +6160,6 @@
   },
   {
     "id": 325,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice25",
     "question": "開発者は、商品(API名:Product2)と価格表(API名:Pricebook2)のテストデータを作成するときにどのステートメントを使用しますか。",
     "choices": [
       "List objList = Test.loadData(Account.sObjectType, \"myResource\");",
@@ -6209,7 +6184,6 @@
   },
   {
     "id": 326,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice26",
     "question": "Universal Containers社は、顧客やサービスエージェントが注文を識別するために注文番号を使用する注文システムを使用しています。注文レコードはSalesforceにインポートされます。Salesforceで注文番号項目はどのように定義されるべきですか。",
     "choices": [
       "直接参照",
@@ -6235,7 +6209,6 @@
   },
   {
     "id": 327,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice27",
     "question": "通貨項目は、Apexのどのプリミティブデータ型に自動的に割り当てられますか。",
     "choices": [
       "Integer",
@@ -6260,7 +6233,6 @@
   },
   {
     "id": 328,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice28",
     "question": "dowork() メソッドを呼び出す際に使用できるコードセグメントはどれですか。",
     "choices": [
       "For(Trigger.isInsert t: Trigger.new) { dowork(); }",
@@ -6286,7 +6258,6 @@
   },
   {
     "id": 329,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice29",
     "question": "企業は、候補者と面接をモデル化する求人アプリを求めています。各候補者レコードの面接の総数を表示します。面接レコードのセキュリティを、候補レコードのセキュリティとは独立して定義します。開発者はこのタスクを達成するために何をしますか。2つ選びなさい。",
     "choices": [
       "面接レコードをカウントする候補オブジェクトに積み上げ集計項目を作成します",
@@ -6313,7 +6284,6 @@
   },
   {
     "id": 330,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice30",
     "question": "組織には、取引先関連の機能を提供するさまざまなApexクラスがあります。新しい入力規則がオブジェクトに追加された後、多くのテストメソッドが失敗します。失敗を解決し、将来の入力規則に必要なコード変更の数を減らすために何ができますか。2つ選びなさい。",
     "choices": [
       "有効な取引先レコードを作成するメソッドを作成し、テストメソッド内からこのメソッドを呼び出します。",
@@ -6339,7 +6309,6 @@
   },
   {
     "id": 331,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice31",
     "question": "ある開発者が、エンジンとその部品を追跡するアプリケーションを作成しています。個々の部品は、異なるタイプのエンジンで使用することができます。データを追跡し、孤立したレコードを防ぐには、どのようなデータモデルを使用する必要がありますか。",
     "choices": [
       "エンジンと部品の一対多のモデルを表すために、主従関係を作成する。",
@@ -6365,7 +6334,6 @@
   },
   {
     "id": 332,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice32",
     "question": "StandardControllerクラスで定義されているメソッドはどれですか。2つ選びなさい。",
     "choices": [
       "Merge",
@@ -6391,7 +6359,6 @@
   },
   {
     "id": 333,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice33",
     "question": "取引先レコードの項目値が更新された場合、関連する商談のカスタム項目の値を更新する方法はどれですか。2つ選びなさい。",
     "choices": [
       "取引先オブジェクトのApexトリガー",
@@ -6419,7 +6386,6 @@
   },
   {
     "id": 334,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice34",
     "question": "Lightningコンポーネントは次のうちどの製品で利用できますか。3つ選びなさい。",
     "choices": [
       "Salesforceモバイルアプリ",
@@ -6446,7 +6412,6 @@
   },
   {
     "id": 335,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice35",
     "question": "以下コードセグメントが実行された後のxの値は何ですか。\n\nString x = 'A';\nInteger i = 10;\nif (i < 15 ){\n    i = 15;\n    x = 'B';\n} else if (i < 20 ){\n    x = 'C';\n} else {\n    x = 'D';\n}",
     "choices": [
       "A",
@@ -6471,7 +6436,6 @@
   },
   {
     "id": 336,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice36",
     "question": "開発者がプログラムで新しい取引先責任者レコードを作成する際、どの標準項目が必須で入力が求められますか。",
     "choices": [
       "Accountld",
@@ -6496,7 +6460,6 @@
   },
   {
     "id": 337,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice37",
     "question": "Universal Containers社は、注文を外部データオブジェクトとしてSalesforceに含めています。外部オブジェクトと取引先の両方にある取引先のキー項目を活用して、取引先と注文オブジェクトの関係(1対多の関係)を作成します。どの関係を作成しますか。",
     "choices": [
       "主従関係",
@@ -6523,7 +6486,6 @@
   },
   {
     "id": 338,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice38",
     "question": "承認のためにロックされた後、どのユーザーがレコードを編集できますか。2つ選びなさい。",
     "choices": [
       "システム管理者",
@@ -6550,7 +6512,6 @@
   },
   {
     "id": 339,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice39",
     "question": "Apexで単体テストを作成する場合、以下のどの記述が正しいですか。",
     "choices": [
       "複数のメソッドを使用した単体テストでは、1つのメソッドが失敗するたびにすべてのメソッドが失敗します。",
@@ -6575,7 +6536,6 @@
   },
   {
     "id": 340,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice40",
     "question": "開発者が、LastModified項目の値が90日以上である場合に、List内の各Accountを非アクティブまたは非アクティブとしてマークしたいと考えています。開発者はどのApexテクニックを使用する必要がありますか。",
     "choices": [
       "内部にswitch文を含むforループ",
@@ -6600,7 +6560,6 @@
   },
   {
     "id": 341,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice41",
     "question": "開発者は、複雑なトリガーロジックを処理するためにApexヘルパークラスを作成しました。トリガーがDMLガバナ制限を超えた場合、ヘルパークラスはどのようにユーザーに警告できますか。",
     "choices": [
       "Messaging.sendEmail()を使用してトランザクションを続行し、DML文の数を超えたらユーザーにアラートを送信する。",
@@ -6626,7 +6585,6 @@
   },
   {
     "id": 342,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice42",
     "question": "販売管理チームは新しいインターンを雇用します。インターンは商談を表示することはできませんが、取引先レコードを表示するときは、すべての商談の最新の完了日を表示する必要があります。開発者はこの要件を満たすために何をすればよいでしょうか。",
     "choices": [
       "親取引先の項目を更新するワークフロールールを作成します。",
@@ -6652,7 +6610,6 @@
   },
   {
     "id": 343,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice43",
     "question": "開発者には次のコードブロックがあります。\n\npublic class PaymentTax {\n    public static decimal SalesTax = 0.0875;\n}\n\ntrigger OpportunityLineItemTrigger on OpportunityLineItem (before insert, before update) {\n    PaymentTax PayTax = new PaymentTax();\n    decimal ProductTax = ProductCost * XXXXXXXXXXX;\n}\n\nproductTaxを計算するために、開発者はどのコードセグメントをXXXXXXXXXXXに挿入して、トリガー内でクラス変数SalesTaxの値にアクセスできるようにしますか。",
     "choices": [
       "SalesTax",
@@ -6677,7 +6634,6 @@
   },
   {
     "id": 344,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice44",
     "question": "ユーザーが生成したデバッグステートメントを表示するために必要な最小ログレベルはどれですか。",
     "choices": [
       "DEBUG",
@@ -6702,7 +6658,6 @@
   },
   {
     "id": 345,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice45",
     "question": "変更セットを送受信できる有効な宛先と送信元のペアはどれですか。2つ選びなさい。",
     "choices": [
       "本番環境へのサンドボックス",
@@ -6729,7 +6684,6 @@
   },
   {
     "id": 346,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice46",
     "question": "開発者は、before insertトリガーを作成します。開発者はトリガー本体のレコードにどのようにアクセスできますか。",
     "choices": [
       "Trigger.newコンテキスト変数にアクセスする",
@@ -6755,7 +6709,6 @@
   },
   {
     "id": 347,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice47",
     "question": "StandardSetControllerの機能とは何ですか。2つ選びなさい。",
     "choices": [
       "標準またはカスタムコントローラの機能を拡張します",
@@ -6781,7 +6734,6 @@
   },
   {
     "id": 348,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice48",
     "question": "開発者は、組織データを変更せずに取引先トリガーが正常に機能していることを確認する必要があります。取引先トリガーをテストするには、開発者は何をすべきですか。",
     "choices": [
       "[取引先]タブの[新規]ボタンを使用して新しいレコードを作成する",
@@ -6807,7 +6759,6 @@
   },
   {
     "id": 349,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice49",
     "question": "Salesforce AppExchangeからパッケージをインストールおよびアンインストールするには、どの権限が必要ですか。",
     "choices": [
       "パッケージライセンスの管理",
@@ -6832,7 +6783,6 @@
   },
   {
     "id": 350,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice50",
     "question": "マルチテナント環境で開発する際の重要な考慮事項は何ですか。",
     "choices": [
       "ポリグロットパーシスタンスは、複数のインスタンスの複数の組織におけるグローバルな多言語ユーザーベースをサポートします。",
@@ -6858,7 +6808,6 @@
   },
   {
     "id": 351,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice51",
     "question": "Application__cという名前のカスタムオブジェクトは、Position__cという名前の別のカスタムオブジェクトとの参照関係を持っています。Application__cとPosition__cの両方に、Status__cという名前の選択リスト項目があります。Position__cのStatus__c項目が更新されると、Application__cのStatus__c項目に同じ値を自動的に入力し、Application__cでワークフロールールを実行する必要があります。開発者はどのようにこれを達成できますか。",
     "choices": [
       "Application__c.Status__cを積み上げ集計項目に変更する。",
@@ -6884,7 +6833,6 @@
   },
   {
     "id": 352,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice52",
     "question": "Apexクラスとインターフェースに関して、次のうち正しいステートメントはどれでしょうか。３つ選択してください。",
     "choices": [
       "クラスはデフォルトでfinalです。",
@@ -6911,7 +6859,6 @@
   },
   {
     "id": 353,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice53",
     "question": "階層カスタム設定は、Salesforceの各プロファイルの特定のURLを保存します。開発者は、どのステートメントを使用して現在のユーザーのプロファイルの正しいURLを取得し、このVisualforceページを表示できますか。",
     "choices": [
       "{!$Setup.Url_Settings__c.Instance[Profile.Id].URL__c}",
@@ -6936,7 +6883,6 @@
   },
   {
     "id": 354,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice54",
     "question": "APIツールを使用してレコードを挿入するとき、開発者は何を考慮する必要がありますか。2つ選びなさい。",
     "choices": [
       "ページレイアウトの必須項目が適用されます。",
@@ -6962,7 +6908,6 @@
   },
   {
     "id": 355,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice55",
     "question": "Visualforceページで取引先責任者の標準コントローラを使用しています。親取引先レコードの名前をページに表示するにはどうすればよいですか。",
     "choices": [
       "コントローラ内で追加のApexロジックを使用して、名前項目を検索する。",
@@ -6987,7 +6932,6 @@
   },
   {
     "id": 356,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice56",
     "question": "Apex単体テストの適切なプロセスは何ですか。",
     "choices": [
       "SeeAllData=trueを使用してテストデータをクエリします。テストするメソッドを呼び出します。結果が正しいことを確認します。",
@@ -7013,7 +6957,6 @@
   },
   {
     "id": 357,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice57",
     "question": "サンドボックス内のLightningWebコンポーネントのバグを修正するには、開発者は何を使用する必要がありますか。",
     "choices": [
       "VSCode",
@@ -7038,7 +6981,6 @@
   },
   {
     "id": 358,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice58",
     "question": "Universal Containers社は、取引先オブジェクトのプライベート共有モデルを実装しました。Apexでカスタム取引先検索ツールを開発し、営業担当者が指定した複数の条件に一致する取引先を検索できるようにしました。リリース以来、このツールのユーザーは、自分が所有していない取引先を見ることができると報告しています。開発者は、カスタム検索ツールを使用している間、現在ログインしているユーザーに対して共有権限を強制するために何を使用する必要がありますか。",
     "choices": [
       "Schemaクラスのメソッドを使用して、ログインしているユーザーが取引先オブジェクトへのアクセス権を持っているかどうかを判断します。",
@@ -7064,7 +7006,6 @@
   },
   {
     "id": 359,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice59",
     "question": "開発者は、販売活動中にユーザーが商品固有の情報を入力できるVisualforceページを提供する必要があります。どうすればこれを達成できますか。2つ選びなさい。",
     "choices": [
       "新しいVisualforceページとApexコントローラを作成して、商品データ入力を提供します。",
@@ -7090,7 +7031,6 @@
   },
   {
     "id": 360,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice60",
     "question": "複数の通貨を有効にしている組織では、開発者は、CampaignオブジェクトでTotal_estimated_value__cと呼ばれる積み上げ集計項目を使用して、CampaignMemberオブジェクトからEstimated_value__c通貨項目の合計を集計する必要があります。Total_estimated_value__c積み上げ集計項目の通貨はどのように決定されますか。",
     "choices": [
       "Campaignmember.Estimated_value__cの値は、Campaignオブジェクトのレコードの通貨に変換され、合計はCampaignオブジェクトのレコードの通貨を使用して表示されます。",
@@ -7116,7 +7056,6 @@
   },
   {
     "id": 361,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice61",
     "question": "開発者は、顧客の請求書を追跡するカスタムオブジェクトを作成したいと考えています。\n取引先にアクセスできるすべてのユーザーにすべての請求書が表示されるようにするには、請求書と取引先をどのように関連付ける必要がありますか。",
     "choices": [
       "取引先は、請求書に対する参照関係が必要です。",
@@ -7142,7 +7081,6 @@
   },
   {
     "id": 362,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice62",
     "question": "レビュアーは、候補者の採用が推奨されている場合にのみ、コメント項目に理由を入力する必要があります。開発者はこの要件を実施するためにどのアクションを実行できますか。",
     "choices": [
       "必須のコメント項目を作成します。",
@@ -7168,7 +7106,6 @@
   },
   {
     "id": 363,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice63",
     "question": "開発者がTest.startTest()およびTest.stopTest()を使用する理由は次のうちどれですか。",
     "choices": [
       "この２つの行間のコードのApexコードカバレッジ要件を回避するため",
@@ -7194,7 +7131,6 @@
   },
   {
     "id": 364,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice64",
     "question": "標準の商談ビューボタンを上書きするには、Visulforceページのコントローラで何を使用する必要がありますか。",
     "choices": [
       "ページネーション用の関連リストをサポートするStandardSetController",
@@ -7219,7 +7155,6 @@
   },
   {
     "id": 365,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice65",
     "question": "開発者が、プライベートメソッドを含む Apex クラスを作成しました。プライベートメソッドがテストクラスからアクセスできるようにするために、開発者は何をすればよいでしょうか。",
     "choices": [
       "TestVisible属性をApexクラスに追加する",
@@ -7245,7 +7180,6 @@
   },
   {
     "id": 366,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice66",
     "question": "カスタムボタンとカスタムリンクでサポートされるコンテンツソースは何ですか。2つ選びなさい。",
     "choices": [
       "VisualForceページ",
@@ -7272,7 +7206,6 @@
   },
   {
     "id": 367,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice67",
     "question": "開発者は、ケースオブジェクトで使用可能なすべてのレコードタイプを表示したいと考えています。開発者は、ケースオブジェクトの状況項目の選択リスト値も表示したいと考えています。ケースオブジェクトとケースオブジェクトの状況項目は、カスタムVisualforceページにあります。コントローラでレコードタイプと選択リスト値を取得するために、開発者はどのアクションを実行できますか。２つ選択してください。",
     "choices": [
       "Case.Status.getDescribe().getPicklistValues()によって返されるSchema.PicklistEntryを使用する。",
@@ -7298,7 +7231,6 @@
   },
   {
     "id": 368,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice68",
     "question": "変数のスコープについての正確な記述はどれですか。3つ選びなさい。",
     "choices": [
       "子ブロックは親ブロックの変数名を再利用できません。",
@@ -7326,7 +7258,6 @@
   },
   {
     "id": 369,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice69",
     "question": "建設会社の運用管理者は、機械と呼ばれるカスタムオブジェクトを使用して、クレーンやその他の機械の使用と保守を管理します。管理者は、機械をさまざまな建設作業に割り当て、各作業に関連する日付とコストを追跡できるようにしたいと考えています。1つの建設作業に複数の機械を割り当てることも可能です。これらの要件を満たすために開発者は何をすべきですか。",
     "choices": [
       "建設作業オブジェクトに機械オブジェクトへの参照関係を作成する。",
@@ -7352,7 +7283,6 @@
   },
   {
     "id": 370,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice70",
     "question": "クイックアクションでレコードを作成する際、フィード項目を投稿する最も簡単な方法は何ですか。",
     "choices": [
       "クイックアクションでフィード項目の作成を選択する。",
@@ -7377,7 +7307,6 @@
   },
   {
     "id": 371,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice71",
     "question": "ある会社には、Warehouseという名前のカスタムオブジェクトがあります。各Warehouseレコードには個別のレコード所有者がおり、Salesforceの親Accountに関連付けられています。開発者は、AccountとWarehouseを関連付けるために、どのような関係を使用しますか。",
     "choices": [
       "1対多",
@@ -7403,7 +7332,6 @@
   },
   {
     "id": 372,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice72",
     "question": "開発者が、映画、俳優、契約を追跡するスキーマを作成することになりました。1つの映画は多くの契約を持つことができ、1人の俳優は多くの契約を持つことができます。各契約は、1 人のユーザーによって所有され、アクティブに管理されます。映画や俳優のレコードにアクセスすることなく、ユーザーが所有する契約を簡単に管理できるようにするには、どのスキーマを作成する必要がありますか。",
     "choices": [
       "映画オブジェクトへの主従関係と俳優オブジェクトへの参照関係",
@@ -7429,7 +7357,6 @@
   },
   {
     "id": 373,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice73",
     "question": "以下のコードでは、Boolean はどのタイプから継承しますか。\n\nBoolean b = true;",
     "choices": [
       "Enum",
@@ -7455,7 +7382,6 @@
   },
   {
     "id": 374,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice74",
     "question": "Visualforce ページには、親オブジェクトへの参照関係を持つオブジェクトの標準コントローラがあります。開発者が親レコードのデータをページに表示するにはどうすればよいですか。",
     "choices": [
       "Visualforce ページで SOQL を使用して、親レコードのデータを取得する。",
@@ -7481,7 +7407,6 @@
   },
   {
     "id": 375,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice75",
     "question": "開発者は次のコードを持っています。\n\ntry {\n    List<String> nameList;\n    Account a;\n    String s = a.Name;\n    nameList.add(s);\n} catch (ListException le) {\n    System.debug('List Exception');\n} catch (NullPointerException npe) {\n    System.debug('NullPointer Exception');\n} catch (Exception e) {\n    System.debug('Generic Exception');\n}\n\nどのメッセージがログに記録されますか。",
     "choices": [
       "メッセージは記録されない",
@@ -7507,7 +7432,6 @@
   },
   {
     "id": 376,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice76",
     "question": "Force.com プラットフォームの MVC アーキテクチャのコントローラーを表すコードのタイプはどれですか。2つ選びなさい。",
     "choices": [
       "CSS と画像を含む静的リソース",
@@ -7534,7 +7458,6 @@
   },
   {
     "id": 377,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice77",
     "question": "開発者コンソールの機能は何ですか。",
     "choices": [
       "匿名 Apex コードの実行、REST API の実行、コードの作成/編集",
@@ -7559,7 +7482,6 @@
   },
   {
     "id": 378,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice78",
     "question": "単一レコードで、ユーザーは複数選択リストから複数の値を選択します。選択した値は Apex でどのように表されますか。",
     "choices": [
       "各値をカンマで区切った String として",
@@ -7584,7 +7506,6 @@
   },
   {
     "id": 379,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice79",
     "question": "カスタム SVG を Lightning Web コンポーネントに含めることができる3つのステップはどれですか。3つ選びなさい。",
     "choices": [
       "SVG を静的リソースとしてアップロードします。",
@@ -7613,7 +7534,6 @@
   },
   {
     "id": 380,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice80",
     "question": "外部 ID の用途は何ですか。2つ選びなさい。",
     "choices": [
       "外部システムからインポートされたレコード間の関係を作成します。",
@@ -7641,7 +7561,6 @@
   },
   {
     "id": 381,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice81",
     "question": "組織には「NoContacts」という名前の単一の取引先があり、関連する取引先責任者はありません。\n\n以下の Apex を実行した結果はどうなりますか。\n\nList<Account> accounts = [\n  SELECT Name, (SELECT Id, Name FROM Contacts)\n  FROM Account \n  WHERE Name = 'NoContacts'\n];",
     "choices": [
       "QueryException がスローされます。",
@@ -7667,7 +7586,6 @@
   },
   {
     "id": 382,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice82",
     "question": "Lightning コンポーネントで外部 JavaScript ライブラリをロードするために使用される <ltng:require> タグの機能は何ですか。3つ選びなさい。",
     "choices": [
       "ドキュメントからのファイルの読み込み",
@@ -7696,7 +7614,6 @@
   },
   {
     "id": 383,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice83",
     "question": "Getter メソッドと Setter メソッドに関する記述のうち、正しいものはどれですか。2つ選びなさい。",
     "choices": [
       "ページからコントローラーに値を渡すには、より適切なメソッドが必要です。",
@@ -7723,7 +7640,6 @@
   },
   {
     "id": 384,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice84",
     "question": "開発者は以下のコントローラクラスを持ちます。\n\npublic with sharing class myFooController{\n    public integer prop {get; private set;}\n}\n\nどのコードブロックが実行匿名ウィンドウで正常に実行されますか。",
     "choices": [
       "myFooController m = new myFooController();\nSystem.assert(m.prop == null);",
@@ -7749,7 +7665,6 @@
   },
   {
     "id": 385,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice85",
     "question": "マルチテナント環境で開発する場合、開発者がガバナ制限に達するのを避けるために使用すべき戦略はどれですか。2つ選びなさい。",
     "choices": [
       "コレクションを使用して、最低限必要な項目だけでなく、関連するオブジェクトのすべての項目を保存する。",
@@ -7776,7 +7691,6 @@
   },
   {
     "id": 386,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice86",
     "question": "カスタムオブジェクトには、Food_Preference__c というカスタム選択リスト項目が存在します。この選択リストには、\"Vegan\"、\"Kosher\"、\"No Preference\" というオプションが含まれています。開発者は、レコードが作成または更新されるたびに値が入力されることを確認する必要があります。レコードが保存されるたびに値が選択されることを確実にするための最も効率的な方法は何ですか。",
     "choices": [
       "項目定義で項目を必須としてマークします。",
@@ -7802,7 +7716,6 @@
   },
   {
     "id": 387,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice87",
     "question": "開発者は実行匿名ウィンドウで次のコードを記述します。\n\nList<Account> acc = [SELECT Id FROM Account LIMIT 10];\nDelete acc;\nDatabase.emptyRecycleBin(acc);\nSystem.Debug(Limits.getDMLStatements()+', '+Limits.getLimitDMLStatements());\n\nデバッグステートメントの結果は何ですか。",
     "choices": [
       "1, 150",
@@ -7828,7 +7741,6 @@
   },
   {
     "id": 388,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice88",
     "question": "Lightning コンポーネントはリソースバンドルに何を含めることができますか。2つ選びなさい。",
     "choices": [
       "カスタムクライアント側のレンダリング動作",
@@ -7855,7 +7767,6 @@
   },
   {
     "id": 389,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice89",
     "question": "開発者が Salesforce REST API にリクエストを送信し、レスポンスを表示できるツールはどれですか。",
     "choices": [
       "Workbench REST エクスプローラ",
@@ -7880,7 +7791,6 @@
   },
   {
     "id": 390,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice90",
     "question": "開発者は、ヘルパークラスを持つ新しい Apex トリガーを作成し、新しい Apex ヘルパークラスの95%のカバレッジのみを実行するテストクラスを作成します。本番環境への変更セットのデプロイは、以下テストカバレッジの警告で失敗します。\n\n「選択した Apex トリガーのテストカバレッジは0%です。少なくとも1%のテストカバレッジが必要です。」\n\n新しい Apex トリガーとヘルパークラスのデプロイを成功させるために、開発者は何をする必要がありますか。",
     "choices": [
       "ヘルパークラスのテストクラスカバレッジを増やす。",
@@ -7907,7 +7817,6 @@
   },
   {
     "id": 391,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice91",
     "question": "VisualforceページのコンテンツをPDFとして表示するコードはどれですか。",
     "choices": [
       "<apex:page contentType=\"pdf\">",
@@ -7932,7 +7841,6 @@
   },
   {
     "id": 392,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice92",
     "question": "SOQLインジェクションの脆弱性から保護するために、開発者がVisualforceコントローラで使用できるクエリはどれですか。2つ選びなさい。",
     "choices": [
       "String qryString = 'SELECT Id FROM Contact WHERE Name LIKE :qryName'; List<Contact> queryResults = Database.query(qryString);",
@@ -7959,7 +7867,6 @@
   },
   {
     "id": 393,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice93",
     "question": "開発者は、組織のデータを変更することなく、取引先トリガーが正しく動作していることを確認する必要があります。開発者は、取引先トリガーをテストするために何をすべきでしょうか。",
     "choices": [
       "開発者コンソールの[テスト]メニューを使用して、取引先トリガーのすべてのテストクラスを実行します。",
@@ -7985,7 +7892,6 @@
   },
   {
     "id": 394,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice94",
     "question": "Apexコンパイラエラーが発生するステートメントはどれですか。",
     "choices": [
       "Map<Id, Lead> lmap = new Map<Id, Lead>([Select ID from Lead Limit 8]);",
@@ -8011,7 +7917,6 @@
   },
   {
     "id": 395,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice95",
     "question": "新しく採用された開発者は、ケースオブジェクトに複数のトリガーがあることを発見しました。トリガーを使用する際に開発者は何を考慮すべきですか。",
     "choices": [
       "開発者はトリガーの実行順序を決めなければなりません。",
@@ -8036,7 +7941,6 @@
   },
   {
     "id": 396,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice96",
     "question": "標準機能とカスタム機能の両方を含むケースレコードを表示および編集するVisualforceページが必要です。VisualforceページにmyControllerExtensionというApexクラスで定義されたコントローラ機能を正しく実装するためにどの属性を含める必要がありますか。",
     "choices": [
       "extensions = \"myControllerExtension\"",
@@ -8061,7 +7965,6 @@
   },
   {
     "id": 397,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice97",
     "question": "開発者は、取引先責任者のリストを更新するApexメソッドを作成し、LightningWebコンポーネントで使用できるようにしたいと考えています。これを実現するために、開発者はどのアノテーションをApexメソッドに追加する必要がありますか。",
     "choices": [
       "@RemoteAction",
@@ -8086,7 +7989,6 @@
   },
   {
     "id": 398,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice98",
     "question": "Visualforceページにページネーションを追加するために、開発者が使用すべき手段はどれですか。",
     "choices": [
       "StandardController",
@@ -8111,7 +8013,6 @@
   },
   {
     "id": 399,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice99",
     "question": "\"without sharing\"キーワードを使用してApexクラスを宣言すると、どのような影響がありますか。",
     "choices": [
       "現在のユーザーが所有するレコードのみを更新できます。",
@@ -8136,7 +8037,6 @@
   },
   {
     "id": 400,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice100",
     "question": "どの数式が正しく評価されますか。2つ選びなさい。",
     "choices": [
       "Double d = 3.14159;",
@@ -8163,7 +8063,6 @@
   },
   {
     "id": 401,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice101",
     "question": "変更セットのデプロイについて正しい説明はどれですか。3つ選びなさい。",
     "choices": [
       "変更セットはカスタム設定データをデプロイできます。",
@@ -8192,7 +8091,6 @@
   },
   {
     "id": 402,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice102",
     "question": "before insertトリガーを使用する代わりにafter insertトリガーを使用する利点は何ですか。",
     "choices": [
       "after insertトリガーを使用すると、開発者は新しいレコードの項目を更新する際に入力規則を回避できます。",
@@ -8217,7 +8115,6 @@
   },
   {
     "id": 403,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice103",
     "question": "開発者は、会社のブランドガイドラインを使用してフォーマットされたPDF見積書を作成し、それを商談レコードに自動的に保存するよう求められます。開発者がこの機能を実現する方法はどれですか。2つ選びなさい。",
     "choices": [
       "カスタムスタイルを使用してVisualforceページを作成します。",
@@ -8244,7 +8141,6 @@
   },
   {
     "id": 404,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice104",
     "question": "DescribeSObjectResultを使用して、現在のユーザーがオブジェクトのレコードを編集できるかどうかを判断するために、開発者が使用できるApexメソッドはどれですか。",
     "choices": [
       "canUpdate()",
@@ -8270,7 +8166,6 @@
   },
   {
     "id": 405,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice105",
     "question": "開発者がサンドボックスの全体的なコードカバレッジを判断できるのはどこですか。2つ選びなさい。",
     "choices": [
       "「Apex テスト実行」ページ",
@@ -8297,7 +8192,6 @@
   },
   {
     "id": 406,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice106",
     "question": "開発者は、CustomObject__cレコードが現在のユーザーと手動で共有されているかどうかを、Apexにおいてどのように判断しますか。",
     "choices": [
       "現在のユーザーのプロファイル設定を呼び出す",
@@ -8323,7 +8217,6 @@
   },
   {
     "id": 407,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice107",
     "question": "開発者がコントローラ拡張よりもカスタムコントローラを使用することを検討する理由は何ですか。",
     "choices": [
       "標準コントローラのSOQLガバナ制限を引き上げ、より多くの行を扱えるようにするため",
@@ -8348,7 +8241,6 @@
   },
   {
     "id": 408,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice108",
     "question": "開発者は金融システムのApexクラスを実装しています。このクラスでは、変数creditAmountとdebtAmountは、一度値が代入されると変更できないようにする必要があります。値が1回しか代入されないようにするために、開発者が変数を宣言する方法はどれですか。2つ選びなさい。",
     "choices": [
       "staticキーワードを使用し、クラスのコンストラクタでその値を割り当てます。",
@@ -8375,7 +8267,6 @@
   },
   {
     "id": 409,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice109",
     "question": "Apexで@InvocableMethodアノテーションを使用する場合の考慮事項は何ですか。3つ選びなさい。",
     "choices": [
       "@InvocableMethodアノテーションを使用するメソッドはstaticとして宣言する必要があります。",
@@ -8404,7 +8295,6 @@
   },
   {
     "id": 410,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice110",
     "question": "ApexPages.currentPage().getParameters()を使用してVisualforceコントローラからURLパラメータを取得する場合の戻り値のデータ型は何ですか。",
     "choices": [
       "List",
@@ -8430,7 +8320,6 @@
   },
   {
     "id": 411,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice111",
     "question": "開発者がVisualforceページでカスタムスタイルを使用する際に用いるものはどれですか。3つ選びなさい。",
     "choices": [
       "<apex:stylesheet>タグ",
@@ -8459,7 +8348,6 @@
   },
   {
     "id": 412,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice112",
     "question": "@isTestアノテーションに関して正しい説明はどれですか。3つ選びなさい。",
     "choices": [
       "@isTest(SeeAllData=false)が付けられたクラス内の@isTest(SeeAllData=true)が付けられたメソッドは、すべての組織データにアクセスできます。",
@@ -8488,7 +8376,6 @@
   },
   {
     "id": 413,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice113",
     "question": "開発者は新しいカスタム例外クラスをどのように作成する必要がありますか。",
     "choices": [
       "public class CustomException extends Exception{}",
@@ -8514,7 +8401,6 @@
   },
   {
     "id": 414,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice114",
     "question": "Universal Containers社は、サードパーティのJavaScriptフレームワークを使用して作成され、Visualforceページを使用して公開された多数のカスタムアプリケーションを持っています。同社は、これらのアプリケーションを更新して、Lightning Experienceの外観に似たスタイルを適用したいと考えています。ビジネス要求を最も迅速かつ効果的に満たすために、開発者は何をすべきですか。",
     "choices": [
       "定義で属性LightningStyleSheetsをtrueに設定します。",
@@ -8540,7 +8426,6 @@
   },
   {
     "id": 415,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice115",
     "question": "開発者は、ごみ箱に送られたレコードの監査証跡を作成する必要があります。どのタイプのトリガーを作成するのが最も適切ですか。",
     "choices": [
       "after delete",
@@ -8566,7 +8451,6 @@
   },
   {
     "id": 416,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice116",
     "question": "開発者は、ごみ箱から復元されるレコードの監査証跡を作成する必要があります。どのタイプのトリガーを作成するのが最も適切ですか。",
     "choices": [
       "before delete",
@@ -8592,7 +8476,6 @@
   },
   {
     "id": 417,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice117",
     "question": "SalesforceのISVパートナーであるCloudKicks Fitnessは、管理パッケージアプリケーションを開発しています。ユーザーはアプリケーションモジュールの1つであるBodyfatというApexクラスとcalculateBodyfat()メソッドを使用して体脂肪を計算できます。製品の所有者は、ISVのパッケージ名前空間の外部でカスタマイザーを開発するときに、アプリケーション利用者がこのメソッドにアクセスできるようにしたいと考えています。パッケージ名前空間の外部でcalculateBodyFatメソッドにアクセスできるようにするには、開発者はどの手段を取る必要がありますか。",
     "choices": [
       "publicアクセス修飾子を使用してクラスとメソッドを宣言します。",
@@ -8618,7 +8501,6 @@
   },
   {
     "id": 418,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice118",
     "question": "開発者が組織内でテストを実行するための方法は何ですか。3つ選びなさい。",
     "choices": [
       "Bulk API",
@@ -8648,7 +8530,6 @@
   },
   {
     "id": 419,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice119",
     "question": "開発者は、新しいApexクラスをテストするために、特定の項目値を持つレコードを用意する必要があります。開発者は、データがテストで利用可能であることを確認するために何をすべきですか。",
     "choices": [
       "匿名Apexを使用して、必要なデータを作成する。",
@@ -8674,7 +8555,6 @@
   },
   {
     "id": 420,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice120",
     "question": "有効なApexの代入はどれですか。",
     "choices": [
       "Integer x = 5*1.0;",
@@ -8700,7 +8580,6 @@
   },
   {
     "id": 421,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice121",
     "question": "ApexとVisualforceページを使用する場合、MVCアーキテクチャのモデルを表すコードのタイプはどれですか。",
     "choices": [
       "SOQLを使用して取引先レコードのリストをクエリするコントローラ拡張メソッド",
@@ -8726,7 +8605,6 @@
   },
   {
     "id": 422,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice122",
     "question": "開発者がトリガーでApexヒープ制限のエラーに遭遇した場合、このエラーを回避する方法はどれですか。2つ選びなさい。",
     "choices": [
       "変数を宣言するときにtransientキーワードを使用する。",
@@ -8753,7 +8631,6 @@
   },
   {
     "id": 423,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice123",
     "question": "プラットフォーム開発者は、レコードが特定のレコードタイプに割り当てられている場合にのみ実行するApexメソッドを作成する必要があります。開発者が必要なレコードタイプIDをレコードタイプ名で動的に決定できる方法はどれですか。2つ選びなさい。",
     "choices": [
       "外部システムへのアウトバウンドSOAP Webサービス呼び出しでIDを取得する",
@@ -8780,7 +8657,6 @@
   },
   {
     "id": 424,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice124",
     "question": "Visualforceページで外部CSSからのスタイリングが必要な場合、開発者はどのタグを含める必要がありますか。",
     "choices": [
       "apex:includeStyles",
@@ -8806,7 +8682,6 @@
   },
   {
     "id": 425,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice125",
     "question": "Apexクラスのプライベートメソッドの単体テストをどのように作成する必要がありますか。",
     "choices": [
       "SeeAllDataアノテーションを使用します",
@@ -8833,7 +8708,6 @@
   },
   {
     "id": 426,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice126",
     "question": "次のクラスとトリガーのコードがあります。\n\npublic class InsuranceRates{\n    public static final Decimal smokerCharge = 0.01;\n}\n\ntrigger ContactTrigger on Contact(before insert){\n    InsuranceRates rates = new InsuranceRates();\n    Decimal baseCost = XXX;\n}\n\nbaseCost変数にクラス変数smokerChargeの値を設定するために、開発者はXXXにどのコードを挿入する必要がありますか。",
     "choices": [
       "rates.smokerCharge",
@@ -8859,7 +8733,6 @@
   },
   {
     "id": 427,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice127",
     "question": "Universal Containers社には、特定のアカウントによってレンタルされているすべてのContainer__cのテーブルを表示するVisualforceページがあります。一部の顧客が100,000を超えるコンテナをレンタルしているため、ビューステートの最大制限エラーとなります。ページの読み込みエラーを解決するために、開発者はVisualforceページについて何を変更する必要がありますか。",
     "choices": [
       "SOQLのOFFSETでJavaScript Remotingを使用します",
@@ -8885,7 +8758,6 @@
   },
   {
     "id": 428,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice128",
     "question": "Universal Containers社は、新しいSalesforceアプリケーションを構築するために、宣言型開発のみを使用することを決定しました。アプリケーションのデータベースレイヤーを構築するために使用すべきオプションはどれですか。3つ選びなさい。",
     "choices": [
       "フロー",
@@ -8915,7 +8787,6 @@
   },
   {
     "id": 429,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice129",
     "question": "開発者は、Lightningコンポーネントが取引先責任者のレコードを検索するために使用できるApexクラス「ContactController」を作成する必要があります。Lightningコンポーネントのユーザーは、自分がアクセス権を持つ取引先責任者のレコードのみを検索できるようにするべきです。正しくレコードを制限するための方法は何ですか。2つ選びなさい。",
     "choices": [
       "public class ContactController",
@@ -8943,7 +8814,6 @@
   },
   {
     "id": 430,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice130",
     "question": "匿名ブロックで実行されるApexコードに関して正しい答えはどれですか。2つ選びなさい。",
     "choices": [
       "コードは、runAs()ステートメントで指定されたユーザーの権限で実行されます",
@@ -8971,7 +8841,6 @@
   },
   {
     "id": 431,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice131",
     "question": "開発者は、maxAttempts と呼ばれる整数変数を持っています。開発者は、一度maxAttemptsが初期化されると、トリガー実行の間で変数の状態を共有しながら、Apex処理の間、その値を確実に保持する必要があります。これらの要求を満たすために、開発者はどのようにmaxAttemptsを宣言する必要がありますか。",
     "choices": [
       "staticキーワードとfinalキーワードを使用して、maxattemptsを定数として宣言する。",
@@ -8997,7 +8866,6 @@
   },
   {
     "id": 432,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice132",
     "question": "次のSOSL検索によって返されるデータ型は何ですか。",
     "choices": [
       "List<List<Account>, List<Opportunity>>",
@@ -9023,7 +8891,6 @@
   },
   {
     "id": 433,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice133",
     "question": "ApexクラスをRESTfulWebサービスとして公開するアノテーションはどれですか。",
     "choices": [
       "@RemoteAction",
@@ -9049,7 +8916,6 @@
   },
   {
     "id": 434,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice134",
     "question": "クロスオブジェクト数式項目に関する記述のうち、正しいものはどれですか。3つ選びなさい。",
     "choices": [
       "クロスオブジェクト数式項目は、最大10リレーション離れているオブジェクトの項目を参照できます",
@@ -9078,7 +8944,6 @@
   },
   {
     "id": 435,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice135",
     "question": "開発者はループ処理で、リスト内の各取引先責任者をチェックします。\"Boss\"というタイトルの取引先責任者が見つかった場合、Apexのメソッドはforループの外側のコードの最初の行にジャンプする必要があります。要件を実装するためのコーディングはどれですか。",
     "choices": [
       "break;",
@@ -9104,7 +8969,6 @@
   },
   {
     "id": 436,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice136",
     "question": "次のApexステートメントがあります。\n\nAccount myAccount = [SELECT Id, Name FROM Account];\n\nSOQLクエリによって複数のAccountが返された場合、何が発生しますか。",
     "choices": [
       "変数myAccountは自動的にListデータ型にキャストされます。",
@@ -9130,7 +8994,6 @@
   },
   {
     "id": 437,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice137",
     "question": "開発者は、Apexテストメソッドがサンドボックスで失敗することに気づきました。問題を特定するために、開発者はテストメソッド内のコードをコピーし、開発者コンソールの匿名実行ツールを使用してコードを実行したところ、コードは例外やエラーなしで実行されます。テストメソッドがサンドボックスで失敗し、開発者コンソールで合格したのはなぜですか。",
     "choices": [
       "テストメソッドは @future メソッドを呼び出しているため",
@@ -9157,7 +9020,6 @@
   },
   {
     "id": 438,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice138",
     "question": "ある開発者は、自分の組織でカスタムページがロードされたときにパフォーマンスの問題の原因を突き止めるためにトラブルシューティングを行う必要があります。開発者がトラブルシューティングに使用すべきツールはどれか。",
     "choices": [
       "Salesforce CLI",
@@ -9183,7 +9045,6 @@
   },
   {
     "id": 439,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice139",
     "question": "スキーマビルダーを使用して開発者が実行できるアクションはどれですか。2つ選びなさい。",
     "choices": [
       "カスタムオブジェクトを作成し、そのオブジェクトに参照関係を定義する",
@@ -9211,7 +9072,6 @@
   },
   {
     "id": 440,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice140",
     "question": "開発者は、リードオブジェクトにbefore insertトリガーを使用して、Territory__c.PostalCode__cがLead.PostalCodeと一致するTerritory__cオブジェクトを取得します。しかし、開発者がデータローダーを使用して10,000のリードレコードを挿入すると、コードが失敗します。\n\nfor (Lead l : Trigger.new) {\n    if (l.PostalCode != null) {\n        List<Territory__c> terrList = [SELECT Id FROM Territory__c WHERE PostalCode__c = :l.PostalCode];\n        if(terrList.size() > 0) {\n            l.Territory__c = terrList[0].Id;\n        }\n    }\n}\n\nどのコード行がコードブロックの失敗の原因となっていますか。",
     "choices": [
       "3行目：SOQLクエリがforループコードの内部に配置されてるため",
@@ -9238,7 +9098,6 @@
   },
   {
     "id": 441,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice141",
     "question": "デバッグログフィルター設定はどこから設定できますか。2つ選びなさい。",
     "choices": [
       "ウェブUI内の監視ユーザー名の[Filters]リンク",
@@ -9265,7 +9124,6 @@
   },
   {
     "id": 442,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice142",
     "question": "次のコードがあります。\n\nOpportunity opp = [select id, stagename from Opportunity Limit 1];\n\n上記のコードがある場合、開発者はどのようにstagename項目のラベルを取得できますか。",
     "choices": [
       "\"opp.stagename.label\"を呼び出す",
@@ -9291,7 +9149,6 @@
   },
   {
     "id": 443,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice143",
     "question": "テキストエリア (リッチ)項目が自動的に割り当てられるプリミティブデータ型はどれですか。",
     "choices": [
       "Blob",
@@ -9317,7 +9174,6 @@
   },
   {
     "id": 444,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice144",
     "question": "開発者が、カスタムコントローラでカスタム例外が正しく機能することを確認するために単体テストを書きましたが、例外がスローされたためにテストが失敗しました。この問題を解決し、例外を適切にテストするために、開発者が取るべき手順はどれでしょうか。",
     "choices": [
       "単体テスト内でtry/catchを使用して例外をキャッチする",
@@ -9343,7 +9199,6 @@
   },
   {
     "id": 445,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice145",
     "question": "データの一意なキーと値のペアを提供するコレクション型はどれですか。",
     "choices": [
       "List",
@@ -9369,7 +9224,6 @@
   },
   {
     "id": 446,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice146",
     "question": "Apex処理が100件のAccountレコードと2,000件のContactレコードを挿入した後、500件のOpportunityレコードを挿入しようとしてDML例外が発生しました。Accountレコードは、allOrNone引数をfalseに設定してdatabase.insert()メソッドを呼び出すことで挿入されます。ContactおよびOpportunityレコードは、スタンドアロンinsert文(通常のInsert 変数名;)を使用して挿入されます。この処理でデータベースにコミットされるレコードの総数はいくつですか。",
     "choices": [
       "2,000",
@@ -9395,7 +9249,6 @@
   },
   {
     "id": 447,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice147",
     "question": "開発者は、従来のオンプレミスのSQLデータベースと統合しています。統合されるデータが Salesforce内の適切なレコードと一致するようにするには、開発者は何を使用すればよいでしょうか。",
     "choices": [
       "外部オブジェクト",
@@ -9422,7 +9275,6 @@
   },
   {
     "id": 448,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice148",
     "question": "ある開発者が、WithSharingキーワードを使用するVisualforceページとApexコントローラを作成しました。このページは営業マネージャーが使用し、実行中の営業マネージャーに報告する営業担当者が所有する取引先のみを表示する必要があります。取引先に対する組織全体の共有は非公開に設定されています。開発者が取るべき追加の手順はどれですか。",
     "choices": [
       "1つのプロファイル、1つの権限セット、1つのロールを作成する",
@@ -9448,7 +9300,6 @@
   },
   {
     "id": 449,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice149",
     "question": "開発者は、システムに存在する ContactSearchApexクラスのセキュリティレビューを実行するよう命じられました。このクラスの中で、開発者は以下のメソッドがセキュリティ上の脅威であることを特定しました。\n\nList<Contact> performSearch(String lastName) {\n    return Database.query('Select Id, FirstName, LastName FROM Contact WHERE LastName Like%' + lastName +'%');\n}\n\nSOQLインジェクション攻撃を防ぐために、開発者がメソッドを改善できる方法は何ですか。2つ選びなさい。",
     "choices": [
       "クラスに@ReadOnlyアノテーションとwith sharingキーワードを使用する。",
@@ -9475,7 +9326,6 @@
   },
   {
     "id": 450,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice150",
     "question": "Apex テストクラスで @testSetup アノテーションを使用することについて、正しい記述はどれですか。3つ選びなさい。",
     "choices": [
       "isTest(SeeAllData=True) アノテーションが使用されている場合、@testSetup アノテーションは使用できません。",
@@ -9503,7 +9353,6 @@
   },
   {
     "id": 451,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice151",
     "question": "以下のブロックコードがあるとします。SOQLクエリの後、retrieveRecordsリストが空の場合、コードの実行が中断されるようにするために、開発者は何をする必要がありますか。\n\ntry {\n  List <Accounts> retrieveRecords = [SELECT Id FROM Account WHERE Website = null];\n} catch(Exception e){\n  //例外ロジック\n}",
     "choices": [
       "retrieveRecords変数の状態をチェックし、変数が空の場合はカスタム例外をスローする。",
@@ -9529,7 +9378,6 @@
   },
   {
     "id": 452,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice152",
     "question": "開発者は、取引先オブジェクトの'after update'トリガーを使用して、取引先に関連するすべての取引先責任者を更新します。以下に示すトリガーコードは、ランダムに失敗します。\n\nList<Contact> theContacts = new List<Contact>();\n\nfor (Account a : Trigger.new) {\n    for (Contact c : [SELECT Id, Account_Date__c FROM Contact WHERE AccountId = :a.Id]) {\n        c.Account_Date__c = Date.today();\n        theContacts.add(c);\n    }\n}\nupdate theContacts;\n\nこのコードブロックが失敗する原因は次のうちどれですか。",
     "choices": [
       "theContactsが空の場合は例外がスローされます。",
@@ -9555,7 +9403,6 @@
   },
   {
     "id": 453,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice153",
     "question": "ある開発者がVisualforceページと、ページ上で発生するさまざまなボタンやイベントを処理するメソッドを持つカスタムコントローラを作成しました。本番環境にデプロイするために、開発者は何をすべきですか。",
     "choices": [
       "Visualforceページをカバーするテストクラスを作成する",
@@ -9582,7 +9429,6 @@
   },
   {
     "id": 454,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice154",
     "question": "開発者はオブジェクトのVisualforceを使用してボタンをオーバーライドしたいと考えています。どんな要件を満たしている必要がありますか。",
     "choices": [
       "コントローラまたは拡張機能にPageReferenceメソッドを設定する。",
@@ -9608,7 +9454,6 @@
   },
   {
     "id": 455,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice155",
     "question": "すべての値が一意であることを保証するために使用されるApexコレクションはどれですか。",
     "choices": [
       "List",
@@ -9634,7 +9479,6 @@
   },
   {
     "id": 456,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice156",
     "question": "MVCパラダイムの観点から、VisualforceよりもLightning Webコンポーネントベースの開発を使用してSalesforceアプリケーションのビューレイヤーを実装することの利点は何ですか。2つ選びなさい。",
     "choices": [
       "アプリケーションが自己完結型で再利用可能である",
@@ -9661,7 +9505,6 @@
   },
   {
     "id": 457,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice157",
     "question": "ある開発者が、メールアドレス'dev@uc.com'を持つ取引先責任者とユーザーを取得したいと考えています。開発者が使用すべきSOSL文はどれですか。",
     "choices": [
       "FIND {dev@uc.com} IN Email Fields RETURNING Contact (Email), User (Email)",
@@ -9687,7 +9530,6 @@
   },
   {
     "id": 458,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice158",
     "question": "ユーザーが取引先の「Postal Code」を更新する際、取引先のカスタムテキスト項目「Timezone」は、カスタムオブジェクト「PostalCodeToTimezone__c」の情報を基に自動的に更新される必要があります。この機能を実装するため、開発者はどの手法を採用すべきでしょうか",
     "choices": [
       "取引先オブジェクトのワークフロールールを作成する。",
@@ -9714,7 +9556,6 @@
   },
   {
     "id": 459,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice159",
     "question": "カスタムVisualforceコントローラとして使用するクラスの要件は何ですか。",
     "choices": [
       "PageReferenceを返すコンストラクタを持つ最上位のApexクラス",
@@ -9740,7 +9581,6 @@
   },
   {
     "id": 460,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice160",
     "question": "ある企業は、顧客に教育ビデオを視聴してもらうための推進計画を実施しました。顧客は数日間にわたりビデオを視聴することができ、その進捗は記録されます。動画をすべて視聴完了すると、顧客に報奨ポイントが付与されます。動画がSalesforceで完了としてマークされた際、外部のWebサービスを呼び出して、ユーザーにポイントを付与する必要があります。開発者は、この要件をSalesforceのafter updateトリガー内で外部Webサービスへの呼び出しとして実装しました。しかし、実装後にSystem.CalloutExceptionが発生しています。このエラーを解消するために、開発者はどのような対応をすべきでしょうか。",
     "choices": [
       "after update トリガーを before insert トリガーに置き換える。",
@@ -9767,7 +9607,6 @@
   },
   {
     "id": 461,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice161",
     "question": "Salesforceには、Developer Sandbox、Developer Pro Sandbox、Partial Copy Sandbox、Full Sandboxの4つのサンドボックスタイプが存在します。その中で、Partial Copy SandboxとFull Sandboxの特徴は何ですか。2つ選びなさい。",
     "choices": [
       "メタデータの一部分のみを含みます",
@@ -9795,7 +9634,6 @@
   },
   {
     "id": 462,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice162",
     "question": "Before Insertトリガーの Trigger.old コンテキスト変数の値は何ですか。",
     "choices": [
       "sObjectの空のリスト",
@@ -9822,7 +9660,6 @@
   },
   {
     "id": 463,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice163",
     "question": "Visualforce ページで標準アクションをオーバーライドするには、<apex:page>タグでどの属性を定義する必要がありますか。",
     "choices": [
       "pageReference",
@@ -9847,7 +9684,6 @@
   },
   {
     "id": 464,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice164",
     "question": "本番環境にデプロイする際に必要なプロセスはどれですか。2つ選びなさい。",
     "choices": [
       "すべてのトリガーのテストカバレッジは75%以上である必要があります。",
@@ -9874,7 +9710,6 @@
   },
   {
     "id": 465,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice165",
     "question": "本番環境にデプロイする際に必要なプロセスはどれですか。2つ選びなさい。",
     "choices": [
       "すべてのプロセスビルダーのテストカバレッジは、少なくとも1%以上である必要があります。",
@@ -9901,7 +9736,6 @@
   },
   {
     "id": 466,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice166",
     "question": "リードオブジェクトには、カスタム項目の優先メール(Prior_Email__c)があります。以下のトリガーは、メール項目(Email)が変更されるたびに、現在のメール(Email)を優先メール項目(Prior_Email__c)にコピーするものです。\n\ntrigger test on Lead (before update) {\n    List<Lead> leadsToUpdate = new List<Lead>();\n    \n    for(Lead leadRecord : trigger.new){\n        if(leadRecord.Email != trigger.oldMap.get(leadRecord.Id).Email){\n            leadRecord.Prior_Email__c = trigger.oldMap.get(leadRecord.Id).Email;\n            leadsToUpdate.add(leadRecord);\n        }\n    }\n    \n    if(leadsToUpdate.size() > 0) {\n        update leadsToUpdate;\n    }\n}\n\nこのトリガーはどのタイプの組み込み例外を発生させますか。",
     "choices": [
       "NullPointerException",
@@ -9912,7 +9746,7 @@
     "answers": [
       "DmlException"
     ],
-    "explanation": "それぞれの選択肢の理由について説明します。\n\n□NullPointerException　これは不正解です。before update では trigger.oldMap が更新前レコードのマップを保持しているため、leadRecord.Id をキーにした取得は null にならず、この例外は発生しません。\n\n□CompileTimeException　これは不正解です。Apex に CompileTimeException という組み込み例外は存在しません。またこのコードは正しくコンパイルされます。\n\n□DmlException　これは正解です。before update では trigger.new のレコードは項目値を直接変更するだけで保存され、明示的な DML は不要かつ許可されません。すでに更新中のレコードに対して update を実行すると DmlException が発生します。\n\n□LimitException　これは不正解です。LimitException は SOQL 件数や DML 行数などのガバナ制限超過時に発生しますが、このコードは制限を超える処理をしていません。",
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□NullPointerException　これは不正解です。before update では trigger.oldMap が更新前レコードのマップを保持しているため、leadRecord.Id をキーにした取得は null にならず、この例外は発生しません。\n\n□CompileTimeException　これは不正解です。Apex に CompileTimeException という組み込み例外は存在しません。またこのコードは正しくコンパイルされます。\n\n□DmlException　これは正解です。before トリガーでは trigger.new の項目値を直接変更すれば、その後の保存処理で自動的に反映されるため明示的な DML は不要です。trigger.new および trigger.old のレコードに対しては DML を実行できず、update leadsToUpdate; のように処理中のレコードを更新しようとすると「DML statement cannot operate on trigger.new or trigger.old」という DmlException が発生します。\n\n□LimitException　これは不正解です。LimitException は SOQL 件数や DML 行数などのガバナ制限超過時に発生しますが、このコードは制限を超える処理をしていません。",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers.htm",
     "multi": false,
     "domain": "logic",
@@ -9927,7 +9761,6 @@
   },
   {
     "id": 467,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice167",
     "question": "サポートされていない言語を使用できるプラットフォーム機能はどれですか。2つ選びなさい。",
     "choices": [
       "Heroku Acm",
@@ -9954,7 +9787,6 @@
   },
   {
     "id": 468,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice168",
     "question": "開発者は、テストメソッドのガバナ制限をどのように回避すべきでしょうか。",
     "choices": [
       "レコードを作成するメソッドで@TestVisibleを使用する。",
@@ -9979,18 +9811,17 @@
   },
   {
     "id": 469,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice169",
     "question": "searchTermを指定してAccountsのリストを返すApexメソッドgetAccountsは、Lightning Webコンポーネントで使用できます。getAccountsメソッドを使用するLightning Webコンポーネントのプロパティの正しい定義は何ですか。",
     "choices": [
-      "@wire(getAccounts, {searchTerm: '$searchTerm'}) accoutList;",
+      "@wire(getAccounts, {searchTerm: '$searchTerm'}) accountList;",
       "@wire(getAccounts, '$searchTerm') accountList;",
       "@AuraEnabled(getAccounts, {searchTerm: '$searchTerm'}) accountList;",
       "@AuraEnabled(getAccounts, '$searchTerm') accountList;"
     ],
     "answers": [
-      "@wire(getAccounts, {searchTerm: '$searchTerm'}) accoutList;"
+      "@wire(getAccounts, {searchTerm: '$searchTerm'}) accountList;"
     ],
-    "explanation": "それぞれの選択肢の理由について説明します。\n\n□@wire(getAccounts, {searchTerm: '$searchTerm'}) accoutList;　これは正解です。@wire は LWC で Apex メソッドや Salesforce データを取得する仕組みで、パラメータはオブジェクト形式 {searchTerm: '$searchTerm'} で渡します。$searchTerm はコンポーネントの searchTerm プロパティを動的に参照します。\n\n□@wire(getAccounts, '$searchTerm') accountList;　これは不正解です。@wire のパラメータは文字列ではなくキーと値を持つオブジェクトで指定する必要があります。\n\n□@AuraEnabled(getAccounts, {searchTerm: '$searchTerm'}) accountList;　これは不正解です。@AuraEnabled は Apex メソッドを LWC/Aura から呼び出し可能にするサーバー側の注釈であり、JS プロパティのワイヤリングには使えません。\n\n□@AuraEnabled(getAccounts, '$searchTerm') accountList;　これは不正解です。@AuraEnabled は Apex 側の注釈で、このような JS のプロパティ定義としては成立しません。",
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□@wire(getAccounts, {searchTerm: '$searchTerm'}) accountList;　これは正解です。@wire は LWC で Apex メソッドや Salesforce データを取得する仕組みで、パラメータはオブジェクト形式 {searchTerm: '$searchTerm'} で渡します。$searchTerm はコンポーネントの searchTerm プロパティを動的に参照します。\n\n□@wire(getAccounts, '$searchTerm') accountList;　これは不正解です。@wire のパラメータは文字列ではなくキーと値を持つオブジェクトで指定する必要があります。\n\n□@AuraEnabled(getAccounts, {searchTerm: '$searchTerm'}) accountList;　これは不正解です。@AuraEnabled は Apex メソッドを LWC/Aura から呼び出し可能にするサーバー側の注釈であり、JS プロパティのワイヤリングには使えません。\n\n□@AuraEnabled(getAccounts, '$searchTerm') accountList;　これは不正解です。@AuraEnabled は Apex 側の注釈で、このような JS のプロパティ定義としては成立しません。",
     "reference_url": "https://developer.salesforce.com/docs/component-library/documentation/en/lwc",
     "multi": false,
     "domain": "ui",
@@ -10004,7 +9835,6 @@
   },
   {
     "id": 470,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice170",
     "question": "デバッグログに関する3つの記述のうち、正しいものはどれですか。3つ選びなさい。",
     "choices": [
       "デバッグログレベルは累積され、FINEログレベルにはDEBUG、INFO、WARN、ERRORレベルで記録されたすべてのイベントが含まれます。",
@@ -10032,7 +9862,6 @@
   },
   {
     "id": 471,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice171",
     "question": "AccountListという名前のList<Account>コレクション内の各Accountを反復処理するための有効な選択肢はどれですか。2つ選びなさい。",
     "choices": [
       "for (Integer i=0; i < AccountList.Size(); i++) {…}",
@@ -10058,7 +9887,6 @@
   },
   {
     "id": 472,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice172",
     "question": "次のコードの実行時間を短縮するために、開発者が取るべき行動はどれですか。\n\nList<Account> allAccounts = [SELECT Id FROM Account];\nList<Contact> allContacts = [SELECT Id, AccountId FROM Contact];\n\nfor (Account a : allAccounts) {\n    for (Contact c : allContacts) {\n        if (c.AccountId == a.Id) {\n            // do work\n        }\n    }\n}",
     "choices": [
       "取引先責任者のSOQLにGROUP BYオプションを追加する",
@@ -10083,7 +9911,6 @@
   },
   {
     "id": 473,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice173",
     "question": "開発者は、AccountレコードまたはContactレコードを処理できるApexメソッドが必要です。開発者はどのメソッドを使用する必要がありますか。",
     "choices": [
       "Public void doWork(Account || Contact)",
@@ -10108,7 +9935,6 @@
   },
   {
     "id": 474,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice174",
     "question": "開発者は、複数のLightningウェブコンポーネントを含む天気アプリを作成しました。コンポーネントの１つはToggleと呼ばれ、華氏または摂氏の単位を切り替えます。Toggleコンポーネントでユーザーが華氏から摂氏、またはその逆に切り替えると、その情報はTemperatureコンポーネントに送信され、温度が変換されて表示されます。これを実現するには、どのような方法が推奨されますか。",
     "choices": [
       "コンポーネント間の通信を処理するカスタムイベントを作成する。",
@@ -10133,7 +9959,6 @@
   },
   {
     "id": 475,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice175",
     "question": "開発者が組織内でテストを実行するための方法は何ですか。2つ選びなさい。",
     "choices": [
       "Tooling API",
@@ -10159,7 +9984,6 @@
   },
   {
     "id": 476,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice176",
     "question": "ある開発者が2つのカスタムコントローラ拡張を持っており、それぞれにsave()メソッドがあります。次のVisualforceページでは、どのsave()メソッドが呼び出されますか。\n\n<apex:page standardController=\"Account\" extensions=\"ExtensionA, ExtensionB\">\n    <apex:commandButton action=\"{!save}\" value=\"Save\" />\n</apex:page>",
     "choices": [
       "ExtensionB save()",
@@ -10184,7 +10008,6 @@
   },
   {
     "id": 477,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice177",
     "question": "以下のコードから、コントローラ変数を作成するために使用できるステートメントはどれですか。3つ選びなさい。\n\npublic class AccountListController {\n    public List<Account> getAccounts() {\n        return controller.getRecords();\n    }\n}",
     "choices": [
       "Apexpages.standardsetcontroller controller = new apexpages.standardsetcontroller(database.query('select id from account'));",
@@ -10208,12 +10031,10 @@
       "Visualforce"
     ],
     "source": "tyson",
-    "diff": 3,
-    "expFig": "async-apex"
+    "diff": 3
   },
   {
     "id": 478,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice178",
     "question": "ある開発者が、StatusComponentというLightning Webコンポーネントを作成し、Accountレコードページに挿入しました。このコンポーネントを利用できるようにするために、開発者が行うべきことはどれですか。2つ選びなさい。",
     "choices": [
       "<target>Lightning_RecordPage</target>をstatusComponent.js-meta.xmlファイルに追加する。",
@@ -10239,7 +10060,6 @@
   },
   {
     "id": 479,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice179",
     "question": "Boolean isOK;\nInteger x;\nString theString = 'Hello';\n\nif (isOK == false && theString == 'Hello') {\n    x = 1;\n} else if (isOK == true && theString =='Hello') {\n    x = 2;\n} else if (isOK != null && theString == 'Hello') {\n    x = 3;\n} else {\n    x = 4;\n}\n\n以下のコードを実行した場合、xの値は何になりますか。",
     "choices": [
       "1",
@@ -10264,7 +10084,6 @@
   },
   {
     "id": 480,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice180",
     "question": "アプリケーションイベントは従来のpublish-subscribeモデルに従っています。イベントを発生させるには、どのメソッドを使用しますか。",
     "choices": [
       "emit()",
@@ -10289,7 +10108,6 @@
   },
   {
     "id": 481,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice181",
     "question": "開発者は、取引先オブジェクトにトリガーを作成し、そのトリガーが正常に一度に多数のレコードを処理できるかテストしたいと考えています。開発者チームは、一意の名前を持つ200個の取引先レコードでトリガーをテストする必要があると判断しました。\n最小限のコード量で単体テスト内のテストデータを作成するためには、どのような作業を行う必要がありますか。2つ選びなさい。",
     "choices": [
       "テストデータを含む静的リソースを作成します。",
@@ -10316,7 +10134,6 @@
   },
   {
     "id": 482,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice182",
     "question": "開発者が非同期メソッドまたはfutureメソッドに関する情報を確認できる場所はどこですか。2つ選びなさい。",
     "choices": [
       "Apex ジョブ",
@@ -10343,7 +10160,6 @@
   },
   {
     "id": 483,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice183",
     "question": "開発者は、Salesforce の様々な種類のケースを独立した要件でテストできるようにするために、一連のテスト全体の基本データセット (取引先、取引先責任者、商品、納入商品) を作成する必要があります。\n各単体テストに必要なデータを効率的に生成できるのはどの方法でしょうか。",
     "choices": [
       "voidメソッドで@TestSetupを使用する",
@@ -10368,7 +10184,6 @@
   },
   {
     "id": 484,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice184",
     "question": "メタデータAPIを使用してデプロイできるコンポーネントはどれですか。2つ選びなさい。",
     "choices": [
       "ケースのレイアウト",
@@ -10395,7 +10210,6 @@
   },
   {
     "id": 485,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice185",
     "question": "多くの開発者からなるチームが、本番組織と同じ構成を持つ個々の組織で作業しています。このシナリオに最も適しているのはどのタイプの組織ですか。",
     "choices": [
       "Developer Sandbox",
@@ -10421,7 +10235,6 @@
   },
   {
     "id": 486,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice186",
     "question": "Universal Containers社は、Salesforce組織内のすべてのデータと添付ファイルを月に1回バックアップしたいと考えています。この要件を満たすために、開発者はどのアプローチを使用すべきでしょうか。",
     "choices": [
       "データローダーのコマンドラインを使用します。",
@@ -10447,7 +10260,6 @@
   },
   {
     "id": 487,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice187",
     "question": "トリガーが同じオブジェクトとイベントに関連付けられている場合の実行順序に関して正しい説明はどれですか。",
     "choices": [
       "トリガーはトリガー名のアルファベット順に実行されます。",
@@ -10472,7 +10284,6 @@
   },
   {
     "id": 488,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice188",
     "question": "開発者は、インスタンス化できないShippingCalculatorクラスを作成する必要があり、サブクラスがオーバーライドできるcalculateメソッドの実用的なデフォルト実装を含める必要があります。 ShippingCalculatorクラスの正しい実装はどれですか。",
     "choices": [
       "Public abstract class ShippingCalculator { public override calculate() { /*implementation*/ } }",
@@ -10498,7 +10309,6 @@
   },
   {
     "id": 489,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice189",
     "question": "継続的インテグレーションの一環として、デプロイと単体テストの実行をスクリプト化するために、開発者は何を使用する必要がありますか。",
     "choices": [
       "開発者コンソール",
@@ -10525,7 +10335,6 @@
   },
   {
     "id": 490,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice190",
     "question": "Lightning Experienceで取引先の既存の編集ボタンを押下するときに、ユーザーにカスタムユーザーインターフェースを提供したいと考えています。どのように提供すべきですか。",
     "choices": [
       "取引先の[編集]ボタンをLightningアクションで上書きします",
@@ -10550,7 +10359,6 @@
   },
   {
     "id": 491,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice191",
     "question": "開発者は、Salary__cカスタム項目を含むContactレコードを作成するために、ユーザーがContactレコード情報を入力できるLightningコンポーネントを作成する必要があります。\nSalary__c 項目が通貨入力として機能し、Salary__c の正しい項目レベル権限を持っているユーザーのみが表示および編集できるようにするには、Lightning-record-edit-form とともに何を使用する必要がありますか。",
     "choices": [
       "<lightning-input-field field-name = \"Salary__c\"></ lightning-input-field>",
@@ -10576,7 +10384,6 @@
   },
   {
     "id": 492,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice192",
     "question": "開発者は、Apexクラスのメソッドを特定する必要があります。このメソッドは、Account上のSOQL文の結果セットを繰り返し処理することで、メモリ内でリソース負荷が高い処理を実行します。また、このメソッドは変更をデータベースに保存するためにDMLステートメントを実行します。トランザクション制御を確実にし、ガバナー制限の超過を回避するための最善の方法として、開発者が実装すべき１つの技法はどれですか。",
     "choices": [
       "Database.Savepointメソッドを使用して、データベースの整合性を強制します。",
@@ -10602,7 +10409,6 @@
   },
   {
     "id": 493,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice193",
     "question": "組織には商談を作成するフローがあります。開発者はこのフローを変更し、取引先責任者を新しく作成し、その取引先責任者のIDを商談に関連付ける必要があります。フローにどのような要素を追加する必要がありますか。",
     "choices": [
       "新しい[レコードを取得]要素を追加します。",
@@ -10627,7 +10433,6 @@
   },
   {
     "id": 494,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice194",
     "question": "値'High'、'Medium'、'Low'は、異なるオブジェクト間で複数の選択リストに共通する値として識別されています。値を上記のものに制限しつつ、選択リストとその値のメンテナンスを合理化するために、開発者が取ることのできる方法は何でしょうか。",
     "choices": [
       "各オブジェクトに選択リストを作成し、値を含むグローバル選択リスト値セットを使用します。",
@@ -10652,7 +10457,6 @@
   },
   {
     "id": 495,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice195",
     "question": "Batchableインターフェースを実装しているApexクラスのexecute()メソッドの内部でApexコードが実行される場合、ガバナ制限に関して正しい記述を2つ選びなさい。",
     "choices": [
       "Apexのガバナ制限は、execute()メソッドの繰り返しごとにリセットされます。",
@@ -10679,7 +10483,6 @@
   },
   {
     "id": 496,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice196",
     "question": "すべてのテストを実行した後、開発者はクラスのコードカバレッジをチェックするために何をすべきですか。",
     "choices": [
       "[Apex クラス]ページのビューの[コードカバレッジ]列を表示します。",
@@ -10704,7 +10507,6 @@
   },
   {
     "id": 497,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice197",
     "question": "スクラッチ組織を作成するために何を使用すべきですか。",
     "choices": [
       "Salesforce CLI",
@@ -10730,7 +10532,6 @@
   },
   {
     "id": 498,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice198",
     "question": "単体テストで実行可能なシナリオはどれですか。",
     "choices": [
       "別のユーザーとして匿名Apexを実行する。",
@@ -10756,7 +10557,6 @@
   },
   {
     "id": 499,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice199",
     "question": "開発者が、@remoteActionデコレータを使用してグローバルなサーバー側メソッドを呼び出そうとするとエラーが発生します。このエラーを解決するにはどうすればよいですか。",
     "choices": [
       "サーバー側のメソッドを (static=false) でデコレートする。",
@@ -10781,7 +10581,6 @@
   },
   {
     "id": 500,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice200",
     "question": "ある開発チームは、デプロイスクリプトを使用して、開発サイクル中にサンドボックスに自動的にデプロイしたいと考えています。サンドボックスにデプロイするスクリプトを実行するために使用できるツールはどれですか。2つ選びなさい。",
     "choices": [
       "開発者コンソール",
@@ -10808,7 +10607,6 @@
   },
   {
     "id": 501,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice201",
     "question": "Accountオブジェクトのafterトリガーは、Accountのすべての子OpportunityでDML更新操作を実行します。Opportunityオブジェクトにアクティブなトリガーはありませんが、特定の状況で「最大トリガー深度を超えました」エラーが発生します。Accountトリガーの再帰的な起動を説明する理由はどれですか。2つ選びなさい。",
     "choices": [
       "Opportunityを変更すると、Accountの積み上げ集計項目が更新されます。",
@@ -10835,7 +10633,6 @@
   },
   {
     "id": 502,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice202",
     "question": "Salesforce管理者は、レコードによってトリガーされるフローを作成しています。特定の基準が満たされた場合、フローはApexメソッドを呼び出して、いくつかのタイプのオブジェクトを含む複雑な検証を実行する必要があります。Apexメソッドを作成する場合、メソッドをフロー内で使用できるようにするために、開発者はどのアノテーションを使用する必要がありますか。",
     "choices": [
       "@future",
@@ -10860,7 +10657,6 @@
   },
   {
     "id": 503,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice203",
     "question": "ワークフローで、既存のAccountのカスタム項目の値を更新します。開発者は、トリガーによって更新する予定のカスタム項目の値にどのようにアクセスしますか。",
     "choices": [
       "before updateトリガーを記述し、Trigger.newから項目値にアクセスする。",
@@ -10885,7 +10681,6 @@
   },
   {
     "id": 504,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice204",
     "question": "Apexのカスタム例外に関して正しいものはどれですか。3つ選びなさい。",
     "choices": [
       "カスタム例外クラスは、例外クラス以外のクラスを拡張できます。",
@@ -10913,7 +10708,6 @@
   },
   {
     "id": 505,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice205",
     "question": "開発者は、親LightningWebコンポーネント内にネストされた子LightningWebコンポーネントを作成しました。親コンポーネントは、文字列値を子コンポーネントに渡す必要があります。これを達成できる方法はどれですか。2つ選びなさい。",
     "choices": [
       "親コンポーネントは、カスタムイベントを使用して、データを子コンポーネントに渡すことができます。",
@@ -10939,7 +10733,6 @@
   },
   {
     "id": 506,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice206",
     "question": "コンポーネントとアプリケーションのイベント処理に関するベストプラクティスはどれですか。2つ選びなさい。",
     "choices": [
       "イベントハンドラで低レベルのイベントを処理し、高レベルのイベントとして再起動する。",
@@ -10965,7 +10758,6 @@
   },
   {
     "id": 507,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice207",
     "question": "Apexクラスとインターフェースに関して、次のうち正しいステートメントはどれでしょうか。２つ選択してください。",
     "choices": [
       "クラスは複数のレベルの内部クラスを持つことができます。",
@@ -10991,7 +10783,6 @@
   },
   {
     "id": 508,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice208",
     "question": "開発者は、あるクラスに対するテストを作成しており、機能を検証するためにレコードを挿入する必要があります。テストクラスのすべてのメソッドに対してレコードを作成するには、どのアノテーションを使うべきですか。",
     "choices": [
       "@StartTest",
@@ -11016,7 +10807,6 @@
   },
   {
     "id": 509,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice209",
     "question": "開発者チームは、さまざまな組織構成で独立して作業できるソース主導型のプロジェクトに取り組んでいます。開発チームは、どのタイプのSalesforce組織を使用して開発を行うべきでしょうか。",
     "choices": [
       "スクラッチ組織",
@@ -11041,7 +10831,6 @@
   },
   {
     "id": 510,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice210",
     "question": "Universal Containers社は、商談がClosed Wonのフェーズに達したときに、商談を編集できないようにロックしたいと考えています。これを達成するために開発者が使用すべき戦略はどれですか。2つ選びなさい。",
     "choices": [
       "フロービルダーを使用する。",
@@ -11068,7 +10857,6 @@
   },
   {
     "id": 511,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice211",
     "question": "開発者は、PaymentProcessorインタフェースで定義されている支払いに準拠した小切手処理支払機能を提供するCheckPaymentProcessorクラスを実装する必要があります。\n\npublic interface PaymentProcessor {\n    void pay(Decimal amount);\n}\n\nPaymentProcessorインタフェースクラスを使用する正しい実装はどれですか。",
     "choices": [
       "Public class CheckPaymentProcessor extends PaymentProcessor { public void pay(Decimal amount) { // 実装の詳細 } }",
@@ -11093,7 +10881,6 @@
   },
   {
     "id": 512,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice212",
     "question": "データクリーンアップ戦略の一環として、AW Computing社は、関連するアカウントが削除されたときに、関連する商談レコードを自動的に削除したいと考えています。このビジネス要件を満たすには、どの自動化ツールを使用する必要がありますか。",
     "choices": [
       "プロセスビルダー",
@@ -11119,7 +10906,6 @@
   },
   {
     "id": 513,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice213",
     "question": "開発者が、「Universal Containers」という会社名を持つリード、取引先、および取引先責任者のIdと名前(Name)を取得するために使用すべきクエリはどれですか。",
     "choices": [
       "SELECT Lead.Id, Lead.Name, Account.Id, Account.Name, Contact.Id, Contact.Name FROM Lead, Account, Contact WHERE CompanyName = 'Universal Containers'",
@@ -11144,7 +10930,6 @@
   },
   {
     "id": 514,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice214",
     "question": "Universal Containers社には、カスタムオブジェクトであるEngineering_Support__cを使用して、ユーザーがエンジニアリングチームにサポートを要求できるサポートプロセスがあります。ユーザーは、複数のEngineering_Support__cレコードを1つの商談レコードに関連付けることができる必要があります。さらに、Engineering_Support__c レコードに関する集計情報を商談レコードに表示する必要があります。これらの要件をサポートするために、開発者は何を実装する必要がありますか。",
     "choices": [
       "商談からEngineering_Support__cへの主従関係",
@@ -11170,7 +10955,6 @@
   },
   {
     "id": 515,
-    "url": "https://tysonblog-whitelabel.com/salesforce-dev-practice215",
     "question": "開発者は、既存のPaymentクラスの実装を提供するCreditCardPaymentクラスを作成する必要があります。\n\npublic virtual class Payment { \n    public virtual void makePayment(Decimal amount) { \n        /*implementation*/\n    } \n}\n\n正しい実装はどれですか。",
     "choices": [
       "public class CreditCardPayment extends Payment { public virtual void makePayment(Decimal amount) { /*implementation*/ } }",
