@@ -7,19 +7,19 @@
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
  * ※ HTML をネットワーク優先にすることで、ハードリロード(Ctrl+Shift+R)なしで更新が反映される。
  */
-const CACHE = 'sf-exam-v90';
+const CACHE = 'sf-exam-v91';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=88',
+  './maintenance.js?v=89',
   './manifest.webmanifest',
-  './quiz.css?v=88',
-  './quiz-engine.js?v=88',
-  './changelog.js?v=88',
-  './figures.js?v=88',
+  './quiz.css?v=89',
+  './quiz-engine.js?v=89',
+  './changelog.js?v=89',
+  './figures.js?v=89',
   './firebase-config.js',
-  './cloud-sync.js?v=88',
+  './cloud-sync.js?v=89',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   // 学習データ：初回訪問からオフラインで学べるようプリキャッシュ（allSettledなので失敗してもinstallは継続）

@@ -236,14 +236,19 @@
       '.sfqc-app-selall{font-size:12px;color:#475569;display:inline-flex;align-items:center;gap:5px;cursor:pointer}' +
       '.sfqc-app-check{display:inline-flex;align-items:center;margin-right:4px}' +
       'body.dark .sfqc-app-selall{color:#cbd5e1}' +
-      /* 日別アクティブの棒グラフ */
-      '.sfqc-ts{display:flex;align-items:flex-end;gap:2px;height:90px;padding:4px 0}' +
-      '.sfqc-ts-col{flex:1;min-width:4px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}' +
-      '.sfqc-ts-bar{width:80%;background:#3b82f6;border-radius:2px 2px 0 0;min-height:2px}' +
+      /* 日別アクティブの棒グラフ（青=人数／緑=解答数の2系列） */
+      '.sfqc-ts{display:flex;align-items:flex-end;gap:2px;height:96px;padding:4px 0}' +
+      '.sfqc-ts-col{flex:1;min-width:6px;display:flex;flex-direction:column;align-items:center;height:100%}' +
+      '.sfqc-ts-bars{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:1px;width:100%}' +
+      '.sfqc-ts-bar{width:42%;background:#3b82f6;border-radius:2px 2px 0 0;min-height:0}' +
+      '.sfqc-ts-bar2{width:42%;background:#16a34a;border-radius:2px 2px 0 0;min-height:0}' +
       '.sfqc-ts-x{font-size:8px;color:#94a3b8;margin-top:2px;white-space:nowrap}' +
       '.sfqc-ts-col{cursor:pointer}.sfqc-ts-col:hover .sfqc-ts-bar,.sfqc-ts-col:focus .sfqc-ts-bar{background:#1d4ed8;outline:none}' +
+      '.sfqc-ts-col:hover .sfqc-ts-bar2,.sfqc-ts-col:focus .sfqc-ts-bar2{background:#15803d;outline:none}' +
+      '.sfqc-ts-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#475569;margin-bottom:6px}' +
+      '.sfqc-ts-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}' +
       '.sfqc-ts-readout{font-size:12px;color:#334155;margin-top:6px;font-weight:700;min-height:1.4em}' +
-      'body.dark .sfqc-ts-bar{background:#60a5fa}body.dark .sfqc-ts-readout{color:#cbd5e1}' +
+      'body.dark .sfqc-ts-bar{background:#60a5fa}body.dark .sfqc-ts-bar2{background:#4ade80}body.dark .sfqc-ts-readout{color:#cbd5e1}body.dark .sfqc-ts-legend{color:#cbd5e1}' +
       /* 操作ログ */
       '.sfqc-log-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow:auto}' +
       '.sfqc-log-item{display:flex;gap:8px;font-size:11px;align-items:baseline;border-bottom:1px solid #f1f5f9;padding:3px 0}' +
@@ -1866,15 +1871,16 @@
       html += '<div class="sfqc-toolbar sfqc-toolbar2"><span class="sfqc-sort-label">詳細集計の資格:</span>' + dchips + '</div>';
     }
 
-    // 分野別（domainOf/DOMAIN_DEFS は現在ページの資格のものなので、現在資格を選んでいるときだけ表示）
-    if (isCur && engineHere) {
+    // 分野別（選択中の資格の分野データを取得して全資格で表示。現在資格はエンジンから即時、他資格は data を取得＝取得中はプレースホルダ）
+    var dom = getDashDom(dcert);
+    if (dom) {
       var domAgg = {};
       adminRows.forEach(function (r) {
         if (r.cert !== dcert) return;
         var hist = r.store.hist || {};
         Object.keys(hist).forEach(function (id) {
           var h = hist[id], t = (h.c || 0) + (h.w || 0); if (!t) return;
-          var dc; try { dc = domainOf(+id); } catch (e) { dc = null; }
+          var dc = dom.domBy[id]; if (dc == null) dc = dom.domBy[+id];
           if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0, sec: 0 }); da.c += (h.c || 0); da.t += t; }
         });
         // 分野別の学習時間（store.time.dom[code].sec）も足し込む #18
@@ -1884,7 +1890,7 @@
           var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0, sec: 0 }); da.sec += sec;
         });
       });
-      var defs = (typeof DOMAIN_DEFS !== 'undefined') ? DOMAIN_DEFS : [];
+      var defs = dom.defs || [];
       var dbars = '';
       defs.forEach(function (d) {
         var a = domAgg[d.code]; if (!a || (!a.t && !a.sec)) return; var pc = a.t ? Math.round(a.c / a.t * 100) : 0;
@@ -1893,6 +1899,8 @@
         dbars += '<div class="sfqc-dom"><span class="nm">' + esc(d.emoji + ' ' + d.name) + '</span><div class="bw"><div class="bf" style="width:' + pc + '%;background:' + col + '"></div></div><span class="pc" style="color:' + col + '">' + pc + '% <small>(' + a.c + '/' + a.t + ')' + timeLabel + '</small></span></div>';
       });
       if (dbars) html += '<div class="sfqc-sec">分野別 平均正答率＋学習時間（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card">' + dbars + '</div>';
+    } else {
+      html += '<div class="sfqc-sec">分野別 平均正答率＋学習時間（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card"><div class="sfqc-itnote">分野データを読み込み中…</div></div>';
     }
 
     // 問題別（hist だけで全資格分を計算できる。問題文・要確認フラグは現在資格のときだけ付く）
@@ -1908,13 +1916,40 @@
         '<div class="sfqc-fb-dl"><button class="sfqc-mini fb-dl" id="sfqc-q-csv">⬇ CSV</button><button class="sfqc-mini fb-dl" id="sfqc-q-json">⬇ JSON</button></div></div>';
       var note = (isCur && engineHere)
         ? '※ 回答数が多く正答率が低い問題＝難しすぎる/設問に問題がある可能性。改善の優先候補（表示は低い順・上位40件、書き出しは全件）。'
-        : '※ 問題文・分野別は「' + esc(dcert) + '」のページから管理者ビューを開くと表示されます（ID・正答率は全件書き出せます）。';
+        : '※ 問題文・要確認フラグは「' + esc(dcert) + '」のページから管理者ビューを開いたときだけ表示されます（ID・正答率は全件書き出せます。分野別は全資格で表示されます）。';
       html += dlHead +
         '<details class="sfqc-itemwrap"><summary>低い順 上位40件を表示</summary>' +
         '<div class="sfqc-dash-card" style="margin-top:8px"><table class="sfqc-itbl"><thead><tr><th>問題</th><th>内容</th><th class="num">回答数</th><th class="num">正答率</th></tr></thead><tbody>' + rows + '</tbody></table>' +
         '<div class="sfqc-itnote">' + note + '</div></div></details>';
     }
     return html;
+  }
+
+  // 分野別集計用の「資格スラッグ→分野データ」キャッシュ。
+  // 現在ページの資格はエンジン(DOMAIN_DEFS/domainOf)から即時構築。他資格は data/{domains,questions}.json を取得し、
+  // 取れたら renderAdmin() で再描画する（取得中は null を返してプレースホルダ表示）。
+  var dashDomCache = {};   // slug -> {loaded, defs:[{code,name,emoji,weight}], domBy:{id:code}}
+  function getDashDom(slug) {
+    if (slug === CERT_KEY && typeof QDATA !== 'undefined' && QDATA && QDATA.length &&
+        typeof domainOf === 'function' && typeof DOMAIN_DEFS !== 'undefined' && DOMAIN_DEFS.length) {
+      var domBy = {};
+      QDATA.forEach(function (q) { if (q && q.id != null) domBy[q.id] = domainOf(+q.id); });
+      return { defs: DOMAIN_DEFS, domBy: domBy };
+    }
+    var c = dashDomCache[slug];
+    if (c) return c.loaded ? c : null;
+    dashDomCache[slug] = { loaded: false };
+    var grab = function (path) { return fetch(path).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
+    Promise.all([grab('../' + slug + '/data/domains.json'), grab('../' + slug + '/data/questions.json')]).then(function (res) {
+      var domj = res[0], qs = res[1] || [];
+      var defs = domj ? (Array.isArray(domj) ? domj : (domj.domains || [])) : [];
+      var domBy = {};
+      if (domj && !Array.isArray(domj) && domj.map) Object.assign(domBy, domj.map);
+      qs.forEach(function (q) { if (q && q.id != null && q.domain != null) domBy[q.id] = q.domain; });
+      dashDomCache[slug] = { loaded: true, defs: defs, domBy: domBy };
+      renderAdmin();
+    }).catch(function () { dashDomCache[slug] = { loaded: true, defs: [], domBy: {} }; renderAdmin(); });
+    return null;
   }
 
   // 詳細集計で選択中の資格（無効/未選択なら現在ページの資格、無ければ存在する最初の資格）
@@ -1968,20 +2003,28 @@
         });
       });
     });
-    var maxAct = 1; labels.forEach(function (k) { if (act[k] > maxAct) maxAct = act[k]; });
+    var maxAct = 1, maxAns = 1;
+    labels.forEach(function (k) { if (act[k] > maxAct) maxAct = act[k]; if (ans[k] > maxAns) maxAns = ans[k]; });
+    // 各日2本：青=アクティブ人数（maxActで正規化）／緑=解答数（maxAnsで正規化）。系列ごとに別スケールで「分けて」見せる
     var bars = labels.map(function (k, idx) {
-      var h = Math.round(act[k] / maxAct * 100);
+      var ha = act[k] ? Math.max(2, Math.round(act[k] / maxAct * 100)) : 0;
+      var hn = ans[k] ? Math.max(2, Math.round(ans[k] / maxAns * 100)) : 0;
       var lab = k + '：アクティブ ' + act[k] + '人 / 解答 ' + ans[k] + '件';
       return '<div class="sfqc-ts-col" role="button" tabindex="0" title="' + esc(lab) + '" data-ts-label="' + esc(lab) + '">' +
-        '<div class="sfqc-ts-bar" style="height:' + Math.max(2, h) + '%"></div>' +
+        '<div class="sfqc-ts-bars">' +
+        '<div class="sfqc-ts-bar" style="height:' + ha + '%"></div>' +
+        '<div class="sfqc-ts-bar2" style="height:' + hn + '%"></div>' +
+        '</div>' +
         '<div class="sfqc-ts-x">' + (idx % 5 === 0 ? esc(k.slice(5)) : '') + '</div></div>';
     }).join('');
     var totAns = labels.reduce(function (s, k) { return s + ans[k]; }, 0);
     var actDays = labels.filter(function (k) { return act[k] > 0; }).length;
-    return '<div class="sfqc-sec">日別アクティブ（直近' + DAYS + '日・棒＝アクティブ人数）</div>' +
-      '<div class="sfqc-dash-card"><div class="sfqc-ts">' + bars + '</div>' +
+    var legend = '<div class="sfqc-ts-legend"><span><i class="sw" style="background:#3b82f6"></i>アクティブ人数（最大 ' + maxAct + '人）</span>' +
+      '<span><i class="sw" style="background:#16a34a"></i>解答数（最大 ' + maxAns.toLocaleString() + '件）</span></div>';
+    return '<div class="sfqc-sec">日別アクティブ（直近' + DAYS + '日・人数と解答数）</div>' +
+      '<div class="sfqc-dash-card">' + legend + '<div class="sfqc-ts">' + bars + '</div>' +
       '<div class="sfqc-ts-readout" id="sfqc-ts-readout">棒をタップ／カーソルを乗せると、その日の人数・解答数が出ます。</div>' +
-      '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。</div></div>';
+      '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。青=人数／緑=解答数（各系列はそれぞれの最大値を基準に高さを正規化）。</div></div>';
   }
 
   // 操作ログ（#4）。管理者アカウントに保存された adminLog を新しい順に表示。
