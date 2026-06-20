@@ -12306,7 +12306,7 @@
   },
   {
     "id": 569,
-    "question": "次の Apex ステートメントがあるとします。\nアカウント myAccount = [アカウントから Id、名前を選択);\nSOQL クエリによって複数のアカウントが返された場合、何が起こりますか?",
+    "question": "次の Apex ステートメントがあるとします。\nAccount myAccount = [SELECT Id, Name FROM Account];\nSOQL クエリによって複数の取引先が返された場合、何が起こりますか?",
     "choices": [
       "変数 myaccount は自動的に List データ型にキャストされます。",
       "未処理の例外がスローされ、コードが終了します。",
@@ -12906,7 +12906,7 @@
   },
   {
     "id": 593,
-    "question": "以下のコンポーネント コード要件を参照してください。\n<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:レイアウト>\n要件：\n* モバイル デバイスの場合、情報は 3 行に表示されます。\n* デスクトップとタブレットの場合、情報は 1 行に表示されます。\n要件 2 が期待どおりに表示されません。\nデスクトップとタブレットの要件を満たす正しいコンポーネント コードを持つオプションはどれですか。",
+    "question": "以下のコンポーネント コード要件を参照してください。\n<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>\n要件：\n* モバイル デバイスの場合、情報は 3 行に表示されます。\n* デスクトップとタブレットの場合、情報は 1 行に表示されます。\n要件 2 が期待どおりに表示されません。\nデスクトップとタブレットの要件を満たす正しいコンポーネント コードを持つオプションはどれですか。",
     "choices": [
       "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:\nlayoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
       "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:\nlayoutItem>\n<lightning:layoutItem size=\"12\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
@@ -13280,7 +13280,7 @@
   },
   {
     "id": 608,
-    "question": "開発者は、システム内に存在する ContactSearch Apex クラスのセキュリティ レビューを実行するように指示されています。開発者は、クラス内で次のメソッドをセキュリティ上の脅威として特定しました。\nist<連絡先> performSearch (String lastName} [\nreturn Database.query('SELECT Id, FirstName, LastName FROM Contact WHERE LastName Like s'+lastName+'s'\")?; 開発者がメソッドを更新して SOQL インジェクション攻撃を防ぐ 2 つの方法は何ですか?\n2つの回答を選択してください",
+    "question": "開発者は、システム内に存在する ContactSearch Apex クラスのセキュリティ レビューを実行するよう指示されています。開発者は、クラス内の次のメソッドをセキュリティ上の脅威として特定しました。\npublic List<Contact> performSearch(String lastName) {\n  return Database.query('SELECT Id, FirstName, LastName FROM Contact WHERE LastName LIKE \\'%' + lastName + '%\\'');\n}\n開発者がこのメソッドを更新して SOQL インジェクション攻撃を防ぐ 2 つの方法はどれですか?\n2つの回答を選択してください",
     "choices": [
       "変数バインドを使い、動的クエリを静的 SOQL に置き換える。",
       "パラメータを使う前に String.escapeSingleQuotes() でサニタイズする。",
