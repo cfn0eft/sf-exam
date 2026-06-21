@@ -2,33 +2,33 @@
   "domains": [
     {
       "code": "strat",
-      "name": "コンサルティングと導入戦略",
+      "name": "コンサルティングと実装戦略",
       "weight": 25,
       "emoji": "🧭"
     },
     {
       "code": "app",
-      "name": "Sales Cloud の実践活用",
-      "weight": 23,
+      "name": "製品知識の適用",
+      "weight": 30,
       "emoji": "💼"
     },
     {
       "code": "life",
-      "name": "営業ライフサイクル",
-      "weight": 20,
+      "name": "営業プロセス（リード〜クローズ）",
+      "weight": 15,
       "emoji": "🔄"
     },
     {
       "code": "data",
       "name": "データ管理",
-      "weight": 19,
+      "weight": 15,
       "emoji": "🗃️"
     },
     {
-      "code": "ai",
-      "name": "予測AIと生成AI",
-      "weight": 13,
-      "emoji": "🤖"
+      "code": "change",
+      "name": "変更管理と定着化",
+      "weight": 15,
+      "emoji": "🎓"
     }
   ]
 }
