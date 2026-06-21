@@ -629,5 +629,295 @@
   "source": "jpnshiken",
   "diff": 2,
   "id": 26
+ },
+ {
+  "question": "他のテンプレート種別では対応できない汎用的な生成用途に使い、独自の入力リソースを定義できるプロンプトテンプレートはどれですか。",
+  "choices": [
+   "フレックス（Flex）テンプレート",
+   "営業メール（Sales Email）テンプレート",
+   "項目生成（Field Generation）テンプレート",
+   "レコード要約（Record Summary）テンプレート"
+  ],
+  "answers": [
+   "フレックス（Flex）テンプレート"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ フレックス（Flex）テンプレート　これは正解です。他の専用テンプレートで対応できない汎用用途向けで、独自の入力リソースを定義できます。\n\n□ 営業メール（Sales Email）テンプレート　これは不正解です。営業メール生成に特化した用途です。\n\n□ 項目生成（Field Generation）テンプレート　これは不正解です。特定項目への値生成に特化しています。\n\n□ レコード要約（Record Summary）テンプレート　これは不正解です。レコード要約に特化した用途です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "Flexテンプレート",
+   "プロンプトテンプレート",
+   "Prompt Builder"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 27
+ },
+ {
+  "question": "プロンプトテンプレートで使用する基盤モデル（LLM）を試したり選択・比較したりできる場所はどれですか。",
+  "choices": [
+   "モデルプレイグラウンド（Model Playground）",
+   "フロービルダー",
+   "スキーマビルダー",
+   "データローダー"
+  ],
+  "answers": [
+   "モデルプレイグラウンド（Model Playground）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ モデルプレイグラウンド（Model Playground）　これは正解です。基盤モデルへプロンプトを試し、出力を比較して利用するモデルを選べます。\n\n□ フロービルダー　これは不正解です。自動化フローの作成ツールで、モデル選択の場ではありません。\n\n□ スキーマビルダー　これは不正解です。オブジェクトと項目の構造を可視化する機能です。\n\n□ データローダー　これは不正解です。一括データ入出力のツールです。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "モデルプレイグラウンド",
+   "基盤モデル",
+   "LLM"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 28
+ },
+ {
+  "question": "自社で用意した外部の予測／生成モデルを Salesforce に取り込んで活用する（Bring Your Own Model）機能を提供するのはどれですか。",
+  "choices": [
+   "Einstein Studio（Model Builder）",
+   "Schema Builder",
+   "Flow Builder",
+   "Report Builder"
+  ],
+  "answers": [
+   "Einstein Studio（Model Builder）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Einstein Studio（Model Builder）　これは正解です。外部や独自のモデルを取り込み、Salesforce 上で利用できるようにする（BYOM）機能を提供します。\n\n□ Schema Builder　これは不正解です。データモデルの可視化ツールです。\n\n□ Flow Builder　これは不正解です。自動化フローの作成ツールです。\n\n□ Report Builder　これは不正解です。レポート作成ツールで、モデル取り込みとは無関係です。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "Einstein Studio",
+   "BYOM",
+   "Model Builder"
+  ],
+  "source": "jpnshiken",
+  "diff": 3,
+  "id": 29
+ },
+ {
+  "question": "プロンプトテンプレートのグラウンディングに使うデータソースとして適切でないものはどれですか。",
+  "choices": [
+   "ユーザーのログインパスワード",
+   "レコードの項目",
+   "フローやApex",
+   "Data Cloud の DMO"
+  ],
+  "answers": [
+   "ユーザーのログインパスワード"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ユーザーのログインパスワード　これは正解（＝適切でないもの）です。認証情報はグラウンディング元として使うものではありません。\n\n□ レコードの項目　これは不正解です。差し込み項目として正しく利用できます。\n\n□ フローやApex　これは不正解です。フローやApexの戻り値をグラウンディングに使えます。\n\n□ Data Cloud の DMO　これは不正解です。DMOのデータをグラウンディングに利用できます。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "グラウンディング",
+   "差し込み項目",
+   "DMO"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 30
+ },
+ {
+  "question": "エージェントが特定の手順や制約に従って動作するよう制御する主な方法はどれですか。",
+  "choices": [
+   "トピックやアクションに自然言語の指示（instructions）を与える",
+   "Apexトリガをすべて無効化する",
+   "共有ルールを削除する",
+   "レポートを作成する"
+  ],
+  "answers": [
+   "トピックやアクションに自然言語の指示（instructions）を与える"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ トピックやアクションに自然言語の指示（instructions）を与える　これは正解です。指示文によってエージェントの判断・手順・制約を制御します。\n\n□ Apexトリガをすべて無効化する　これは不正解です。エージェントの挙動制御とは関係しません。\n\n□ 共有ルールを削除する　これは不正解です。レコードアクセスの設定で、挙動の制御手段ではありません。\n\n□ レポートを作成する　これは不正解です。分析用途で、エージェント制御とは無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "指示",
+   "instructions",
+   "トピック",
+   "アクション"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 31
+ },
+ {
+  "question": "エージェントが要求を理解できない、または対応範囲外だった場合の適切な挙動はどれですか。",
+  "choices": [
+   "人間の担当者へエスカレーションするなどのフォールバックを行う",
+   "必ず推測して何らかの回答を返す",
+   "セッションを無言で終了する",
+   "実行ユーザーを管理者権限に昇格する"
+  ],
+  "answers": [
+   "人間の担当者へエスカレーションするなどのフォールバックを行う"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 人間の担当者へエスカレーションするなどのフォールバックを行う　これは正解です。範囲外や理解不能時は、安全に人間へ引き継ぐなどのフォールバックが適切です。\n\n□ 必ず推測して何らかの回答を返す　これは不正解です。根拠のない推測（ハルシネーション）はリスクが高く望ましくありません。\n\n□ セッションを無言で終了する　これは不正解です。利用者体験として不適切です。\n\n□ 実行ユーザーを管理者権限に昇格する　これは不正解です。権限昇格は重大なセキュリティ問題で、行いません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "フォールバック",
+   "エスカレーション",
+   "ハルシネーション"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 32
+ },
+ {
+  "question": "Agentforce のエージェントアクションとして構成できるものを2つ選びなさい。",
+  "choices": [
+   "フロー（Flow）",
+   "Apex",
+   "プロファイル",
+   "ロール階層"
+  ],
+  "answers": [
+   "フロー（Flow）",
+   "Apex"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ フロー（Flow）　これは正解です。フローをアクションとして公開し、エージェントから実行できます。\n\n□ Apex　これは正解です。Apex（呼び出し可能メソッド）もアクションとして利用できます。\n\n□ プロファイル　これは不正解です。ユーザーの権限設定で、アクションではありません。\n\n□ ロール階層　これは不正解です。レコード共有のための階層で、アクションではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": true,
+  "domain": "agents",
+  "keywords": [
+   "アクション",
+   "Flow",
+   "Apex"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 33
+ },
+ {
+  "question": "Coral Cloud Resorts は、よくある問い合わせ（FAQ）をAIで自動対応し、サポート担当者の負荷を下げたいと考えています。最も適した構成はどれですか。",
+  "choices": [
+   "ナレッジでグラウンディングしたサービスエージェントを公開する",
+   "項目の入力規則を追加する",
+   "承認プロセスを作成する",
+   "レポートのサブスクリプションを設定する"
+  ],
+  "answers": [
+   "ナレッジでグラウンディングしたサービスエージェントを公開する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ナレッジでグラウンディングしたサービスエージェントを公開する　これは正解です。ナレッジを根拠に自動回答するサービスエージェントで、FAQ対応を自動化し負荷を下げられます。\n\n□ 項目の入力規則を追加する　これは不正解です。入力チェックの機能で、問い合わせ自動対応にはなりません。\n\n□ 承認プロセスを作成する　これは不正解です。レコード承認の自動化で、FAQ対応とは異なります。\n\n□ レポートのサブスクリプションを設定する　これは不正解です。レポート配信で、顧客対応の自動化ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "サービスエージェント",
+   "ナレッジ",
+   "ケース deflection"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 34
+ },
+ {
+  "question": "Data Cloud に統合された顧客データ（DMO）にもとづいて応答を生成したい場合、プロンプトで使う仕組みはどれですか。",
+  "choices": [
+   "Data Cloud の DMO を差し込み、またはリトリーバーでグラウンディングする",
+   "検証ルールを追加する",
+   "ユーザーのロールを変更する",
+   "メールテンプレートを複製する"
+  ],
+  "answers": [
+   "Data Cloud の DMO を差し込み、またはリトリーバーでグラウンディングする"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Data Cloud の DMO を差し込み、またはリトリーバーでグラウンディングする　これは正解です。DMOのデータを差し込みやリトリーバー経由でプロンプトに供給し、応答の根拠にします。\n\n□ 検証ルールを追加する　これは不正解です。入力チェック機能で、グラウンディングではありません。\n\n□ ユーザーのロールを変更する　これは不正解です。共有のための設定で、データ供給の仕組みではありません。\n\n□ メールテンプレートを複製する　これは不正解です。メール作成の操作で、無関係です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "DMO",
+   "Data Cloud",
+   "グラウンディング"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 35
+ },
+ {
+  "question": "検索インデックスとリトリーバーの関係として正しいものはどれですか。",
+  "choices": [
+   "インデックスに格納したチャンクを、リトリーバーが検索して取得する",
+   "リトリーバーがレコードを暗号化し、インデックスが復号する",
+   "両者は同じもので機能差はない",
+   "インデックスはメール送信、リトリーバーは承認に使う"
+  ],
+  "answers": [
+   "インデックスに格納したチャンクを、リトリーバーが検索して取得する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ インデックスに格納したチャンクを、リトリーバーが検索して取得する　これは正解です。チャンクをベクトル化して検索インデックスに格納し、リトリーバーが関連チャンクを取得します。\n\n□ リトリーバーがレコードを暗号化し、インデックスが復号する　これは不正解です。暗号化・復号の役割ではありません。\n\n□ 両者は同じもので機能差はない　これは不正解です。インデックスは格納、リトリーバーは取得という役割の違いがあります。\n\n□ インデックスはメール送信、リトリーバーは承認に使う　これは不正解です。いずれも検索・取得の仕組みで、無関係な用途です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "検索インデックス",
+   "リトリーバー",
+   "チャンク"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 36
+ },
+ {
+  "question": "Agentforce の Testing Center の評価で確認できることとして適切なものはどれですか。",
+  "choices": [
+   "期待する応答やアクションと、実際のエージェントの挙動が一致するか",
+   "サーバーのCPU温度",
+   "ユーザーの私的なメール本文",
+   "請求金額の合計"
+  ],
+  "answers": [
+   "期待する応答やアクションと、実際のエージェントの挙動が一致するか"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 期待する応答やアクションと、実際のエージェントの挙動が一致するか　これは正解です。Testing Center はテストケースに対する応答や選択アクションの妥当性を評価します。\n\n□ サーバーのCPU温度　これは不正解です。インフラ指標で、エージェント評価の対象ではありません。\n\n□ ユーザーの私的なメール本文　これは不正解です。評価対象でもアクセス対象でもありません。\n\n□ 請求金額の合計　これは不正解です。会計の話で、エージェント評価とは無関係です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/view-test-results",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "評価",
+   "テストケース"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 37
+ },
+ {
+  "question": "コンプライアンス目的で、エージェントとユーザーのやり取りや生成内容を後から確認・監視できるようにする仕組みはどれですか。",
+  "choices": [
+   "監査証跡（Audit Trail）やイベントログによる記録",
+   "入力規則（検証ルール）",
+   "ページレイアウト",
+   "承認プロセス"
+  ],
+  "answers": [
+   "監査証跡（Audit Trail）やイベントログによる記録"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 監査証跡（Audit Trail）やイベントログによる記録　これは正解です。やり取りや生成内容を記録し、後から監査・監視できるようにします（可観測性）。\n\n□ 入力規則（検証ルール）　これは不正解です。レコード保存時のチェックで、監視の仕組みではありません。\n\n□ ページレイアウト　これは不正解です。画面表示の設定です。\n\n□ 承認プロセス　これは不正解です。レコード承認の自動化で、監査記録ではありません。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "監査証跡",
+   "可観測性",
+   "モニタリング"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 38
  }
 ]
