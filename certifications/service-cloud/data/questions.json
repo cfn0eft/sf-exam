@@ -34,7 +34,7 @@
    "メール-to-ケース（Email-to-Case）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ メール-to-ケース（Email-to-Case）　これは正解です。メール-to-ケースは顧客がメールに添付ファイルを付けて送信でき、その添付ファイル（デジタル写真を含む）ごと自動的にケースに変換されます。画像の受け取りとケース自動作成を両立できるため、ベストプラクティスに適合します。\n\n□ AppExchange パッケージ　これは不正解です。要件は標準機能で十分に満たせるため、外部パッケージの導入は不要な複雑化を招きます。まず標準機能を検討するのがベストプラクティスです。\n\n□ Web-to-ケース（Web-to-Case）　これは不正解です。Web-to-ケースは Web フォームからケースを作成しますが、標準では添付ファイル（画像）のアップロードに対応しておらず、デジタル写真を受け取る要件を満たせません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customizesupport_setting_up_email_to_case.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.setting_up_email-to-case.htm&type=5",
   "multi": false,
   "domain": "channel",
   "keywords": [
@@ -173,7 +173,7 @@
    "スキルのバックログを確認する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 割り当て済みの作業を確認する。　これは不正解です。すでに割り当てられた作業を見ても、言語スキルのミスマッチで「正しいエージェントに割り当たっていない」という根本原因の把握にはつながりにくく、最初の一手としては適切ではありません。\n\n□ キューのバックログを確認する。　これは不正解です。キューの滞留状況からは全体の作業量は分かりますが、言語スキルに基づく割り当ての不整合を特定する観点としては不十分です。\n\n□ スキルのバックログを確認する。　これは正解です。スキルのバックログを確認すると、必要な言語スキルを持つエージェントへケースが割り当てられず滞留している箇所を特定できます。スキル割り当てプロセスの問題に対処することで、英語以外の顧客の解決時間を短縮できます。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.omnichannel_supervisor_skills_backlog.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.omnichannel_supervisor_backlog_tab.htm&type=5",
   "multi": false,
   "domain": "case",
   "keywords": [
@@ -242,7 +242,7 @@
    "役割ベースのシナリオを含むインストラクター主導のトレーニングセッションを計画し、パイロットグループから始めて段階的に展開を実施する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 役割ベースのシナリオを含むインストラクター主導のトレーニングセッションを計画し、パイロットグループから始めて段階的に展開を実施する。　これは正解です。ケース・ナレッジ・オムニチャネルを含む複雑な Service Cloud 導入では、実際の業務シナリオに沿った役割ベースのハンズオントレーニングと、パイロットグループでフィードバックを得てから本展開する段階的ロールアウトが定石です。混乱を最小化し、スキル差のあるユーザー全体の定着を支援します。\n\n□ 短いビデオチュートリアルを用いて全社一斉に完全展開し、サポート担当者が自分でシステムを探索できるようにする。　これは不正解です。スキルレベルがばらつくチームに正式なトレーニングなしで一斉展開すると、習熟度の低いユーザーが取り残され、定着とサポート品質が損なわれます。\n\n□ リリースの 2 週間前に全サポート担当者へサンドボックスアクセスを付与し、正式なトレーニングなしにピアツーピア学習を促す。　これは不正解です。構造化されたトレーニングと変更管理を欠くため、誤った使い方が広まりやすく、複数機能の同時導入を支える計画的な定着策になりません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/nonprofit-cloud-implementation-best-practices/take-a-phased-approach",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -289,7 +289,7 @@
    "AppExchange のナレッジベースダッシュボード＆レポートパッケージをインストールする。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ AppExchange のナレッジベースダッシュボード＆レポートパッケージをインストールする。　これは正解です。Salesforce が AppExchange で提供するナレッジベースダッシュボード＆レポートパッケージには、記事のパフォーマンス・利用状況・評価を可視化する作成済みのレポートとダッシュボードが含まれており、ゼロから作らずに記事の有用性を効率的に把握できます。\n\n□ カスタムのナレッジレポートとダッシュボードを開発する。　これは不正解です。一から作る方法でも測定は可能ですが、作成済みパッケージがあるため工数の面で効率的とは言えず、「効率的に収集」という要件には合いません。\n\n□ ナレッジ記事を評価・管理するためのレビュー委員会を設置する。　これは不正解です。委員会は記事のガバナンスには有用ですが、有用性のデータを効率的に「収集」する仕組みそのものを提供しません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=service.knowledge_dashboard.htm",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.knowledge_custom_reports.htm&type=5",
   "multi": false,
   "domain": "know",
   "keywords": [
@@ -313,7 +313,7 @@
    "AppExchange のサービス＆サポートダッシュボード"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ AppExchange のサービス＆サポートダッシュボード　これは正解です。Salesforce が AppExchange で提供するサービス＆サポートダッシュボードは、ケース件数・バックログ・応答時間・顧客満足度といった経営層向けの主要指標を見渡せる作成済みの分析ソリューションで、意思決定支援に最適化されています。\n\n□ 特定のパスとルーティングタイプを詳細に示すオムニチャネル分析　これは不正解です。オムニチャネル分析はルーティングやエージェント稼働といった運用レベルの指標が中心で、経営幹部向けの戦略的 KPI ダッシュボードとしては粒度が細かすぎます。\n\n□ 待ち時間と処理時間を含む CTI 分析レポート　これは不正解です。CTI 分析は電話関連の指標に限られ、経営層が全体を俯瞰するダッシュボードとしては対象が狭すぎます。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016Z6kEAE",
   "multi": false,
   "domain": "analytics",
   "keywords": [
@@ -547,7 +547,7 @@
    "Experience Cloud サイトのユーザーに、その連絡先レコードに関連付けられたレコードへのアクセスを許可する共有セット"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Experience Cloud サイトのユーザーに、その連絡先レコードに関連付けられたレコードへのアクセスを許可する共有セット　これは正解です。共有セットは、Experience Cloud サイトの外部ユーザーに対し、自分の連絡先レコードに関連付けられたケースへのアクセスを付与する仕組みです。これにより顧客は自分が連絡先となっているケース（代理で作成されたものを含む）だけを参照でき、安全で適切な可視範囲を実現できます。\n\n□ Experience Cloud サイトのユーザーロール階層に基づいてレコードへのアクセスを付与する共有ルール　これは不正解です。連絡先に紐づくケースを個々の顧客に限定する用途には共有セットを使います。ロール階層に基づく共有ルールでは連絡先単位の細かな限定はできません。\n\n□ Case オブジェクトの組織全体のデフォルトをパブリック読み取り/書き込みに設定する　これは不正解です。OWD をパブリックにすると全ユーザーがすべてのケースを参照できてしまい、自分のケースのみに限定するという要件に真っ向から反します。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.networks_setting_light_users_sharing.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.networks_setting_light_users.htm&type=5",
   "multi": false,
   "domain": "design",
   "keywords": [
@@ -570,7 +570,7 @@
    "クローズ時にケースがユーザーによって所有されていることを確認するケース入力規則を作成する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データローダーを定期的に使用して、これらのケースをデフォルトの所有者に割り当てる。　これは不正解です。データローダーで一括変更しても、それは発生後の事後対応にすぎず、キュー所有のままクローズされる根本原因を防げません。\n\n□ クローズ時にケースがユーザーによって所有されていることを確認するケース入力規則を作成する。　これは正解です。入力規則を使えば、ケースをクローズする前に所有者が個々のユーザーであることを必須化でき、キューが所有したままのケースのクローズを未然に防げます。これによりレポート上の所有者情報が正確になり、エージェントのパフォーマンス評価も信頼できるものになります。\n\n□ クローズ時にケースがユーザーによって所有されるようにするケース割り当てルールを作成する。　これは不正解です。割り当てルールは作成・編集時にレコードをルーティングする仕組みで、クローズ時に発火して所有者を強制する用途には設計されていません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_about_field_validation.htm&type=5",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/advanced-salesforce-release-readiness-strategies/select-and-prioritize-features",
   "multi": false,
   "domain": "case",
   "keywords": [
@@ -685,7 +685,7 @@
    "件名条件に一致するエントリと、その下に条件を満たさないケース用の最後のエントリを持つ1つのアクティブな割り当てルールを作成し、各エントリで割り当て先を指定する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 件名条件に一致するエントリと、その下に条件を満たさないケース用の最後のエントリを持つ1つのアクティブな割り当てルールを作成し、各エントリで割り当て先を指定する。　これは正解です。ケース割り当てルールはアクティブにできるのは1つだけで、内部に複数のルールエントリを順番に評価します。件名一致のエントリを上位に置き、最後にすべてのケースに一致するエントリ（条件なし）を置いて既定の割り当て先を指定すれば、一致しなかったケースも確実に一次受付チームへ割り当てられます。\n\n□ 件名条件ごとに別々のアクティブな割り当てルールを複数作成し、サポート設定の「ケースの自動割り当て先」を一次受付チームに設定する。　これは不正解です。割り当てルールは同時に1つしかアクティブにできず、複数を並行してアクティブ化することはできません。「ケースの自動割り当て先」設定も割り当てルールの既定行の代わりにはなりません。\n\n□ 件名条件のエントリを1つ作成し、一致しないケースはエスカレーションルールで一次受付チームへ送るように構成する。　これは不正解です。エスカレーションルールは時間経過に伴う再割り当てを目的としており、作成時に一致しなかったケースの初期割り当て先を埋める用途には適しません。割り当てルール内の最終エントリで対応すべきです。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_leadassign.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.creating_assignment_rules.htm&type=5",
   "multi": false,
   "domain": "case",
   "keywords": [
@@ -823,7 +823,7 @@
    "Service Cloud Voice with Partner Telephony（パートナーテレフォニー）を使用し、認定パートナーのコンタクトセンターを Salesforce に統合する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Service Cloud Voice with Partner Telephony（パートナーテレフォニー）を使用し、認定パートナーのコンタクトセンターを Salesforce に統合する。　これは正解です。Service Cloud Voice には複数のモデルがあり、Partner Telephony モデルでは認定パートナー（既存プロバイダーを含む）のテレフォニーを Salesforce に統合できます。Amazon Connect へ移行することなく、Salesforce 内で通話制御やリアルタイムのトランスクリプションといった Voice の機能を利用できるため、要件に合致します。\n\n□ Service Cloud Voice with Amazon Connect を使用し、既存番号を Amazon Connect へ移行して通話を処理する。　これは不正解です。このモデルはテレフォニー基盤として Amazon Connect を使うため、Amazon Connect への移行を望まないという要件に反します。\n\n□ 従来の Open CTI と CTI アダプタのみを構成し、Voice のトランスクリプションは後から個別に追加する。　これは不正解です。従来の Open CTI ではソフトフォン統合はできますが、Service Cloud Voice が提供するネイティブなリアルタイムトランスクリプションや AI 機能は得られません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.voice_partner_telephony.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.voice_pt_setup.htm&type=5",
   "multi": false,
   "domain": "channel",
   "keywords": [
@@ -1132,7 +1132,7 @@
    "発信者が音声案内に従って番号入力や音声で要件を選び、適切な担当・キューへ振り分ける自動音声応答の仕組み"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 発信者が音声案内に従って番号入力や音声で要件を選び、適切な担当・キューへ振り分ける自動音声応答の仕組み　これは正解です。IVR（Interactive Voice Response：自動音声応答）は、発信者に音声メニューを提示し、プッシュ操作や音声入力で要件を選択させ、適切なキューやエージェントへルーティングする仕組みです。コンタクトセンターで着信を効率的に振り分ける基盤として広く使われます。\n\n□ エージェントが対応後に通話内容を記録するための後処理時間のこと　これは不正解です。これは後処理時間（After-Call Work / ラップアップ）の説明で、AHT の構成要素ではありますが IVR ではありません。\n\n□ 顧客が自分でナレッジ記事を検索して解決するセルフサービスポータルのこと　これは不正解です。これはセルフサービス（ヘルプセンター等）の説明です。IVR は音声チャネルの振り分け機能であり、Web のセルフサービスとは異なります。\n\n□ 通話を録音して品質評価に用いる仕組みのこと　これは不正解です。これは通話録音・品質モニタリングの説明で、IVR とは別の機能です。IVR は着信時のメニュー提示とルーティングを担います。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/service-cloud-voice-setup-quick-look/prepare-for-a-voice-implementation",
   "multi": false,
   "domain": "ind",
   "keywords": [
@@ -1156,7 +1156,7 @@
    "予測される通話量と目標応答時間から、必要なエージェント人数を見積もる"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 予測される通話量と目標応答時間から、必要なエージェント人数を見積もる　これは正解です。アーラン C は、一定時間あたりの予測通話量・平均処理時間・目標とするサービスレベル（応答時間）をもとに、待ち行列を踏まえて必要なエージェント数を算出するためのモデルです。コンタクトセンターの要員計画（ワークフォースマネジメント）で広く使われます。\n\n□ 個々のナレッジ記事が解決に寄与した割合を測定する　これは不正解です。記事の寄与度はナレッジの利用状況レポートなどで測るもので、アーラン C の目的ではありません。\n\n□ ケースのエスカレーション条件を自動で最適化する　これは不正解です。エスカレーションの最適化はルールや分析で行うもので、アーラン C は要員数の試算に用いるモデルです。\n\n□ 顧客満足度アンケートの回答率を予測する　これは不正解です。回答率の予測は調査設計の話であり、アーラン C とは無関係です。アーラン C はあくまで通話量に対する要員数の見積もりに使います。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.workforce_engagement_create_capacity_plan.htm&type=5",
   "multi": false,
   "domain": "ind",
   "keywords": [
@@ -1180,7 +1180,7 @@
    "最も価値が高くリスクの低い要件に絞った MVP（実用最小限の製品）を定義し、段階的にリリースする"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 最も価値が高くリスクの低い要件に絞った MVP（実用最小限の製品）を定義し、段階的にリリースする　これは正解です。MVP は最小限で価値を提供できる範囲を最初に定義し、早期に成果を出してフィードバックを得ながら段階的に拡張する考え方です。多数の要望と限られた期間という状況で、リスクを抑えつつ最初のリリースを成功させる定石です。\n\n□ すべての要望を1回のビッグバンリリースで本番展開する　これは不正解です。一括での大規模リリースはリスクが高く、期間も長期化しがちです。要望が多く期限が限られる状況では失敗確率が上がり、推奨されません。\n\n□ 要件定義を省略し、まず全機能を構築してから優先度を判断する　これは不正解です。要件定義を飛ばすと手戻りや無駄な開発が発生します。優先度はビジネス価値に基づき先に決めるべきで、作ってから判断する進め方は非効率です。\n\n□ 技術的に容易な機能だけを選び、ビジネス価値は後で評価する　これは不正解です。実装容易性だけで範囲を決めると、ビジネス価値の高い課題が後回しになります。MVP はあくまで価値とリスクを軸に範囲を決めるべきです。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-adoption-strategies",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -1205,7 +1205,7 @@
    "実際の業務をその場で観察し、現状の手順とボトルネックを記録する（ジョブシャドウイング）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 現場のエージェントへのインタビューやワークショップを実施し、業務の流れと課題を聞き取る　これは正解です。インタビューやワークショップは、実際に業務を行うユーザーから課題・期待・現状の流れを直接引き出す代表的な要件収集手法です。現場の実態を把握するうえで有効です。\n\n□ 実際の業務をその場で観察し、現状の手順とボトルネックを記録する（ジョブシャドウイング）　これは正解です。業務観察（ジョブシャドウイング）は、語られない暗黙の手順や非効率なステップを把握するのに優れた手法です。インタビューと組み合わせることで、申告と実態のギャップを補えます。\n\n□ 競合他社の公開資料だけを参照して要件を確定する　これは不正解です。競合資料は参考にはなりますが、自社の現場課題を正確に表すものではありません。要件を他社資料だけで確定するのは不適切です。\n\n□ 経営層の理想像のみを反映し、現場の声は収集対象から外す　これは不正解です。現場の声を外すと、実運用で機能しない設計になりがちです。要件収集では経営層と現場の双方からインプットを得る必要があります。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/business-analyst_skills-strategies/explore-techniques--information-discovery",
   "multi": true,
   "domain": "strat",
   "keywords": [
@@ -1390,7 +1390,7 @@
    "ケースライフサイクルレポート"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ケースライフサイクルレポート　これは正解です。ケースライフサイクルレポートは、各ステータスや各所有者のもとでケースが費やした時間を測定します。チームごとの担当期間を把握し、解決プロセス上のボトルネックを特定するのに最適です。\n\n□ 履歴トレンドレポートを使ったケースレポート　これは不正解です。履歴トレンドレポートは時間の経過に伴うフィールド値の変化を追跡しますが、各チームがケースを所有していた期間そのものを直接測定するものではありません。\n\n□ マイルストーンレポートを使ったケースレポート　これは不正解です。マイルストーンレポートはエンタイトルメント管理における SLA（初回応答・解決時間など）の追跡に特化しており、所有チームごとの担当期間の追跡には適しません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.case_lifecycle_report.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=analytics.reports_historical_case.htm&type=5",
   "multi": false,
   "domain": "analytics",
   "keywords": [
@@ -1413,7 +1413,7 @@
    "設計（Design）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 設計（Design）　これは正解です。ビルドフェーズに入る前に設計ステップを完了すると、アーキテクチャ・ユーザー体験・機能要件が明確になり、開発チームは共通の設計図に沿って作業できます。これにより方針転換や緊急作業の優先順位付けにも柔軟に対応できます。\n\n□ テスト　これは不正解です。テストはビルドフェーズで構築した内容を検証する後工程であり、ビルド開始前に完了すべきステップではありません。\n\n□ 有効化（Enablement）　これは不正解です。有効化（ユーザートレーニングや展開準備）は構築・テスト後の導入段階に位置づけられるもので、ビルド開始前の前提ステップではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-business-analyst-certification-prep/learn-about-customer-discovery",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -1689,7 +1689,7 @@
    "サンドボックスをプレビュー組織として選択し、リリース適用前にチームがテストできるようにする。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ サンドボックスをプレビュー組織として選択し、リリース適用前にチームがテストできるようにする。　これは正解です。プレビュー対象のサンドボックスにオプトインすると、新しいリリースが本番に適用される前に、管理された環境で新機能の影響を検証できます。問題を事前に特定・対処でき、リリースが実装プロジェクトに悪影響を与えるのを防げます。\n\n□ チームがプロジェクトを完了できるよう、本番組織へのリリース適用を延期する。　これは不正解です。Salesforce のメジャーリリースは延期できず、すべての組織に予定どおり適用されます。延期は現実的な選択肢ではありません。\n\n□ サンドボックスの更新を無効化し、チームがリリースの更新なしでソリューションを使い続けられるようにする。　これは不正解です。サンドボックスのリリース更新を恒久的に止めることはできず、むしろ本番との差異を生んで検証になりません。プレビューで事前テストするのが適切です。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sandbox_preview_instance.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.data_sandbox_preview.htm&type=5",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -1782,7 +1782,7 @@
    "「新規エージェントユーザー」オプションを使い、最小権限の原則に基づき必要な権限だけを付与する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 組織の共有設定（OWD）とトピック／アクションレベルのフィルターのみを使用する：OWD やフィルターはアクセス範囲の一部を制御しますが、AI エージェントユーザーに必要なオブジェクト権限やフロー実行権限を直接付与する手段ではないため、これだけでは要件を満たせません。\n\n□ 「新規エージェントユーザー」オプションを使い、最小権限の原則に基づき必要な権限だけを付与する：Agentforce サービスエージェントは専用のエージェントユーザーレコードで動作します。ケースの読み取り／更新、ナレッジ参照、フロー実行など定義したアクションに必要な権限だけを付与することで、特に認証されていないセッションでも安全にアクセスできます。\n\n□ 互換性を最大化するため、AI エージェントユーザーに「システム管理者」プロファイルを付与する：過剰な権限を与えることになり、最小権限の原則に反してセキュリティリスクが高まります。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.copilot_setup_agent_user.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.agent_user.htm&type=5",
   "multi": false,
   "domain": "design",
   "keywords": [
@@ -1874,7 +1874,7 @@
    "アジャイル"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ウォーターフォール：要件確定後に各工程を順番に進める手法で、頻繁な進捗共有や途中の方向転換には不向きです。迅速な反復という要件に合いません。\n\n□ ハイブリッド：ウォーターフォールとアジャイルを組み合わせた手法で、状況によっては有効ですが、ここで明示された「迅速な反復・早期完了・頻繁な更新」という条件にはアジャイルのほうが直接的に合致します。\n\n□ アジャイル：適応的な計画、短い反復、早期デリバリー、継続的な改善を特徴とし、クライアントとの緊密な連携による頻繁なフィードバックと改善を可能にします。UC の要件に最も適しています。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/project-management-essentials/explore-project-management-methodologies",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -2081,7 +2081,7 @@
    "要件のギャップを文書化し、スケジュールと予算への影響をプロジェクトチームと協議する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 要件のギャップを文書化し、スケジュールと予算への影響をプロジェクトチームと協議する：最初のステップとして、ギャップを明確に記録し、影響をチームと共有して合意形成を図るのが適切です。透明性のある評価のうえで優先順位の見直しや調整を進められます。\n\n□ 追加の予算要件を盛り込んだ変更注文をクライアントに送付する：変更管理は重要ですが、まず影響を把握・協議する前に変更注文を出すのは順序として早すぎます。\n\n□ 追加要件をスコープに取り込み、元のプロジェクトスケジュールのまま進める：影響を評価せずに取り込むと、スケジュールや予算の超過を招きます。協議なしに進めるべきではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/project-management-essentials/explore-project-management-methodologies",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -2196,7 +2196,7 @@
    "データを分析してピーク時間帯を把握し、人員配置が適切かを確認するレポートを作成する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 分析スナップショットを設定して主要なケース情報を取得し、履歴傾向レポートを作成する：傾向把握には役立ちますが、待ち時間短縮に直結する「ピーク時間帯の特定と人員配置の最適化」という観点には直接答えていません。\n\n□ データを分析してピーク時間帯を把握し、人員配置が適切かを確認するレポートを作成する：通話量を分析してピーク時間帯を特定すれば、戦略的な人員配置とリソース配分が可能になり、混雑時に十分なエージェントを確保して待ち時間を短縮できます。要件に最も合致します。\n\n□ ケースエスカレーションルールを作成し、優先度の高いケースをスーパーバイザーへ直接ルーティングする：一部の優先ケースは早く処理できますが、全体的な電話の待ち時間を短縮する根本的な対策にはなりません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.reports_support_crts.htm&type=5",
   "multi": false,
   "domain": "analytics",
   "keywords": [
@@ -2242,7 +2242,7 @@
    "ケースライフサイクルレポート"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 履歴傾向レポートを使用したケース：時間の経過に伴う特定の数値項目の変化を追跡するもので、各ステータスで費やした期間そのものを測る用途には向きません。\n\n□ マイルストーンレポートを使用したケース：エンタイトルメントの SLA に関するマイルストーンの進捗を追跡するもので、ステータスごとの滞留時間を測るものではありません。\n\n□ ケースライフサイクルレポート：「新規」「処理中」「顧客対応待ち」など、ケースが各ステータスで費やした時間を測定できる標準レポートタイプです。プロセス効率や ROI の評価に直接役立つため要件に合致します。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=service.case_lifecycle_report.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.reports_support_crts.htm&type=5",
   "multi": false,
   "domain": "analytics",
   "keywords": [
@@ -2265,7 +2265,7 @@
    "既定の営業時間と有効な休日レコードを照会し、エージェントが対応できない場合は顧客をケースフォームへ誘導するアクションをボットに設定する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「指定した休日を除いて顧客をエージェントへ誘導…終業時にサインオフ」は、エージェントの手動操作に依存し、営業時間と休日を体系的に判定できないため、要件を確実には満たせません。\n\n□「応答が遅れる旨を知らせる既定メッセージ」は、期待値の提示にとどまり、営業時間内のみライブ転送するという制御を実現しません。\n\n□「既定の営業時間と有効な休日レコードを照会し、対応不可ならケースフォームへ誘導するアクション」が正解です。ビジネスアワーと休日レコードを参照するアクションをボットに組み込むことで、営業時間内だけライブエージェントへ転送し、時間外・休日はケースフォームへ誘導できます。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=service.bots_service_business_hours.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.bots_service_transfer_bot_conversations.htm&type=5",
   "multi": false,
   "domain": "channel",
   "keywords": [
@@ -2473,7 +2473,7 @@
    "アクションと推奨のデプロイでフローを使ってステップを設定し、コンポーネントをエージェントのレコードページに追加し、アクション履歴で遵守状況を確認する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「ルーティング用のオムニフローとスクリーンポップ」は、ケースの振り分けや情報表示には役立ちますが、エージェントを手順どおりにガイドし遵守状況を確認する仕組みではありません。\n\n□「ケースのフローコンポーネントとカスタムレポートタイプ」は、進捗の記録は可能ですが、複数ステップの標準手順をエージェントに案内する用途には最適ではありません。\n\n□「アクションと推奨のデプロイでフローのステップを設定し、アクション履歴で遵守状況を確認する」が正解です。アクションと推奨コンポーネントは、ケース受付・必須項目入力・完了・エスカレーションといった複数ステップの手順をガイド付きで提示し、アクション履歴で遵守状況をスポットチェックできます。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=service.actions_and_recommendations_overview.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.console_lex_guided_action_deployment.htm&type=5",
   "multi": false,
   "domain": "design",
   "keywords": [
@@ -2565,7 +2565,7 @@
    "ケース管理トピックのフィルターと組み合わせて、サービス顧客確認トピックを実装する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「顧客を確認するためのカスタムアクション」は、独自実装に頼るもので、Salesforce が提供する標準化された本人確認プロセスを欠いています。\n\n□「正確な指示とカスタムアクション」は、アクション制御は高まりますが、ケースデータを開示・変更する前提となる顧客確認を組み込めていません。\n\n□「サービス顧客確認トピックを、ケース管理トピックのフィルターと組み合わせる」が正解です。ケースデータの開示・変更前に顧客の本人確認を行えるため、AI エージェントが安全かつ文脈に沿った確認ワークフローを実行し、コンプライアンスとデータプライバシーを維持できます。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.service_agentforce_customer_verification.htm&type=5",
   "multi": false,
   "domain": "channel",
   "keywords": [
@@ -2611,7 +2611,7 @@
    "インシデント管理"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「インシデント管理」が正解です。Service Cloud のインシデント管理は、サービス中断や障害時の可視性と連携を高めるための機能で、エージェント・運用チーム・顧客が停電などの問題に関する最新情報を一元的に把握でき、関係者間のコミュニケーションと解決を促進します。\n\n□「従業員エンゲージメント」は、従業員向けのサポートやエンゲージメント向上を目的とするもので、サービス障害の可視化には適しません。\n\n□「フィールドサービス管理」は、現地作業の予定管理や派遣に特化した機能であり、障害情報を関係者全体に共有する目的の機能ではありません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=service.incident_management_overview.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.incident_mgmt_what_is_this.htm&type=5",
   "multi": false,
   "domain": "case",
   "keywords": [
@@ -2634,7 +2634,7 @@
    "経験豊富なアナリストのグローバルチームを編成し、標準レポートテンプレートを作成する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「経験豊富なアナリストのグローバルチームを編成し、標準レポートテンプレートを作成する」が正解です。各地域の KPI を理解したアナリストが協働してテンプレートを設計することで、全地域で一貫したパフォーマンス測定と比較が可能になります。\n\n□「全関係者に投票を依頼する」は、意見が分散し標準化の合意形成が難しく、整合性のあるグローバル指標を確立しにくくなります。\n\n□「副社長一人に設計を任せる」は、ビジョンは反映できても、各地域の業務実態や KPI の網羅性を十分に踏まえた標準テンプレートにはなりにくいです。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.reports_support_crts.htm&type=5",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -2703,7 +2703,7 @@
    "ロールアウトのマイルストーンを定義し、テストとトレーニング用のサンドボックス環境を整え、シナリオベースのユーザートレーニングを計画する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「本番稼働後にユーザーサポートを計画」は、構造化されたトレーニングが稼働後まで先送りされ、定着が不十分になるリスクがあります。\n\n□「ロールアウトのマイルストーンを定義し、サンドボックスを整え、シナリオベースのトレーニングを計画する」が正解です。稼働前に現実的なワークフローでトレーニングを行い、UAT を通じて準備状況を検証できるため、混乱を抑えて確実な定着につながります。\n\n□「ドキュメント準備に重点を置く」は、マイルストーン・テスト・対話型トレーニングを欠いており、効果的な導入戦略としては不十分です。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/project-management-essentials/explore-project-management-methodologies",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -2749,7 +2749,7 @@
    "期間開始時の顧客数、期間終了時の顧客数、期間中に獲得した新規顧客数"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□「期間開始時の顧客数、期間終了時の顧客数、期間中に獲得した新規顧客数」が正解です。顧客維持率は、新規獲得分を除いて一定期間に維持できた顧客の割合として算出されるため、この3つの数値が必要です。\n\n□「戻ってきた旧顧客数」は、維持率の標準的な計算式で直接用いるパラメータではありません。\n\n□「失った顧客数」は解約率（チャーン）の把握には役立ちますが、維持率の計算式では新規獲得数を用いるのが標準です。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Service-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://www.salesforce.com/resources/articles/customer-retention-rate/",
   "multi": false,
   "domain": "ind",
   "keywords": [
