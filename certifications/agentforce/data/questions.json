@@ -289,5 +289,345 @@
   "source": "jpnshiken",
   "diff": 2,
   "id": 12
+ },
+ {
+  "question": "Agentforce で、Salesforce があらかじめ用意している一般的な業務に対応する組み込みのトピックを何と呼びますか。",
+  "choices": [
+   "標準トピック（Standard Topic）",
+   "カスタムトピック（Custom Topic）",
+   "プロンプトテンプレート",
+   "データストリーム"
+  ],
+  "answers": [
+   "標準トピック（Standard Topic）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 標準トピック（Standard Topic）　これは正解です。Salesforce が提供する定義済みのトピックで、一般的な業務をすぐに利用できます。\n\n□ カスタムトピック（Custom Topic）　これは不正解です。独自の業務範囲を自分で定義するトピックで、組み込みではありません。\n\n□ プロンプトテンプレート　これは不正解です。生成AIへの指示文の雛形で、トピックとは別の概念です。\n\n□ データストリーム　これは不正解です。Data Cloud へのデータ取り込み定義で、トピックではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "標準トピック",
+   "トピック",
+   "エージェント"
+  ],
+  "source": "jpnshiken",
+  "diff": 1,
+  "id": 13
+ },
+ {
+  "question": "Agentforce エージェントを構成する基本要素として正しいものを2つ選びなさい。",
+  "choices": [
+   "トピック（扱う業務範囲の定義）",
+   "アクション（実行する処理）",
+   "検証ルール（Validation Rule）",
+   "ワークフロールール（Workflow Rule）"
+  ],
+  "answers": [
+   "トピック（扱う業務範囲の定義）",
+   "アクション（実行する処理）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ トピック（扱う業務範囲の定義）　これは正解です。トピックはエージェントが対応できる業務領域と、その中での指示・アクションのまとまりを定義します。\n\n□ アクション（実行する処理）　これは正解です。アクションはレコード操作や外部呼び出しなど、エージェントが実際に行う処理の単位です。\n\n□ 検証ルール（Validation Rule）　これは不正解です。レコード保存時の入力チェック機能で、エージェントの構成要素ではありません。\n\n□ ワークフロールール（Workflow Rule）　これは不正解です。従来の自動化機能で、エージェントの基本構成要素ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": true,
+  "domain": "agents",
+  "keywords": [
+   "トピック",
+   "アクション",
+   "エージェント構成"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 14
+ },
+ {
+  "question": "社内の従業員が業務を効率化するために使う、社内ユーザー向けの Agentforce エージェントはどれですか。",
+  "choices": [
+   "従業員エージェント（Employee Agent）",
+   "サービスエージェント（Service Agent）",
+   "外部公開のゲストエージェント",
+   "マーケティングエージェント"
+  ],
+  "answers": [
+   "従業員エージェント（Employee Agent）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 従業員エージェント（Employee Agent）　これは正解です。社内の認証済みユーザーを支援する用途のエージェントで、業務の効率化に使います。\n\n□ サービスエージェント（Service Agent）　これは不正解です。主に外部の顧客対応（カスタマーサービス）を担うエージェントです。\n\n□ 外部公開のゲストエージェント　これは不正解です。未認証の外部ユーザー向けの位置づけで、社内従業員の支援用途ではありません。\n\n□ マーケティングエージェント　これは不正解です。標準的なエージェント種別の呼称ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "従業員エージェント",
+   "サービスエージェント",
+   "エージェント種別"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 15
+ },
+ {
+  "question": "Agentforce のエージェント機能を、自社の外部Webアプリやカスタムチャネルにプログラムから組み込みたい場合に使うものはどれですか。",
+  "choices": [
+   "Agent API",
+   "レポートビルダー",
+   "データローダー",
+   "承認プロセス"
+  ],
+  "answers": [
+   "Agent API"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Agent API　これは正解です。Agent API を使うと、外部アプリやカスタムチャネルからプログラム経由でエージェントを呼び出せます。\n\n□ レポートビルダー　これは不正解です。レポート作成ツールで、エージェントの外部組み込み手段ではありません。\n\n□ データローダー　これは不正解です。一括データ入出力のツールで、エージェント連携には使いません。\n\n□ 承認プロセス　これは不正解です。レコードの承認ワークフロー機能で、エージェントの組み込みとは無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent API",
+   "チャネル",
+   "組み込み"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 16
+ },
+ {
+  "question": "Agentforce のサービスエージェントを、Webチャットやメッセージングで顧客に提供する際に使う仕組みとして最も適切なものはどれですか。",
+  "choices": [
+   "メッセージングチャネルへの接続（例: In-App and Web）",
+   "Apex の @future メソッド",
+   "レコードトリガフロー",
+   "レポートのサブスクリプション"
+  ],
+  "answers": [
+   "メッセージングチャネルへの接続（例: In-App and Web）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ メッセージングチャネルへの接続（例: In-App and Web）　これは正解です。エージェントはメッセージングチャネルに接続することで、Webやアプリ上の顧客と会話できます。\n\n□ Apex の @future メソッド　これは不正解です。非同期処理の仕組みで、エージェントを顧客チャネルに公開する手段ではありません。\n\n□ レコードトリガフロー　これは不正解です。レコード変更時の自動化で、会話チャネルの提供とは異なります。\n\n□ レポートのサブスクリプション　これは不正解です。レポートの定期配信機能で、エージェントのチャネル提供とは無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "チャネル",
+   "Messaging",
+   "サービスエージェント"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 17
+ },
+ {
+  "question": "Data 360 でナレッジやファイルを検索可能にする際、長い文書を検索しやすい小さな単位に分割する処理を何と呼びますか。",
+  "choices": [
+   "チャンキング（Chunking）",
+   "正規化（Normalization）",
+   "シャーディング（Sharding）",
+   "重複排除（Deduplication）"
+  ],
+  "answers": [
+   "チャンキング（Chunking）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ チャンキング（Chunking）　これは正解です。長い文書を意味のある小さな塊（チャンク）に分割し、ベクトル化してインデックスに格納することで検索しやすくします。\n\n□ 正規化（Normalization）　これは不正解です。データの形式や冗長性を整える処理で、文書分割とは異なります。\n\n□ シャーディング（Sharding）　これは不正解です。データベースの水平分割の手法で、グラウンディングの文書分割ではありません。\n\n□ 重複排除（Deduplication）　これは不正解です。重複データを取り除く処理で、検索用の文書分割ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "チャンキング",
+   "インデックス",
+   "ベクトル検索"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 18
+ },
+ {
+  "question": "リトリーバーがプロンプトに渡すものとして最も適切なものはどれですか。",
+  "choices": [
+   "質問に意味的に近い情報チャンク",
+   "組織のすべてのレコード",
+   "ユーザーのパスワードハッシュ",
+   "Apex のデバッグログ"
+  ],
+  "answers": [
+   "質問に意味的に近い情報チャンク"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 質問に意味的に近い情報チャンク　これは正解です。リトリーバーは検索インデックスから、ユーザーの質問に意味的に類似するチャンクを取得してプロンプトに供給します。\n\n□ 組織のすべてのレコード　これは不正解です。全件を渡すのではなく、関連性の高い少数のチャンクのみを返します。\n\n□ ユーザーのパスワードハッシュ　これは不正解です。認証情報を取得・提供することはありません。\n\n□ Apex のデバッグログ　これは不正解です。開発用のログで、グラウンディングのために取得する対象ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "リトリーバー",
+   "チャンク",
+   "グラウンディング"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 19
+ },
+ {
+  "question": "サービス担当者がケースの状況を素早く把握できるよう、レコードの内容を要約して表示したいと考えています。最も適したプロンプトテンプレートの種別はどれですか。",
+  "choices": [
+   "レコード要約（Record Summary）テンプレート",
+   "営業メール（Sales Email）テンプレート",
+   "項目生成（Field Generation）テンプレート",
+   "フレックス（Flex）テンプレート"
+  ],
+  "answers": [
+   "レコード要約（Record Summary）テンプレート"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ レコード要約（Record Summary）テンプレート　これは正解です。レコードの内容を要約して提示する専用のテンプレート種別で、状況把握に適します。\n\n□ 営業メール（Sales Email）テンプレート　これは不正解です。顧客向けの営業メールを生成する用途で、レコード要約には向きません。\n\n□ 項目生成（Field Generation）テンプレート　これは不正解です。特定の項目に値を生成する用途で、要約表示の目的とは異なります。\n\n□ フレックス（Flex）テンプレート　これは不正解です。汎用用途向けで、要約には専用の Record Summary を使うのが適切です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "レコード要約",
+   "プロンプトテンプレート",
+   "Prompt Builder"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 20
+ },
+ {
+  "question": "Einstein Trust Layer に含まれる機能として正しいものを2つ選びなさい。",
+  "choices": [
+   "データマスキング",
+   "毒性（Toxicity）検出",
+   "自動デプロイ",
+   "ロールアップ集計"
+  ],
+  "answers": [
+   "データマスキング",
+   "毒性（Toxicity）検出"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データマスキング　これは正解です。Trust Layer は機密データを検出し、外部モデルへ送る前にプレースホルダーへ置き換えて保護します。\n\n□ 毒性（Toxicity）検出　これは正解です。プロンプトと応答を走査し、不適切・有害な内容を検知します。\n\n□ 自動デプロイ　これは不正解です。リリース作業の話で、Trust Layer の機能ではありません。\n\n□ ロールアップ集計　これは不正解です。親子レコードの集計機能で、Trust Layer とは無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/einstein/genai/guide/trust.html",
+  "multi": true,
+  "domain": "prompt",
+  "keywords": [
+   "Einstein Trust Layer",
+   "データマスキング",
+   "毒性検出"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 21
+ },
+ {
+  "question": "公開後のエージェントの会話量や解決率などの傾向を把握し、改善につなげるために使うものはどれですか。",
+  "choices": [
+   "エージェントのアナリティクス／ダッシュボード",
+   "項目レベルセキュリティ",
+   "入力規則（検証ルール）",
+   "共有ルール"
+  ],
+  "answers": [
+   "エージェントのアナリティクス／ダッシュボード"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ エージェントのアナリティクス／ダッシュボード　これは正解です。会話量・解決率・エスカレーション等の指標を可視化し、エージェントの監視と最適化に使います。\n\n□ 項目レベルセキュリティ　これは不正解です。項目の参照可否を制御する設定で、傾向の把握には使いません。\n\n□ 入力規則（検証ルール）　これは不正解です。レコード保存時のチェックで、エージェントの分析機能ではありません。\n\n□ 共有ルール　これは不正解です。レコードのアクセス共有の設定で、傾向分析とは無関係です。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "アナリティクス",
+   "モニタリング",
+   "最適化"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 22
+ },
+ {
+  "question": "ユーザーからエージェントの回答精度が低いと報告がありました。継続的な改善のために最初に行うべきことはどれですか。",
+  "choices": [
+   "会話ログやアナリティクスで失敗パターンを分析し、指示やアクションを調整する",
+   "本番組織を即座に削除する",
+   "全ユーザーのプロファイルを変更する",
+   "エージェントを無効化して放置する"
+  ],
+  "answers": [
+   "会話ログやアナリティクスで失敗パターンを分析し、指示やアクションを調整する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 会話ログやアナリティクスで失敗パターンを分析し、指示やアクションを調整する　これは正解です。観測データから問題箇所を特定し、トピックの指示やアクション、グラウンディングを改善するのが妥当な対応です。\n\n□ 本番組織を即座に削除する　これは不正解です。過剰かつ破壊的で、改善策ではありません。\n\n□ 全ユーザーのプロファイルを変更する　これは不正解です。回答精度の原因と無関係で、副作用が大きい操作です。\n\n□ エージェントを無効化して放置する　これは不正解です。改善にはつながらず、継続的最適化の考え方に反します。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "最適化",
+   "会話ログ",
+   "継続的改善"
+  ],
+  "source": "jpnshiken",
+  "diff": 3,
+  "id": 23
+ },
+ {
+  "question": "Agentforce が対応する MCP（Model Context Protocol）や A2A（Agent-to-Agent）などのオープン標準の主な目的はどれですか。",
+  "choices": [
+   "エージェントを外部のツールや他のエージェントと相互運用できるようにする",
+   "レコードの保存時暗号化を行う",
+   "レポートの表示速度を上げる",
+   "メールテンプレートを翻訳する"
+  ],
+  "answers": [
+   "エージェントを外部のツールや他のエージェントと相互運用できるようにする"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ エージェントを外部のツールや他のエージェントと相互運用できるようにする　これは正解です。MCP や A2A はオープン標準で、エージェントが外部のツールや他社・他システムのエージェントと連携（相互運用）できるようにします。\n\n□ レコードの保存時暗号化を行う　これは不正解です。暗号化はセキュリティ機能で、これらのプロトコルの目的ではありません。\n\n□ レポートの表示速度を上げる　これは不正解です。パフォーマンス最適化とは無関係です。\n\n□ メールテンプレートを翻訳する　これは不正解です。翻訳機能とは関係ありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "MCP",
+   "A2A",
+   "相互運用",
+   "マルチエージェント"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 24
+ },
+ {
+  "question": "比較的単純で対応範囲が限定された業務に対して、まず推奨されるエージェント構成はどれですか。",
+  "choices": [
+   "単一エージェント（Single-Agent）構成",
+   "常に複数エージェントを並列で稼働",
+   "エージェントを使わずバッチ処理",
+   "毎回新しい組織を作成"
+  ],
+  "answers": [
+   "単一エージェント（Single-Agent）構成"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 単一エージェント（Single-Agent）構成　これは正解です。範囲が限定的な業務では、まず単一エージェントで構成するほうが制御しやすく拡張性も確保できます。\n\n□ 常に複数エージェントを並列で稼働　これは不正解です。常に複数構成にする必要はなく、要件に応じて判断します。\n\n□ エージェントを使わずバッチ処理　これは不正解です。エージェント活用の文脈に合わず、要件を満たしません。\n\n□ 毎回新しい組織を作成　これは不正解です。組織の新規作成は構成の選択肢ではありません。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "単一エージェント",
+   "マルチエージェント",
+   "拡張性"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 25
+ },
+ {
+  "question": "サンドボックスで作成・テストしたエージェントを本番組織へ移行する方法として適切なものはどれですか。",
+  "choices": [
+   "変更セットやメタデータAPI等のリリース手段で移行する",
+   "本番で一から手作業で作り直すしかない",
+   "サンドボックスのURLを共有する",
+   "エクスポートしたCSVをインポートする"
+  ],
+  "answers": [
+   "変更セットやメタデータAPI等のリリース手段で移行する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 変更セットやメタデータAPI等のリリース手段で移行する　これは正解です。エージェントやプロンプトの構成はメタデータとして、変更セットやメタデータAPI／パッケージで本番へ移行します。\n\n□ 本番で一から手作業で作り直すしかない　これは不正解です。移行手段が用意されており、作り直す必要はありません。\n\n□ サンドボックスのURLを共有する　これは不正解です。URL共有では本番組織に構成は移行されません。\n\n□ エクスポートしたCSVをインポートする　これは不正解です。CSVはデータの入出力で、エージェント構成（メタデータ）の移行手段ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "デプロイ",
+   "変更セット",
+   "メタデータAPI",
+   "サンドボックス"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 26
  }
 ]
