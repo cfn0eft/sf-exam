@@ -5,7 +5,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
 - ローカル: `C:\Users\Nerod\ドキュメント\sf-exam`
-- 対応資格: Administrator (合格済) / Platform App Builder (現在のフォーカス) / Developer (公開済・499問)
+- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Sales Cloud コンサル (200問) / Service Cloud コンサル (120問) / Experience Cloud コンサル (132問) / Sharing & Visibility アーキテクト (81問)
 
 ---
 

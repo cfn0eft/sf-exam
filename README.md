@@ -10,7 +10,7 @@
 ![PWA](https://img.shields.io/badge/PWA-offline_ready-5A0FC8?logo=pwa&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_+_Firestore-FFCA28?logo=firebase&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-deployed-222?logo=github)
-![Questions](https://img.shields.io/badge/総問題数-1434-1f6feb)
+![Questions](https://img.shields.io/badge/総問題数-2052-1f6feb)
 ![No Build](https://img.shields.io/badge/build_step-none-success)
 
 </div>
@@ -42,7 +42,7 @@
 | ☁️ | **クラウド同期** | 簡易 ID/PW でログインすると進捗を端末間で同期（任意・Firebase） |
 | 🔐 | **アクセス承認制** | 管理者が承認したアカウントだけ問題にアクセス可（ホワイトリスト）。未承認は承認待ち画面でお名前を入力して利用申請できる |
 | 👑 | **管理者ビュー** | 全アカウントの進捗・統計を集約。承認/停止/却下/削除、新規申請の通知バッジ、フィードバック集約、CSV/JSON 書き出し |
-| 🏷️ | **出典フィルタ** | 「タイソンブログ由来」と「生成問題」を切り替え。学習・試験・SRS・復習すべてに反映 |
+| 🏷️ | **出典フィルタ** | 「タイソンブログ / jpnshiken / AI 生成」を複数選択で切り替え。学習・試験・SRS・復習すべてに反映 |
 | 🌙 | **その他** | ダークモード / 未回答・自信なしフィルタ / 個人メモ / 選択肢シャッフル / キーボードショートカット |
 
 ---
@@ -51,12 +51,17 @@
 
 | 資格 | 試験コード | 問題数 | 分野 | 用語 | 合格ライン |
 |---|---|---:|---:|---:|---:|
-| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **460 問** | 8 分野（Agentforce 含む） | 94 語 | 65% |
-| **Salesforce 認定 Platform アプリケーションビルダー** | — | **445 問** | 5 分野 | 83 語 | 63% |
-| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **529 問** | 4 分野 | 75 語 | 68% |
+| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **437 問** | 8 分野（Agentforce 含む） | 94 語 | 65% |
+| **Salesforce 認定 Platform アプリケーションビルダー** | CRT-403 | **445 問** | 5 分野 | 83 語 | 63% |
+| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **499 問** | 4 分野 | 75 語 | 68% |
+| **Salesforce 認定 Agentforce Specialist** | — | **138 問** | 6 分野 | 26 語 | 73% |
+| **Salesforce 認定 Sales Cloud コンサルタント** | CRT-251 | **200 問** | 5 分野 | 67 語 | 69% |
+| **Salesforce 認定 Service Cloud コンサルタント** | CRT-261 | **120 問** | 8 分野 | 75 語 | 67% |
+| **Salesforce 認定 Experience Cloud コンサルタント** | CRT-271 | **132 問** | 8 分野 | 63 語 | 62% |
+| **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **81 問** | 4 分野 | 54 語 | 67% |
 
-いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
-3 資格とも「出典」フィルタでタイソンブログ由来の問題と AI 生成問題を切り替えられます。
+**全 8 資格・計 2,052 問**を収録。いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
+各資格とも「出典」フィルタで、タイソンブログ由来・jpnshiken 由来・AI 生成の問題を**複数選択**で切り替えられます。
 
 ---
 
@@ -117,8 +122,10 @@ sf-exam/
    │       └─ lessons.json     # イチから授業（スライド学習・任意）
    ├─ app-builder/
    │   └─ …（同じ構成）
-   └─ developer/
-       └─ …（同じ構成）
+   ├─ developer/ ・ agentforce/
+   │   └─ …（同じ構成）
+   └─ sales-cloud/ ・ service-cloud/ ・ experience-cloud/ ・ sharing-visibility/
+       └─ …（各資格とも同じ構成）
 ```
 
 ---
