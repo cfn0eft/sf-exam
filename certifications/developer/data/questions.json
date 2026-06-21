@@ -11320,30 +11320,6 @@
     "diff": 2
   },
   {
-    "id": 536,
-    "question": "Lightning Experience のアカウントの標準編集ボタンを上書きするには何を使用できますか?",
-    "choices": [
-      "Lightning アクション",
-      "Lightning ページ",
-      "Lightning コンポーネント",
-      "Lightning フロー"
-    ],
-    "answers": [
-      "Lightning アクション"
-    ],
-    "explanation": "□ A：正解。Lightning Experience で標準「編集」ボタンを上書きするには Lightning アクションを使います（カスタムロジックや Lightning コンポーネントを内包可）。\n□ B/C：不正解。Lightning ページ/コンポーネント単体では標準ボタンの上書きにはなりません。\n□ D：不正解。Lightning フローはボタン上書きの仕組みではありません。\n参考：ボタン/リンクの上書き",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
-    "multi": false,
-    "domain": "ui",
-    "keywords": [
-      "Lightning アクション",
-      "標準ボタン上書き",
-      "Lightning Experience"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
     "id": 538,
     "question": "Lightning Web コンポーネントで使用するために、AccountController クラスに updateAccounts という Apex メソッドが含まれているコード ステートメントはどれですか。",
     "choices": [
@@ -11539,32 +11515,6 @@
       "検証ルール",
       "削除制限",
       "選択リスト"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
-    "id": 550,
-    "question": "サンドボックスから本番環境にデプロイする場合の 2 つの考慮事項は何ですか?\n2つの回答を選択してください",
-    "choices": [
-      "Apex コードの少なくとも 75% は単体テストでカバーされる必要があります。",
-      "単体テストには System.assert メソッドの呼び出しが必要です。",
-      "フィードバックに迅速に対応できるように、営業時間中に展開する必要があります。",
-      "すべてのトリガーには、少なくとも 1 行のテスト カバレッジが必要です。"
-    ],
-    "answers": [
-      "Apex コードの少なくとも 75% は単体テストでカバーされる必要があります。",
-      "すべてのトリガーには、少なくとも 1 行のテスト カバレッジが必要です。"
-    ],
-    "explanation": "2つ選びます。本番デプロイの考慮事項です。\n□ A：正解。Apex コードの 75% 以上がテストでカバーされる必要があります。\n□ D：正解。各トリガーには最低 1 行のカバレッジが必要です。\n□ B：不正解。System.assert は推奨であり必須ではありません。\n□ C：不正解。営業時間中のデプロイは要件ではありません。\n参考：Apex テスト",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing.htm",
-    "multi": true,
-    "domain": "deploy",
-    "keywords": [
-      "テストカバレッジ",
-      "75%",
-      "デプロイ",
-      "トリガー"
     ],
     "source": "jpnshiken",
     "diff": 2
