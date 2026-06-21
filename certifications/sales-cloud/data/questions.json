@@ -1700,5 +1700,189 @@
   "diff": 1,
   "source": "jpnshiken",
   "id": 74
+ },
+ {
+  "question": "Universal Containers は、進行中の商談があるにもかかわらず取引先責任者がひも付いていない取引先を特定し、データの欠落に対処したいと考えています。標準レポートでこの条件を抽出する最も効果的な方法はどれですか。",
+  "choices": [
+   "レポートのスナップショット (Reporting snapshot) を使用する",
+   "積み上げ集計項目 (Roll-up summary field) を作成する",
+   "クロスフィルタ (Cross filter) を使用する"
+  ],
+  "answers": [
+   "クロスフィルタ (Cross filter) を使用する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ レポートのスナップショット (Reporting snapshot) を使用する　これは不正解です。レポートのスナップショットは、特定のレポート結果を定期的にカスタムオブジェクトへ保存して時系列推移を追跡する機能であり、関連オブジェクトの有無で絞り込む用途には向きません。\n\n□ 積み上げ集計項目 (Roll-up summary field) を作成する　これは不正解です。積み上げ集計は主従関係の子レコードを集計する項目で、別オブジェクト（取引先責任者）の存在有無を条件にした抽出をレポート上で行うものではありません。\n\n□ クロスフィルタ (Cross filter) を使用する　これは正解です。クロスフィルタは関連オブジェクトの有無を基準にレコードを絞り込めるため、「進行中の商談はあるが取引先責任者が関連付いていない取引先」を直接抽出でき、データの欠落をそのまま可視化できます。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_cross_filters.htm&type=5",
+  "multi": false,
+  "domain": "data",
+  "keywords": [
+   "クロスフィルタ",
+   "レポート",
+   "データ品質"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 75
+ },
+ {
+  "question": "Northern Trail Outfitters には、取引先に関連付く Complaints カスタムオブジェクトがあり、組織の共有設定 (OWD) は「非公開」です。Complaints Specialist 公開グループのユーザーだけが、すべての Complaint レコードを参照・編集できるようにする必要があります。これを実現する最適な方法はどれですか。",
+  "choices": [
+   "Apex 管理共有を使用して、Complaints Specialist 公開グループのユーザーにレコードアクセス権を付与する",
+   "条件ベースの共有ルールを作成し、Complaints Specialist 公開グループに参照・更新権限を付与する",
+   "Complaints オブジェクトの既定の参照範囲を、Complaints Specialist 公開グループのユーザーだけがアクセスできるよう設定する"
+  ],
+  "answers": [
+   "条件ベースの共有ルールを作成し、Complaints Specialist 公開グループに参照・更新権限を付与する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Apex 管理共有を使用して、Complaints Specialist 公開グループのユーザーにレコードアクセス権を付与する　これは不正解です。Apex 管理共有はコード開発を伴う高度な手段で、宣言的な共有ルールで満たせる単純な要件には過剰であり、まず選ぶべき方法ではありません。\n\n□ 条件ベースの共有ルールを作成し、Complaints Specialist 公開グループに参照・更新権限を付与する　これは正解です。OWD が非公開のオブジェクトに対し、共有ルールは特定グループへアクセスを開放する標準機能です。すべての Complaint レコードを対象とする条件を設定し、当該グループへ参照・更新を付与すれば、設定だけで要件を満たせます。\n\n□ Complaints オブジェクトの既定の参照範囲を、Complaints Specialist 公開グループのユーザーだけがアクセスできるよう設定する　これは不正解です。OWD（組織の共有設定）はオブジェクト全体の最小公開レベルを定めるもので、特定の公開グループだけにアクセスを限定する設定項目は存在しません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_sharing_rules.htm&type=5",
+  "multi": false,
+  "domain": "strat",
+  "keywords": [
+   "共有ルール",
+   "OWD",
+   "公開グループ"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 76
+ },
+ {
+  "question": "Northern Trail Outfitters (NTO) は、Sales Cloud で注文 (Order) の管理を開始しようとしており、導入のためにコンサルタントを採用しました。NTO の注文管理を設計するうえで、コンサルタントが考慮すべき正しい記述はどれですか。",
+  "choices": [
+   "注文ページレイアウト上で、契約番号 (Contract Number) を必須項目にできる",
+   "注文を有効化した後でも、注文の明細項目を追加・削除できる",
+   "注文は、有効な契約と無効な契約のどちらに対しても有効化できる"
+  ],
+  "answers": [
+   "注文ページレイアウト上で、契約番号 (Contract Number) を必須項目にできる"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 注文ページレイアウト上で、契約番号 (Contract Number) を必須項目にできる　これは正解です。注文を契約に関連付けて管理する場合、注文ページレイアウトで契約番号を必須項目に構成でき、これにより注文と契約のひも付けという正確なデータと業務プロセスの整合性を確保できます。\n\n□ 注文を有効化した後でも、注文の明細項目を追加・削除できる　これは不正解です。注文を有効化すると内容が確定し、明細項目の自由な追加・削除はできなくなります（変更には有効化の解除や軽減オーダーが必要です）。\n\n□ 注文は、有効な契約と無効な契約のどちらに対しても有効化できる　これは不正解です。注文を契約に関連付けて有効化するには、その契約が有効な状態である必要があり、契約の状況を問わず有効化できるわけではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_orders.htm&type=5",
+  "multi": false,
+  "domain": "app",
+  "keywords": [
+   "注文",
+   "契約",
+   "ページレイアウト"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 77
+ },
+ {
+  "question": "あるコンサルタントが、個人顧客を管理するために Person Account（個人取引先）の有効化を検討しています。有効化を判断する前に理解しておくべき重要な考慮事項はどれですか。",
+  "choices": [
+   "Person Account を有効化するには、共有モデルを公開／参照・更新にする必要がある",
+   "Person Account の有効化は、一度実施すると元に戻せない",
+   "Person Account には、少なくとも 2 つのレコードタイプが必要である"
+  ],
+  "answers": [
+   "Person Account の有効化は、一度実施すると元に戻せない"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Person Account を有効化するには、共有モデルを公開／参照・更新にする必要がある　これは不正解です。Person Account の有効化に特定の共有モデルは必須ではなく、取引先の OWD など組織の要件に応じて設定できます。\n\n□ Person Account の有効化は、一度実施すると元に戻せない　これは正解です。Person Account を有効化すると無効化できない不可逆な変更であり、データモデルに恒久的な影響を与えるため、有効化前に影響範囲を十分に評価する必要があります。\n\n□ Person Account には、少なくとも 2 つのレコードタイプが必要である　これは不正解です。Person Account を機能させるのに 2 つのレコードタイプが必須という要件はなく、有効化時に専用のレコードタイプが用意される仕組みです。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_person.htm&type=5",
+  "multi": false,
+  "domain": "strat",
+  "keywords": [
+   "Person Account",
+   "個人取引先",
+   "不可逆"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 78
+ },
+ {
+  "question": "営業担当が、担当中の商談の詳細を最小限の画面遷移で確認できるようにしたいと考えています。コンサルタントが推奨すべき方法はどれですか。",
+  "choices": [
+   "商談を含む新しい Sales コンソールアプリケーションを開発する",
+   "「私の商談」リストビューから分割ビュー (Split View) を選択する",
+   "「私の商談」のレポートを含むダッシュボードを作成する"
+  ],
+  "answers": [
+   "「私の商談」リストビューから分割ビュー (Split View) を選択する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 商談を含む新しい Sales コンソールアプリケーションを開発する　これは不正解です。コンソールアプリの新規開発は設定負荷が大きく、既存のリストビュー機能で要件を満たせるため、最小限の手段としては適切ではありません。\n\n□ 「私の商談」リストビューから分割ビュー (Split View) を選択する　これは正解です。分割ビューは画面左にレコード一覧、右に選択したレコードの詳細を同時表示できるため、担当者はタブを開き直すことなく一覧をたどりながら各商談の詳細を確認でき、画面遷移を最小化できます。\n\n□ 「私の商談」のレポートを含むダッシュボードを作成する　これは不正解です。ダッシュボードは集計の可視化が目的で、個々の商談レコードの詳細を編集・確認する用途には向かず、要件に合致しません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.views_split_view.htm&type=5",
+  "multi": false,
+  "domain": "app",
+  "keywords": [
+   "分割ビュー",
+   "リストビュー",
+   "商談"
+  ],
+  "diff": 1,
+  "source": "jpnshiken",
+  "id": 79
+ },
+ {
+  "question": "Universal Containers は、見込み客や顧客がメールを開封したタイミングをリアルタイムで把握し、すぐにフォローアップできるようにしたいと考えています。この要件を満たす機能はどれですか。",
+  "choices": [
+   "Salesforce Inbox",
+   "拡張メール (Enhanced Email)",
+   "Einstein 活動キャプチャ (Einstein Activity Capture)"
+  ],
+  "answers": [
+   "Salesforce Inbox"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Salesforce Inbox　これは正解です。Salesforce Inbox はメール追跡機能を備えており、受信者がメールを開封・リンクをクリック・返信したタイミングをリアルタイムで把握できるため、エンゲージメント直後の迅速なフォローアップという要件を満たします。\n\n□ 拡張メール (Enhanced Email)　これは不正解です。拡張メールは送信メールを活動として標準のメールレコードに保存する機能で、開封のリアルタイム追跡そのものは提供しません。\n\n□ Einstein 活動キャプチャ (Einstein Activity Capture)　これは不正解です。Einstein 活動キャプチャはメールや予定を自動的に取り込んで関連レコードに同期する機能で、メール開封のリアルタイム通知を主目的とした機能ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.inbox_overview.htm&type=5",
+  "multi": false,
+  "domain": "app",
+  "keywords": [
+   "Salesforce Inbox",
+   "メール追跡",
+   "フォローアップ"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 80
+ },
+ {
+  "question": "あるコンサルタントが、Einstein 商談スコアリングや Einstein 商談インサイトといった Einstein 機能の導入を計画しています。これらの機能を有効化する前に、最初に実施すべき推奨ステップはどれですか。",
+  "choices": [
+   "サンドボックスで Einstein 準備状況アセスメント (Einstein Readiness Assessor) を実行する",
+   "開発者組織で Einstein 活動キャプチャを有効化する",
+   "本番環境で両方の Einstein 機能を有効化する"
+  ],
+  "answers": [
+   "サンドボックスで Einstein 準備状況アセスメント (Einstein Readiness Assessor) を実行する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ サンドボックスで Einstein 準備状況アセスメント (Einstein Readiness Assessor) を実行する　これは正解です。Einstein 準備状況アセスメントは、組織のデータが Einstein の AI 機能に必要な品質と量を満たしているかを評価するツールで、サンドボックスで実行すれば本番有効化前に必要な調整を把握でき、正確なスコアリングや予測を担保できます。\n\n□ 開発者組織で Einstein 活動キャプチャを有効化する　これは不正解です。活動キャプチャの有効化は準備状況の確認とは別の作業であり、最初に実施すべき準備評価のステップにはあたりません。\n\n□ 本番環境で両方の Einstein 機能を有効化する　これは不正解です。準備状況を確認せずに本番でいきなり有効化すると、データ不足により精度の低い結果を招く恐れがあり、まずアセスメントで適合性を確認すべきです。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.einstein_sales_readiness_assessor.htm&type=5",
+  "multi": false,
+  "domain": "ai",
+  "keywords": [
+   "Einstein",
+   "準備状況アセスメント",
+   "サンドボックス"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 81
+ },
+ {
+  "question": "取引先所有者が、取引先に関連する取引先責任者を、商談所有者に対して選択的に共有できるようにしたいと考えています。これを実現する推奨アプローチはどれですか。",
+  "choices": [
+   "商談所有者を商談チームに追加し、取引先責任者の共有を設定する",
+   "商談所有者を取引先チームに追加し、取引先責任者の共有を設定する",
+   "取引先責任者の所有権を、自分から商談所有者へ移管する"
+  ],
+  "answers": [
+   "商談所有者を取引先チームに追加し、取引先責任者の共有を設定する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 商談所有者を商談チームに追加し、取引先責任者の共有を設定する　これは不正解です。商談チームは商談レコードへのアクセスを共有する仕組みで、取引先所有者が取引先配下の取引先責任者を選択的に共有する制御には適していません。\n\n□ 商談所有者を取引先チームに追加し、取引先責任者の共有を設定する　これは正解です。取引先チームに商談所有者を追加すると、取引先所有者は取引先責任者の共有レベルを指定でき、関連レコードへのきめ細かなアクセス制御によって必要な取引先責任者だけを選択的に共有できます。\n\n□ 取引先責任者の所有権を、自分から商談所有者へ移管する　これは不正解です。所有権の移管は共有ではなく管理権限そのものを手放す行為で、取引先所有者が選択的に共有を続けたいという要件に反します。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.accountteam_def.htm&type=5",
+  "multi": false,
+  "domain": "app",
+  "keywords": [
+   "取引先チーム",
+   "取引先責任者",
+   "共有"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "id": 82
  }
 ]
