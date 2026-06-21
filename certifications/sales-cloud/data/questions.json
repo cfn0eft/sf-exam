@@ -79,9 +79,9 @@
    "AppExchange から Salesforce 採用状況ダッシュボード（Salesforce Adoption Dashboard）をインストールする。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ロール別のアクティブユーザーのカスタムレポートを作成して購読する。　これは不正解です。アクティブ件数は分かりますが、ログイン頻度・機能利用・データ品質など採用状況を多面的に把握する指標が不足します。\n\n□ AppExchange から Salesforce 採用状況ダッシュボード（Salesforce Adoption Dashboard）をインストールする。　これは正解です。採用状況ダッシュボードはログイン頻度・機能利用・データ品質などの主要指標を事前構成で提供し、ロールや地域ごとの利用傾向を可視化できるため、利用状況の把握に最適です。\n\n□ 設定の監査証跡（Setup Audit Trail）を分析して1日あたりのログイン数を割り出す。　これは不正解です。監査証跡は設定変更の履歴を記録するもので、ユーザーのログインや利用状況の分析には向きません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N30000004gHhLEAU",
   "multi": false,
-  "domain": "data",
+  "domain": "change",
   "keywords": [
    "採用状況",
    "ダッシュボード",
@@ -148,7 +148,7 @@
    "適格な（Qualified）見込み客"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ すべての見込み客　これは不正解です。すべてを移行すると不要なデータが大量に流入し、データ品質や営業効率を損ないます。\n\n□ コンタクト済みの見込み客　これは不正解です。接触済みであっても転換の見込みが低いものが含まれ、適格性の基準としては不十分です。\n\n□ 適格な（Qualified）見込み客　これは正解です。所定の基準を満たした適格な見込み客のみを移行することで、転換の可能性が高いリードに絞り込み、Sales Cloud のデータ品質と営業効率を保てます。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/lead-qualification-with-scoring-and-grading/support-a-lead-qualification-model-with-account-engagement",
   "multi": false,
   "domain": "data",
   "keywords": [
@@ -240,7 +240,7 @@
    "目標・指標・プロジェクトスケジュール・営業プロセスを定義する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 使用する Salesforce の機能を特定する。　これは不正解です。機能の特定は、目標や要件を明確にした後の工程であり、計画段階の最初に行うことではありません。\n\n□ 提案するソリューションのプロトタイプを設計する。　これは不正解です。プロトタイプ設計も価値ある工程ですが、目標と要件を固めた後に行うべきです。\n\n□ 目標・指標・プロジェクトスケジュール・営業プロセスを定義する。　これは正解です。計画段階では、ビジネス目標との整合と成功の判定基準を確立するために、目標・指標・スケジュール・既存および望ましい営業プロセスを定義することが基盤となります。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-business-analyst-certification-prep/learn-about-customer-discovery",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -265,7 +265,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ キャンペーン影響度のレポートスナップショットを作成する。　これは不正解です。レポートスナップショットは特定時点のデータを保存する機能で、帰属モデルに基づく収益シェアの割り当ては行えません。\n\n□ カスタマイズ可能なキャンペーン影響度（CCI）を使用する　これは正解です。この機能は、商談に影響を与えたキャンペーンへ収益を帰属させ、標準・カスタムの両方の帰属モデルをサポートします。各キャンペーンの影響割合を定義し、柔軟にレポートできます。\n\n□ キャンペーン影響度を追跡する数式項目を作成する。　これは不正解です。数式項目では複数キャンペーンへの収益配分や帰属モデルを表現できません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.campaigns_influence_customizable_parent.htm&type=5",
   "multi": false,
-  "domain": "life",
+  "domain": "app",
   "keywords": [
    "キャンペーン影響度",
    "帰属モデル",
@@ -286,7 +286,7 @@
    "ユニバーサルプロセス記法（Universal Process Notation）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ バリューストリームマップ（Value Stream Map）　これは不正解です。バリューストリームマップは価値の流れやリードタイム・ムダの分析に用いるもので、複数スライドにわたる業務プロセスの流れを表現する用途には最適ではありません。\n\n□ ユニバーサルプロセス記法（Universal Process Notation）　これは正解です。UPN は業務プロセスを分かりやすく図示する標準的な記法で、高レベルの概要から詳細ステップまで段階的に表現でき、複数スライドが必要な複雑なプロセスの可視化と関係者への共有に適しています。\n\n□ ケイパビリティモデル（Capability Model）　これは不正解です。ケイパビリティモデルは組織が何をできるか（能力）を示すもので、プロセスがどのように流れるかを段階的に表すものではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/business-process-mapping/understand-universal-process-notation",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -311,7 +311,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Lead レコード上で、そのカスタム項目の値をクリアする。　これは不正解です。既存レコードの値を消しても、項目自体はスコアリングモデルに含まれたままで、今後入力された値は再びスコア算出に使われてしまいます。要件である「除外」を恒久的には満たせません。\n\n□ スコアリングモデルから、そのカスタム項目を除外する。　これは正解です。Einstein リードスコアリングは、スコア算出に用いる項目を管理者がモデル設定で取捨選択できます。対象項目をスコアリングモデルから除外（omit）すれば、Einstein はその項目をスコア計算に使わなくなり、営業ディレクターの要望どおり除外できます。\n\n□ Lead のページレイアウトから、そのカスタム項目を削除する。　これは不正解です。ページレイアウトは画面表示の制御にすぎず、スコアリングモデルが参照する項目とは無関係です。レイアウトから外しても項目はスコア算出に使われ続けます。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.einstein_sales_lead_scoring_setup.htm&type=5",
   "multi": false,
-  "domain": "ai",
+  "domain": "app",
   "keywords": [
    "Einstein リードスコアリング",
    "スコアリングモデル",
@@ -332,7 +332,7 @@
    "更新した割り当てルールを Planning（計画）状態で実行し、テリトリー詳細ページでアカウントを確認する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 既存テリトリーと新テリトリーを比較するレポートとダッシュボードを作成する。　これは不正解です。レポートは既存（有効）モデルの集計には使えますが、まだ有効化していない計画段階のテリトリー割り当てを安全にプレビューする標準手段ではありません。検証のために本番データへ変更を反映させてしまう恐れがあります。\n\n□ 更新した割り当てルールを Planning（計画）状態で実行し、テリトリー詳細ページでアカウントを確認する。　これは正解です。エンタープライズテリトリー管理では、テリトリーモデルを Planning 状態にしたまま割り当てルールを実行でき、各テリトリー詳細ページで割り当て結果のプレビューを確認できます。本番（有効モデル）に影響を与えずに割り当ての正確性を検証し、納得してから Active へ公開できます。\n\n□ AppExchange から Territory Health Assessment アプリをインストールする。　これは不正解です。外部アプリの導入はオーバーヘッドが大きく、標準のモデル状態（Planning）で同じ検証ができるため不要です。割り当て結果の事前確認という要件には Planning 状態が直接適しています。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.tm2_assign_users_to_territories.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.tm2_preview_account_assignments.htm&type=5",
   "multi": false,
   "domain": "app",
   "keywords": [
@@ -355,7 +355,7 @@
    "営業プロセスを定義する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ プロジェクトのマイルストーンを設定する。　これは不正解です。マイルストーン設定はプロジェクト計画段階の作業であり、Discovery で営業プロセスを把握した後に行います。Discovery の主目的である業務理解には直接対応しません。\n\n□ 導入計画を作成する。　これは不正解です。導入計画は要件と営業プロセスが固まってから策定するものです。Discovery 段階で先に計画を作っても、後続の理解に基づいて大きく変わる可能性があります。\n\n□ 営業プロセスを定義する。　これは正解です。Discovery フェーズでは、組織の営業サイクルの各ステージや手順を把握し、Salesforce をそれに合わせて構成できるよう営業プロセスを定義することが不可欠です。これがその後の設定・トレーニング・定着の土台になります。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/build-a-sales-process/learn-about-the-sales-process",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -378,7 +378,7 @@
    "一定期間に行われたアウトバウンドコールの件数"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 一定期間に行われたアウトバウンドコールの件数　これは正解です。アウトバウンドコール件数は営業担当の日々の活動量とリード・顧客への働きかけを直接表す指標で、日次の生産性を可視化できます。アクション可能で活動レベルが営業目標と整合しているかを把握しやすく、日々の KPI トラッキングに適しています。\n\n□ 更新された商談の件数　これは不正解です。商談更新は商談管理の状況を示しますが、日々の活動量と直接相関するとは限りません。日次のオペレーション指標としては活動量を表すアウトバウンドコールほど適切ではありません。\n\n□ マーケティング有望リード（MQL）の件数　これは不正解です。MQL は主にマーケティング側のファネル指標で、営業チームの日々の活動量を測る指標としては焦点がずれています。日次の営業オペレーションの KPI には向きません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/sales-cloud-platform-quick-look/measure-sales-metrics-that-matter",
   "multi": false,
   "domain": "data",
   "keywords": [
@@ -401,9 +401,9 @@
    "既存の「親キャンペーン（Parent Campaign）」項目を使用する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ カスタムの「キャンペーン目的（Campaign Purpose）」項目を作成する。　これは不正解です。目的を分類する項目を作っても、キャンペーン間に階層構造は生まれず、配下キャンペーンの実績を自動で合計表示することはできません。集計レポートには別途仕組みが必要になります。\n\n□ 既存の「親キャンペーン（Parent Campaign）」項目を使用する。　これは正解です。標準の親キャンペーン項目で最大5階層のキャンペーン階層を構成でき、施策（親）の下に関連キャンペーン（子）を束ねられます。階層のロールアップ集計（合計レスポンス・合計商談・合計成立商談など）により、施策全体の成果をまとめてレポートできます。\n\n□ カスタムの「キャンペーングループ（Campaign Group）」オブジェクトを作成する。　これは不正解です。標準の親キャンペーン項目で実現できる要件に対し、カスタムオブジェクトの作成は不要なカスタマイズです。標準のロールアップ集計の恩恵も受けられず、保守も複雑になります。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.campaigns_hierarchies.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sales.campaigns_hierarchy.htm&type=5",
   "multi": false,
-  "domain": "life",
+  "domain": "app",
   "keywords": [
    "キャンペーン階層",
    "親キャンペーン",
@@ -447,7 +447,7 @@
    "マーケティングオートメーションツールでリードのスコアとグレードを開発し、リードがいつクオリファイされるべきかを自動的に判定できるようにする。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ マーケティングオートメーションツールで提供される営業指標に基づいてレポートを作成し、リードを識別・評価できるようマーケティング担当者をトレーニングする。　これは不正解です。レポートとトレーニングは手動判断に依存し、提示された属性・活動履歴に基づく自動評価のしくみを作りません。スケールせず、営業へのハンドオフ基準も標準化されません。\n\n□ マーケティングオートメーションツールでリードのスコアとグレードを開発し、リードがいつクオリファイされるべきかを自動的に判定できるようにする。　これは正解です。スコア（活動・行動）とグレード（属性・ペルソナ適合）を組み合わせれば、提示された理想リードの基準に沿ってリードを自動評価し、営業準備が整ったタイミングを判定できます。質の高いリードを優先でき、マーケと営業の連携も改善します。\n\n□ マーケティングオートメーションツールを設定して見込み客を営業ディレクターに送り、営業担当に評価プロセスを手伝ってもらう。　これは不正解です。すべての見込み客を営業に送ると評価工数が営業側に偏り、ファネル前段で絞り込む目的に反します。自動的なクオリフィケーションプロセスの改善という要件を満たしません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/lead-qualification-with-scoring-and-grading/support-a-lead-qualification-model-with-account-engagement",
   "multi": false,
   "domain": "life",
   "keywords": [
@@ -518,7 +518,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「金額」項目が、貢献要因（contributing factors）セクションにエラーとして表示される。　これは不正解です。項目レベルセキュリティで参照不可の項目はエラー表示ではなく、単に非表示になります。スコアリングはエラーにならず機能し続けます。\n\n□ そのユーザーには、商談スコア項目と「金額」項目の両方が非表示になる。　これは不正解です。金額へのアクセスが無くても商談スコア自体は引き続き表示されます。非表示になるのは権限のない「金額」項目だけで、スコアまで丸ごと隠れるわけではありません。\n\n□ 「金額」項目が、貢献要因（contributing factors）セクションから非表示になる。　これは正解です。Einstein 商談スコアリングは項目レベルセキュリティを尊重します。貢献要因として使われている「金額」項目の参照権がないユーザーには、その項目が貢献要因の内訳から外れて表示されます。スコア自体は表示され、制限項目だけが内訳から省かれます。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.einstein_sales_scoring_about.htm&type=5",
   "multi": false,
-  "domain": "ai",
+  "domain": "app",
   "keywords": [
    "Einstein商談スコアリング",
    "項目レベルセキュリティ",
@@ -539,7 +539,7 @@
    "Salesforce モバイルアプリ経由でリードを取引開始するためのグローバルアクション（Global Action）を作成する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ リード取引開始設定（Lead Conversion settings）で、Salesforce モバイルアプリでの取引開始を有効化する。　これは不正解です。リード取引開始設定は取引開始時の挙動（取引先責任者の役割設定など）を構成するものですが、それ自体でモバイルから取引開始するボタンを提供するわけではありません。モバイルでの導線にはグローバルアクションが必要です。\n\n□ Salesforce モバイルアプリ経由でリードを取引開始するためのグローバルアクション（Global Action）を作成する。　これは正解です。リード取引開始用のグローバルアクションを作成すると、Salesforce モバイルアプリから直接リードを取引開始できます。標準機能を活用するため追加インストールや構成が不要で、出張中の営業チームにも取引開始の導線を提供できます。\n\n□ Salesforce モバイルアプリ経由でリードを取引開始するための AppExchange パッケージをインストールする。　これは不正解です。標準機能（グローバルアクション）で要件を満たせるため、外部パッケージの導入は不要なオーバーヘッドです。標準でできることにわざわざサードパーティ製を持ち込む必要はありません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_lead_convert.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_leads_enable_mobile_convert.htm&type=5",
   "multi": false,
   "domain": "app",
   "keywords": [
@@ -610,7 +610,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データ標準を強制するために承認プロセスを追加する。　これは不正解です。承認プロセスはデータ品質や統制の強化には役立ちますが、ユーザーの声を反映する仕組みではなく、むしろ操作の負担を増やして採用率を下げかねません。採用率向上の直接的な施策にはなりません。\n\n□ ユーザーストーリーを収集するために要件ワークショップを実施する。　これは不正解です。要件ワークショップは導入前の要件定義フェーズで有効ですが、すでに稼働している環境の採用率を継続的に高めるための、現場ユーザーからの双方向フィードバック収集手段としては最適ではありません。\n\n□ ユーザーからフィードバックを収集するためにコラボレーションツールを使用する。　これは正解です。Chatter などのコラボレーションツールを使うと、ユーザーがリアルタイムで意見や課題、改善要望を共有できます。採用の障壁を継続的に特定して解消し、ユーザー中心の改善サイクルを回せるため、採用率向上に直接つながります。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_overview.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "ユーザー採用",
    "フィードバック",
@@ -677,7 +677,7 @@
    "ディスカバリーセッションを実施する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ディスカバリーセッションを実施する。　これは正解です。実装を強化する最初のステップは、要件を収集しビジネスプロセスを理解することです。ディスカバリーセッションは既存の設定、主要な課題、改善したい点を明らかにし、その後のソリューション設計や実装の土台になります。\n\n□ アーキテクチャを設計する。　これは不正解です。アーキテクチャ設計は、ディスカバリーで必要な情報を収集した後に行う工程です。要件が定まる前に設計を始めると、ビジネスのニーズと乖離するリスクがあります。\n\n□ ソリューションを定義する。　これは不正解です。ソリューションの定義も、ディスカバリーで課題やニーズを把握した後の段階です。最初に行うべきは現状理解であり、それなしに定義へ進むのは順序が逆です。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-business-analyst-certification-prep/learn-about-customer-discovery",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -725,7 +725,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 毎週、通貨の値を手動で更新する。　これは不正解です。手動更新は非効率でミスが起きやすく、高度な通貨管理を導入した目的（自動かつ正確な換算）に反します。日付ベースの換算が使える環境で手作業に頼る必要はありません。\n\n□ 取引額をユーザーのデフォルト通貨で表示する。　これは不正解です。単にユーザーのデフォルト通貨で表示するだけでは、取引時点の正しい換算レートを反映できません。地域取引を正確な換算で報告したいという要件には不十分です。\n\n□ 日付範囲に基づいて通貨換算を動的に調整する。　これは正解です。高度な通貨管理は日付付き為替レート (dated exchange rates) を扱えます。商談の完了予定日などの日付に応じて正しいレートを適用できるため、為替変動を反映した正確なレポートを Salesforce 内で直接生成でき、Excel での手作業が不要になります。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_enable_advanced_currency_management.htm&type=5",
   "multi": false,
-  "domain": "data",
+  "domain": "app",
   "keywords": [
    "高度な通貨管理",
    "日付付きレート",
@@ -748,7 +748,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 過去30日間に作成された商談数　これは正解です。ログイン率はシステム利用の有無を示すだけですが、商談の作成数は営業担当者が Sales Cloud の中核機能を実際に使っているかを表します。価値ある業務が行われているかを示すため、ログイン指標を補完する採用の指標として最適です。\n\n□ 過去30日間に同期されたイベント数　これは不正解です。イベントの同期はカレンダー連携の利用状況を示しますが、Sales Cloud の中核となる営業活動への関与を直接表すものではないため、採用指標としての結びつきが弱くなります。\n\n□ 過去30日間にクローズされたケース数　これは不正解です。ケースは Service Cloud のサポート業務に関する指標であり、Sales Cloud の営業活動の採用を測る指標としては適切ではありません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.adoption_dashboards.htm&type=5",
   "multi": false,
-  "domain": "data",
+  "domain": "change",
   "keywords": [
    "ユーザー採用",
    "商談作成数",
@@ -792,7 +792,7 @@
    "予算を管理し方向性に関する判断を扱い、開発キャパシティを公平に分配するための月次の経営運営委員会を提案する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 開発の方向性と優先順位をレビューするため、ビジネスと技術のリソースを含めた週次の全員参加コールを設ける。　これは不正解です。会議の頻度を増やすだけでは、特定の VP が優先順位を左右するという力の不均衡という根本原因は解決しません。むしろ脱線の機会が増える可能性があります。\n\n□ 予算を管理し方向性に関する判断を扱い、開発キャパシティを公平に分配するための月次の経営運営委員会を提案する。　これは正解です。経営運営委員会 (steering committee) は主要な意思決定者を集め、優先順位・予算配分・開発キャパシティを公式な統治の枠組みの中で公平に決定します。複数の経営層が関与することで、一つの事業ラインが他を押しのける状況を防ぎ、競合する利害を客観的に調整できます。\n\n□ 各事業ラインを独立して支援できるよう、開発チームを3つのユニット/トラックに分割する。　これは不正解です。チームを分割しても予算や優先順位を決める統治の問題は残り、リソースの重複や非効率を招きます。根本的なガバナンス課題への対処にはなりません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/nonprofit-cloud-implementation-best-practices/prioritize-governance",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -815,7 +815,7 @@
    "ケイパビリティモデル (Capability Model)"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ケイパビリティモデル (Capability Model)　これは正解です。ケイパビリティモデルは、組織が事業目標を達成するために必要な能力 (what) を高レベルで可視化したものです。「どう行うか」には踏み込まず、各プロセスや機能が事業全体の中でどう関係し合うかという戦略的な文脈を示せるため、新しいプロセスの位置づけを示すのに最適です。\n\n□ バリューストリームマップ (Value Stream Map)　これは不正解です。バリューストリームマップは、製品やサービスが顧客に届くまでの流れと、その中の無駄やリードタイムを分析するためのものです。高レベルな業務全体の俯瞰ではなく、特定フローの効率分析に向いています。\n\n□ 詳細プロセスマッピング (Detail Process Mapping)　これは不正解です。詳細プロセスマッピングは個々のステップを細かく記述するもので、幹部が求める高レベルな全体像とは粒度が合いません。\n\n",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://architect.salesforce.com/diagrams/reference-architectures/business-capability-map",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -907,9 +907,9 @@
    "すべての従業員に、希望する変更点の一覧を尋ねるアンケートを送付する。"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ すべての従業員に、アイデアやフィードバックをコンサルタントにメールで送るよう依頼する。　これは不正解です。自由形式のメールでは回答が構造化されず、250 名分を分類・分析するのが非常に煩雑になり、効率的な手段とは言えません。\n\n□ すべての従業員に、希望する変更点の一覧を尋ねるアンケートを送付する。　これは正解です。アンケートは大人数に短時間で到達でき、定量・定性の両面を構造化して収集できます。回答を集計・分析して傾向や共通テーマを抽出し、優先順位付けに役立てられるため、効率的です。\n\n□ 従業員を大人数のグループに集めてミーティングを行い、彼らのフィードバックに耳を傾ける。　これは不正解です。250 名規模の対面ミーティングは日程調整が困難で、発言が一部の人に偏りやすく、全員の意見を効率的に集める方法としては適しません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/user-adoption-metrics/measure-salesforce-usage",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "定着率",
    "アンケート",
@@ -978,7 +978,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 営業チーム向けに一連の説明会を開催して新しい営業プロセスの利点を説明し、よくある質問はオンラインの FAQ で対応する。　これは不正解です。周知や説明は重要な一要素ですが、それだけではトレーニング設計・文書化・効果測定といった変更管理の全体像を網羅できません。\n\n□ ユーザーにインセンティブを与えるプログラムを実施し、早期採用者を公に表彰することで他のメンバーの意欲を高め、営業チーム内に競争意識を生み出す。　これは不正解です。インセンティブは定着を後押しする補助策ですが、計画やトレーニングの土台がないまま行っても円滑な展開の最初の一手にはなりません。\n\n□ 実装計画を作成し、営業チームへの周知を進め、トレーニングとコーチングのプログラムを設計し、ワークフローを更新・文書化し、成功を測定する。　これは正解です。計画・周知・トレーニング・継続的な測定を含む構造化された変更管理のアプローチが、円滑な展開には不可欠です。これにより変化への抵抗を最小化し、新プロセスを確実に定着させられます。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "変更管理",
    "展開計画",
@@ -1001,7 +1001,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ CK にサポート契約の購入を提案する。　これは不正解です。有償サポートは選択肢にはなり得ますが、まずは実装内容を管理者へ引き継ぐべき段階であり、追加費用を求める前にできる対応があります。\n\n□ 管理者に Salesforce のインストラクター主導型トレーニングへの参加を勧める。　これは不正解です。汎用的な公式トレーニングは基礎には役立ちますが、CK 固有の営業プロセスや設定意図に関する具体的な疑問には直接答えられません。\n\n□ 管理者とナレッジトランスファー（知識移転）を実施する。　これは正解です。ナレッジトランスファーにより、管理者が実装した設定・カスタマイズとその背景にある理由を理解できます。CK 固有のシナリオに即して教育することで管理者が自走できるようになり、実装後の長期的な持続性を確保できます。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "ナレッジトランスファー",
    "実装後支援",
@@ -1159,8 +1159,8 @@
   "answers": [
    "通貨項目によってレコードを集計（合計）できる。"
   ],
-  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 1枚のカードに最大10個の項目を表示できる。　これは不正解です。Kanban のカードに表示できる項目数はこの選択肢のような上限とは異なり、考慮事項として正しくありません。\n\n□ 通貨項目によってレコードを集計（合計）できる。　これは正解です。Kanban ビューは選択した選択リスト項目に基づいてレコードを列に整理し、通貨項目で各列（各ステージ）の金額を集計表示できます。これにより、パイプラインの各段階の金額をひと目で把握し、効率的に優先順位付けと管理ができます。\n\n□ 通貨項目について積み上げ集計（ロールアップ集計）項目を表示できる。　これは不正解です。Kanban の列ヘッダーで行われるのはその場での集計であり、オブジェクト定義上のロールアップ集計項目を表示する仕組みとは異なります。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.kanban_view.htm&type=5",
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 1枚のカードに最大10個の項目を表示できる。　これは不正解です。Kanban のカードに表示できる項目は最大4個であり、「10個」という上限は誤りです。考慮事項として正しくありません。\n\n□ 通貨項目によってレコードを集計（合計）できる。　これは正解です。Kanban ビューは選択した選択リスト項目に基づいてレコードを列に整理し、ロールアップ集計項目・数式項目を除く数値・通貨項目で各列（各ステージ）の金額を集計（合計）表示できます。これにより、パイプラインの各段階の金額をひと目で把握し、効率的に優先順位付けと管理ができます。\n\n□ 通貨項目について積み上げ集計（ロールアップ集計）項目を表示できる。　これは不正解です。Kanban の集計（サマリー）はロールアップ集計項目・数式項目では作成できず、列ヘッダーでのその場の集計とオブジェクト定義上のロールアップ集計項目は別物です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.kanban_considerations.htm&type=5",
   "multi": false,
   "domain": "app",
   "keywords": [
@@ -1231,7 +1231,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Plan（計画）フェーズでテストスクリプトを作成する。　これは不正解です。テストスクリプトは品質保証のための成果物であり、ユーザーがシステム操作に慣れることには直接寄与しません。操作の戸惑いによる定着率低下の対策にはなりません。\n\n□ プロジェクトを通じて全社的なトレーニングを提供する。　これは正解です。展開時にまとめて教えるのではなく、プロジェクト全体を通じて段階的にトレーニングを行うことで、ユーザーは徐々にシステムへの理解と慣れを深められます。ハンズオンやウェビナー、アプリ内ガイダンスなど多様な手法を組み合わせることで、稼働開始時には自信を持って操作でき、定着率と生産性が向上します。\n\n□ Validate（検証）フェーズでベータレビューを実施する。　これは不正解です。ベータレビューは限られた範囲・タイミングの確認であり、全ユーザーが操作に習熟するための継続的な学習機会にはなりません。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "展開フェーズ",
    "トレーニング",
@@ -1415,7 +1415,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Sales Cloud がエンドユーザーのニーズを満たしていることを確認するため、推進役 (チャンピオン) の協力を得る。　これは正解です。チャンピオンは組織内でシステムを擁護し、エンドユーザーとプロジェクトチームの橋渡しをして、ソリューションをユーザーのニーズに合わせる役割を担います。ユーザーの懸念を理解する人物がいることで、フィードバックに基づいて実装アプローチを調整でき、定着と満足度の向上につながります。\n\n□ エンドユーザー向けの Sales Cloud の主要業績評価指標 (KPI) を理解するため、経営層にインタビューする。　これは不正解です。経営層へのインタビューでは、現場のエンドユーザー固有の不満や具体的なニーズを取りこぼす可能性があります。\n\n□ エンドユーザー向けのソリューションを評価するため、開発者とともに Sales Cloud の技術レビューを実施する。　これは不正解です。技術レビューは技術面の評価に偏り、ユーザー体験や不満の解消という本来の課題に直接応えるものではありません。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "チャンピオン",
    "利用定着",
@@ -1438,7 +1438,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ これらの取引先に関連する一部の商談は、他のユーザーが所有している。　これは正解です。商談の組織の共有設定が「公開／参照のみ」の場合、取引先を所有するユーザーは配下の商談に対して暗黙的な参照アクセスを得ますが、編集できるのは自分が所有する商談だけです。したがって、編集できる商談は本人が所有するもの、編集できない商談は他ユーザーが所有するものであり、この症状を最もよく説明します。\n\n□ 商談の共有ルールが、マネージャー向けの公開グループに設定されている。　これは不正解です。マネージャー向け公開グループへの共有ルールは、そのグループのアクセスを広げるものであり、所有取引先の一部の商談だけ編集できない／できるという本人側の差異を説明しません。\n\n□ そのユーザーは、商談に対して参照／更新アクセス権を持つ取引先チームのメンバーである。　これは不正解です。取引先チームで参照／更新を得ているならアクセスは広がる方向に働きます。「自分が所有する取引先なのに編集できない商談がある」という制限の説明にはならず、最もよく説明するのは所有者の違いです。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_owd_opportunities.htm&type=5",
   "multi": false,
-  "domain": "data",
+  "domain": "app",
   "keywords": [
    "公開／参照のみ",
    "商談共有",
@@ -1553,7 +1553,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ エグゼクティブスポンサーはプロジェクトの推進者（チャンピオン）であるため。　これは正解です。スポンサーは取り組みを擁護し、その重要性を社内に発信して変革を後押しします。戦略目標との整合や必要なリソース確保、新プロセスの価値の周知につながり、ユーザー採用を大きく改善します。\n\n□ エグゼクティブスポンサーはローンチ後のシステムをサポートするため。　これは不正解です。稼働後の運用サポートは主に管理者やサポート体制が担う役割です。スポンサーの本質的な価値は採用を牽引する推進力であり、運用保守そのものではありません。\n\n□ エグゼクティブスポンサーは実現可能な解決策を保証するため。　これは不正解です。技術的に実現可能な解決策の担保はコンサルタントやアーキテクト、技術チームの役割です。スポンサーの重要性は技術検証ではなく、組織を巻き込む後ろ盾としての推進力にあります。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "エグゼクティブスポンサー",
    "ユーザー採用",
@@ -1574,7 +1574,7 @@
    "変更と更新のモニタリング"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 変更と更新のモニタリング　これは正解です。サードパーティのエンリッチメントツールは、データの検証・補完・最新化を継続的に行い、不整合の検知や古い情報の修正を自動化できます。変化の激しい取引先・取引先責任者データを最新に保ち、品質を維持する領域を直接改善します。\n\n□ ロールとレコードの所有　これは不正解です。所有権やロールの設計は共有モデルと組織体制の話であり、外部ツールによる属性データの付加・検証では改善できません。エンリッチメントの守備範囲外です。\n\n□ 入力規則の適用　これは不正解です。入力規則は Salesforce 内のネイティブな構成で完結する仕組みであり、外部データの付加を本質とするエンリッチメントツールが担う領域ではありません。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.data_dot_com_clean_overview.htm",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/data_quality/data_quality_improve_quality",
   "multi": false,
   "domain": "data",
   "keywords": [
@@ -1622,7 +1622,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ テリトリー営業のリーダーと会い、テリトリー割り当てルールを設計する。　これは正解です。テリトリー管理を使えば、製品ラインなどの条件で取引先を担当者へ自動割り当てできます。リーダーと割り当てルールを設計することで、各担当が自分の担当取引先だけを扱う再編方針に沿った移行を実現できます。\n\n□ 営業担当者と会って担当製品を確認し、商談チームを実装する。　これは不正解です。商談チームは1件の商談に複数人で取り組むための機能で、取引先を担当者へ体系的に割り当てる仕組みではありません。製品ライン単位の再編には適合しません。\n\n□ エグゼクティブ営業リーダーと会い、レコード共有の要件を理解する。　これは不正解です。共有要件の把握は有用ですが、製品ライン別に担当取引先を割り当てるという中核要件を直接満たすのはテリトリー割り当てルールの設計です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.tm2_territory_mgmt_overview.htm",
   "multi": false,
-  "domain": "app",
+  "domain": "change",
   "keywords": [
    "テリトリー管理",
    "割り当てルール",
@@ -1737,7 +1737,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Apex 管理共有を使用して、Complaints Specialist 公開グループのユーザーにレコードアクセス権を付与する　これは不正解です。Apex 管理共有はコード開発を伴う高度な手段で、宣言的な共有ルールで満たせる単純な要件には過剰であり、まず選ぶべき方法ではありません。\n\n□ 条件ベースの共有ルールを作成し、Complaints Specialist 公開グループに参照・更新権限を付与する　これは正解です。OWD が非公開のオブジェクトに対し、共有ルールは特定グループへアクセスを開放する標準機能です。すべての Complaint レコードを対象とする条件を設定し、当該グループへ参照・更新を付与すれば、設定だけで要件を満たせます。\n\n□ Complaints オブジェクトの既定の参照範囲を、Complaints Specialist 公開グループのユーザーだけがアクセスできるよう設定する　これは不正解です。OWD（組織の共有設定）はオブジェクト全体の最小公開レベルを定めるもので、特定の公開グループだけにアクセスを限定する設定項目は存在しません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_sharing_rules.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "app",
   "keywords": [
    "共有ルール",
    "OWD",
@@ -1783,7 +1783,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Person Account を有効化するには、共有モデルを公開／参照・更新にする必要がある　これは不正解です。Person Account の有効化に特定の共有モデルは必須ではなく、取引先の OWD など組織の要件に応じて設定できます。\n\n□ Person Account の有効化は、一度実施すると元に戻せない　これは正解です。Person Account を有効化すると無効化できない不可逆な変更であり、データモデルに恒久的な影響を与えるため、有効化前に影響範囲を十分に評価する必要があります。\n\n□ Person Account には、少なくとも 2 つのレコードタイプが必要である　これは不正解です。Person Account を機能させるのに 2 つのレコードタイプが必須という要件はなく、有効化時に専用のレコードタイプが用意される仕組みです。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.account_person.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "app",
   "keywords": [
    "Person Account",
    "個人取引先",
@@ -1850,9 +1850,9 @@
    "サンドボックスで Einstein 準備状況アセスメントを実行する"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ サンドボックスで Einstein 準備状況アセスメントを実行する　これは正解です。Einstein 準備状況アセスメントは、組織のデータが Einstein の AI 機能に必要な品質と量を満たしているかを評価するツールで、サンドボックスで実行すれば本番有効化前に必要な調整を把握でき、正確なスコアリングや予測を担保できます。\n\n□ 開発者組織で Einstein 活動キャプチャを有効化する　これは不正解です。活動キャプチャの有効化は準備状況の確認とは別の作業であり、最初に実施すべき準備評価のステップにはあたりません。\n\n□ 本番環境で両方の Einstein 機能を有効化する　これは不正解です。準備状況を確認せずに本番でいきなり有効化すると、データ不足により精度の低い結果を招く恐れがあり、まずアセスメントで適合性を確認すべきです。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.einstein_sales_readiness_assessor.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.sales_readiness_assessor.htm&type=5",
   "multi": false,
-  "domain": "ai",
+  "domain": "app",
   "keywords": [
    "Einstein",
    "準備状況アセスメント",
@@ -1924,7 +1924,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 小売業者用とディストリビューター用のリードプロセス（Lead Process）を作成する。　これは正解です。リードプロセスは利用可能なリードステータスの集合を定義し、レコードタイプに紐づけることで種別ごとに異なる選別ステップを提供できます。\n\n□ ディストリビューターおよび小売業者のリードレコードタイプ（Record Type）を作成する。　これは正解です。レコードタイプにより、種別ごとに異なるリードプロセス・ページレイアウト・選択リスト値を割り当てられ、2つの選別プロセスを分離できます。\n\n□ 各リードタイプに固有のリードステータス選択リスト値を構成する。　これは正解です。レコードタイプごとにステータス値を出し分けることで、ディストリビューターと小売業者で異なる選別段階を表現できます。\n\n□ 新しいプロファイルを作成し、1つだけリードレコードタイプを割り当てる。　これは不正解です。プロファイルでレコードタイプを1つに固定すると、同じユーザーが両方の種別を扱えなくなり、2つのプロセスを使い分ける要件に反します。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_leadprocess.htm&type=5",
   "multi": true,
-  "domain": "app",
+  "domain": "life",
   "keywords": [
    "リードプロセス",
    "レコードタイプ",
@@ -2135,7 +2135,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ モバイルデバイス上で作成された商談レコードを集計するレポートを作成する　これは正解です。モバイルで作成された商談レコードを集計すれば、営業担当者がモバイルから実際に業務（レコード作成）を行っていることを定量的に示せ、活用度を経営陣に提示できます。\n\n□ ログイン履歴レポートをダウンロードし、デバイスの種類で絞り込む　これは不正解です。ログインの有無は分かりますが、ログインしただけで業務に使ったとは限らず、活用度の証明としては弱くなります。\n\n□ ユーザープロファイルでモバイルデバイスのアクセス許可を確認する　これは不正解です。これはアクセス権限の設定状況を確認するだけで、実際にモバイルが活用されているかどうかは分かりません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.salesforce1_adoption.htm&type=5",
   "multi": false,
-  "domain": "app",
+  "domain": "change",
   "keywords": [
    "モバイル活用",
    "採用測定",
@@ -2157,7 +2157,7 @@
    "アジャイル"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ウォーターフォール　これは不正解です。ウォーターフォールは要件確定後に各工程を直列に進める手法で、短い反復や頻繁な進捗共有・改善のサイクルには適しません。\n\n□ Kanban　これは不正解です。Kanban は作業の可視化と流れの管理に有効な手法ですが、ここで問われている「短い反復・頻繁な確認と改善」という開発方法論としてはアジャイルがより直接的な解です。\n\n□ アジャイル　これは正解です。アジャイルは短いイテレーションで反復的に開発し、頻繁なレビューとフィードバックで継続的に改善する方法論で、要件にそのまま合致します。\n\n□ Lightning プラットフォーム　これは不正解です。これは開発・実行の基盤（プラットフォーム）であり、プロジェクトの進め方を定める方法論ではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/project-management-essentials/explore-project-management-methodologies",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -2231,7 +2231,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ キャンペーンに追加されたリードに既定のスコアを割り当てる　これは不正解です。手動で既定スコアを与えると、Einstein が算出する実際のスコアリングと矛盾し、キャンペーンの効果も正しく測れません。\n\n□ マーケティングキャンペーンの品質を把握するためのカスタムスコア項目を作成する　これは不正解です。Einstein リードスコアリングを使うのであれば、スコアは Einstein が提供するもので、別途カスタムのスコア項目を作る必要はありません。\n\n□ リードの詳細ページにリードスコアコンポーネントを追加する　これは正解です。Einstein リードスコアコンポーネントをリードページに配置すれば、各リードのスコアを表示でき、キャンペーン由来のリードのスコアを比較して品質への効果を評価できます。\n\n□ リードスコアを追跡しリードに関連付けるカスタムオブジェクトを作成する　これは不正解です。Einstein がスコアを標準で提供するため、追跡用のカスタムオブジェクトを別に構築するのは不要で過剰です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.einstein_lead_scoring.htm&type=5",
   "multi": false,
-  "domain": "ai",
+  "domain": "app",
   "keywords": [
    "Einstein リードスコアリング",
    "リード品質",
@@ -2255,9 +2255,9 @@
    "ユーザーが簡単にデータを入力し、必要な情報を見つけられるよう使いやすくする"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ オンラインヘルプと印刷物の参照資料の両方を用意し、いつでもユーザーを支援できるようにする　これは正解です。困ったときにすぐ参照できる支援資料があることは、ユーザビリティと定着の重要な要素です。\n\n□ ユーザーが時間を有意義に使えたと感じられる価値を提供する　これは正解です。ユーザーが利用して価値を実感できることが、継続的な利用と定着につながります。\n\n□ ユーザーが簡単にデータを入力し、必要な情報を見つけられるよう使いやすくする　これは正解です。入力のしやすさと情報の見つけやすさは、ユーザビリティの中核であり採用を後押しします。\n\n□ 損益を気にせず使えるよう、できるだけ安価に提供する　これは不正解です。コストは導入判断の要素ではありますが、ソリューション自体のユーザビリティや利用定着を高める特性ではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-adoption-strategies",
   "multi": true,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "ユーザビリティ",
    "利用定着",
@@ -2355,7 +2355,7 @@
    "Email-to-Case（メールからケース）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Email-to-Case（メールからケース）　これは正解です。標準の Email-to-Case はファイアウォール内のエージェントを利用し、より大きな添付ファイル（最大 25MB／メール、設定により大容量）と1日あたり大量の受信を処理できるため、30MB 級の添付や10,000 件超の要件に最も適します。\n\n□ 顧客向け Chatter グループ　これは不正解です。Chatter グループはコラボレーション用であり、フリーフォームのメール問い合わせをケース化する仕組みではありません。\n\n□ Web-to-Case（Web からケース）　これは不正解です。Web-to-Case は Web フォーム経由であり、顧客が自分のメールクライアントから自由にメールを送るという要件に合いません。\n\n□ オンデマンド Email-to-Case　これは不正解です。オンデマンド版は添付ファイルサイズや1日の処理件数に標準より低い上限があり、30MB の添付や1万件超という大量要件には不向きです。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customizesupport_email_to_case.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=service.email_to_case_limits_and_limitations.htm&type=5",
   "multi": false,
   "domain": "app",
   "keywords": [
@@ -2380,7 +2380,7 @@
    "営業担当者"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 営業オペレーション（Sales Operations）　これは正解です。営業オペレーションはプロセスやツール、データの運用に精通しており、現実的なユースケースを具体的に提供できます。\n\n□ 財務チーム　これは不正解です。財務は売上計上などで関わることはあっても、営業プロセスそのもののユースケースの主要な提供元ではありません。\n\n□ 営業担当者　これは正解です。実際に日々プロセスを実行する営業担当者は、現場の手順や例外を最もよく知っており、ユースケースの一次情報源になります。\n\n□ 経営幹部　これは不正解です。経営幹部は目標や方針を示しますが、業務レベルの詳細なユースケースを提供する立場ではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-business-analyst-certification-prep/learn-about-customer-discovery",
   "multi": true,
   "domain": "strat",
   "keywords": [
@@ -2403,7 +2403,7 @@
    "ディスカバリー（発見）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ デザインディレクション　これは不正解です。デザインディレクションは具体的な設計の方向性を定める段階であり、成功の定義を引き出すための情報収集手法ではありません。\n\n□ ディスカバリー（発見）　これは正解です。ディスカバリーは関係者から要件や期待、成功の定義を引き出し、計画の土台となる情報を収集するフェーズ・手法です。\n\n□ チャレンジフレーミング　これは不正解です。これは課題を定義・枠組み化する考え方ですが、ここで行われている「成功の定義を関係者から引き出す情報収集」はディスカバリーに当たります。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-business-analyst-certification-prep/learn-about-customer-discovery",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -2430,7 +2430,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 子キャンペーンの終了日が商談のクローズ日より前の場合に、プライマリキャンペーンソースの子キャンペーンを自動的に追加する　これは正解です。プライマリキャンペーンソースモデルでは、条件に合致する子キャンペーンを自動的に商談へ関連付ける設定を行います。\n\n□ 担当者に、影響を与えたキャンペーンからの見込み収益額を商談レコードの項目へ手入力させる　これは不正解です。収益額の手入力は標準のキャンペーン影響度の仕組みではなく、属性は自動で計算されます。\n\n□ キャンペーンが商談に影響を与えられる期間（最初の関連付け日から商談作成日までの日数）を管理者が指定する　これは正解です。影響度のタイムフレーム（期間）を設定することで、商談作成前の一定期間内に関連付いたキャンペーンのみを影響度として扱えます。\n\n□ 管理者が、機会を自動で追加してその後ロックするキャンペーンのルールを 30 日間で定義する　これは不正解です。キャンペーンを追加後に「ロックする」標準ルールという仕組みはなく、設定するのは影響度のタイムフレームと自動関連付けの条件です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.campaigns_influence_setup.htm&type=5",
   "multi": true,
-  "domain": "life",
+  "domain": "app",
   "keywords": [
    "キャンペーン影響度",
    "プライマリキャンペーンソース",
@@ -2454,9 +2454,9 @@
    "提供するトレーニングの種類（形式）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 経営層からの周知・コミュニケーション　これは正解です。経営層が導入の意義を発信し支持を示すことは、グローバルな利用定着を後押しする重要な要素です。\n\n□ 営業担当者のノルマ（クォータ）目標　これは不正解です。売上目標の設定は営業管理の話であり、新システムの定着を直接左右する展開上の要素ではありません。\n\n□ 現地の言語でのトレーニング　これは正解です。世界中のユーザーが対象であるため、現地語でのトレーニングは理解と定着に直結します。\n\n□ 提供するトレーニングの種類（形式）　これは正解です。役割や地域に合わせたトレーニング形式を選ぶことで、ユーザーが必要なスキルを習得しやすくなり定着が進みます。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-adoption-strategies",
   "multi": true,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "利用定着",
    "グローバル展開",
@@ -2528,7 +2528,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 洞察や事例を共有するために、競合他社用の Slack チャンネルを作成する：会話には役立ちますが、失注理由を構造化して集計・レポートすることができません。\n\n□ 競合他社を追跡するための新しいカスタムオブジェクトと自動化を作成する：実現はできますが、新オブジェクトと自動化の設計が必要で、要件に対して過剰かつ非効率です。\n\n□ Opportunity（商談）オブジェクトに新しいカスタム項目を作成する：正解です。失注した競合や理由を商談上の項目として記録すれば、最小限の設定でレポート・分析でき、最も効率的です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_fields.htm&type=5",
   "multi": false,
-  "domain": "app",
+  "domain": "life",
   "keywords": [
    "商談",
    "失注理由",
@@ -2726,7 +2726,7 @@
    "1セットの商談ステージ"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 3つのレコードタイプ：正解です。製品ラインごとにレコードタイプを用意し、それぞれの販売プロセスを割り当てます。\n\n□ ハイブリッドな販売プロセス：そのような構成要素は存在せず、要件には不要です。\n\n□ 3つのページレイアウト：レイアウトの分割は今回の要件（営業手法・ステージの出し分け）には必須ではありません。\n\n□ 商談ステージの3つのセット：商談ステージのピックリスト値は組織で1セットしか持てないため、3セットは作成できません。\n\n□ 3つの販売プロセス：正解です。販売プロセスごとに表示する営業ステージを定義し、各レコードタイプに割り当てます。\n\n□ 1セットの商談ステージ：正解です。すべてのステージ値は単一のピックリストで管理し、販売プロセスで表示するステージを取捨選択します。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.customize_supportprocess.htm&type=5",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/projects/create-an-opportunity-record-type-for-npsp/create-and-manage-stages-and-sales-processes",
   "multi": true,
   "domain": "app",
   "keywords": [
@@ -2752,7 +2752,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 購入したリード用に新しいカスタムオブジェクトを作成する：標準のリード機能で十分対応でき、ROI 計測にはキャンペーンが必要なため適切ではありません。\n\n□ このリスト用のキャンペーンを作成し、リストをリードとしてインポートしてキャンペーンに追加する：正解です。キャンペーンに紐付ければ、商談へのインフルエンスを通じて費用対効果（ROI）を測定できます。\n\n□ インポートウィザードを使ってリストを新しいリードとしてインポートする：リードとして取り込めても、キャンペーンと関連付けないと ROI を測定できません。\n\n□ リストを新しいリードとしてインポートし、リードソースを「購入済みリード」に更新する：出所を記録できますが、ROI を測るためのキャンペーン関連付けが欠けています。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.campaigns_def.htm&type=5",
   "multi": false,
-  "domain": "life",
+  "domain": "app",
   "keywords": [
    "キャンペーン",
    "リード",
@@ -2776,7 +2776,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 各地域の営業マネージャーに標準のユーザー採用レポートを実行するよう依頼する：手作業で地域ごとに分散し、全社横断の比較がしにくく非効率です。\n\n□ AppExchange から Salesforce 採用状況ダッシュボード（Adoption Dashboards）をインストールし、地域別チャートを使用する：正解です。無料の採用状況ダッシュボードはログインや利用状況を集約表示でき、地域別に定着度を確認できます。\n\n□ ユーザー別にフィルタして、地域ごとの商談レポートを作成する：商談データだけでは、ログインしているが商談を作っていないユーザーなどの利用実態を把握できません。\n\n□ すべてのユーザーを地域に割り当て、ユーザーのログイン履歴でレポートを作成し、地域でフィルタする：実現は可能ですが、既製のダッシュボードを使うほうが効率的で網羅的です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.administration_monitor_login_history.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "採用状況ダッシュボード",
    "ユーザー定着",
@@ -2994,7 +2994,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 新しい提案記事を送信する際にケースのチェックボックスをオンにするようエージェントに義務付ける：不正解。チェックボックスの強制は形式的な操作を促すだけで、質の高い記事の継続的な作成という採用促進にはつながりません。\n\n□ 承認のために送信された新しい記事の件数に基づいてエージェントを評価・表彰する：不正解。「送信件数」だけを評価すると、承認に至らない低品質な記事の量産を助長するおそれがあります。\n\n□ エージェントが送信し公開が承認された記事を集計するダッシュボードを作成する：正解。貢献を可視化することで競争意識と達成感が生まれ、KCS の記事作成への参加が促進されます。\n\n□ 公開が承認された新しい記事の件数に基づいてエージェントを評価・表彰する：正解。最終的に公開・承認された記事を評価基準にすることで、量だけでなく品質を伴う貢献を奨励できます。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.knowledge_about.htm&type=5",
   "multi": true,
-  "domain": "app",
+  "domain": "change",
   "keywords": [
    "KCS",
    "ナレッジ",
@@ -3090,7 +3090,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ プロジェクト計画を調整し、展開を1週間前倒しすることを伝える：不正解。トレーニングが不十分な状況で前倒しすると準備不足が悪化し、採用率の低下を招きます。\n\n□ プロジェクト計画を調整し、スプリントの展開を遅らせる：不正解。スケジュールを遅らせなくても、コミュニケーションとトレーニングで対応可能であり、安易な遅延は最善策ではありません。\n\n□ 変更に対応できるよう、必要な情報を関係者へ周知してスタッフの準備を整える：正解。変更管理の基本として、何がどう変わるかを事前に周知しトレーニングで準備を整えることが、スムーズな導入と採用促進につながります。\n\n□ 営業チームに影響しない変更だけを展開し、残りは次のスプリントで展開する：不正解。要求された機能の展開を分割・先送りすると目的が達成できず、根本のトレーニング不足も解消されません。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "変更管理",
    "トレーニング",
@@ -3286,7 +3286,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「未解決の問題をレビューするための定例ミーティングのスケジュール」: 正解。サポート計画には、報告された課題を定期的にレビューし優先順位を付ける運用の仕組みが必要です。\n\n□ 「ユーザーが問題を報告するためのプロセス」: 正解。ユーザーが課題をどこへどう報告するかの明確な手順は、サポート計画の中核です。\n\n□ 「潜在的な問題に関する顧客（社外）への通知」: 不正解。エンドユーザー（社内利用者）サポート計画の対象は社内ユーザーであり、社外顧客への告知は別領域です。\n\n□ 「24時間365日のITサポート体制」: 不正解。常時対応体制は多くの組織で過剰かつ高コストであり、要件として一般化できません。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": true,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "導入計画",
    "ユーザーサポート",
@@ -3406,7 +3406,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「Release in a Box（リリース・イン・ア・ボックス）」: 正解。プレゼン資料・告知文・デモ手順などをまとめた包括的なリリース告知パッケージで、各層への周知に最適です。\n\n□ 「Release Notes（リリースノート）」: 不正解。リリースノートは技術的な変更点の記録であり、関係者全体への分かりやすい周知パッケージとしては不足します。\n\n□ 「Release Matrix（リリースマトリックス）」: 不正解。機能と対象範囲を整理する内部管理用の表で、周知用の包括プレビューではありません。\n\n□ 「Setup 監査証跡」: 不正解。設定変更の履歴を追跡する管理機能であり、リリース周知の目的には用いません。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "リリース管理",
    "周知",
@@ -3430,7 +3430,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「関係者から意見・要望を収集する」: 正解。新リリースの機能のうち何を採用・展開するかを判断するには、まず関係者の意見を集め、ビジネスへの影響を評価することが起点になります。\n\n□ 「展開後にエンドユーザーをトレーニングする」: 不正解。トレーニングは重要ですが、変更を管理する一連の流れの中では後工程であり、最初のステップではありません。\n\n□ 「変更要求の優先順位付けを行う」: 不正解。優先順位付けは関係者から要望を集めた後に行う工程で、出発点ではありません。\n\n□ 「全変更を本番へ一括展開する」: 不正解。影響評価やテストを経ずに一括展開するのは変更管理のベストプラクティスに反します。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "strat",
+  "domain": "change",
   "keywords": [
    "リリース管理",
    "変更管理",
@@ -3467,15 +3467,15 @@
  {
   "question": "マルチ通貨（複数通貨）を有効化する際の考慮事項として正しいものはどれですか。",
   "choices": [
-   "為替レートの変更時、成立済みの商談を除くすべてのレコードで換算金額が更新される",
+   "為替レートの変更時、成立済みの商談を含むすべてのレコードで換算金額が更新される",
    "取引先・商談・リード・ケース・商談製品スケジュールは複数通貨でのレポートをサポートしない",
    "導入中に問題が起きた場合、マルチ通貨は後からいつでも無効化できる",
    "ユーザーの個人通貨は商談に指定された通貨を上書きする"
   ],
   "answers": [
-   "為替レートの変更時、成立済みの商談を除くすべてのレコードで換算金額が更新される"
+   "為替レートの変更時、成立済みの商談を含むすべてのレコードで換算金額が更新される"
   ],
-  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「為替レートの変更時、成立済みの商談を除くすべてのレコードで換算金額が更新される」: 正解。標準の為替レートを更新すると、クローズ済み商談を除く既存レコードの換算額が再計算されます（クローズ済みは取引時のレートを保持）。\n\n□ 「取引先・商談・リード・ケース・商談製品スケジュールは複数通貨でのレポートをサポートしない」: 不正解。これらのオブジェクトは複数通貨でのレポートをサポートします。\n\n□ 「導入中に問題が起きた場合、マルチ通貨は後からいつでも無効化できる」: 不正解。マルチ通貨は一度有効化すると基本的に無効化できません。\n\n□ 「ユーザーの個人通貨は商談に指定された通貨を上書きする」: 不正解。各レコードには通貨を個別に指定でき、個人通貨が商談通貨を上書きすることはありません。",
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「為替レートの変更時、成立済みの商談を含むすべてのレコードで換算金額が更新される」: 正解。標準の複数通貨（マルチ通貨）では、換算レート（為替レート）を変更すると、成立済み（クローズ）商談を含むすべてのレコードの換算額が再計算されます。クローズ済み商談の換算額を取引時のレートで固定したい場合は、高度な通貨管理（日付付き為替レート）を使う必要があります。\n\n□ 「取引先・商談・リード・ケース・商談製品スケジュールは複数通貨でのレポートをサポートしない」: 不正解。これらのオブジェクトは複数通貨でのレポートをサポートします。\n\n□ 「導入中に問題が起きた場合、マルチ通貨は後からいつでも無効化できる」: 不正解。マルチ通貨は一度有効化すると基本的に無効化できません。\n\n□ 「ユーザーの個人通貨は商談に指定された通貨を上書きする」: 不正解。各レコードには通貨を個別に指定でき、個人通貨が商談通貨を上書きすることはありません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sales.admin_enable_multicurrency_implications.htm&type=5",
   "multi": false,
   "domain": "app",
@@ -3502,7 +3502,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「関連するすべての取引先責任者を表示するレポートを作成する」: 正解。取引先階層に属する複数取引先の取引先責任者を横断して一覧化するには、条件を設定したレポートが最も確実な方法です。\n\n□ 「取引先責任者を確認するため取引先階層ページへ移動する」: 不正解。取引先階層ページは取引先同士の親子関係を示すもので、配下の取引先責任者を一覧表示するものではありません。\n\n□ 「「すべての子取引先責任者を表示」機能を有効化する」: 不正解。そのような標準機能は存在しません。\n\n□ 「親取引先の既定の取引先責任者階層 Lightning コンポーネントへ移動する」: 不正解。標準に「取引先責任者階層」コンポーネントは存在せず、要件を満たせません。",
   "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
   "multi": false,
-  "domain": "app",
+  "domain": "data",
   "keywords": [
    "取引先階層",
    "取引先責任者",
@@ -3670,7 +3670,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 予測項目とノルマを含むカスタムレポートタイプでレポートを作成し、ダッシュボードのソースにする。　これは正解です。製品ファミリ別予測タイプとノルマを読み込み、予測項目のレポートをダッシュボードに載せるのが標準的な方法です。\n\n□ 製品レポートにノルマ項目をカスタム追加し、必要な項目を加える。　これは不正解です。製品オブジェクト側に予測のノルマは存在せず、製品ファミリ別予測は表せません。\n\n□ 成立商談・予測項目・ノルマを含む結合レポートを作成する。　これは不正解です。結合レポートはダッシュボードのソースとして利用できる範囲が限られ、要件に合いません。\n\n□ 分析スナップショットを作成して商談予測を取得する。　これは不正解です。分析スナップショットは時系列の保存用途であり、予測項目とノルマの即時表示には不要です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.forecasts3_reports.htm&type=5",
   "multi": false,
-  "domain": "app",
+  "domain": "data",
   "keywords": [
    "売上予測",
    "ノルマ",
@@ -3841,7 +3841,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 取引先を「公開／参照・更新可能」、商談を「非公開」に設定する。　これは正解です。取引先を全員が参照・更新できるようにすれば重複作成前の存在確認ができ、商談を非公開にすれば互いの商談は見えません。\n\n□ 取引先と商談をどちらも「非公開」に設定する。　これは不正解です。取引先が非公開だと他ユーザーの取引先を確認できず、重複確認の要件を満たせません。\n\n□ 取引先を「公開／参照のみ」、商談を「公開／参照のみ」に設定する。　これは不正解です。商談が参照のみでも他ユーザーの商談が見えてしまい、閲覧させたくない要件に反します。\n\n□ 取引先を「公開／参照・更新可能」、商談を「親レコードに連動」に設定する。　これは不正解です。親に連動させると取引先を見られるユーザーがその商談も参照でき、商談を非表示にする要件を満たせません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_owd_setting.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "app",
   "keywords": [
    "組織の共有設定",
    "取引先",
@@ -3890,7 +3890,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 新しく作成された商談のレポートを作成し、営業管理者にそのレポートを購読してもらう。　これは正解です。新規商談を一覧化したレポートを購読すれば、作成された商談を把握できます。\n\n□ レコードの作成または編集時に「Chatter フォロー」アクションを実行するフロー（またはプロセス）を構成する。　これは正解です。自動化で対象商談を営業管理者にフォローさせ、フィードで更新を追えます。\n\n□ ユーザーが作成したレコードを自動的にフォローする Chatter フィード設定をオンにする。　これは不正解です。これは「各ユーザーが自分で作成したレコード」を自動フォローする設定で、他者（営業担当者）が作成した商談を管理者にフォローさせることはできません。\n\n□ 商談所有者へのステージ通知を有効化する Chatter フィード設定をオンにする。　これは不正解です。ステージ通知の設定は新規作成商談のフォローという要件を満たしません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_feeds_follow_records.htm&type=5",
   "multi": true,
-  "domain": "app",
+  "domain": "change",
   "keywords": [
    "Chatter",
    "フォロー",
@@ -3940,7 +3940,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 取引先に直接関連する、他ユーザーが所有する活動を参照・編集・削除する。　これは正解です。活動が「親レコードに連動」のため、取引先に対する編集権限を持つ所有者は、その取引先に紐付く活動を参照・編集・削除できます。\n\n□ 手動共有および取引先チームを通じて、取引先を他のユーザーと共有する。　これは正解です。レコード所有者は手動共有や取引先チームで自分の取引先を他者に共有できます。\n\n□ 他ユーザーが所有する関連の取引先責任者・商談を参照・編集・削除する。　これは不正解です。OWD が参照のみのため、他ユーザー所有の取引先責任者・商談は参照はできても編集・削除はできません。\n\n□ 他ユーザーが所有する関連の取引先責任者・商談の所有権を移行する。　これは不正解です。他ユーザーが所有するレコードの所有権移行はできません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.security_sharing_owd.htm&type=5",
   "multi": true,
-  "domain": "strat",
+  "domain": "app",
   "keywords": [
    "共有設定",
    "活動",
@@ -4156,7 +4156,7 @@
    "適切な役割・リソース・リスクが事前に特定されていなかった"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「適切な役割・リソース・リスクが事前に特定されていなかった」が正解です。計画段階で必要な役割・関与すべきリソース・リスクを洗い出していれば、キーパーソンを適切にワークショップへ招集できます。その特定が漏れていたことが不在の最も直接的な原因です。\n\n□ 「プロジェクト計画が承認されていなかった」: 計画未承認でもワークショップ自体は実施され得ており、特定の人物が不在になる直接の理由にはなりません。\n\n□ 「目的と範囲が定義されていなかった」: 範囲未定義はプロジェクト全体の問題ですが、なぜ特定のキーリソースが当日不在かを説明する要因としては弱いです。\n\n□ 「そのリソースはプロジェクトのキックオフに参加していなかった」: キックオフへの参加有無は、要件定義ワークショップへ招集されたかどうかとは別であり、不在の根本原因とは言えません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/best-practices-for-project-management/gather-requirements",
   "multi": false,
   "domain": "strat",
   "keywords": [
@@ -4182,7 +4182,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「取引先を「公開／参照・更新可能」、商談を「非公開」に設定する」が正解です。取引先を公開にすればユーザーは作成前に既存取引先の有無を確認でき、商談を非公開にすれば互いの商談は見えません。両要件を同時に満たす唯一の組み合わせです。\n\n□ 「取引先・商談ともに「公開／参照のみ」に設定する」: 商談が公開だと互いの商談が見えてしまい、「他人の商談を見せない」要件に反します。\n\n□ 「取引先・商談ともに「非公開」に設定する」: 取引先が非公開だと既存取引先を確認できず、重複作成を防ぐ要件を満たせません。\n\n□ 「取引先を「公開／参照・更新可能」、商談を「親レコードに連動」に設定する」: 商談を取引先に連動させると取引先を見られるユーザーが商談も参照でき、商談を非公開にしたい要件に反します。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sales.security_owd_overview.htm&type=5",
   "multi": false,
-  "domain": "data",
+  "domain": "app",
   "keywords": [
    "OWD",
    "共有",
@@ -4278,7 +4278,7 @@
    "アプローチ（Approach）"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「スコープ（Scope）」が正解です。研修が成果物に含まれるか、どこまでを提供範囲とするか（対象者・回数など）はスコープで定義されるため、研修の担当・範囲を明確にするには協議が必要です。\n\n□ 「アプローチ（Approach）」が正解です。研修を「どのように」実施するか（手法・形式・教材・スケジュール）はアプローチで規定されるため、提供方法を具体化するうえで協議すべきセクションです。\n\n□ 「利用規約（Terms and Conditions）」: 契約上の権利義務や法的条件を扱うセクションで、研修の担当者や方法を具体化する箇所ではありません。\n\n□ 「背景（Background）」: プロジェクトの経緯や目的を述べる導入部分で、研修の実施内容を定義するものではありません。",
-  "reference_url": "https://trailhead.salesforce.com/help?article=Salesforce-Certified-Sales-Cloud-Consultant-Exam-Guide",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/sow-best-practices/build-a-sow",
   "multi": true,
   "domain": "strat",
   "keywords": [
@@ -4328,7 +4328,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「カスタムレポートタイプを作成する」が正解です。標準レポートタイプにはカスタムオブジェクトと商談を組み合わせたものが無いため、両オブジェクトのリレーションを定義したカスタムレポートタイプを作成して初めて、両方の項目を1つのレポートに表示できます。\n\n□ 「クロスオブジェクトフィルターを使用する」: クロスフィルターは関連レコードの有無で絞り込む機能で、関連オブジェクトの項目をレポートの列として表示するものではありません。\n\n□ 「マトリックスレポートを使用する」: マトリックスは行・列で集計する表示形式の選択であり、そもそも両オブジェクトを結ぶレポートタイプが無ければ作成できません。\n\n□ 「ダッシュボードを使用する」: ダッシュボードは既存レポートの可視化であり、複数オブジェクトを結合したデータソースを新たに用意する手段ではありません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_report_types_about.htm&type=5",
   "multi": false,
-  "domain": "app",
+  "domain": "data",
   "keywords": [
    "カスタムレポートタイプ",
    "ルックアップ",
@@ -4377,7 +4377,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「担当者 A は、担当者 B に取引先のすべての商談を編集させることができる」が正解です。取引先チームでは、メンバーに対し取引先と関連する商談・ケースへのアクセスレベル（参照のみ／参照・更新）を指定でき、関連商談に更新権を付与できます。\n\n□ 「担当者 A は、担当者 B に取引先を参照させつつ、非公開の活動は非公開のまま保てる」が正解です。取引先チームのアクセスは取引先・商談・ケースに及びますが、非公開（プライベート）に設定された活動の可視性は別管理であり、非公開のまま保てます。\n\n□ 「担当者 A は、担当者 B に取引先の特定の1つの商談を参照させることができる」: 取引先チームのアクセスは取引先に関連する商談へまとめて適用され、商談を1件だけ選んで共有する粒度の制御はできません（個別共有は手動共有の役割）。\n\n□ 「担当者 A は、担当者 B に取引先を参照させつつ、非公開の取引先責任者は非公開のまま保てる」: 取引先チームのアクセスは関連する取引先責任者にも及ぶため、取引先責任者を非公開のまま保てるという記述は正しくありません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sales.accountteam_def.htm&type=5",
   "multi": true,
-  "domain": "data",
+  "domain": "app",
   "keywords": [
    "取引先チーム",
    "商談",
@@ -4450,7 +4450,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「レコードの所有者、およびロール階層で所有者より上位のユーザーが、3つのレコードにアクセスできる」が正解です。共有ルールはオブジェクトごとに独立しており、リードの共有ルールは変換後の取引先・取引先責任者・商談には引き継がれません。これらが非公開かつ共有ルール無しなら、所有者とロール階層上位者のみがアクセスできます。\n\n□ 「レコードの所有者、公開グループ「営業チーム」の全メンバー、およびそのグループメンバーよりロール階層で上位の全ユーザーが、3つのレコードにアクセスできる」: リードの共有ルールは変換後オブジェクトに適用されないため、公開グループにアクセスは広がりません。\n\n□ 「レコードの所有者、および公開グループ「営業チーム」の全メンバーが、3つのレコードにアクセスできる」: 同様に、変換後オブジェクトへリードの共有ルールは継承されず、公開グループはアクセスを得ません。\n\n□ 「レコードの所有者のみが、取引先・取引先責任者・商談のレコードにアクセスできる」: 非公開モデルでもロール階層による上位者のアクセスは既定で有効なため、所有者のみという記述は不正確です。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sales.security_sharing_rules.htm&type=5",
   "multi": false,
-  "domain": "data",
+  "domain": "app",
   "keywords": [
    "共有ルール",
    "リード変換",
@@ -4472,7 +4472,7 @@
    "Salesforce Files の共有リンク"
   ],
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ドキュメント（Documents）タブ　これは不正解です。ドキュメントタブは社内向けのファイル保管機能で、Salesforce のユーザー以外と直接共有するための公開リンク生成には向きません。\n\n□ 添付ファイル（Attachments）　これは不正解です。添付ファイルはレコードに紐づくだけで、外部の顧客へ直接共有するリンクを発行する仕組みがありません。\n\n□ Salesforce CRM Content のライブラリ配信　これは不正解です。コンテンツ配信でも外部共有は可能ですが、現在の標準的かつ推奨される方法は Salesforce Files の共有リンクであり、よりシンプルに顧客へ渡せます。\n\n□ Salesforce Files の共有リンク　これは正解です。Salesforce Files はファイルごとに公開共有リンクを生成でき、コミュニティに参加していない外部の顧客にもリンクを送るだけで直接ドキュメントを共有できます。",
-  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_files_sharing_link.htm&type=5",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=sf.collab_files_sharing_via_link.htm&type=5",
   "multi": false,
   "domain": "app",
   "keywords": [
@@ -4498,7 +4498,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 強制的にログアウトされ、保存していない作業は失われる。　これは不正解です。ログイン時間の制限は、新たにログインできる時間帯を制御するものであり、許可時間外になっても進行中のセッションを即座に切断はしません。\n\n□ 強制的にログアウトされるが、保存していない作業は自動的に保存される。　これは不正解です。そもそも許可時間を過ぎても進行中のセッションは強制ログアウトされないため、この記述は当てはまりません。\n\n□ 作業は継続できるが、新しいセッションを開始することはできない。　これは正解です。ログイン時間制限は新規ログインを禁止しますが、許可時間内に始まったセッションはそのまま継続できます。ただし許可時間外になると、ページ遷移など新しい要求は行えず、再ログインもできません。\n\n□ 作業を継続でき、新しいセッションも自由に開始できる。　これは不正解です。許可時間外には新しいログイン（セッション）を開始できないため、制限の意味がなくなってしまいます。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.admin_loginhours.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "app",
   "keywords": [
    "ログイン時間",
    "プロファイル",
@@ -4596,7 +4596,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ プラットフォームイベント（Platform Events）　これは正解です。外部システムで発生した事象（機械の故障など）をほぼリアルタイムに Salesforce へ通知するイベント駆動の連携に適しており、受信したイベントをトリガーに通知処理を起動できます。\n\n□ Salesforce Connect　これは不正解です。Salesforce Connect は外部データをオンデマンドで参照・表示する機能であり、外部で起きたイベントをプッシュ通知する用途には向きません。\n\n□ Salesforce-to-Salesforce　これは不正解です。これは2つの Salesforce 組織間でレコードを共有する仕組みで、パートナーの外部システムからのイベント受信には使えません。\n\n□ メールアラート付きのワークフロールール　これは不正解です。ワークフローは Salesforce 内のレコード変更に反応するもので、外部システムの機械故障という事象を直接検知できません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.platform_events_intro.htm&type=5",
   "multi": false,
-  "domain": "strat",
+  "domain": "app",
   "keywords": [
    "プラットフォームイベント",
    "外部システム連携",
@@ -4648,7 +4648,7 @@
   "explanation": "それぞれの選択肢の理由について説明します。\n\n□ グループ化（グルーピング）を追加する。　これは正解です。行や列でレコードをグループ化することは、サマリーレポートやマトリックスレポートを作る基本的なカスタマイズ操作です。\n\n□ フィルターを追加する。　これは正解です。表示するレコードを条件で絞り込むフィルターは、レポートカスタマイズの中心的な機能です。\n\n□ 項目（数値）の集計（合計・平均など）を設定する。　これは正解です。数値項目に対して合計・平均・最大・最小などの集計を設定することは、レポートで一般的に使えるオプションです。\n\n□ ゲージコンポーネントを追加する。　これは不正解です。ゲージはダッシュボードのコンポーネントであり、レポート自体のカスタマイズオプションではありません。\n\n□ 更新時間（自動更新）をスケジュールする。　これは不正解です。スケジュールはレポートの実行・配信に関する設定であり、レポートの内容を組み立てるカスタマイズ操作には含まれません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.reports_builder_editor.htm&type=5",
   "multi": true,
-  "domain": "app",
+  "domain": "data",
   "keywords": [
    "レポート",
    "グループ化",
