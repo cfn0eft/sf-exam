@@ -1,0 +1,53 @@
+[
+{
+  "chapter": "AIエージェントの基礎",
+  "terms": [
+    { "title": "Agentforce", "enName": "Agentforce", "definition": "Salesforce 上で自律的に判断・行動する AI エージェントを構築・運用するためのプラットフォーム。トピックとアクションで業務を定義し、Atlas 推論エンジンが要求を解釈して応答する。", "examPoints": ["エージェント＝トピック＋アクション＋指示で構成","従業員向け／サービス（顧客）向けのエージェントがある"] },
+    { "title": "トピック（Topic）", "enName": "Topic", "definition": "エージェントが扱える業務範囲を表す単位。関連するアクションと自然言語の指示をまとめ、対応スコープを定義する。2026年4月以降は「サブエージェント」と呼ばれるが機能は同じ。", "examPoints": ["標準トピックとカスタムトピックがある","指示（instructions）で挙動・手順を制御"] },
+    { "title": "アクション（Action）", "enName": "Action", "definition": "エージェントが実際に行う処理の単位。レコード操作・検索・外部呼び出し・文章生成などを担う。Flow・Apex・プロンプトテンプレート等をアクションとして公開できる。", "examPoints": ["標準アクションとカスタムアクションがある","副作用のあるアクションは実行前確認を要求できる"] },
+    { "title": "Atlas 推論エンジン", "enName": "Atlas Reasoning Engine", "definition": "ユーザーの要求（意図）を解釈し、適切なトピックとアクションを選び、実行手順を計画して応答を組み立てる Agentforce の中核。", "examPoints": ["プランニングとアクション選択を担う","ハイブリッド推論で精度と制御を両立"] },
+    { "title": "従業員エージェント／サービスエージェント", "enName": "Employee Agent / Service Agent", "definition": "従業員エージェントは社内ユーザーの業務支援（Slack など）を、サービスエージェントは主に外部顧客の対応（Web・メール・音声）を担うエージェント種別。", "examPoints": ["社内支援＝従業員／顧客対応＝サービス","実行ユーザーの権限でデータにアクセス"] },
+    { "title": "Agent API", "enName": "Agent API", "definition": "外部のWebアプリやカスタムチャネルからプログラム経由で Agentforce のエージェントを呼び出すための API。", "examPoints": ["独自チャネル・外部アプリへの組み込みに使う"] }
+  ]
+},
+{
+  "chapter": "プロンプトと Prompt Builder",
+  "terms": [
+    { "title": "プロンプトテンプレート", "enName": "Prompt Template", "definition": "生成AIへの指示文の再利用可能な雛形。CRMデータを差し込み（グラウンディング）し、用途別の種別がある。保存して有効化すると利用できる。", "examPoints": ["種別: 項目生成／レコード要約／営業メール／Flex","利用前に有効化（アクティブ化）が必要"] },
+    { "title": "項目生成テンプレート", "enName": "Field Generation", "definition": "生成した値をレコードの特定の項目に書き込むプロンプトテンプレート種別。対象は書き込み可能なテキスト／テキストエリア系の項目。", "examPoints": ["数式・自動採番・集計など読み取り専用項目は対象外"] },
+    { "title": "営業メール／レコード要約／Flex", "enName": "Sales Email / Record Summary / Flex", "definition": "営業メールは顧客向けメール生成、レコード要約はレコード内容の要約、Flex は他で対応できない汎用用途（独自の入力リソースを定義可能）。", "examPoints": ["用途に応じて種別を選ぶ","汎用＝Flex"] },
+    { "title": "グラウンディング", "enName": "Grounding", "definition": "プロンプトに文脈（根拠データ）を追加すること。レコード項目・フロー・Apex・Data Cloud DMO・関連リスト・リトリーバー等を使う。セキュアデータ取得により実行ユーザーがアクセスできるデータのみが使われる。", "examPoints": ["少量なら差し込み項目、大量・非構造ならリトリーバー","権限を越えてデータは使われない"] },
+    { "title": "モデルプレイグラウンド", "enName": "Model Playground", "definition": "基盤モデル（LLM）にプロンプトを試し、出力を比較して利用するモデルを選べる場所。", "examPoints": ["モデルの選択・比較に使う"] },
+    { "title": "Einstein Studio（Model Builder）", "enName": "Einstein Studio / Model Builder", "definition": "自社や外部の予測・生成モデルを取り込んで Salesforce で利用できるようにする（Bring Your Own Model, BYOM）機能。", "examPoints": ["独自モデルの持ち込み＝BYOM"] }
+  ]
+},
+{
+  "chapter": "Data 360 とグラウンディング",
+  "terms": [
+    { "title": "データライブラリ", "enName": "Agentforce Data Library", "definition": "ナレッジ記事やアップロードしたファイルを、エージェントやプロンプトのグラウンディング元として接続する仕組み。検索インデックスとリトリーバーを生成する。", "examPoints": ["ナレッジ由来は KA_、ファイル由来は File_ などの接頭辞","非構造データを根拠化する標準手段"] },
+    { "title": "リトリーバー", "enName": "Retriever", "definition": "検索インデックスから、質問に意味的に近い情報チャンクを取得してプロンプトに供給するコンポーネント。既定のほかカスタムも作成できる。", "examPoints": ["RAG（検索拡張生成）の中核","条件を細かく制御したい場合はカスタムリトリーバー"] },
+    { "title": "検索インデックス／チャンキング", "enName": "Search Index / Chunking", "definition": "長い文書を小さなチャンクに分割（チャンキング）し、ベクトル化してベクトル検索インデックスに格納する。インデックスが「Ready」になると検索が使える。", "examPoints": ["設定直後はインデックスが Ready になるまで待つ","意味（ベクトル）検索で関連チャンクを取得"] },
+    { "title": "DMO / DLO", "enName": "Data Model Object / Data Lake Object", "definition": "DLO は取り込んだ生データに近い段階のオブジェクト。DMO はそれをマッピング・正規化して統一的に扱えるようにしたオブジェクト。", "examPoints": ["DLO＝生データ／DMO＝正規化済み","DMO をグラウンディングに利用"] },
+    { "title": "ベクトル（意味）検索", "enName": "Vector / Semantic Search", "definition": "テキストを埋め込み（ベクトル）に変換し、意味的な類似度で検索する方式。語句が一致しなくても関連情報を取得できる。", "examPoints": ["キーワード一致ではなく意味の近さで検索"] }
+  ]
+},
+{
+  "chapter": "Trust Layer とガバナンス",
+  "terms": [
+    { "title": "Einstein Trust Layer", "enName": "Einstein Trust Layer", "definition": "生成AIの安全・プライバシーを守る一連の機能。データマスキング、毒性検出、ゼロデータ保持、監査証跡、セキュアデータ取得などを含む。", "examPoints": ["送信データはモデルの学習に使われない（ゼロデータ保持）","Data Cloud 有効化が前提ではない"] },
+    { "title": "データマスキング", "enName": "Data Masking", "definition": "機密データを検出し、外部モデルへ送る前にプレースホルダーへ置換して保護する Trust Layer の機能。", "examPoints": ["LLM 向けマスキングはエージェントでは無効、埋め込み機能では利用可"] },
+    { "title": "毒性検出", "enName": "Toxicity Detection", "definition": "プロンプトと応答を走査し、不適切・有害な内容を検知する Trust Layer の機能。", "examPoints": ["入出力の両方をチェック"] },
+    { "title": "監査証跡", "enName": "Audit Trail", "definition": "やり取りや生成内容を記録し、後から監査・監視できるようにする仕組み（可観測性）。", "examPoints": ["コンプライアンス・運用監視に活用"] },
+    { "title": "モデルアクセス管理", "enName": "Model Access Management", "definition": "生成AI機能で使える基盤モデルを管理し、特定モデルの利用を制限できる管理機能。", "examPoints": ["組織ポリシーに沿ってモデル利用を制御"] }
+  ]
+},
+{
+  "chapter": "テスト・デプロイ・連携",
+  "terms": [
+    { "title": "Testing Center", "enName": "Testing Center", "definition": "エージェントの応答や選択アクションをテストケースでまとめて評価する仕組み。CSVテンプレートのアップロードや生成AIでケースを用意できる。", "examPoints": ["公開前の検証でリスクを低減","期待挙動と実挙動の一致を確認"] },
+    { "title": "サンドボックスとデプロイ", "enName": "Sandbox & Deployment", "definition": "本番に影響を与えずに作成・テストする環境がサンドボックス。エージェントやプロンプトはメタデータとして、変更セットやメタデータAPIで本番へ移行する。", "examPoints": ["メタデータ移行（CSVのデータ移行ではない）"] },
+    { "title": "MCP / A2A", "enName": "Model Context Protocol / Agent-to-Agent", "definition": "MCP はエージェントを外部のツールやコンテキストに、A2A はエージェント同士を接続するオープン標準。相互運用を可能にする。", "examPoints": ["MCP＝ツール/コンテキスト接続、A2A＝エージェント間連携"] },
+    { "title": "単一エージェント（SOMA）", "enName": "Single-Agent Architecture", "definition": "範囲が限定的な業務に対し、まず推奨される単一エージェントの構成。制御しやすく拡張性も確保しやすい。", "examPoints": ["単純な業務はまず単一エージェントで検討"] }
+  ]
+}
+]

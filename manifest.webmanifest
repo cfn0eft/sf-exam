@@ -1,0 +1,44 @@
+{
+  "name": "SF資格 学習アプリ",
+  "short_name": "SF学習",
+  "description": "Salesforce 認定資格の学習クイズ（オフライン対応）",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#0176d3",
+  "lang": "ja",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Admin デイリーチャレンジ",
+      "short_name": "Adminデイリー",
+      "url": "./certifications/sf-admin/index.html?go=daily",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Admin 模試（本番形式）",
+      "short_name": "Admin模試",
+      "url": "./certifications/sf-admin/index.html?go=exam",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "App Builder デイリーチャレンジ",
+      "short_name": "ABデイリー",
+      "url": "./certifications/app-builder/index.html?go=daily",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "App Builder 模試（本番形式）",
+      "short_name": "AB模試",
+      "url": "./certifications/app-builder/index.html?go=exam",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

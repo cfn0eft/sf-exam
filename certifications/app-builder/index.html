@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script src="../../maintenance.js?v=99"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="description" content="Salesforce 認定 Platform アプリビルダー試験の無料学習クイズ。公式5分野の練習問題・本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格を目指せます。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0176d3">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
+<link rel="apple-touch-icon" href="../../icons/icon-180.png">
+<title>SF資格 学習アプリ</title>
+<link rel="stylesheet" href="../../quiz.css?v=99">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-config.js"></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
+  <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
+  <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
+  <button class="topbar-btn" id="btn-guide" onclick="openGuide()" title="使い方ガイド">❓</button>
+  <button class="topbar-btn topbar-news" id="btn-news" onclick="openNews()" title="お知らせ">🔔<span class="news-dot" id="news-dot" style="display:none"></span></button>
+  <button class="topbar-btn" id="btn-mypage" onclick="goTo('mypage')" title="マイページ">👤</button>
+  <button class="topbar-btn" id="btn-dark" onclick="toggleDark()">🌙</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ===== HOME ===== -->
+<div class="page active" id="pg-home">
+  <!-- ヒーロー：資格名＋ストリーク＋今日の目標＋受験日 -->
+  <div class="home-hero">
+    <div class="hh-ribbon" id="hh-ribbon" style="display:none">取得済</div>
+    <div class="hh-top">
+      <div style="flex:1;min-width:0">
+        <div class="hh-name" id="cert-name"></div>
+        <div id="cert-sub" style="font-size:11px;opacity:.85"></div>
+      </div>
+      <span class="hh-streak" id="hh-streak" style="display:none"></span>
+      <button class="hh-gear" onclick="togglePlanEdit()" title="受験日・目標を設定">⚙️</button>
+    </div>
+    <div class="hh-goal" id="plan-goal" style="display:none">
+      <div class="hh-goal-row"><span>今日の目標</span><span id="goal-txt">0 / 0 問</span></div>
+      <div class="hh-bar"><div class="hh-fill" id="goal-fill" style="width:0%"></div></div>
+      <div class="hh-cd" id="plan-pace"></div>
+    </div>
+    <div class="hh-cd" id="plan-cd" style="margin-top:8px"><span class="big">受験日 未設定</span><span class="sub">⚙️ から受験日と目標を設定</span></div>
+    <span class="hh-acq" id="hh-acq" style="display:none"></span>
+    <div class="plan-edit" id="plan-edit">
+      <label>🎯 受験予定日</label>
+      <input type="date" id="exam-date-in">
+      <label>📅 1日の目標問題数</label>
+      <div class="prow">
+        <input type="number" id="goal-in" min="0" max="999" placeholder="例: 20">
+        <button class="plan-save" onclick="savePlan()">保存</button>
+        <button class="plan-clear" onclick="clearPlan()">クリア</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 中断した試験の再開バナー -->
+  <div id="resume-banner"></div>
+
+  <!-- 主要2アクション -->
+  <div class="primary2">
+    <button class="pbtn study" onclick="startStudy()"><span class="bi">📖</span>学習<span class="psub">解いて解説</span></button>
+    <button class="pbtn exam" onclick="startExam()"><span class="bi">⏱️</span>試験<span class="psub">本番形式60問</span></button>
+  </div>
+  <button class="exam-custom-btn" onclick="openCustomExam()">🎛️ カスタム模試（分野・問題数・時間を選ぶ）</button>
+  <span id="srs-count" style="display:none"></span>
+
+  <!-- 今日やる：復習・SRS・弱点を1枚に集約 -->
+  <div class="next-card">
+    <div class="next-head">今日やる</div>
+    <button class="next-row dc-row" onclick="startDaily()">
+      <span class="todo-ico dc">🗓️</span>
+      <span class="next-main"><span class="next-title">デイリーチャレンジ</span><span class="next-sub" id="dc-sub">今日の10問にチャレンジ</span></span>
+      <span class="next-badge" id="next-dc">10</span>
+    </button>
+    <button class="next-row" onclick="startSRS()">
+      <span class="todo-ico srs">🧠</span>
+      <span class="next-main"><span class="next-title">SRS 復習</span><span class="next-sub">忘れる前に再出題</span></span>
+      <span class="next-badge" id="next-srs">0</span>
+    </button>
+    <button class="next-row" onclick="startReview()">
+      <span class="todo-ico wrong">🔁</span>
+      <span class="next-main"><span class="next-title">間違えた問題を復習</span><span class="next-sub">★ブックマーク含む</span></span>
+      <span class="next-badge" id="next-wrong">0</span>
+    </button>
+    <button class="next-row" onclick="startWeakDomains()">
+      <span class="todo-ico weak">🎯</span>
+      <span class="next-main"><span class="next-title">弱点分野を出題</span><span class="next-sub">正答率の低い分野から</span></span>
+      <span class="next-badge" id="next-weak"></span>
+    </button>
+    <button class="next-row" onclick="startLeech()">
+      <span class="todo-ico" style="background:var(--purple-light);color:var(--purple)">🔂</span>
+      <span class="next-main"><span class="next-title">重点ループ</span><span class="next-sub">つまずく問題を2連続正解まで</span></span>
+      <span class="next-badge" id="next-leech"></span>
+    </button>
+  </div>
+
+  <!-- ゲーミフィケーション：レベル/XP・週ミッション -->
+  <div id="gamecard"></div>
+
+  <!-- イチから授業（スライド学習）。lessons.json がある資格だけ JS が表示 -->
+  <button class="quick-entry lesson-entry" id="lesson-entry" onclick="goTo('lessons')" style="display:none"><span class="qe-ic">🎓</span><span class="qe-main"><span class="qe-t">イチから授業で学ぶ</span><span class="qe-sub">スライドで基礎から順番に（初学者向け）</span></span><span class="qe-arrow">›</span></button>
+
+  <!-- 高速めくり総ざらい -->
+  <button class="quick-entry" onclick="startQuick('all')"><span class="qe-ic">⚡</span><span class="qe-main"><span class="qe-t">高速めくりで総ざらい</span><span class="qe-sub">問題→答えをサッと確認（前日チェック向き）</span></span><span class="qe-arrow">›</span></button>
+  <button class="quick-entry" onclick="openNotebook()"><span class="qe-ic">📓</span><span class="qe-main"><span class="qe-t">間違いノート</span><span class="qe-sub">誤答・自信なし＋理由・メモを1冊に</span></span><span class="qe-arrow">›</span></button>
+  <button class="quick-entry" onclick="openCases()"><span class="qe-ic">📋</span><span class="qe-main"><span class="qe-t">ケーススタディ</span><span class="qe-sub">実務シナリオで関連問題を連続で解く</span></span><span class="qe-arrow">›</span></button>
+
+  <!-- 統計 -->
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="st-done">0</div><div class="stat-label">解答済み</div></div>
+    <div class="stat-card"><div class="stat-num" id="st-acc">—</div><div class="stat-label">正答率</div></div>
+    <div class="stat-card"><div class="stat-num" id="st-vocab">0</div><div class="stat-label">習得用語</div></div>
+  </div>
+
+  <!-- 問題のフリーワード検索 -->
+  <div class="qsearch">
+    <span class="qsearch-ic">🔍</span>
+    <input class="qsearch-in" id="f-text" type="text" placeholder="問題をキーワード検索（例: 数式項目）" oninput="onQSearch()" enterkeyhint="search" aria-label="問題をキーワード検索">
+    <button class="qsearch-clear" id="f-text-clear" onclick="clearQSearch()" style="display:none" aria-label="クリア">✕</button>
+    <button class="qsearch-go" id="f-text-go" onclick="startStudy()" style="display:none">学習</button>
+  </div>
+
+  <!-- 出題設定：出典・対象・並びを1つに集約 -->
+  <details class="settings-acc">
+    <summary>⚙️ 出題設定（出典・対象・並び）</summary>
+    <div class="settings-body">
+      <div class="sec-label">出典</div>
+      <div class="filter-bar">
+        <button type="button" class="chip on" id="chip-src-all" onclick="setSrcFilter('all')">📚 すべて<span id="src-all-count"></span></button>
+        <button type="button" class="chip" id="chip-src-tyson" onclick="setSrcFilter('tyson')">🅣 タイソンブログ<span id="src-tyson-count"></span></button>
+        <button type="button" class="chip" id="chip-src-gen" onclick="setSrcFilter('gen')">✨ 生成<span id="src-gen-count"></span></button>
+      </div>
+      <div class="sec-label">出題対象</div>
+      <div class="filter-bar">
+        <label class="chip" id="chip-new"><input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span></label>
+        <label class="chip" id="chip-wrong"><input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた<span id="wrong-count"></span></label>
+        <label class="chip" id="chip-bm"><input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク</label>
+        <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span></label>
+        <label class="chip" id="chip-multi"><input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ</label>
+        <button type="button" class="chip" id="chip-d1" onclick="toggleDiffFilter(1)">🟢 易<span id="d1-count"></span></button>
+        <button type="button" class="chip" id="chip-d2" onclick="toggleDiffFilter(2)">🟡 標準<span id="d2-count"></span></button>
+        <button type="button" class="chip" id="chip-d3" onclick="toggleDiffFilter(3)">🔴 難<span id="d3-count"></span></button>
+        <label class="chip on" id="chip-shuf"><input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順</label>
+        <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCShuf()">🔀 選択肢順</button>
+      </div>
+      <select class="fsel" id="f-kw" onchange="applyFilters()">
+        <option value="">🏷️ キーワードで絞り込み（全て）</option>
+      </select>
+      <div id="f-count" style="font-size:12px;color:var(--text-sub);margin:6px 0 10px"></div>
+      <button class="reset-link" onclick="resetAll()">🗑️ 進捗データをリセット</button>
+    </div>
+  </details>
+</div>
+
+<!-- ===== STUDY ===== -->
+<div class="page has-actbar" id="pg-study">
+  <div class="quiz-top">
+    <span class="qprog" id="s-prog">0 / 0</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="sess-ok" id="sess-ok-txt">✓ 0</span>
+      <span style="color:var(--border)">|</span>
+      <span class="sess-ng" id="sess-ng-txt">✗ 0</span>
+      <button class="bmbtn" id="s-bmbtn" onclick="toggleBm()">☆</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pfill" id="s-pfill"></div></div>
+  <div class="card" id="s-card">
+    <div class="qbadge" id="s-badge">Q1</div>
+    <div id="s-scenario" class="scenario-box" style="display:none"></div>
+    <div class="qtext" id="s-qtext"></div>
+    <div id="s-qfig" style="display:none"></div>
+    <div class="choices" id="s-choices"></div>
+    <div id="s-hint"></div>
+    <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>Enter</kbd> で解答・次へ　/　<kbd>0</kbd> で自信なし　/　<kbd>H</kbd> でヒント</div>
+    <div class="exp-box" id="s-exp"></div>
+    <details class="memo-details">
+      <summary>📝 メモ <span class="memo-saved" id="memo-saved">✓ 保存</span></summary>
+      <textarea class="memo-box" id="s-memo" placeholder="この問題の覚え書き（自動保存・端末間で同期）" oninput="onMemoInput()"></textarea>
+    </details>
+  </div>
+  <div id="s-end" style="display:none">
+    <div class="card result-box">
+      <div style="font-size:44px">🎉</div>
+      <div class="result-label">セッション完了！</div>
+      <div class="result-num" id="s-end-score"></div>
+      <div class="result-sub" id="s-end-sub"></div>
+      <div style="margin-top:18px;display:flex;gap:10px">
+        <button class="btn bp" onclick="startStudy()">もう一度</button>
+        <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+      </div>
+    </div>
+  </div>
+  <!-- 下部固定アクションバー（学習中のみ表示） -->
+  <div class="study-actbar" id="study-actbar" style="display:none"><div class="inner">
+    <div class="action-row" id="s-act" style="flex:1;display:flex;gap:10px">
+      <button class="btn bp" id="s-check" onclick="checkAnswer()" disabled>解答する</button>
+      <button type="button" class="conf-toggle" id="s-conf" onclick="toggleConf()" title="自信がなければONに。正解でも復習に回ります">🤔 自信なし</button>
+    </div>
+    <div class="action-row" id="s-next-row" style="flex:1;display:none">
+      <button class="btn bp" onclick="nextSQ()">次の問題 →</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ===== EXAM ===== -->
+<div class="page" id="pg-exam">
+  <div class="quiz-top">
+    <span class="qprog" id="e-prog">0 / 60</span>
+    <div class="timer" id="e-timer">⏱ 1:45:00</div>
+  </div>
+  <div class="pbar"><div class="pfill" id="e-pfill"></div></div>
+  <div id="e-area">
+    <div class="card">
+      <div class="qhead">
+        <div class="qbadge" id="e-badge">Q1</div>
+        <button class="flagbtn" id="e-flag" onclick="toggleEFlag()" title="後で見直す問題に印を付ける（Fキー）">🚩 後で</button>
+      </div>
+      <div class="qtext" id="e-qtext"></div>
+      <div id="e-qfig" style="display:none"></div>
+      <div class="choices" id="e-choices"></div>
+      <div class="action-row exam-nav-row" style="margin-top:10px">
+        <button class="btn bg" id="e-prev" onclick="eNav(-1)">← 前へ</button>
+        <button class="btn bp" id="e-next" onclick="eNav(1)">次へ →</button>
+      </div>
+      <div class="kbd-hint">数字キー <kbd>1</kbd>〜<kbd>4</kbd> で選択　/　<kbd>←</kbd> <kbd>→</kbd> で移動　/　<kbd>F</kbd> でフラグ</div>
+    </div>
+    <div id="e-navpal" class="navpal"></div>
+    <div class="exam-finish-row">
+      <button class="btn bd btn-finish" id="e-finish" onclick="confirmFinishExam()">📝 採点する</button>
+    </div>
+  </div>
+  <div id="e-result" style="display:none">
+    <div class="card result-box">
+      <div class="ring-wrap" id="e-ring"></div>
+      <div class="pass-pill" id="e-pill"></div>
+      <div class="result-sub" id="e-detail"></div>
+    </div>
+    <div class="e-acq" id="e-acq"></div>
+    <div class="card">
+      <div class="sec-label" style="margin-top:0">📊 分野別スコア</div>
+      <div id="e-domains"></div>
+      <div id="e-weak-callout"></div>
+    </div>
+    <div class="card" id="e-pace"></div>
+    <details class="exam-rlist-details">
+      <summary>問題ごとの結果を見る</summary>
+      <div class="card" style="margin-top:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="sec-label" style="margin:0">問題ごとの結果</div>
+          <button class="chip" id="e-wrong-toggle" onclick="toggleExamWrong()">❌ 間違いのみ</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px">タップで解説を表示</div>
+        <div id="e-rlist"></div>
+      </div>
+    </details>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <button class="btn bp" onclick="startExam()">もう一度</button>
+      <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TEXTBOOK ===== -->
+<div class="page" id="pg-textbook">
+  <!-- ★ 章まとめモーダル -->
+  <div class="sum-overlay" id="sum-overlay" onclick="closeSummary()"></div>
+  <div class="sum-modal" id="sum-modal">
+    <div class="sum-header">
+      <span id="sum-title">まとめ</span>
+      <button class="sum-close" onclick="closeSummary()">✕</button>
+    </div>
+    <div class="sum-body" id="sum-body"></div>
+  </div>
+
+  <div id="tb-list">
+    <!-- タブ切替 -->
+    <div class="filter-bar" style="margin-bottom:10px">
+      <button class="chip on" id="tt-guide" onclick="switchTbTab('guide')">📚 学習ガイド</button>
+      <button class="chip" id="tt-nav" onclick="switchTbTab('nav')">🗺️ 設定マップ</button>
+      <button class="chip" id="tt-cmp" onclick="switchTbTab('cmp')">📊 比較表</button>
+      <button class="chip" id="tt-figs" onclick="switchTbTab('figs')">🖼️ 図解</button>
+    </div>
+
+    <!-- 検索バー -->
+    <div class="search-wrap">
+      <input class="search-box" id="tb-search" placeholder="🔍 用語・定義を検索..." oninput="tbSearch(this.value)">
+      <button class="search-clear" id="tb-clear" onclick="clearTbSearch()" style="display:none">✕</button>
+    </div>
+    <div class="search-count" id="search-count" style="display:none"></div>
+
+    <!-- ★ 章ナビ＋未読フィルタを折りたたみに集約 -->
+    <details class="tb-filter-wrap">
+      <summary>章ジャンプ / 読了状態フィルタ</summary>
+      <div class="ch-nav" id="ch-nav"></div>
+      <div class="tb-mark-filter" id="tb-mark-filter" style="display:none">
+        <button class="chip on" id="tmf-all" onclick="setMarkFilter('all')">すべて</button>
+        <button class="chip" id="tmf-bm" onclick="setMarkFilter('bm')">🔖 しおり</button>
+        <button class="chip" id="tmf-undone" onclick="setMarkFilter('undone')">未読</button>
+        <button class="chip" id="tmf-done" onclick="setMarkFilter('done')">✓ 読了</button>
+      </div>
+    </details>
+
+    <div id="tb-guide"></div>
+    <div id="tb-nav" style="display:none"></div>
+    <div id="tb-cmp" style="display:none"></div>
+    <div id="tb-figs" style="display:none"></div>
+  </div>
+
+  <!-- 用語詳細ビュー -->
+  <div class="td-view" id="td-view">
+    <div class="td-nav-row">
+      <button class="td-nav-btn" id="td-prev" onclick="navTD(-1)">‹ 前へ</button>
+      <span class="td-nav-pos" id="td-pos"></span>
+      <button class="td-nav-btn" id="td-next" onclick="navTD(1)">次へ ›</button>
+    </div>
+    <div class="td-head">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div>
+          <h2 id="td-title"></h2>
+          <p id="td-en"></p>
+        </div>
+        <button class="td-mark-btn" id="td-mark-btn" onclick="cycleTDMark()">●</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-blk">
+        <h3>📖 定義</h3>
+        <div class="md" id="td-def"></div>
+      </div>
+      <div class="sec-blk" id="td-fig-blk" style="display:none">
+        <h3>🖼️ 図解</h3>
+        <div id="td-fig"></div>
+      </div>
+      <div class="sec-blk" id="td-ep-blk">
+        <h3>⚡ 試験のポイント</h3>
+        <div id="td-ep"></div>
+      </div>
+      <div class="sec-blk" id="td-q-blk">
+        <h3>📝 関連問題</h3>
+        <div id="td-qs"></div>
+      </div>
+    </div>
+    <button class="btn bg" onclick="closeTD()" style="margin-bottom:16px">← 一覧に戻る</button>
+  </div>
+</div>
+
+<!-- ===== VOCAB ===== -->
+<div class="page" id="pg-vocab">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <span class="qprog" id="v-prog">0 / 0</span>
+    <span style="font-size:13px;color:var(--teal);font-weight:700" id="v-mast">★ 0 習得</span>
+  </div>
+  <div class="vbar-wrap"><div class="vbar-fill" id="v-bar"></div></div>
+  <div class="vfil-bar">
+    <button class="chip on" id="vf-all" onclick="setVF('all')">すべて</button>
+    <button class="chip" id="vf-unseen" onclick="setVF('unseen')">未学習</button>
+    <button class="chip" id="vf-hard" onclick="setVF('hard')">苦手</button>
+    <button class="chip" id="vf-mastered" onclick="setVF('mastered')">習得済</button>
+  </div>
+  <div id="v-cards">
+    <div class="card-scene" id="card-scene" onclick="flipCard()">
+      <div class="card-flip" id="card-flip">
+        <div class="cface cfront">
+          <span class="ccat" id="vc-cat"></span>
+          <div class="cterm" id="vc-term"></div>
+          <div class="cen" id="vc-en"></div>
+          <div class="chint">タップして答えを見る 👆</div>
+        </div>
+        <div class="cface cback">
+          <span class="ccat-back" id="vc-cat2"></span>
+          <div class="cdef" id="vc-def"></div>
+          <div class="cpts" id="vc-pts"></div>
+        </div>
+      </div>
+    </div>
+    <div class="vact vact-3">
+      <button class="btn bd" onclick="vRate(false)">✗ もう一度</button>
+      <button class="btn bg btn-skip" onclick="vSkip()">スキップ</button>
+      <button class="btn bs-" onclick="vRate(true)">✓ 覚えた！</button>
+    </div>
+  </div>
+  <div id="v-done" class="vdone" style="display:none">
+    <div style="font-size:52px;margin-bottom:14px">🎓</div>
+    <div class="result-label" id="v-done-label"></div>
+    <div class="result-sub" style="margin:6px 0 20px" id="v-done-sub"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn bt" onclick="vRestart()">もう一度</button>
+      <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div class="page" id="pg-stats">
+  <div id="stats-summary"></div>
+  <div id="coverage"></div>
+  <div id="analysis"></div>
+  <button class="btn bd" onclick="goTo('cram')" style="width:100%;margin-bottom:14px">📋 直前まとめを開く</button>
+  <div class="stats-grid" style="margin-bottom:14px">
+    <div class="stat-card"><div class="stat-num" id="st2-total">0</div><div class="stat-label">総解答数</div></div>
+    <div class="stat-card"><div class="stat-num" id="st2-acc">—</div><div class="stat-label">正答率</div></div>
+    <div class="stat-card"><div class="stat-num" id="st2-streak">0</div><div class="stat-label">連続正解</div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px">
+      <div class="sec-label" style="margin:0">🎯 分野別の習熟度</div>
+      <button class="dom-focus-btn" id="dom-focus-all" onclick="startWeakDomains()">弱点を出題</button>
+    </div>
+    <div id="dom-list"></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">📈 今週のレポート</div>
+    <div id="weekly"></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">📅 学習カレンダー</div>
+    <div class="hm-wrap"><div id="heatmap"></div></div>
+    <div class="hm-legend"><span>少</span><span class="hm-cell hm-l1"></span><span class="hm-cell hm-l2"></span><span class="hm-cell hm-l3"></span><span class="hm-cell hm-l4"></span><span>多</span><span id="hm-sub" style="margin-left:auto"></span></div>
+  </div>
+  <div class="card">
+    <div class="sec-label" style="margin-top:0">🏅 実績バッジ <span id="badge-count" style="font-weight:400;color:var(--text-sub);text-transform:none;letter-spacing:0"></span></div>
+    <div class="badge-grid" id="badge-grid"></div>
+  </div>
+  <details class="more-stats">
+    <summary>詳細を表示（キーワード別・問題別）</summary>
+    <div class="card">
+      <div class="sec-label" style="margin-top:0">キーワード別 正答率（低い順）</div>
+      <div id="st-kw"></div>
+    </div>
+    <div class="card">
+      <div class="sec-label" style="margin-top:0">問題別 解答履歴（正答率低い順）</div>
+      <div id="st-q" style="max-height:420px;overflow-y:auto"></div>
+    </div>
+  </details>
+</div>
+
+<!-- ===== 直前まとめ（CRAM） ===== -->
+<div class="page" id="pg-cram">
+  <div class="cram-head">
+    <h2 class="cram-title">📋 直前まとめ</h2>
+    <p class="cram-sub">本番前の最終チェック用。迷いやすい使い分け・ひっかけを中心に。</p>
+  </div>
+  <div id="cram-body"></div>
+  <button class="btn bg" onclick="goTo('home')" style="width:100%;margin:10px 0 16px">← ホームへ</button>
+</div>
+
+<!-- ===== レッスン（授業：スライド学習） ===== -->
+<div class="page" id="pg-lessons">
+  <div id="les-list"></div>
+  <div id="les-player" style="display:none"></div>
+</div>
+
+<!-- ===== マイページ ===== -->
+<div class="page" id="pg-mypage">
+  <div id="mypage-body"></div>
+</div>
+
+<!-- ===== QUICK REVIEW（高速めくり総ざらい） ===== -->
+<div class="page has-actbar" id="pg-quick">
+  <div class="filter-bar" style="margin-bottom:8px">
+    <button class="chip on" id="qk-f-all" onclick="setQkMode('all')">すべて</button>
+    <button class="chip" id="qk-f-wrong" onclick="setQkMode('wrong')">❌ 要復習</button>
+    <button class="chip" id="qk-f-bm" onclick="setQkMode('bm')">★ ブックマーク</button>
+    <button class="chip" id="qk-f-weak" onclick="setQkMode('weak')">🎯 弱点分野</button>
+  </div>
+  <div class="quiz-top">
+    <span class="qprog" id="qk-prog">0 / 0</span>
+    <button class="bmbtn" id="qk-bm" onclick="qkToggleBm()">☆</button>
+  </div>
+  <div class="pbar"><div class="pfill" id="qk-pfill"></div></div>
+  <div class="card qk-card" id="qk-card" onclick="qkReveal()">
+    <div class="qbadge" id="qk-badge">Q1</div>
+    <div class="qtext" id="qk-q"></div>
+    <div class="qk-ans" id="qk-ans"></div>
+    <div class="qk-hint" id="qk-hint">タップで答えを表示 👆</div>
+  </div>
+  <div id="qk-done" class="vdone" style="display:none">
+    <div style="font-size:52px;margin-bottom:14px">⚡</div>
+    <div class="result-label">総ざらい完了！</div>
+    <div class="result-sub" id="qk-done-sub" style="margin:6px 0 20px"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn bt" onclick="startQuick(qkMode)">もう一度</button>
+      <button class="btn bg" onclick="goTo('home')">ホームへ</button>
+    </div>
+  </div>
+  <div class="study-actbar" id="qk-actbar"><div class="inner">
+    <button class="btn bg" style="flex:0 0 auto" onclick="qkNav(-1)">← 前</button>
+    <button class="btn bp" onclick="qkReveal()">答えを見る / 次へ →</button>
+  </div></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nb-home" onclick="goTo('home')"><span class="nav-icon">🏠</span>ホーム</button>
+  <button class="nav-btn" id="nb-study" onclick="startStudy()"><span class="nav-icon">📖</span>学習</button>
+  <button class="nav-btn" id="nb-textbook" onclick="goTo('textbook')"><span class="nav-icon">📚</span>教科書</button>
+  <button class="nav-btn" id="nb-vocab" onclick="goTo('vocab')"><span class="nav-icon">🔤</span>用語帳</button>
+  <button class="nav-btn" id="nb-stats" onclick="goTo('stats')"><span class="nav-icon">📊</span>統計</button>
+</nav>
+<!-- ===== 資格設定（このファイル固有・ここだけ編集すればよい） ===== -->
+<script>
+  window.CERT_CONFIG = {
+    "slug": "app-builder",
+    "certName": "Salesforce 認定 Platform アプリケーションビルダー",
+    "shortName": "App Builder",
+    "examCode": "App Builder",
+    "examN": 60,
+    "examMin": 105,
+    "pass": 63,
+    "storageKey": "sfqab_v1",
+    "dataDir": "data/"
+  };
+  window.SFQ_PAGE_ROLE = 'client';
+  window.SFQ_HOME_URL  = '../../index.html';
+</script>
+<!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
+<script src="../../changelog.js?v=99"></script>
+<!-- 図解データ（インラインSVG・エンジンより先に読み込む） -->
+<script src="../../figures.js?v=99"></script>
+<!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
+<script src="../../quiz-engine.js?v=99"></script>
+<!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
+<script src="../../cloud-sync.js?v=99"></script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
+</script>
+</body>
+</html>

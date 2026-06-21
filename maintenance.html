@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0176d3">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<title>ただいまメンテナンス中です</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  background:#f1f5f9;color:#0f172a;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;
+  -webkit-font-smoothing:antialiased;padding:24px;
+}
+.card{
+  max-width:520px;width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:18px;
+  padding:36px 32px;text-align:center;
+  box-shadow:0 10px 25px -5px rgba(15,23,42,.12),0 4px 10px -2px rgba(15,23,42,.08);
+}
+.icon{font-size:46px;line-height:1;margin-bottom:14px}
+.gear{display:inline-block;animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.sub{margin:0 0 22px;color:#475569;font-size:14.5px;line-height:1.75}
+.count-label{font-size:12px;font-weight:700;color:#64748b;letter-spacing:.04em;margin-bottom:4px}
+.count{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;color:#0176d3;line-height:1.1;letter-spacing:.01em}
+.count.done{font-size:20px;color:#16a34a}
+.bar{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:18px 0 6px}
+.bar-fill{height:100%;width:0;background:linear-gradient(90deg,#0176d3,#6366f1);border-radius:99px;transition:width .6s ease}
+.bar-cap{font-size:11px;color:#94a3b8;margin-bottom:18px}
+.box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;text-align:left;margin:0 0 14px}
+.box-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:3px 0}
+.box-row .k{color:#64748b;font-weight:600;flex:0 0 auto}
+.box-row .v{color:#0f172a;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.tasks{margin:0;padding:0;list-style:none;text-align:left}
+.tasks li{font-size:13px;color:#334155;line-height:1.9;display:flex;align-items:center;gap:8px}
+.tasks li::before{content:"";width:7px;height:7px;border-radius:50%;background:#0176d3;flex:0 0 auto}
+.sec-title{font-size:11px;font-weight:800;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin:0 0 8px}
+.btn{width:100%;border:none;border-radius:10px;padding:12px;font-size:14.5px;font-weight:700;cursor:pointer;background:#0176d3;color:#fff;transition:filter .15s,transform .08s;margin-top:2px}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:scale(.98)}
+.recheck{display:none;align-items:center;justify-content:center;gap:7px;font-size:12px;color:#64748b;margin-top:12px;min-height:16px}
+.recheck.show{display:flex}
+.dot{width:8px;height:8px;border-radius:50%;background:#16a34a;animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.5)}70%{box-shadow:0 0 0 6px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+.contact{font-size:11.5px;color:#94a3b8;margin:16px 0 0;line-height:1.7}
+.contact a{color:#0176d3;text-decoration:none}
+.mid{font-size:10.5px;color:#cbd5e1;margin-top:10px;font-variant-numeric:tabular-nums}
+@media (prefers-color-scheme: dark){
+  body{background:#0f172a;color:#f1f5f9}
+  .card{background:#1e293b;border-color:#334155}
+  .sub{color:#94a3b8}
+  .count{color:#38bdf8}
+  .bar{background:#334155}
+  .box{background:#0f172a;border-color:#334155}
+  .box-row .v{color:#f1f5f9}
+  .tasks li{color:#cbd5e1}
+  .recheck{color:#94a3b8}
+  .contact a{color:#38bdf8}
+  .mid{color:#475569}
+}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon"><span class="gear">🛠️</span></div>
+    <h1 id="m-title">ただいまメンテナンス中です</h1>
+    <p class="sub" id="m-sub">
+      システムメンテナンスのため、一時的にサービスを停止しています。<br>
+      ご不便をおかけしますが、再開までしばらくお待ちください。
+    </p>
+
+    <div id="m-count-wrap">
+      <div class="count-label" id="m-count-label">復旧予定まで</div>
+      <div class="count" id="m-count">--:--:--</div>
+      <div class="bar" id="m-bar-wrap"><div class="bar-fill" id="m-bar"></div></div>
+      <div class="bar-cap" id="m-bar-cap"></div>
+    </div>
+
+    <div class="box">
+      <div class="box-row"><span class="k">メンテナンス予定</span><span class="v" id="m-window">調整中</span></div>
+      <div class="box-row"><span class="k">管理番号</span><span class="v" id="m-id">—</span></div>
+    </div>
+
+    <div class="box">
+      <p class="sec-title">作業内容</p>
+      <ul class="tasks" id="m-tasks"></ul>
+    </div>
+
+    <button class="btn" id="m-recheck-btn">再読み込みして確認</button>
+    <div class="recheck" id="m-recheck"><span class="dot"></span><span>サービスの再開を自動で確認しています…</span></div>
+
+    <p class="contact" id="m-contact" style="display:none"></p>
+    <p class="mid" id="m-now"></p>
+  </div>
+
+<!-- Firebase（管理者ビューからのライブ切替を反映するため。読めなくても画面は動作する） -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+   * メンテナンス画面の設定（フォールバックの既定値）
+   * ---------------------------------------------------------------------
+   *  管理者ビューからライブ切替で来た場合は、Firestore の設定（メッセージ・
+   *  終了予定）が優先されます。下の値は「手動オーバーライド時」や Firestore
+   *  が読めないときの既定として使われます。
+   *    start / end : ISO 8601（必ず JST の +09:00 を付ける／予定未定なら ''）
+   *    id          : 管理番号（運用感を出す任意の文字列）
+   *    tasks       : 作業内容の箇条書き
+   *    contact     : 問い合わせ先メール（不要なら '' で非表示）
+   * ===================================================================== */
+  var CFG = {
+    start:   '2026-06-21T02:00:00+09:00',
+    end:     '2026-06-21T05:00:00+09:00',
+    id:      '',   // 空なら開始日から MNT-YYYYMMDD-01 を自動採番（管理者ビューからの設定が最優先）
+    tasks:   ['データベースの最適化', 'サーバー構成の更新', 'セキュリティ更新の適用'],
+    contact: ''
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var startMs = CFG.start ? Date.parse(CFG.start) : NaN;
+  var endMs   = CFG.end   ? Date.parse(CFG.end)   : NaN;
+  var liveMsg = '';
+  var liveId = '';
+  var liveTasks = null;
+  var firestoreActive = null;  // null=未取得 / true=メンテ中 / false=解除
+  var cameFromLive = false;    // cloud-sync のライブ切替から転送されてきたか
+
+  /* cloud-sync からの引き継ぎ（実際の終了予定・メッセージ・管理番号・作業内容・緊急全停止か） */
+  try {
+    var hand = JSON.parse(sessionStorage.getItem('sfq_maint') || 'null');
+    if (hand) {
+      cameFromLive = true;
+      if (hand.msg) liveMsg = hand.msg;
+      if (hand.id) liveId = hand.id;
+      if (Array.isArray(hand.tasks) && hand.tasks.length) liveTasks = hand.tasks;
+      if (hand.full) { endMs = NaN; }        // 緊急全停止＝終了未定
+      else if (hand.end) { endMs = hand.end; }
+    }
+  } catch (e) {}
+
+  /* 日時整形（JST固定） */
+  var jstFmt = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
+  var jstTime = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false });
+
+  /* 作業内容リストの描画（ライブ→CFG の順に優先） */
+  function renderTasks(arr) {
+    var ul = $('m-tasks'); if (!ul) return; ul.innerHTML = '';
+    (arr && arr.length ? arr : ['システムメンテナンス']).forEach(function (t) {
+      var li = document.createElement('li'); li.textContent = t; ul.appendChild(li);
+    });
+  }
+  /* YYYYMMDD(JST) 文字列 */
+  function maintDateStr(ms) {
+    try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ms).replace(/-/g, ''); }
+    catch (e) { var d = new Date(ms); return '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
+  }
+  /* 管理番号が未設定なら開始日(JST)から MNT-YYYYMMDD-01 を自動採番 */
+  function autoMaintId() {
+    return 'MNT-' + maintDateStr(isFinite(startMs) ? startMs : Date.now()) + '-01';
+  }
+
+  /* 静的部分（作業内容・管理番号・問い合わせ先・予定枠）を描画 */
+  (function initStatic() {
+    renderTasks(liveTasks || CFG.tasks);
+    $('m-id').textContent = liveId || CFG.id || autoMaintId();
+    if (liveMsg) $('m-sub').innerHTML = esc(liveMsg);
+    if (isFinite(endMs)) {
+      var head = (isFinite(startMs) && !cameFromLive) ? (jstFmt.format(startMs) + '〜' + jstTime.format(endMs)) : ('〜' + jstFmt.format(endMs));
+      $('m-window').textContent = head + ' JST（予定）';
+    } else {
+      $('m-window').textContent = '復旧まで（時間未定）';
+      $('m-bar-wrap').style.display = 'none';
+    }
+  })();
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function hms(ms) {
+    var s = Math.max(0, Math.floor(ms / 1000));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return pad(h) + ':' + pad(m) + ':' + pad(sec);
+  }
+
+  var recheckOn = false;
+  function render() {
+    var now = Date.now();
+    $('m-now').textContent = '現在時刻：' + jstTime.format(now) + ' JST';
+
+    if (!isFinite(endMs)) {
+      // 終了予定なし（緊急全停止など）：カウントダウンは出さない
+      $('m-count-wrap').style.display = 'none';
+      startRecheck();
+      return;
+    }
+    $('m-count-wrap').style.display = '';
+
+    if (isFinite(startMs) && !cameFromLive && now < startMs) {
+      $('m-title').textContent = 'まもなくメンテナンスを開始します';
+      $('m-count-label').textContent = '開始まで';
+      $('m-count').textContent = hms(startMs - now);
+      $('m-count').classList.remove('done');
+      $('m-bar').style.width = '0%'; $('m-bar-cap').textContent = '';
+      stopRecheck();
+    } else if (now < endMs) {
+      $('m-title').textContent = 'ただいまメンテナンス中です';
+      $('m-count-label').textContent = '復旧予定まで';
+      $('m-count').textContent = hms(endMs - now);
+      $('m-count').classList.remove('done');
+      if (isFinite(startMs) && !cameFromLive) {
+        var pct = Math.round((now - startMs) / (endMs - startMs) * 100);
+        $('m-bar-wrap').style.display = ''; $('m-bar').style.width = Math.min(99, Math.max(0, pct)) + '%';
+        $('m-bar-cap').textContent = '進行状況 約' + Math.min(99, Math.max(0, pct)) + '%';
+      } else { $('m-bar-wrap').style.display = 'none'; }
+      stopRecheck();
+    } else {
+      $('m-title').textContent = 'まもなく再開します';
+      $('m-count-label').textContent = '復旧作業の最終確認中です';
+      $('m-count').textContent = 'もうしばらくお待ちください';
+      $('m-count').classList.add('done');
+      $('m-bar-wrap').style.display = ''; $('m-bar').style.width = '100%'; $('m-bar-cap').textContent = '進行状況 100%';
+      startRecheck();
+    }
+  }
+
+  /* ---- Firestore ライブ購読：管理者がメンテ解除した瞬間に自動復帰 ---- */
+  // 都度メンテのキュー（旧 windows + enabled ゲートも吸収）
+  function maintQueue(cfg) {
+    if (!cfg) return [];
+    if (Array.isArray(cfg.queue)) return cfg.queue;
+    if (Array.isArray(cfg.windows)) return (cfg.enabled === false) ? [] : cfg.windows;
+    return [];
+  }
+  function maintEntryInfo(cfg, w) {
+    var g = cfg || {};
+    return {
+      id: (w && w.id) || g.id || '',
+      msg: (w && w.msg) || g.msg || '',
+      tasks: (w && Array.isArray(w.tasks) && w.tasks.length) ? w.tasks : (Array.isArray(g.tasks) ? g.tasks : []),
+      preMsg: (w && w.preMsg) || g.preMsg || '',
+      preMin: (w && w.preMin != null) ? w.preMin : ((g.preMin != null) ? g.preMin : 60)
+    };
+  }
+  function maintRecurInfo(cfg, occMs) {
+    var r = (cfg && cfg.recurring) || {};
+    return {
+      id: r.id || ('MNT-' + maintDateStr(occMs) + '-R'),
+      msg: r.msg || (cfg && cfg.msg) || '',
+      tasks: (Array.isArray(r.tasks) && r.tasks.length) ? r.tasks : ((cfg && cfg.tasks) || []),
+      preMsg: r.preMsg || (cfg && cfg.preMsg) || '',
+      preMin: (r.preMin != null) ? r.preMin : ((cfg && cfg.preMin != null) ? cfg.preMin : 60)
+    };
+  }
+  function maintStatus(cfg, now) {
+    var res = { active: false, end: 0, entry: null };
+    if (!cfg) return res;
+    if (cfg.fullStop) { res.active = true; res.entry = maintEntryInfo(cfg, null); return res; }
+    maintQueue(cfg).forEach(function (w) {
+      if (!w || !w.start || !w.end) return;
+      if (now >= w.start && now < w.end) { res.active = true; if (w.end > res.end) { res.end = w.end; res.entry = maintEntryInfo(cfg, w); } }
+    });
+    var r = cfg.recurring;
+    if (r && r.enabled && r.start && r.durMin && r.dows && r.dows.length) {
+      var hm = r.start.split(':'), hh = +hm[0] || 0, mm = +hm[1] || 0, dur = (+r.durMin || 0) * 60000;
+      for (var off = -1; off <= 1; off++) {
+        var d = new Date(now); d.setDate(d.getDate() + off); d.setHours(hh, mm, 0, 0);
+        if (r.dows.indexOf(d.getDay()) < 0) continue;
+        var s = d.getTime(), e = s + dur;
+        if (now >= s && now < e) { res.active = true; if (e > res.end) { res.end = e; res.entry = maintRecurInfo(cfg, s); } }
+      }
+    }
+    if (res.active && !res.entry) res.entry = maintEntryInfo(cfg, null);
+    return res;
+  }
+
+  var subDone = false;
+  function initFirebase() {
+    if (!window.firebase || !window.SFQ_FIREBASE_CONFIG) return;
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(window.SFQ_FIREBASE_CONFIG);
+      var db = firebase.firestore();
+      firebase.auth().onAuthStateChanged(function () { subscribe(db); });
+    } catch (e) {}
+  }
+  function subscribe(db) {
+    if (subDone) return; subDone = true;
+    try {
+      db.collection('broadcast').doc('maintenance').onSnapshot(function (doc) {
+        var cfg = (doc && doc.exists && doc.data()) || null;
+        var st = maintStatus(cfg, Date.now());
+        firestoreActive = !!st.active;
+        if (st.active) {
+          var ent = st.entry || {};
+          if (ent.msg) { liveMsg = ent.msg; $('m-sub').innerHTML = esc(liveMsg); }
+          if (ent.id) { $('m-id').textContent = ent.id; }
+          if (ent.tasks && ent.tasks.length) { renderTasks(ent.tasks); }
+          if (!(hand && hand.full) && st.end) { endMs = st.end; }
+          render();
+        } else {
+          maybeReturnHome(false); // Firestore上は解除 → 手動フラグも確認のうえ復帰
+        }
+      }, function () { subDone = false; /* 未ログイン/権限なし等は手動フラグ頼り */ });
+    } catch (e) { subDone = false; }
+  }
+
+  /* ---- 復帰判定：Firestore も手動フラグも「非メンテ」のときだけトップへ戻す ---- */
+  function maybeReturnHome(force) {
+    if (isFinite(endMs) && Date.now() < endMs && !force) return;       // 計画終了前は戻さない
+    if (firestoreActive === true) return;                               // Firestore 上メンテ中
+    if (firestoreActive === null && cameFromLive && !isFinite(endMs) && !force) return; // 確認不能な全停止は誤復帰回避
+    fetch('maintenance.js?_=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) {
+        if (/MANUAL_MAINTENANCE\s*=\s*true/.test(t)) return;            // 手動オーバーライド中はとどまる
+        location.replace('index.html');
+      })
+      .catch(function () {});
+  }
+
+  function startRecheck() {
+    if (recheckOn) return; recheckOn = true; $('m-recheck').classList.add('show');
+    maybeReturnHome(false);
+  }
+  function stopRecheck() {
+    if (!recheckOn) return; recheckOn = false; $('m-recheck').classList.remove('show');
+  }
+
+  $('m-recheck-btn').addEventListener('click', function () { maybeReturnHome(true); location.reload(); });
+
+  initFirebase();
+  render();
+  setInterval(render, 1000);
+  setInterval(function () { if (firestoreActive !== true) maybeReturnHome(false); }, 30000);
+})();
+</script>
+</body>
+</html>

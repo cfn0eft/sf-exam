@@ -1,0 +1,35 @@
+{
+  "_note": "App Builder 公式5分野。code は固定、name/weight/emoji は変更可。各問題は questions.json の domain フィールドで分野を持つ（map 不要）。",
+  "domains": [
+    {
+      "code": "fund",
+      "name": "Salesforce基礎",
+      "weight": 23,
+      "emoji": "🧭"
+    },
+    {
+      "code": "data",
+      "name": "データモデリングと管理",
+      "weight": 22,
+      "emoji": "🗂️"
+    },
+    {
+      "code": "logic",
+      "name": "ビジネスロジックと自動化",
+      "weight": 28,
+      "emoji": "⚡"
+    },
+    {
+      "code": "ui",
+      "name": "ユーザーインターフェース",
+      "weight": 17,
+      "emoji": "🎨"
+    },
+    {
+      "code": "deploy",
+      "name": "アプリのリリース",
+      "weight": 10,
+      "emoji": "🚀"
+    }
+  ]
+}
