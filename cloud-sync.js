@@ -236,21 +236,19 @@
       '.sfqc-app-selall{font-size:12px;color:#475569;display:inline-flex;align-items:center;gap:5px;cursor:pointer}' +
       '.sfqc-app-check{display:inline-flex;align-items:center;margin-right:4px}' +
       'body.dark .sfqc-app-selall{color:#cbd5e1}' +
-      /* 日別アクティブ（緑の棒=解答数／青い折れ線=アクティブ人数） */
-      '.sfqc-ts{position:relative;display:flex;align-items:flex-end;gap:2px;height:96px;padding:4px 0}' +
-      '.sfqc-ts-col{flex:1;min-width:6px;display:flex;flex-direction:column;align-items:center;height:100%;cursor:pointer}' +
-      '.sfqc-ts-bars{flex:1;display:flex;align-items:flex-end;justify-content:center;width:100%}' +
-      '.sfqc-ts-bar{width:62%;background:#16a34a;border-radius:2px 2px 0 0;min-height:0}' +
-      '.sfqc-ts-col:hover .sfqc-ts-bar,.sfqc-ts-col:focus .sfqc-ts-bar{background:#15803d;outline:none}' +
-      '.sfqc-ts-line{position:absolute;inset:4px 0;pointer-events:none;overflow:visible}' +
-      '.sfqc-ts-line polyline{fill:none;stroke:#2563eb;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}' +
-      '.sfqc-ts-axis{display:flex;gap:2px;margin-top:2px}' +
-      '.sfqc-ts-xc{flex:1;min-width:6px;font-size:9px;color:#94a3b8;white-space:nowrap;text-align:center;overflow:visible}' +
+      /* 日別アクティブ（緑の棒=解答数／青い折れ線=アクティブ人数）。1枚のSVGで描画 */
+      '.sfqc-ts{display:block;width:100%;height:96px}' +
+      '.sfqc-ts .bar{fill:#16a34a}' +
+      '.sfqc-ts .ln{fill:none;stroke:#2563eb;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}' +
+      '.sfqc-ts .hit{fill:transparent;cursor:pointer}' +
+      '.sfqc-ts .hit:hover,.sfqc-ts .hit:focus{fill:rgba(22,163,74,.14);outline:none}' +
+      '.sfqc-ts-axis{display:flex;margin-top:3px}' +
+      '.sfqc-ts-xc{flex:1 1 0;min-width:0;font-size:9px;color:#94a3b8;white-space:nowrap;text-align:center}' +
       '.sfqc-ts-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#475569;margin-bottom:6px}' +
       '.sfqc-ts-legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}' +
       '.sfqc-ts-legend .swl{display:inline-block;width:16px;height:0;border-top:2px solid #2563eb;margin-right:4px;vertical-align:middle}' +
       '.sfqc-ts-readout{font-size:12px;color:#334155;margin-top:6px;font-weight:700;min-height:1.4em}' +
-      'body.dark .sfqc-ts-bar{background:#4ade80}body.dark .sfqc-ts-line polyline{stroke:#60a5fa}body.dark .sfqc-ts-legend .swl{border-top-color:#60a5fa}body.dark .sfqc-ts-readout{color:#cbd5e1}body.dark .sfqc-ts-legend{color:#cbd5e1}' +
+      'body.dark .sfqc-ts .bar{fill:#4ade80}body.dark .sfqc-ts .ln{stroke:#60a5fa}body.dark .sfqc-ts-legend .swl{border-top-color:#60a5fa}body.dark .sfqc-ts-readout{color:#cbd5e1}body.dark .sfqc-ts-legend{color:#cbd5e1}' +
       /* 操作ログ */
       '.sfqc-log-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow:auto}' +
       '.sfqc-log-item{display:flex;gap:8px;font-size:11px;align-items:baseline;border-bottom:1px solid #f1f5f9;padding:3px 0}' +
@@ -2060,19 +2058,22 @@
     });
     var maxAct = 1, maxAns = 1;
     labels.forEach(function (k) { if (act[k] > maxAct) maxAct = act[k]; if (ans[k] > maxAns) maxAns = ans[k]; });
-    // 棒は1本だけ（緑=解答数。maxAnsで正規化）。アクティブ人数は青い折れ線（maxActで正規化）で重ねる
-    var step = Math.max(1, Math.ceil(DAYS / 5));   // 日付ラベルは約5本に間引いて重なりを防ぐ
-    var pts = [];
-    var bars = labels.map(function (k, idx) {
-      var ha = act[k] ? Math.max(2, Math.round(act[k] / maxAct * 100)) : 0;
-      var hn = ans[k] ? Math.max(2, Math.round(ans[k] / maxAns * 100)) : 0;
-      pts.push(((idx + 0.5) / DAYS * 100).toFixed(2) + ',' + (100 - ha).toFixed(2));
+    // 1枚のSVGで描画（緑の棒=解答数・青い折れ線=アクティブ人数）。座標系 0..VW × 0..100、縦は preserveAspectRatio=none で 96px に伸長
+    var CW = 10;                                    // 1日あたりの横幅（viewBox単位）
+    var VW = DAYS * CW;
+    var step = Math.max(1, Math.ceil(DAYS / 5));    // 日付ラベルは約5本に間引いて重なりを防ぐ
+    var rects = '', hits = '', pts = [];
+    labels.forEach(function (k, idx) {
+      var ha = act[k] ? Math.max(2, Math.round(act[k] / maxAct * 100)) : 0;   // 人数（maxActで正規化）
+      var hn = ans[k] ? Math.max(2, Math.round(ans[k] / maxAns * 100)) : 0;   // 解答数（maxAnsで正規化）
+      var x = idx * CW;
+      rects += '<rect class="bar" x="' + (x + 2.2).toFixed(1) + '" y="' + (100 - hn) + '" width="5.6" height="' + hn + '" rx="0.8"></rect>';
+      pts.push((x + CW / 2).toFixed(1) + ',' + (100 - ha));
       var lab = k + '：アクティブ ' + act[k] + '人 / 解答 ' + ans[k] + '件';
-      return '<div class="sfqc-ts-col" role="button" tabindex="0" title="' + esc(lab) + '" data-ts-label="' + esc(lab) + '">' +
-        '<div class="sfqc-ts-bars"><div class="sfqc-ts-bar" style="height:' + hn + '%"></div></div></div>';
-    }).join('');
-    var line = '<svg class="sfqc-ts-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
-      '<polyline vector-effect="non-scaling-stroke" points="' + pts.join(' ') + '"></polyline></svg>';
+      hits += '<rect class="hit" x="' + x + '" y="0" width="' + CW + '" height="100" role="button" tabindex="0" data-ts-label="' + esc(lab) + '"><title>' + esc(lab) + '</title></rect>';
+    });
+    var svg = '<svg class="sfqc-ts" viewBox="0 0 ' + VW + ' 100" preserveAspectRatio="none" role="img" aria-label="日別アクティブの推移">' +
+      rects + '<polyline class="ln" vector-effect="non-scaling-stroke" points="' + pts.join(' ') + '"></polyline>' + hits + '</svg>';
     var axis = labels.map(function (k, idx) {
       return '<div class="sfqc-ts-xc">' + (idx % step === 0 ? esc(k.slice(5)) : '') + '</div>';
     }).join('');
@@ -2081,10 +2082,9 @@
     var legend = '<div class="sfqc-ts-legend"><span><i class="swl"></i>アクティブ人数（最大 ' + maxAct + '人）</span>' +
       '<span><i class="sw" style="background:#16a34a"></i>解答数（最大 ' + maxAns.toLocaleString() + '件）</span></div>';
     return '<div class="sfqc-sec">日別アクティブ（直近' + DAYS + '日・人数と解答数）</div>' +
-      '<div class="sfqc-dash-card">' + legend +
-      '<div class="sfqc-ts">' + line + bars + '</div>' +
+      '<div class="sfqc-dash-card">' + legend + svg +
       '<div class="sfqc-ts-axis">' + axis + '</div>' +
-      '<div class="sfqc-ts-readout" id="sfqc-ts-readout">各日の列にカーソルを乗せる／タップすると、その日の人数・解答数が出ます。</div>' +
+      '<div class="sfqc-ts-readout" id="sfqc-ts-readout">各日にカーソルを乗せる／タップすると、その日の人数・解答数が出ます。</div>' +
       '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。緑の棒＝解答数／青い折れ線＝アクティブ人数（各系列はそれぞれの最大値を基準に高さを正規化）。</div></div>';
   }
 
