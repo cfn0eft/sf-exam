@@ -5,7 +5,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
 - ローカル: `C:\Users\Nerod\ドキュメント\sf-exam`
-- 対応資格: Administrator (合格済) / Platform App Builder (現在のフォーカス) / Developer (公開済・529問)
+- 対応資格: Administrator (合格済) / Platform App Builder (現在のフォーカス) / Developer (公開済・509問)
 
 ---
 
@@ -54,7 +54,7 @@ sf-exam/
 | App Builder | app-builder | 60 | 105 | 63 | sfqab_v1 | 5 (fund/data/logic/ui/deploy) |
 | Developer | developer | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
 
-Developer は公式4分野（基礎23/自動化とロジック30/UI25/テスト・リリース22）で **2026-06-13 に LP 公開済み**。問題は **529問**（生成オリジナル218＋タイソンブログ由来215＋jpnshiken由来96）。出題設定に出典フィルタあり。
+Developer は公式4分野（基礎23/自動化とロジック30/UI25/テスト・リリース22）で **2026-06-13 に LP 公開済み**。問題は **509問**（生成オリジナル218＋タイソンブログ由来215＋jpnshiken由来76）。出題設定に出典フィルタあり。2026-06-21 に tyson↔jpn の重複20問（jpn側）を統合し、解答誤り2問を公式仕様に合わせて修正。
 
 Admin 8分野の公式ブループリント (2025/12/15改訂): Configuration15/ObjectManager&LightningAppBuilder15/Automation15/Data&Analytics17/Sales&Marketing10/Service&Support10/Productivity&Collaboration10/Agentforce8。
 
@@ -234,7 +234,8 @@ git push origin main
 
 ## 残タスク（2026-06-11 時点）
 
-- **Developer の問題拡充**：529問（生成218＋タイソン215＋jpnshiken96）公開済み。タイソン215問の reference_url は developer.salesforce.com の安定した公式ガイド11種に集約しているため、高頻度論点は今後より具体的な公式URLへ精緻化の余地あり。vocab/navmap のさらなる拡充も可。
+- **Developer の問題拡充**：509問（生成218＋タイソン215＋jpnshiken76）公開済み。タイソン215問の reference_url は developer.salesforce.com の安定した公式ガイド11種に集約しているため、高頻度論点は今後より具体的な公式URLへ精緻化の余地あり。vocab/navmap のさらなる拡充も可。
+- **出典横断の重複チェック**：`tools/validate-data.js` が出典(tyson/jpnshiken/gen)をまたいだ高類似ペアを sim≥0.55 で警告するようになった（CIは止めない＝判断は人手）。新たに問題集ダンプを取り込む際は警告を確認して重複を統合すること。
 - （バックログ）図解の拡充：高頻出論点に図を追加できる。`figures.js` に1図足し、`questions.json` の `expFig`/`fig`（または `vocab.json` の `fig`）に図名を入れ、`validate-data.js` で参照確認するだけ（現在23点＋エイリアス5）。
 - （バックログ）ケーススタディ（#25）のさらなる拡充：`questions.json` の既存問題に `case`+`scenario` を足すだけ（現在 sf-admin 6件・app-builder 5件）。
 

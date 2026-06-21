@@ -30,6 +30,51 @@ function readJSON(p) {
   return JSON.parse(raw);
 }
 
+/* ---- 重複検出ヘルパー（出典横断の高類似ペアを警告） ----
+ * tyson / jpnshiken など複数の問題集ダンプを取り込むと、同一の実試験問題が
+ * 言い回しだけ変えて二重登録されやすい。問題文＋選択肢の文字3-gram Jaccard
+ * 類似度で、異なる source 間のほぼ同一ペアを検出して警告する（CI は止めない＝判断は人手）。*/
+function _norm(s) {
+  return String(s || '')
+    .replace(/[\s　]/g, '')
+    .replace(/[、。，．,\.・「」『』（）()\[\]【】！？!?：:；\-―ー~〜"“”']/g, '')
+    .toLowerCase();
+}
+function _grams(s, n = 3) {
+  const g = new Set();
+  for (let i = 0; i + n <= s.length; i++) g.add(s.slice(i, i + n));
+  return g;
+}
+function _jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0;
+  a.forEach((x) => { if (b.has(x)) inter++; });
+  return inter / (a.size + b.size - inter);
+}
+function checkCrossSourceDuplicates(questions) {
+  const WARN = 0.55;   // これ以上を「重複の疑い」として警告
+  const arr = questions
+    .filter((q) => q.source && q.question)
+    .map((q) => ({
+      id: q.id, src: q.source,
+      g: _grams(_norm(q.question + (q.choices || []).slice().sort().join(''))),
+    }));
+  let n = 0;
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i].src === arr[j].src) continue;   // 出典横断のみ
+      const s = _jaccard(arr[i].g, arr[j].g);
+      if (s >= WARN) {
+        n++;
+        warn('出典横断の高類似ペア sim=' + s.toFixed(2) +
+          '  #' + arr[i].id + '(' + arr[i].src + ') ⇔ #' + arr[j].id + '(' + arr[j].src + ')' +
+          (s >= 0.75 ? ' ＝ほぼ同一（重複の疑い）' : ''));
+      }
+    }
+  }
+  if (n) info('  （上記の高類似ペアは出典をまたいだ重複の可能性。要確認）');
+}
+
 /* ---- figures.js を評価して図キー一覧を得る（window スタブ） ---- */
 function loadFigureKeys() {
   const src = fs.readFileSync(path.join(ROOT, 'figures.js'), 'utf8');
@@ -111,6 +156,7 @@ function validateCert(slug, figKeys) {
     if (g.scenarios.size > 1) err('ケース "' + c + '" の scenario 文が複数ある（全問同一にする）');
   });
   info('  questions: ' + questions.length + '問 / case: ' + Object.keys(caseGroups).length + '件');
+  checkCrossSourceDuplicates(questions);
 
   let vocab;
   try { vocab = readJSON(path.join(dir, 'vocab.json')); }
