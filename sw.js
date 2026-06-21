@@ -7,19 +7,19 @@
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
  * ※ HTML をネットワーク優先にすることで、ハードリロード(Ctrl+Shift+R)なしで更新が反映される。
  */
-const CACHE = 'sf-exam-v96';
+const CACHE = 'sf-exam-v97';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=94',
+  './maintenance.js?v=95',
   './manifest.webmanifest',
-  './quiz.css?v=94',
-  './quiz-engine.js?v=94',
-  './changelog.js?v=94',
-  './figures.js?v=94',
+  './quiz.css?v=95',
+  './quiz-engine.js?v=95',
+  './changelog.js?v=95',
+  './figures.js?v=95',
   './firebase-config.js',
-  './cloud-sync.js?v=94',
+  './cloud-sync.js?v=95',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   './certifications/developer/index.html',
