@@ -7,22 +7,23 @@
  * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
  * ※ HTML をネットワーク優先にすることで、ハードリロード(Ctrl+Shift+R)なしで更新が反映される。
  */
-const CACHE = 'sf-exam-v97';
+const CACHE = 'sf-exam-v98';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=95',
+  './maintenance.js?v=96',
   './manifest.webmanifest',
-  './quiz.css?v=95',
-  './quiz-engine.js?v=95',
-  './changelog.js?v=95',
-  './figures.js?v=95',
+  './quiz.css?v=96',
+  './quiz-engine.js?v=96',
+  './changelog.js?v=96',
+  './figures.js?v=96',
   './firebase-config.js',
-  './cloud-sync.js?v=95',
+  './cloud-sync.js?v=96',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   './certifications/developer/index.html',
+  './certifications/agentforce/index.html',
   // 学習データ：初回訪問からオフラインで学べるようプリキャッシュ（allSettledなので失敗してもinstallは継続）
   './certifications/sf-admin/data/questions.json',
   './certifications/sf-admin/data/domains.json',
@@ -45,6 +46,13 @@ const SHELL = [
   './certifications/developer/data/cram.json',
   './certifications/developer/data/compare.json',
   './certifications/developer/data/lessons.json',
+  './certifications/agentforce/data/questions.json',
+  './certifications/agentforce/data/domains.json',
+  './certifications/agentforce/data/vocab.json',
+  './certifications/agentforce/data/navmap.json',
+  './certifications/agentforce/data/cram.json',
+  './certifications/agentforce/data/compare.json',
+  './certifications/agentforce/data/lessons.json',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
