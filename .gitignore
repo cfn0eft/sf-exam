@@ -1,4 +1,6 @@
-.claude/
+# ローカル設定（settings.local.json 等）は追跡しない。共有スキルだけ追跡する
+.claude/*
+!.claude/skills/
 
 # 編集前バックアップは配信・追跡しない
 *.before.json
