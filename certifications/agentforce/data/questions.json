@@ -2556,5 +2556,390 @@
   "source": "jpnshiken",
   "diff": 2,
   "id": 106
+ },
+ {
+  "question": "顧客データを更新する書き込み系アクションについて、誤操作を防ぐためにエージェントに設定できることはどれですか。",
+  "choices": [
+   "実行前にユーザー確認を求める設定",
+   "共有ルールの削除",
+   "ページレイアウトの変更",
+   "レポートの購読"
+  ],
+  "answers": [
+   "実行前にユーザー確認を求める設定"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 実行前にユーザー確認を求める設定　これは正解です。影響の大きい書き込みアクションは、実行前確認で誤操作を防げます。\n\n□ 共有ルールの削除　これは不正解です。誤操作防止と無関係です。\n\n□ ページレイアウトの変更　これは不正解です。無関係です。\n\n□ レポートの購読　これは不正解です。無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "アクション確認",
+   "書き込み",
+   "安全"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 107
+ },
+ {
+  "question": "データライブラリのナレッジを使って、エージェントに質問へ回答させる標準アクションはどれですか。",
+  "choices": [
+   "Answer Questions with Knowledge（ナレッジで回答）",
+   "レコードの一括削除",
+   "新規ユーザーの作成",
+   "レポートの配信"
+  ],
+  "answers": [
+   "Answer Questions with Knowledge（ナレッジで回答）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Answer Questions with Knowledge（ナレッジで回答）　これは正解です。データライブラリのナレッジを根拠に質問へ回答する標準アクションです。\n\n□ レコードの一括削除　これは不正解です。回答生成ではありません。\n\n□ 新規ユーザーの作成　これは不正解です。管理操作で無関係です。\n\n□ レポートの配信　これは不正解です。無関係です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=004333412&type=1",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "標準アクション",
+   "ナレッジ回答",
+   "データライブラリ"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 108
+ },
+ {
+  "question": "複数のトピックが似た要求に反応してしまう問題を減らすために有効なのはどれですか。",
+  "choices": [
+   "各トピックの範囲と指示を明確に区別して定義する",
+   "すべてのトピックを同じ説明にする",
+   "トピックを一切使わない",
+   "Apexトリガを増やす"
+  ],
+  "answers": [
+   "各トピックの範囲と指示を明確に区別して定義する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 各トピックの範囲と指示を明確に区別して定義する　これは正解です。範囲と指示を明確にすると、適切なトピックが選ばれやすくなります。\n\n□ すべてのトピックを同じ説明にする　これは不正解です。区別がつかず誤選択が増えます。\n\n□ トピックを一切使わない　これは不正解です。対応範囲を定義できません。\n\n□ Apexトリガを増やす　これは不正解です。トピック選択の改善とは無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "トピック範囲",
+   "指示",
+   "分類精度"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 109
+ },
+ {
+  "question": "Agentforce のエージェントの言語対応について、正しい説明はどれですか。",
+  "choices": [
+   "複数の言語で会話できるよう構成できる",
+   "日本語のみ対応している",
+   "言語設定は一切できない",
+   "英語以外では利用できない"
+  ],
+  "answers": [
+   "複数の言語で会話できるよう構成できる"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 複数の言語で会話できるよう構成できる　これは正解です。エージェントは複数言語での会話に対応できます。\n\n□ 日本語のみ対応している　これは不正解です。日本語限定ではありません。\n\n□ 言語設定は一切できない　これは不正解です。言語に対応できます。\n\n□ 英語以外では利用できない　これは不正解です。多言語に対応します。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "多言語",
+   "言語対応",
+   "エージェント"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 110
+ },
+ {
+  "question": "エージェントが会話の途中で「それ」「先ほどの件」などの参照を理解できるのはなぜですか。",
+  "choices": [
+   "セッション内の会話コンテキストを利用するから",
+   "共有ルールがあるから",
+   "レポートが多いから",
+   "ロール階層が深いから"
+  ],
+  "answers": [
+   "セッション内の会話コンテキストを利用するから"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ セッション内の会話コンテキストを利用するから　これは正解です。直前までのやり取り（コンテキスト）を踏まえて参照を解決します。\n\n□ 共有ルールがあるから　これは不正解です。無関係です。\n\n□ レポートが多いから　これは不正解です。無関係です。\n\n□ ロール階層が深いから　これは不正解です。無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "会話コンテキスト",
+   "参照解決",
+   "セッション"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 111
+ },
+ {
+  "question": "管理者の設定作業を支援する、社内ユーザー向けのエージェント活用として適切なものはどれですか。",
+  "choices": [
+   "従業員（Employee）エージェントを社内向けに構成する",
+   "公開Webにゲストエージェントを置く",
+   "データローダーで一括更新する",
+   "レポートを共有する"
+  ],
+  "answers": [
+   "従業員（Employee）エージェントを社内向けに構成する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 従業員（Employee）エージェントを社内向けに構成する　これは正解です。社内の認証済みユーザー（管理者含む）を支援する用途に適します。\n\n□ 公開Webにゲストエージェントを置く　これは不正解です。外部顧客向けで、社内支援に合いません。\n\n□ データローダーで一括更新する　これは不正解です。データ入出力で無関係です。\n\n□ レポートを共有する　これは不正解です。支援エージェントではありません。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "従業員エージェント",
+   "社内支援",
+   "設定支援"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 112
+ },
+ {
+  "question": "プロンプトテンプレートを更新したあと、変更を反映するために必要な操作はどれですか。",
+  "choices": [
+   "保存して有効化（再アクティブ化）する",
+   "テンプレートを削除する",
+   "テンプレートを印刷する",
+   "背景色を変える"
+  ],
+  "answers": [
+   "保存して有効化（再アクティブ化）する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 保存して有効化（再アクティブ化）する　これは正解です。変更は保存・有効化することで反映されます。\n\n□ テンプレートを削除する　これは不正解です。反映と逆です。\n\n□ テンプレートを印刷する　これは不正解です。反映とは無関係です。\n\n□ 背景色を変える　これは不正解です。無関係です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "有効化",
+   "更新反映",
+   "プロンプトテンプレート"
+  ],
+  "source": "jpnshiken",
+  "diff": 1,
+  "id": 113
+ },
+ {
+  "question": "決まった形式（構造化された出力）でテキストを生成させたい場合に、柔軟に対応できるテンプレート種別はどれですか。",
+  "choices": [
+   "フレックス（Flex）",
+   "項目生成（Field Generation）",
+   "営業メール（Sales Email）",
+   "レコード要約（Record Summary）"
+  ],
+  "answers": [
+   "フレックス（Flex）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ フレックス（Flex）　これは正解です。汎用用途向けで、独自の入力や出力形式に柔軟に対応できます。\n\n□ 項目生成（Field Generation）　これは不正解です。項目への単一値生成に特化しています。\n\n□ 営業メール（Sales Email）　これは不正解です。メール生成専用です。\n\n□ レコード要約（Record Summary）　これは不正解です。要約専用です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "Flex",
+   "構造化出力",
+   "汎用"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 114
+ },
+ {
+  "question": "Flex プロンプトテンプレートで、プロンプトに渡すデータの入り口として定義するものはどれですか。",
+  "choices": [
+   "入力リソース（inputs/resources）",
+   "検証ルール",
+   "共有ルール",
+   "承認ステップ"
+  ],
+  "answers": [
+   "入力リソース（inputs/resources）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 入力リソース（inputs/resources）　これは正解です。Flex では渡すデータを入力リソースとして定義します。\n\n□ 検証ルール　これは不正解です。保存時チェックで無関係です。\n\n□ 共有ルール　これは不正解です。レコード共有の設定です。\n\n□ 承認ステップ　これは不正解です。承認プロセスの構成要素です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "入力リソース",
+   "Flex",
+   "inputs"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 115
+ },
+ {
+  "question": "「Answer Questions with Knowledge」アクションが回答を生成するために内部で使う仕組みはどれですか。",
+  "choices": [
+   "検索インデックスとリトリーバー",
+   "承認プロセス",
+   "入力規則",
+   "ロール階層"
+  ],
+  "answers": [
+   "検索インデックスとリトリーバー"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 検索インデックスとリトリーバー　これは正解です。インデックスからリトリーバーで関連チャンクを取得し、回答の根拠にします。\n\n□ 承認プロセス　これは不正解です。承認自動化で無関係です。\n\n□ 入力規則　これは不正解です。保存時チェックで無関係です。\n\n□ ロール階層　これは不正解です。共有の仕組みで無関係です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "リトリーバー",
+   "検索インデックス",
+   "ナレッジ回答"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 116
+ },
+ {
+  "question": "リトリーバーが返すチャンク数について、一般に正しいのはどれですか。",
+  "choices": [
+   "関連度の高い上位N件のチャンクを返す",
+   "常に全件を返す",
+   "1件も返さない",
+   "完全にランダムに返す"
+  ],
+  "answers": [
+   "関連度の高い上位N件のチャンクを返す"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 関連度の高い上位N件のチャンクを返す　これは正解です。質問に近い上位の関連チャンクのみを返し、プロンプトに供給します。\n\n□ 常に全件を返す　これは不正解です。全件は渡さず、関連上位に絞ります。\n\n□ 1件も返さない　これは不正解です。関連があれば返します。\n\n□ 完全にランダムに返す　これは不正解です。関連度に基づきます。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "上位N件",
+   "関連度",
+   "チャンク"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 117
+ },
+ {
+  "question": "データライブラリのナレッジ内容を更新したとき、検索に反映させるために起きることはどれですか。",
+  "choices": [
+   "更新内容がインデックスに反映（再インデックス）される",
+   "レポートが自動作成される",
+   "共有ルールが変わる",
+   "ロールが増える"
+  ],
+  "answers": [
+   "更新内容がインデックスに反映（再インデックス）される"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 更新内容がインデックスに反映（再インデックス）される　これは正解です。内容変更は検索インデックスに反映され、検索結果へ反映されます。\n\n□ レポートが自動作成される　これは不正解です。無関係です。\n\n□ 共有ルールが変わる　これは不正解です。無関係です。\n\n□ ロールが増える　これは不正解です。無関係です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=004333412&type=1",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "再インデックス",
+   "更新反映",
+   "検索インデックス"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 118
+ },
+ {
+  "question": "エージェントのテストに使えるサンドボックスの種別として正しいものを2つ選びなさい。",
+  "choices": [
+   "Full（フルコピー）サンドボックス",
+   "Developer サンドボックス",
+   "本番組織",
+   "データローダー"
+  ],
+  "answers": [
+   "Full（フルコピー）サンドボックス",
+   "Developer サンドボックス"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Full（フルコピー）サンドボックス　これは正解です。本番に近いデータでテストできるサンドボックス種別です。\n\n□ Developer サンドボックス　これは正解です。開発・単体テスト向けのサンドボックス種別です。\n\n□ 本番組織　これは不正解です。サンドボックスではなく、テスト用途には不適切です。\n\n□ データローダー　これは不正解です。データ入出力ツールで、サンドボックスではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": true,
+  "domain": "deploy",
+  "keywords": [
+   "サンドボックス",
+   "Full",
+   "Developer"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 119
+ },
+ {
+  "question": "Testing Center の評価結果から把握できるものとして適切なものはどれですか。",
+  "choices": [
+   "テストケースに対する期待挙動の達成度",
+   "サーバーのCPU使用率",
+   "ユーザーの私的なメール",
+   "請求金額の合計"
+  ],
+  "answers": [
+   "テストケースに対する期待挙動の達成度"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ テストケースに対する期待挙動の達成度　これは正解です。期待する応答やアクションにどれだけ一致したかを把握できます。\n\n□ サーバーのCPU使用率　これは不正解です。インフラ指標で対象外です。\n\n□ ユーザーの私的なメール　これは不正解です。対象外です。\n\n□ 請求金額の合計　これは不正解です。会計の話で無関係です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/view-test-results",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "達成度",
+   "評価"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 120
+ },
+ {
+  "question": "ガバナンスの観点で、どのモデルがどのように使われたかを把握できることの利点はどれですか。",
+  "choices": [
+   "透明性が高まり、監査や説明責任を果たしやすくなる",
+   "レポートが自動で増える",
+   "共有が自動で広がる",
+   "ロールが自動で減る"
+  ],
+  "answers": [
+   "透明性が高まり、監査や説明責任を果たしやすくなる"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 透明性が高まり、監査や説明責任を果たしやすくなる　これは正解です。利用状況の把握は透明性・説明責任の確保に役立ちます。\n\n□ レポートが自動で増える　これは不正解です。利点の説明ではありません。\n\n□ 共有が自動で広がる　これは不正解です。無関係です。\n\n□ ロールが自動で減る　これは不正解です。無関係です。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "透明性",
+   "監査",
+   "説明責任"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 121
+ },
+ {
+  "question": "ユーザーからの「役に立った／立たなかった」などのフィードバックを集める主な目的はどれですか。",
+  "choices": [
+   "改善点を特定してエージェントを継続的に最適化するため",
+   "レコードを削除するため",
+   "ロールを変更するため",
+   "タイムゾーンを変えるため"
+  ],
+  "answers": [
+   "改善点を特定してエージェントを継続的に最適化するため"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 改善点を特定してエージェントを継続的に最適化するため　これは正解です。フィードバックは弱点の特定と継続的改善に役立ちます。\n\n□ レコードを削除するため　これは不正解です。目的が異なります。\n\n□ ロールを変更するため　これは不正解です。無関係です。\n\n□ タイムゾーンを変えるため　これは不正解です。無関係です。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "フィードバック",
+   "継続的改善",
+   "最適化"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 122
  }
 ]
