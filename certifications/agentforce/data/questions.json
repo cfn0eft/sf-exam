@@ -1931,5 +1931,317 @@
   "source": "jpnshiken",
   "diff": 1,
   "id": 80
+ },
+ {
+  "question": "Agentforce で、よくある一般的な問い合わせに最初から対応できるよう用意されている仕組みはどれですか。",
+  "choices": [
+   "標準トピック（General FAQ など）",
+   "カスタムApexクラス",
+   "新規サンドボックス",
+   "レポートタイプ"
+  ],
+  "answers": [
+   "標準トピック（General FAQ など）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 標準トピック（General FAQ など）　これは正解です。Salesforce が提供する定義済みトピックで、一般的な問い合わせにすぐ対応できます。\n\n□ カスタムApexクラス　これは不正解です。独自処理の実装で、既製の対応範囲ではありません。\n\n□ 新規サンドボックス　これは不正解です。テスト環境で無関係です。\n\n□ レポートタイプ　これは不正解です。レポートの枠組みで無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "標準トピック",
+   "General FAQ",
+   "トピック"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 81
+ },
+ {
+  "question": "ユーザーの発話に対して、エージェントが「どのトピックで対応するか」を決めるのは何ですか。",
+  "choices": [
+   "推論エンジンによるトピックの分類・選択",
+   "検証ルール",
+   "共有ルール",
+   "承認プロセス"
+  ],
+  "answers": [
+   "推論エンジンによるトピックの分類・選択"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 推論エンジンによるトピックの分類・選択　これは正解です。Atlas 推論エンジンが発話の意図を解釈し、適切なトピックを選びます。\n\n□ 検証ルール　これは不正解です。保存時チェックで無関係です。\n\n□ 共有ルール　これは不正解です。レコード共有の設定です。\n\n□ 承認プロセス　これは不正解です。承認自動化で無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "トピック選択",
+   "推論エンジン",
+   "分類"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 82
+ },
+ {
+  "question": "エージェントに、特定の話題を扱わせない・決まった手順を守らせるなどの制約を与える方法はどれですか。",
+  "choices": [
+   "トピックやアクションの指示（instructions）に制約を明記する",
+   "項目レベルセキュリティを変更する",
+   "ロールアップ集計を作る",
+   "レポートを購読する"
+  ],
+  "answers": [
+   "トピックやアクションの指示（instructions）に制約を明記する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ トピックやアクションの指示（instructions）に制約を明記する　これは正解です。自然言語の指示でガードレール（制約・手順）を与えられます。\n\n□ 項目レベルセキュリティを変更する　これは不正解です。項目の参照可否で、挙動の制約ではありません。\n\n□ ロールアップ集計を作る　これは不正解です。集計機能で無関係です。\n\n□ レポートを購読する　これは不正解です。レポート配信で無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "指示",
+   "ガードレール",
+   "制約"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 83
+ },
+ {
+  "question": "エージェントの応答に、ボタンやレコードカードなどのUI要素を含めたいと考えています。これを可能にするのはどれですか。",
+  "choices": [
+   "リッチな応答を返すアクション",
+   "入力規則",
+   "共有ルール",
+   "承認ステップ"
+  ],
+  "answers": [
+   "リッチな応答を返すアクション"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ リッチな応答を返すアクション　これは正解です。アクションは構造化されたリッチな応答（UI要素を含む）を返せます。\n\n□ 入力規則　これは不正解です。保存時チェックで、応答表現とは無関係です。\n\n□ 共有ルール　これは不正解です。レコード共有の設定です。\n\n□ 承認ステップ　これは不正解です。承認プロセスの構成要素です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "リッチ応答",
+   "アクション",
+   "UI"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 84
+ },
+ {
+  "question": "プロンプトに、対象レコードに紐づく関連リスト（子レコード）の情報を含めたい。使えるものはどれですか。",
+  "choices": [
+   "関連リストをグラウンディング（差し込み）に使う",
+   "検証ルールを追加する",
+   "ロールを変更する",
+   "レポートを複製する"
+  ],
+  "answers": [
+   "関連リストをグラウンディング（差し込み）に使う"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 関連リストをグラウンディング（差し込み）に使う　これは正解です。関連リスト（子レコード）をプロンプトの文脈として差し込めます。\n\n□ 検証ルールを追加する　これは不正解です。保存時チェックで無関係です。\n\n□ ロールを変更する　これは不正解です。共有の設定で無関係です。\n\n□ レポートを複製する　これは不正解です。無関係です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "関連リスト",
+   "グラウンディング",
+   "差し込み"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 85
+ },
+ {
+  "question": "Flex プロンプトテンプレートの特徴として正しいものはどれですか。",
+  "choices": [
+   "独自の入力リソースを定義でき、汎用的な生成に使える",
+   "項目への単一値生成に限定される",
+   "メール送信専用である",
+   "レコード要約専用である"
+  ],
+  "answers": [
+   "独自の入力リソースを定義でき、汎用的な生成に使える"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 独自の入力リソースを定義でき、汎用的な生成に使える　これは正解です。Flex は他テンプレートで対応できない汎用用途向けで、入力リソースを自分で定義できます。\n\n□ 項目への単一値生成に限定される　これは不正解です。それは項目生成テンプレートの説明です。\n\n□ メール送信専用である　これは不正解です。営業メールテンプレートの用途と混同しています。\n\n□ レコード要約専用である　これは不正解です。レコード要約テンプレートの用途です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "Flex",
+   "入力リソース",
+   "汎用"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 86
+ },
+ {
+  "question": "Einstein Trust Layer で、外部モデルへ送る前に機密データを保護する処理はどれですか。",
+  "choices": [
+   "データマスキング",
+   "ロールアップ集計",
+   "承認プロセス",
+   "レポート購読"
+  ],
+  "answers": [
+   "データマスキング"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ データマスキング　これは正解です。機密データを検出してプレースホルダーへ置換し、外部モデルへの露出を防ぎます。\n\n□ ロールアップ集計　これは不正解です。集計機能で無関係です。\n\n□ 承認プロセス　これは不正解です。承認自動化で無関係です。\n\n□ レポート購読　これは不正解です。レポート配信で無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/einstein/genai/guide/trust.html",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "データマスキング",
+   "Trust Layer",
+   "機密保護"
+  ],
+  "source": "jpnshiken",
+  "diff": 1,
+  "id": 87
+ },
+ {
+  "question": "Agentforce のデータライブラリで根拠化（グラウンディング）できるソースとして適切なものはどれですか。",
+  "choices": [
+   "Salesforce ナレッジ記事やアップロードしたファイル",
+   "ユーザーのログインパスワード",
+   "システムログのみ",
+   "承認履歴のみ"
+  ],
+  "answers": [
+   "Salesforce ナレッジ記事やアップロードしたファイル"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Salesforce ナレッジ記事やアップロードしたファイル　これは正解です。データライブラリはナレッジやファイルを取り込んで根拠化できます。\n\n□ ユーザーのログインパスワード　これは不正解です。認証情報は根拠化の対象ではありません。\n\n□ システムログのみ　これは不正解です。ログ専用ではありません。\n\n□ 承認履歴のみ　これは不正解です。承認履歴専用ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.data_library_parent.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "データライブラリ",
+   "ナレッジ",
+   "ファイル"
+  ],
+  "source": "jpnshiken",
+  "diff": 1,
+  "id": 88
+ },
+ {
+  "question": "カスタムリトリーバーで、特定の条件に合うチャンクだけを返すよう制御するために設定するものはどれですか。",
+  "choices": [
+   "検索の絞り込み条件（フィルター）",
+   "共有ルール",
+   "ページレイアウト",
+   "承認ステップ"
+  ],
+  "answers": [
+   "検索の絞り込み条件（フィルター）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 検索の絞り込み条件（フィルター）　これは正解です。リトリーバーにフィルター条件を設定し、返すチャンクを制御できます。\n\n□ 共有ルール　これは不正解です。レコード共有の設定で、検索条件ではありません。\n\n□ ページレイアウト　これは不正解です。画面設定で無関係です。\n\n□ 承認ステップ　これは不正解です。承認プロセスの構成要素です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "リトリーバー",
+   "フィルター",
+   "検索条件"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 89
+ },
+ {
+  "question": "データライブラリのナレッジ検索が動作するための前提条件はどれですか。",
+  "choices": [
+   "検索インデックスが Ready（準備完了）であること",
+   "全ユーザーがシステム管理者であること",
+   "Apexトリガが無効であること",
+   "レポートが作成済みであること"
+  ],
+  "answers": [
+   "検索インデックスが Ready（準備完了）であること"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 検索インデックスが Ready（準備完了）であること　これは正解です。インデックス生成が完了して Ready になるまで、ナレッジ検索アクションは使えません。\n\n□ 全ユーザーがシステム管理者であること　これは不正解です。前提条件ではありません。\n\n□ Apexトリガが無効であること　これは不正解です。無関係です。\n\n□ レポートが作成済みであること　これは不正解です。無関係です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=004333412&type=1",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "検索インデックス",
+   "Ready",
+   "データライブラリ"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 90
+ },
+ {
+  "question": "多数のテストケースで、エージェントの応答をまとめて評価したいと考えています。使うものはどれですか。",
+  "choices": [
+   "Testing Center のバッチテスト",
+   "データローダー",
+   "承認プロセス",
+   "レポートビルダー"
+  ],
+  "answers": [
+   "Testing Center のバッチテスト"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Testing Center のバッチテスト　これは正解です。複数のテストケースをまとめて流し、応答を一括評価できます。\n\n□ データローダー　これは不正解です。データ入出力で、評価機能ではありません。\n\n□ 承認プロセス　これは不正解です。承認自動化で無関係です。\n\n□ レポートビルダー　これは不正解です。レポート作成で、評価ツールではありません。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/view-test-results",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "バッチテスト",
+   "評価"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 91
+ },
+ {
+  "question": "エージェントの品質を運用後に改善するために役立つデータとして、最も適切なものはどれですか。",
+  "choices": [
+   "会話ログ・利用指標・ユーザーフィードバック",
+   "レコードの背景色",
+   "ユーザーのフォントサイズ",
+   "組織のタイムゾーン"
+  ],
+  "answers": [
+   "会話ログ・利用指標・ユーザーフィードバック"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 会話ログ・利用指標・ユーザーフィードバック　これは正解です。これらの観測データをもとに失敗パターンを特定し、改善に活かします。\n\n□ レコードの背景色　これは不正解です。改善データではありません。\n\n□ ユーザーのフォントサイズ　これは不正解です。無関係です。\n\n□ 組織のタイムゾーン　これは不正解です。無関係です。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "会話ログ",
+   "フィードバック",
+   "改善"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 92
+ },
+ {
+  "question": "業務領域が大きく異なり、単一では複雑になりすぎる場合に検討する構成はどれですか。",
+  "choices": [
+   "領域ごとに分けたマルチエージェント構成",
+   "常に1つのエージェントに詰め込む",
+   "エージェントを使わない",
+   "毎回新しい組織を作る"
+  ],
+  "answers": [
+   "領域ごとに分けたマルチエージェント構成"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 領域ごとに分けたマルチエージェント構成　これは正解です。領域が大きく異なる場合は、専門化した複数エージェントに分けて連携させる構成を検討します。\n\n□ 常に1つのエージェントに詰め込む　これは不正解です。複雑化・保守困難の原因になります。\n\n□ エージェントを使わない　これは不正解です。要件を満たしません。\n\n□ 毎回新しい組織を作る　これは不正解です。構成の選択肢ではありません。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "マルチエージェント",
+   "専門化",
+   "構成判断"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 93
  }
 ]
