@@ -11096,7 +11096,7 @@
   },
   {
     "id": 520,
-    "question": "（質問全文）\nUniversal Containers は、商談が Closed/Won ステージに到達したときには編集できないようにしたいと考えています。\nこれを実現するために開発者が使用できる 2 つの戦略はどれですか?\n2つの回答を選択してください。",
+    "question": "Universal Containers は、商談が Closed/Won ステージに到達したときには編集できないようにしたいと考えています。\nこれを実現するために開発者が使用できる 2 つの戦略はどれですか?\n2つの回答を選択してください。",
     "choices": [
       "自動的に起動される承認プロセスを使用します。",
       "検証ルールを使用します。",
@@ -11248,13 +11248,13 @@
     "id": 526,
     "question": "Next Best Action 戦略では、Apex メソッドを呼び出す Enhance Element を使用して、さまざまな要因に基づいて連絡先の割引レベルを決定します。\nApex メソッドの正しい定義は何ですか?",
     "choices": [
-      "apex\nCopy\n@InvocableMethod\nglobal static List<List<Recommendation>> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }",
-      "apex\nCopy\n@InvocableMethod\nglobal Recommendation getLevel(ContactWrapper input)\n{ /*implementation*/ }",
-      "apex\nCopy\n@InvocableMethod\nglobal List<List<Recommendation>> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }",
-      "apex\nCopy\n@InvocableMethod\nglobal static List<Recommendation> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
+      "@InvocableMethod\nglobal static List<List<Recommendation>> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }",
+      "@InvocableMethod\nglobal Recommendation getLevel(ContactWrapper input)\n{ /*implementation*/ }",
+      "@InvocableMethod\nglobal List<List<Recommendation>> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }",
+      "@InvocableMethod\nglobal static List<Recommendation> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
     ],
     "answers": [
-      "apex\nCopy\n@InvocableMethod\nglobal static List<Recommendation> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
+      "@InvocableMethod\nglobal static List<Recommendation> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
     ],
     "explanation": "@InvocableMethod のメソッドは static で、入力/戻り値とも List 型である必要があります。\n□ D：正解。global static List<Recommendation> getLevel(List<ContactWrapper>) が正しい定義です（Recommendation を返す）。\n□ A/C：不正解。List<List<Recommendation>> は Enhance Element の戻り値型として不適切（A は冗長、C は static でも List<List> が不一致）。\n□ B：不正解。static でなく、入力/戻り値も List でないため無効です。\n参考：Invocable メソッド",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
@@ -11295,15 +11295,15 @@
   },
   {
     "id": 528,
-    "question": "Candidate _c カスタム オブジェクトには Primaryld_c カスタム フィールドが存在します。このフィールドは各候補者の ID 番号を保存するために使用され、スキーマ定義では Unique としてマークされています。\nデータ拡充プロセスの一環として、Universal Containers には、システム内のすべての候補者の更新されたデータを含む CSV ファイルがあります。ファイルには、各候補者の主な情報がデータ ポイントとして含まれています。Universal Containers は、すべてのデータ行がシステム内の候補者に正しくマッピングされていることを確認しながら、この情報を Salesforce にアップロードしたいと考えています。\nデータのアップロードを効率化するために、開発者はどの手法を実装する必要がありますか?",
+    "question": "Candidate__c カスタム オブジェクトには PrimaryId__c カスタム フィールドが存在します。このフィールドは各候補者の ID 番号を保存するために使用され、スキーマ定義では Unique としてマークされています。\nデータ拡充プロセスの一環として、Universal Containers には、システム内のすべての候補者の更新されたデータを含む CSV ファイルがあります。ファイルには、各候補者の主な情報がデータ ポイントとして含まれています。Universal Containers は、すべてのデータ行がシステム内の候補者に正しくマッピングされていることを確認しながら、この情報を Salesforce にアップロードしたいと考えています。\nデータのアップロードを効率化するために、開発者はどの手法を実装する必要がありますか?",
     "choices": [
-      "CSV を candidate__c に関連するカスタム オブジェクトにアップロードします。",
+      "CSV を Candidate__c に関連するカスタム オブジェクトにアップロードします。",
       "レコードを正しくマッピングするために挿入前トリガーを作成します。",
-      "Primarytd_c フィールド定義を更新して、外部 ID としてマークします。",
+      "PrimaryId__c フィールド定義を更新して、外部 ID としてマークします。",
       "レコードを正しくマッピングするために、保存前のフローを作成します。"
     ],
     "answers": [
-      "Primarytd_c フィールド定義を更新して、外部 ID としてマークします。"
+      "PrimaryId__c フィールド定義を更新して、外部 ID としてマークします。"
     ],
     "explanation": "□ C：正解。PrimaryId__c を外部 ID にすると、Data Loader 等の upsert で CSV 行を既存レコードに正しく突き合わせできます。外部 ID 項目はインデックスされます。\n□ A：不正解。別オブジェクトへの取込は要件と無関係です。\n□ B：不正解。挿入前トリガーでのマッピングは過剰で標準は外部 ID です。\n□ D：不正解。保存前フローはこの突合の標準手段ではありません。\n参考：外部 ID / upsert",
     "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.object_reference.meta/object_reference/sforce_api_objects_external_objects.htm",
@@ -11397,13 +11397,13 @@
     "id": 532,
     "question": "開発者は Expense__c オブジェクトで、削除前・挿入前・更新前の 3 つのトリガーを別々に定義していることを確認しました。トリガーのベストプラクティスに従うために開発者が実装すべき 2 つの手法はどれですか？",
     "choices": [
-      "Unity の 3 つのトリガーすべてが、すべてのイベントを含む Expense__c オブジェクトの単一のトリガーになります。",
+      "3 つのトリガーをすべて統合し、すべてのイベントを含む Expense__c オブジェクトの単一のトリガーにします。",
       "挿入前トリガーと更新前トリガーを統合し、削除アクションにフローを使用します。",
       "レコードが保存されるときに適切なロジックを実行するためのヘルパー クラスを作成します。",
-      "Expense __c オブジェクトの 3 つのトリガーをすべて維持しますが、Apex ロジックをトリガー定義から移動します。"
+      "Expense__c オブジェクトの 3 つのトリガーをすべて維持しますが、Apex ロジックをトリガー定義から移動します。"
     ],
     "answers": [
-      "Unity の 3 つのトリガーすべてが、すべてのイベントを含む Expense__c オブジェクトの単一のトリガーになります。",
+      "3 つのトリガーをすべて統合し、すべてのイベントを含む Expense__c オブジェクトの単一のトリガーにします。",
       "レコードが保存されるときに適切なロジックを実行するためのヘルパー クラスを作成します。"
     ],
     "explanation": "2つ選びます。トリガーのベストプラクティスは「1 オブジェクト 1 トリガー」と「ロジックをヘルパークラスに分離」です。\n□ A：正解。3 つを全イベントを含む単一トリガーに統合します。\n□ C：正解。ロジックはヘルパークラスに置きます。\n□ B：不正解。削除だけフローに分けるのは一貫しません。\n□ D：不正解。3 トリガーを残す前提が誤りです。\n参考：トリガーのベストプラクティス",
@@ -11445,15 +11445,15 @@
   },
   {
     "id": 534,
-    "question": "開発者は、Apex クラスを使用するカスタム注文管理アプリを作成しました。注文は、Order オブジェクトと、Order と主従関係にある OrderlItem オブジェクトによって表されます。注文処理中に、注文が複数の注文に分割される場合があります。\nコードで既存の OrderItem レコードの一部を新しい Order レコードに移動できるようにするには、開発者は何をする必要がありますか?",
+    "question": "開発者は、Apex クラスを使用するカスタム注文管理アプリを作成しました。注文は、Order オブジェクトと、Order と主従関係にある OrderItem オブジェクトによって表されます。注文処理中に、注文が複数の注文に分割される場合があります。\nコードで既存の OrderItem レコードの一部を新しい Order レコードに移動できるようにするには、開発者は何をする必要がありますか?",
     "choices": [
       "Apex クラス宣言に共有せずに追加します。",
       "マスター詳細関係を外部参照関係に変更します。",
       "OrderItem と Order の間にジャンクション オブジェクトを作成します。",
-      "マスター詳細関係の再印刷を許可するオプションを選択します。"
+      "マスター詳細関係で親レコードの再設定（再ペアレント）を許可するオプションを選択します。"
     ],
     "answers": [
-      "マスター詳細関係の再印刷を許可するオプションを選択します。"
+      "マスター詳細関係で親レコードの再設定（再ペアレント）を許可するオプションを選択します。"
     ],
     "explanation": "□ D：正解。マスター詳細で「再ペアレント（親の付け替え）を許可」を有効にすると、子（OrderItem）を別の親（Order）へ移せます。\n□ A：不正解。without sharing は共有の話で親付け替えとは無関係です。\n□ B：不正解。外部参照関係に変えるのは適切でありません。\n□ C：不正解。ジャンクションは多対多用です。\n参考：マスター詳細の再ペアレント",
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.relationships_considerations.htm&type=5",
@@ -11598,18 +11598,18 @@
   },
   {
     "id": 540,
-    "question": "Apex で @lnvocableMethod アノテーションを使用する際の 3 つの考慮事項は何ですか?\n3つの回答を選択してください",
+    "question": "Apex で @InvocableMethod アノテーションを使用する際の 3 つの考慮事項は何ですか?\n3つの回答を選択してください",
     "choices": [
-      "Apex クラスごとに、@invecableMethod アノテーションを使用するメソッドを 1 つだけ定義できます。",
-      "@invecableMethod アノテーションを使用するメソッドには、複数の入力パラメータを設定できます。",
-      "@invocablemethod アノテーションを使用するメソッドは、static として宣言する必要があります。",
-      "GO @invocablemethod アノテーションを使用するメソッドは、戻り値を定義する必要があります。",
-      "@invocableMethod アノテーションを使用するメソッドは、Public または Global として宣言できます。"
+      "Apex クラスごとに、@InvocableMethod アノテーションを使用するメソッドを 1 つだけ定義できます。",
+      "@InvocableMethod アノテーションを使用するメソッドには、複数の入力パラメータを設定できます。",
+      "@InvocableMethod アノテーションを使用するメソッドは、static として宣言する必要があります。",
+      "@InvocableMethod アノテーションを使用するメソッドは、戻り値を定義する必要があります。",
+      "@InvocableMethod アノテーションを使用するメソッドは、Public または Global として宣言できます。"
     ],
     "answers": [
-      "Apex クラスごとに、@invecableMethod アノテーションを使用するメソッドを 1 つだけ定義できます。",
-      "@invocablemethod アノテーションを使用するメソッドは、static として宣言する必要があります。",
-      "@invocableMethod アノテーションを使用するメソッドは、Public または Global として宣言できます。"
+      "Apex クラスごとに、@InvocableMethod アノテーションを使用するメソッドを 1 つだけ定義できます。",
+      "@InvocableMethod アノテーションを使用するメソッドは、static として宣言する必要があります。",
+      "@InvocableMethod アノテーションを使用するメソッドは、Public または Global として宣言できます。"
     ],
     "explanation": "3つ選びます。@InvocableMethod の考慮事項です。\n□ A：正解。1 クラスにつき @InvocableMethod は 1 つだけ定義できます。\n□ C：正解。メソッドは static で宣言する必要があります。\n□ E：正解。Public または Global で宣言できます。\n□ B：不正解。入力パラメータは 1 つ（List）です。\n□ D：不正解。戻り値は必須ではありません（void も可）。\n参考：Invocable メソッド",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
@@ -11625,7 +11625,7 @@
   },
   {
     "id": 541,
-    "question": "（質問全文）\nUniversal Containersは最近、ClassicからLightning Experienceに移行しました。同社のビジネスプロセスの一つでは、ユーザーが商談詳細ページでカスタムボタンを押した際に、商談オブジェクトの特定の値をHTTP RESTコールアウト経由で外部の注文管理システムに送信することが求められています。\n例のフィールド:\n* 名前\n* 額\n* アカウント\nビジネス要件を満たすために開発者が実装する必要がある 2 つの方法はどれですか?\n2つの回答を選択してください。",
+    "question": "Universal Containersは最近、ClassicからLightning Experienceに移行しました。同社のビジネスプロセスの一つでは、ユーザーが商談詳細ページでカスタムボタンを押した際に、商談オブジェクトの特定の値をHTTP RESTコールアウト経由で外部の注文管理システムに送信することが求められています。\n例のフィールド:\n* 名前\n* 額\n* アカウント\nビジネス要件を満たすために開発者が実装する必要がある 2 つの方法はどれですか?\n2つの回答を選択してください。",
     "choices": [
       "HTTP REST コールアウトを実行するカスタム Visualforce クイックアクションを作成し、商談の詳細ページで使用します。",
       "Opportunity オブジェクトに、@future (callout=true) を使用してヘルパー メソッドを呼び出して HTTP REST コールアウトを実行する更新後トリガーを作成します。",
@@ -11699,7 +11699,7 @@
   },
   {
     "id": 544,
-    "question": "（質問全文）\n開発者は、既存の Payment クラスの実装を提供する CreditCardPayment クラスを作成する必要があります。\npublic virtual class Payment {\npublic virtual void makePayment(Decimal amount) {\n// implementation\n}\n}\nWhich is the correct implementation?",
+    "question": "開発者は、既存の Payment クラスの実装を提供する CreditCardPayment クラスを作成する必要があります。\npublic virtual class Payment {\npublic virtual void makePayment(Decimal amount) {\n// implementation\n}\n}\n正しい実装はどれですか?",
     "choices": [
       "public class CreditCardPayment extends Payment { public virtual void makePayment(Decimal amount){ /* implementation */ } }",
       "public class CreditCardPayment implements Payment { public virtual void makePayment(Decimal amount) { /* implementation */ } }",
@@ -11726,7 +11726,7 @@
     "id": 545,
     "question": "次のコード スニペットは、2,000 件を超えるリード レコードがある環境で Lightning Web コンポーネントによって実行されます。\n\nApex トランザクション内でどのガバナー制限を超える可能性がありますか?",
     "choices": [
-      "発行されたSOOLクエリの合計数",
+      "発行されたSOQLクエリの合計数",
       "発行されたDMLステートメントの合計数",
       "DML文の結果として処理されたレコードの合計数"
     ],
@@ -11821,9 +11821,9 @@
   },
   {
     "id": 549,
-    "question": "Universal Containers の管理者は、システム内で削除できるのは廃止されたコンテナのみであることを保証したいと考えています。ビジネス要件を満たすために、Salesforce 開発者は Container _c オブジェクト内の Status _c カスタム フィールドの選択リスト値として「廃止」を追加します。\n開発者が「廃止」ステータスのコンテナ レコードのみを削除できるようにするために使用できる 2 つのアプローチはどれですか。\n2つの回答を選択してください",
+    "question": "Universal Containers の管理者は、システム内で削除できるのは廃止されたコンテナのみであることを保証したいと考えています。ビジネス要件を満たすために、Salesforce 開発者は Container__c オブジェクト内の Status__c カスタム フィールドの選択リスト値として「廃止」を追加します。\n開発者が「廃止」ステータスのコンテナ レコードのみを削除できるようにするために使用できる 2 つのアプローチはどれですか。\n2つの回答を選択してください",
     "choices": [
-      "レコードトリガーの欠陥の前",
+      "レコードトリガーフローの前",
       "Apexトリガー",
       "レコードトリガーフローの後",
       "検証ルール"
@@ -11832,7 +11832,7 @@
       "Apexトリガー",
       "検証ルール"
     ],
-    "explanation": "2つ選びます。「廃止」状態のレコードのみ削除可能にする手段です。\n□ B：正解。削除前トリガーで Status__c が「廃止」でなければ addError して削除を止められます。\n□ D：正解。検証ルールも条件を強制できます（ただし削除自体は制限できないため、削除制限の主役はトリガー）。\n□ A：不正解。「レコードトリガーの欠陥の前」は意味をなしません。\n□ C：不正解。削除後フローでは削除自体を止められません。\n参考：トリガー／検証ルール",
+    "explanation": "2つ選びます。「廃止」状態のレコードのみ削除可能にする手段です。\n□ B：正解。削除前トリガーで Status__c が「廃止」でなければ addError して削除を止められます。\n□ D：正解。検証ルールも条件を強制できます（ただし削除自体は制限できないため、削除制限の主役はトリガー）。\n□ A：不正解。レコードトリガーフロー（前）は項目値の検証はできますが、削除操作自体は中止できません。\n□ C：不正解。削除後フローでは削除自体を止められません。\n参考：トリガー／検証ルール",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers.htm",
     "multi": true,
     "domain": "logic",
@@ -11898,7 +11898,7 @@
   },
   {
     "id": 552,
-    "question": "Universal Hiring は、Salesforce を使用して求人応募を取得します。Salesforce 管理者は、マスター オブジェクトとして機能する Job__c と詳細として機能する Application_c の 2 つのカスタム オブジェクトを作成しました。\nJob__c オブジェクト内では、カスタムの複数選択選択リストである preferred _Locations__c に、その職位の承認済み州のリストが含まれています。各 Job_Application__c レコードは、マスター詳細関係を通じてシステム内の連絡先に関連付けられています。\n採用担当者は、連絡先の郵送先州の値が、Job_Application__c レコード内の Preferred Locations__c フィールドで選択された値と一致するかどうかを表示する機能を要求しました。採用担当者は、連絡先の郵送先州に変更が発生した場合でも、この値が同期されたままになることを望んでいます。\nビジネス要件を満たすために開発者が使用すべき推奨ツールは何ですか?",
+    "question": "Universal Hiring は、Salesforce を使用して求人応募を取得します。Salesforce 管理者は、マスター オブジェクトとして機能する Job__c と詳細として機能する Job_Application__c の 2 つのカスタム オブジェクトを作成しました。\nJob__c オブジェクト内では、カスタムの複数選択選択リストである Preferred_Locations__c に、その職位の承認済み州のリストが含まれています。各 Job_Application__c レコードは、マスター詳細関係を通じてシステム内の連絡先に関連付けられています。\n採用担当者は、連絡先の郵送先州の値が、Job_Application__c レコード内の Preferred_Locations__c フィールドで選択された値と一致するかどうかを表示する機能を要求しました。採用担当者は、連絡先の郵送先州に変更が発生した場合でも、この値が同期されたままになることを望んでいます。\nビジネス要件を満たすために開発者が使用すべき推奨ツールは何ですか?",
     "choices": [
       "Apex トリガー",
       "ロールアップサマリーフィールド",
@@ -11923,15 +11923,15 @@
     "id": 553,
     "question": "次のコードスニペットの結果は何でしょうか？\npublic void doWork(Account acct) {\n  for (Integer i = 0; i <= 200; i++) {\n    insert acct;\n  }\n}",
     "choices": [
-      "アカウントが挿入されます。",
-      "アカウントが挿入されました。",
+      "1 個のアカウントが挿入されます。",
+      "アカウントは挿入されません。",
       "200 個のアカウントが挿入されます。",
-      "201 個のアカウントが挿入されました。"
+      "201 個のアカウントが挿入されます。"
     ],
     "answers": [
-      "201 個のアカウントが挿入されました。"
+      "201 個のアカウントが挿入されます。"
     ],
-    "explanation": "for (i=0; i<=200; i++) は 0〜200 の 201 回実行され、毎回 insert されます。\n□ D：正解。201 件の取引先が挿入されます。\n□ A/B：不正解。1 件ではありません。\n□ C：不正解。200 件ではなく 201 件です（境界に注意）。\n参考：ループ構文",
+    "explanation": "for (i=0; i<=200; i++) は 0〜200 の 201 回実行され、毎回 insert されます。\n□ D：正解。201 件の取引先が挿入されます。\n□ A：不正解。1 件だけではありません。\n□ B：不正解。挿入は実行され、エラーにはなりません。\n□ C：不正解。200 件ではなく 201 件です（境界に注意）。\n参考：ループ構文",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
     "multi": false,
     "domain": "logic",
@@ -11948,12 +11948,12 @@
     "question": "Universal Containers では、ユーザーが複数のレコードを編集できるようにする Visualforce ページを表示するリスト ボタンが必要です。\nこの要件をサポートする Visualforce 機能はどれですか?",
     "choices": [
       "カスタム リスト コントローラー拡張を備えた標準コントローラー",
-      "recorasetvar ページ属性を持つカスタム リスト コントローラ",
-      "コントローラ拡張と <spex:listButton> タグ",
-      "標準コントローラと recordsetvar ページ属性"
+      "recordSetVar ページ属性を持つカスタム リスト コントローラ",
+      "コントローラ拡張と <apex:listButton> タグ",
+      "標準コントローラと recordSetVar ページ属性"
     ],
     "answers": [
-      "標準コントローラと recordsetvar ページ属性"
+      "標準コントローラと recordSetVar ページ属性"
     ],
     "explanation": "□ D：正解。標準コントローラ＋<apex:page> の recordSetVar 属性で複数レコードを扱え、一括編集用のリストボタンに最適です。\n□ A：不正解。recordSetVar を使うのが直接的で最適です。\n□ B：不正解。「カスタムリストコントローラ」という概念はありません。\n□ C：不正解。<apex:listButton> はページのタグではありません。\n参考：recordSetVar",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.pages.meta/pages/pages_intro.htm",
@@ -12045,13 +12045,13 @@
     "id": 558,
     "question": "開発者は、外部 Web アプリケーションで使用されるカスタム SOAP Web サービスを実装する必要があります。\n開発者は、Web アプリケーションで使用されないヘルパー メソッドを Web サービス クラスの実装に含めることを選択します。\nどのコード セグメントがクラスとメソッドの正しい宣言を示していますか?",
     "choices": [
-      "apex\nCopy\nwebservice class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nglobal static String updateRecords() { /* implementation ... */ }\n}",
-      "apex\nCopy\nglobal class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nwebservice static String updateRecords() { /* implementation ... */ }\n}",
-      "apex\nCopy\nwebservice class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nwebservice static String updateRecords() { /* implementation ... */ }\n}",
-      "apex\nCopy\nglobal class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nglobal String updateRecords() { /* implementation ... */ }\n}"
+      "webservice class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nglobal static String updateRecords() { /* implementation ... */ }\n}",
+      "global class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nwebservice static String updateRecords() { /* implementation ... */ }\n}",
+      "webservice class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nwebservice static String updateRecords() { /* implementation ... */ }\n}",
+      "global class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nglobal String updateRecords() { /* implementation ... */ }\n}"
     ],
     "answers": [
-      "apex\nCopy\nglobal class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nwebservice static String updateRecords() { /* implementation ... */ }\n}"
+      "global class WebServiceClass {\nprivate Boolean helperMethod() { /* implementation ... */ }\nwebservice static String updateRecords() { /* implementation ... */ }\n}"
     ],
     "explanation": "SOAP Web サービスは外部公開メソッドに webservice キーワード、クラスは global が必要です。ヘルパーは private で隠せます。\n□ B：正解。global class＋webservice static String updateRecords()＋private helperMethod() の構成が正しいです。\n□ A/C：不正解。クラスに webservice は付けられません（global が必要）。\n□ D：不正解。公開メソッドに webservice キーワードがありません。\n参考：Apex の SOAP Web サービス",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
@@ -12067,11 +12067,11 @@
   },
   {
     "id": 559,
-    "question": "次のコード スニペットを検討してください。\napex\nCopyEdit\npublic class with sharing AccountsController {\n@AuraEnabled\npublic List<Account> getAllAccounts(){\nreturn [SELECT Id, Name, Industry FROM Account];\n}\n}\nApex テストクラス スニペット:\napex\nCopyEdit\n@isTest\nprivate class with sharing AccountsController_Test {\n@testSetup\nprivate static void makeData(){\nUser user1 = [SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1]; User user2 = [SELECT Id FROM User WHERE Profile.Name = 'Standard User' AND UserName = 'test@test.\ncom' AND isActive = true LIMIT 1];\nTestUtils.insertAccounts(10, user1.Id);\nTestUtils.insertAccounts(20, user2.Id);\n}\n@isTest\nprivate static void getAllAccounts_StandardUser_Test(){\nList<Account> result = AccountsController.getAllAccounts();\nSystem.assertEquals(20, result.size());\n}\n}\nテストクラスが実行されると、アサーションは失敗します。\nテストメソッドが正常に実行されるようにするには、開発者は Apex テストメソッドにどのような変更を実装する必要がありますか?",
+    "question": "次のコード スニペットを検討してください。\npublic class with sharing AccountsController {\n@AuraEnabled\npublic List<Account> getAllAccounts(){\nreturn [SELECT Id, Name, Industry FROM Account];\n}\n}\nApex テストクラス スニペット:\n@isTest\nprivate class with sharing AccountsController_Test {\n@testSetup\nprivate static void makeData(){\nUser user1 = [SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = true LIMIT 1]; User user2 = [SELECT Id FROM User WHERE Profile.Name = 'Standard User' AND UserName = 'test@test.\ncom' AND isActive = true LIMIT 1];\nTestUtils.insertAccounts(10, user1.Id);\nTestUtils.insertAccounts(20, user2.Id);\n}\n@isTest\nprivate static void getAllAccounts_StandardUser_Test(){\nList<Account> result = AccountsController.getAllAccounts();\nSystem.assertEquals(20, result.size());\n}\n}\nテストクラスが実行されると、アサーションは失敗します。\nテストメソッドが正常に実行されるようにするには、開発者は Apex テストメソッドにどのような変更を実装する必要がありますか?",
     "choices": [
       "管理者ユーザーをメモリに照会し、行 15 と 16 を System.runAs(user); メソッド内に囲みます。",
       "標準ユーザーをメモリに照会し、行 15 と 16 を System.runAs(); メソッド内に囲みます。",
-      "12 行目に @isTest(seeAllData=true); を追加し、15 行目と 16 行目を Test.startTest(); と Test で囲みます。\nstopTest(); を実行します。",
+      "12 行目に @isTest(seeAllData=true); を追加し、15 行目と 16 行目を Test.startTest(); と Test.stopTest(); で囲みます。",
       "14 行目に System.runAs(user); を追加し、15 行目を Test.startTest(); と Test.stopTest(); で囲みます。"
     ],
     "answers": [
@@ -12151,11 +12151,11 @@
       "Lightning Web コンポーネント",
       "Visualforce コンポーネント",
       "Visualforce ページ",
-      "オーラコンポーネント"
+      "Aura コンポーネント"
     ],
     "answers": [
       "Lightning Web コンポーネント",
-      "オーラコンポーネント"
+      "Aura コンポーネント"
     ],
     "explanation": "2つ選びます。ステートフルクライアントでタッチ対応の応答的アプリを作れる技術です。\n□ A：正解。Lightning Web コンポーネントは高性能でタッチ対応です。\n□ D：正解。Aura コンポーネントもレスポンシブ/タッチに対応します。\n□ B：不正解。Visualforce コンポーネントは対象外です。\n□ C：不正解。Visualforce ページは主にサーバ描画で適しません。\n参考：Lightning コンポーネント",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
@@ -12396,7 +12396,7 @@
   },
   {
     "id": 572,
-    "question": "AW Computing の開発者は、カスタム オブジェクト Pricing Structure c 内に保存されたレコードを活用するプログラムによるカスタマイズをサポートするテスト クラスを作成するように求められています。AW Computing では、ストアの各アイテムに対して 500 を超えるレコードにわたる複雑な価格設定構造を持っています。\nテスト クラスの実行時に Pricing _Structure__c レコードが利用可能であることを保証するために、開発者が使用できる 2 つのアプローチはどれですか。\n2つの回答を選択してください",
+    "question": "AW Computing の開発者は、カスタム オブジェクト Pricing_Structure__c 内に保存されたレコードを活用するプログラムによるカスタマイズをサポートするテスト クラスを作成するように求められています。AW Computing では、ストアの各アイテムに対して 500 を超えるレコードにわたる複雑な価格設定構造を持っています。\nテスト クラスの実行時に Pricing_Structure__c レコードが利用可能であることを保証するために、開発者が使用できる 2 つのアプローチはどれですか。\n2つの回答を選択してください",
     "choices": [
       "Test Data Factory クラスを使う。",
       "@isTest(SeeAllData=true) アノテーションを使う。",
@@ -12522,12 +12522,12 @@
     "choices": [
       "for ループの外側にある既存の商談をクエリします。",
       "作成時に商談のすべての必須フィールドが追加されているかどうかを確認します。",
-      "機会を保存する DML を for ループの外側に移動します。",
-      "データベース クエリを使用して機会を照会します。"
+      "商談を保存する DML を for ループの外側に移動します。",
+      "データベース クエリを使用して商談を照会します。"
     ],
     "answers": [
       "for ループの外側にある既存の商談をクエリします。",
-      "機会を保存する DML を for ループの外側に移動します。"
+      "商談を保存する DML を for ループの外側に移動します。"
     ],
     "explanation": "2つ選びます。179 件の一括取込で失敗するのはバルク化不足です。\n□ A：正解。既存商談の照会（SOQL）をループの外に出します。\n□ C：正解。insert（DML）をループの外に出し、リストにためて 1 回で実行します。\n□ B：不正解。必須項目の確認は本エラー（制限超過）の解ではありません。\n□ D：不正解。Database.query への変更は本質的解決ではありません。\n参考：トリガーのバルク化",
     "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_bulk_idioms.htm",
@@ -12722,13 +12722,13 @@
     "id": 585,
     "question": "開発者は、連絡先情報を収集するためのカスタム Lightning Web コンポーネントを構築するタスクを負っています。\nフォームは組織内のさまざまなタイプのユーザー間で共有されます。特定のフィールドのみが特定のユーザー グループによって編集および表示できるようにするというセキュリティ要件があります。\nセキュリティ要件をサポートするために、開発者は Lightning Web コンポーネントで何を使用すればよいでしょうか?",
     "choices": [
-      "aura:input（オーラ入力）",
-      "force:inputField（強制入力）",
-      "ui:input（UI入力）",
-      "lightning-input-field（lightning 入力項目）"
+      "aura:input",
+      "force:inputField",
+      "ui:input",
+      "lightning-input-field"
     ],
     "answers": [
-      "lightning-input-field（lightning 入力項目）"
+      "lightning-input-field"
     ],
     "explanation": "□ D：正解。lightning-input-field はユーザーの項目レベルセキュリティ（FLS）を尊重し、見える/編集できる項目のみを扱えるため、要件に合致します。\n□ A/B/C：不正解。これらは正しいコンポーネント名ではなく、FLS を自動で尊重する標準入力ではありません。\n参考：lightning-input-field",
     "reference_url": "https://developer.salesforce.com/docs/component-library/documentation/en/lwc",
@@ -12769,23 +12769,23 @@
   },
   {
     "id": 587,
-    "question": "開発者は、レコードが特定の条件を満たしたときに送信メッセージを送信したいと考えています。\nこのユースケースを満たす 2 つの機能はどれですか?",
+    "question": "開発者は、レコードが特定の条件を満たしたときにアウトバウンドメッセージを送信したいと考えています。\nこのユースケースを満たす 2 つの機能はどれですか?",
     "choices": [
-      "Flow Builder を使用して、レコード条件を確認し、送信メッセージを送信できます。",
-      "承認プロセスを使用すると、レコードの条件を確認し、Apex コードなしで送信メッセージを送信できます。",
-      "エンタイトルメントプロセスを使用すると、レコード条件を確認し、Apex コードなしで送信メッセージを送信できます。",
-      "次善のアクションを使用して、レコード条件を確認し、送信メッセージを送信できます。"
+      "Flow Builder を使用して、レコード条件を確認し、アウトバウンドメッセージを送信できます。",
+      "承認プロセスを使用すると、レコードの条件を確認し、Apex コードなしでアウトバウンドメッセージを送信できます。",
+      "エンタイトルメントプロセスを使用すると、レコード条件を確認し、Apex コードなしでアウトバウンドメッセージを送信できます。",
+      "Next Best Actionを使用して、レコード条件を確認し、アウトバウンドメッセージを送信できます。"
     ],
     "answers": [
-      "Flow Builder を使用して、レコード条件を確認し、送信メッセージを送信できます。",
-      "承認プロセスを使用すると、レコードの条件を確認し、Apex コードなしで送信メッセージを送信できます。"
+      "Flow Builder を使用して、レコード条件を確認し、アウトバウンドメッセージを送信できます。",
+      "承認プロセスを使用すると、レコードの条件を確認し、Apex コードなしでアウトバウンドメッセージを送信できます。"
     ],
-    "explanation": "2つ選びます。条件を満たしたら送信メッセージ（アウトバウンドメッセージ）を送る機能です。\n□ A：正解。フローで条件を判定し、アクションで送信メッセージを送れます。\n□ B：正解。承認プロセスは条件評価し、関連アクションとして送信メッセージを送れます（Apex 不要）。\n□ C：不正解。エンタイトルメントプロセスはこの用途ではありません。\n□ D：不正解。Next Best Action は推奨提示用です。\n参考：送信メッセージ",
+    "explanation": "2つ選びます。条件を満たしたらアウトバウンドメッセージ（アウトバウンドメッセージ）を送る機能です。\n□ A：正解。フローで条件を判定し、アクションでアウトバウンドメッセージを送れます。\n□ B：正解。承認プロセスは条件評価し、関連アクションとしてアウトバウンドメッセージを送れます（Apex 不要）。\n□ C：不正解。エンタイトルメントプロセスはこの用途ではありません。\n□ D：不正解。Next Best Action は推奨提示用です。\n参考：アウトバウンドメッセージ",
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_concepts.htm&type=5",
     "multi": true,
     "domain": "logic",
     "keywords": [
-      "送信メッセージ",
+      "アウトバウンドメッセージ",
       "フロー",
       "承認プロセス"
     ],
@@ -12949,7 +12949,7 @@
     "id": 594,
     "question": "開発者は、Apex クラスを作成する際に、開発中のすべての機能が要件で指定されたとおりに処理されることを確認したいと考えています。\nApex クラスが仕様どおりに動作していることを確認するには、開発者はどのアプローチを使用する必要がありますか?",
     "choices": [
-      "セーブポイントと pacabase.rollback() を含めます。",
+      "セーブポイントと Database.rollback() を含めます。",
       "Apex クラスに try/catch ブロックを含めます。",
       "開発者コンソールの Execute Anonymous ブロックでコードを実行します。",
       "ビジネス ロジックを実行するテスト クラスを作成し、開発者コンソールでテストを実行します。"
@@ -13171,7 +13171,7 @@
   },
   {
     "id": 603,
-    "question": "（質問全文）\nVisualforce ページの内容を PDF として表示するコードはどれですか?",
+    "question": "Visualforce ページの内容を PDF として表示するコードはどれですか?",
     "choices": [
       "<apex:page renderAs=\"application/pdf\">",
       "<apex:page renderAs=\"pdf\">",
@@ -13222,7 +13222,7 @@
   },
   {
     "id": 605,
-    "question": "開発者は、OpportunityLineltem トリガーをカバーするテスト クラスを作成しながら、組織内の標準価格表にアクセスしたいと考えています。\nどの方法で価格表にアクセスできますか?",
+    "question": "開発者は、OpportunityLineItem トリガーをカバーするテスト クラスを作成しながら、組織内の標準価格表にアクセスしたいと考えています。\nどの方法で価格表にアクセスできますか?",
     "choices": [
       "Test.getStandardPricebookId() で標準価格表 ID を取得する。",
       "@isTest(SeeAllData=true) を使い、既存の標準価格表を削除する。",
@@ -13321,7 +13321,7 @@
   },
   {
     "id": 609,
-    "question": "アプリケーションを開発するメリットは何ですか",
+    "question": "Salesforce プラットフォーム上でアプリケーションを開発するメリットは何ですか?",
     "choices": [
       "強制的なユニットテストとコードカバレッジのベストプラクティス",
       "定義済みのコンピューティング リソースへのアクセス",
@@ -13345,15 +13345,15 @@
   },
   {
     "id": 610,
-    "question": "Universal Containers には、カスタム オブジェクト「エンジニアリング サポート c」を使用してユーザーがエンジニアリング チームにサポートをリクエストできるサポート プロセスがあります。\nユーザーは、複数のエンジニアリング サポート __c レコードを 1 つの商談レコードに関連付けることができる必要があります。さらに、エンジニアリング サポート __c レコードに関する集計情報が商談レコードに表示される必要があります。\nこれらの要件をサポートするには、どの関係フィールドを実装する必要がありますか?",
+    "question": "Universal Containers には、カスタム オブジェクト「Engineering_Support__c」を使用してユーザーがエンジニアリング チームにサポートをリクエストできるサポート プロセスがあります。\nユーザーは、複数のEngineering_Support__c レコードを 1 つの商談レコードに関連付けることができる必要があります。さらに、Engineering_Support__c レコードに関する集計情報が商談レコードに表示される必要があります。\nこれらの要件をサポートするには、どの関係フィールドを実装する必要がありますか?",
     "choices": [
-      "商談からエンジニアリングへの参照フィールド _support__c",
-      "エンジニアリング サポート__c から商談へのマスター詳細フィールド",
-      "商談からエンジニアリング サポートへのマスター詳細フィールド__c",
-      "エンジニアリング サポート __c から商談への参照フィールド"
+      "商談から Engineering_Support__c への参照フィールド",
+      "Engineering_Support__c から商談へのマスター詳細フィールド",
+      "商談から Engineering_Support__c へのマスター詳細フィールド",
+      "Engineering_Support__c から商談への参照フィールド"
     ],
     "answers": [
-      "エンジニアリング サポート__c から商談へのマスター詳細フィールド"
+      "Engineering_Support__c から商談へのマスター詳細フィールド"
     ],
     "explanation": "複数の Engineering_Support__c を 1 商談に紐付け、集計を商談に表示する要件です。\n□ B：正解。Engineering_Support__c から Opportunity へのマスター詳細にすると、多数の子を 1 親に紐付け、ロールアップ集計も使えます。\n□ A/D：不正解。ルックアップはロールアップ集計をサポートしません。\n□ C：不正解。マスター詳細は逆向き（商談→サポート）にはできません。\n参考：マスター詳細関係",
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.overview_of_custom_object_relationships.htm&language=ja&type=5",
