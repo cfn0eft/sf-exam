@@ -53,11 +53,13 @@ let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={},eQTime={}
 let eN=EXAM_N,eTimed=true,eBudget=EXAM_MIN*60;
 // filters
 let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
-// 出典フィルタ（tyson=タイソンブログ / gen=生成 / jpnshiken=jpnshiken / all=すべて）
+// 出典フィルタ（tyson=タイソンブログ / gen=生成 / jpnshiken=jpnshiken）
+// 複数選択可。選んだ出典の集合 srcSel が空＝「すべて」。localStorage 'sfq_src' にカンマ区切りで保存（'all' or 空=すべて）
 const SRC_KEYS=['tyson','gen','jpnshiken'];
 const SRC_LABEL={tyson:'タイソン',gen:'生成',jpnshiken:'jpnshiken'};
-let srcFilter=(function(){try{const v=localStorage.getItem('sfq_src');return SRC_KEYS.includes(v)?v:'all';}catch(e){return 'all';}})();
-function inScope(q){return srcFilter==='all'||(q&&q.source===srcFilter);}
+let srcSel=(function(){try{const v=localStorage.getItem('sfq_src');if(!v||v==='all')return new Set();return new Set(v.split(',').filter(s=>SRC_KEYS.includes(s)));}catch(e){return new Set();}})();
+function saveSrcSel(){try{localStorage.setItem('sfq_src',srcSel.size?Array.from(srcSel).join(','):'all');}catch(e){}}
+function inScope(q){return srcSel.size===0||(q&&srcSel.has(q.source));}
 function scopedQ(){return allQ.filter(inScope);}
 // vocab
 let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
@@ -166,8 +168,8 @@ async function loadCertData(){
   COMPDATA=(await gj('compare.json'))||[];
   LESSDATA=(await gj('lessons.json'))||[];   // 授業（スライド学習）。無い資格は空配列のまま
   allQ=[...QDATA];filtQ=[...allQ];
-  // 共有 localStorage の出典指定が、この資格に存在しない出典なら 'all' 扱いに（保存はしない＝他資格の設定は維持）
-  if(srcFilter!=='all'&&!allQ.some(q=>q&&q.source===srcFilter))srcFilter='all';
+  // 共有 localStorage の出典指定のうち、この資格に存在しない出典は選択から外す（保存はしない＝他資格の設定は維持）
+  if(srcSel.size)srcSel=new Set(Array.from(srcSel).filter(s=>allQ.some(q=>q&&q.source===s)));
 }
 function applyCertText(){
   if(CFG.certName)certName=CFG.certName;
@@ -322,20 +324,22 @@ function applyFilters(){
   const el=document.getElementById('f-count');
   if(el)el.textContent='対象: '+filtQ.length+' 問';
 }
-// 出典フィルタの切替（HTMLのchipから呼ばれる）
+// 出典フィルタの切替（HTMLのchipから呼ばれる）。出典は複数選択でき、各 chip がトグル。'all' で選択解除＝すべて
 function setSrcFilter(v){
-  if(v!=='all'&&!SRC_KEYS.includes(v))v='all';
-  srcFilter=v;
-  try{localStorage.setItem('sfq_src',v);}catch(e){}
+  if(v==='all'){srcSel=new Set();}
+  else if(SRC_KEYS.includes(v)){if(srcSel.has(v))srcSel.delete(v);else srcSel.add(v);}
+  saveSrcSel();
   syncSrcChips();
   try{applyFilters();}catch(e){}
   try{updateSrsBtn();}catch(e){}
   try{homeStats();}catch(e){}
 }
 function syncSrcChips(){
-  ['all'].concat(SRC_KEYS).forEach(s=>{
+  const c0=document.getElementById('chip-src-all');
+  if(c0)c0.classList.toggle('on',srcSel.size===0);
+  SRC_KEYS.forEach(s=>{
     const c=document.getElementById('chip-src-'+s);
-    if(c)c.classList.toggle('on',s===srcFilter);
+    if(c)c.classList.toggle('on',srcSel.has(s));
   });
   // 件数表示
   const setBadge=(id,n)=>{const el=document.getElementById(id);if(el)el.textContent=n?' '+n:'';};
@@ -2256,7 +2260,6 @@ function renderMypage(){
     accHtml='<div class="acct"><div class="mp-avatar">👤</div><div><div class="mp-name">未ログイン</div><div class="mp-asub">ホームからログインすると進捗が同期されます</div></div></div>';
   }
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
-  const sf=(typeof srcFilter!=='undefined')?srcFilter:'all';
   const seg=(on,label,fn)=>'<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+label+'</button>';
   const fs=(function(){try{return localStorage.getItem('sfq_fontsize')||'normal';}catch(e){return 'normal';}})();
   const installRow=window.__deferredInstall
@@ -2297,7 +2300,7 @@ function renderMypage(){
     +'<div class="card">'
     +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
     +'<div class="mp-opt"><span class="mp-ic">🔠</span><span class="mp-main">文字サイズ<div class="mp-osub">問題・選択肢・解説などの本文</div></span><span class="mp-seg">'+seg(fs==='small','小',"applyFontSize('small');renderMypage()")+seg(fs==='normal','標準',"applyFontSize('normal');renderMypage()")+seg(fs==='large','大',"applyFontSize('large');renderMypage()")+'</span></div>'
-    +((function(){const avail=SRC_KEYS.filter(s=>allQ.some(q=>q&&q.source===s));if(avail.length<2)return '';return '<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題</div></span><span class="mp-seg">'+seg(sf==='all',"すべて","setSrcFilter('all');renderMypage()")+avail.map(s=>seg(sf===s,SRC_LABEL[s],"setSrcFilter('"+s+"');renderMypage()")).join('')+'</span></div>';})())
+    +((function(){const avail=SRC_KEYS.filter(s=>allQ.some(q=>q&&q.source===s));if(avail.length<2)return '';return '<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題（複数選べます）</div></span><span class="mp-seg">'+seg(srcSel.size===0,"すべて","setSrcFilter('all');renderMypage()")+avail.map(s=>seg(srcSel.has(s),SRC_LABEL[s],"setSrcFilter('"+s+"');renderMypage()")).join('')+'</span></div>';})())
     +'<div class="mp-opt"><span class="mp-ic">⌨️</span><span class="mp-main">キーボード操作<div class="mp-osub">PCショートカット一覧（<b>?</b> キーでも開く）</div></span><span class="mp-seg"><button onclick="toggleShortcutHelp(true)">表示</button></span></div>'
     +'<div class="mp-opt"><span class="mp-ic">💾</span><span class="mp-main">バックアップ<div class="mp-osub">進捗をファイルに保存／復元（端末移行・消失対策）</div></span><span class="mp-seg"><button onclick="exportProgress()">書出</button><button onclick="document.getElementById(\'mp-import\').click()">読込</button></span></div>'
     +'<input type="file" id="mp-import" accept="application/json,.json" style="display:none" onchange="importProgress(this)">'
