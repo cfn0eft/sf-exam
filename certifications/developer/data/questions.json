@@ -3511,31 +3511,6 @@
     "diff": 2
   },
   {
-    "id": 139,
-    "question": "Visualforce ページを PDF として出力したい。どの属性を指定しますか。",
-    "choices": [
-      "<apex:page> の renderAs=\"pdf\"",
-      "<apex:page> の contentType=\"application/pdf\" のみ",
-      "<apex:page> の cache=\"pdf\"",
-      "<apex:page> の lightningStylesheets=\"pdf\""
-    ],
-    "answers": [
-      "<apex:page> の renderAs=\"pdf\""
-    ],
-    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ <apex:page> の renderAs=\"pdf\"　これは正解です。renderAs=\"pdf\" を指定すると、ページが PDF としてレンダリングされ、見積書や帳票の出力に使えます。\n\n□ <apex:page> の contentType=\"application/pdf\" のみ　これは不正解です。contentType だけでは PDF レンダリングは行われず、renderAs を使います。\n\n□ <apex:page> の cache=\"pdf\"　これは不正解です。cache はキャッシュ制御の属性で、PDF 出力とは無関係です。\n\n□ <apex:page> の lightningStylesheets=\"pdf\"　これは不正解です。lightningStylesheets は Lightning 風スタイルの適用で、PDF 出力の指定ではありません。",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.pages.meta/pages/pages_output_pdf_renderas.htm",
-    "multi": false,
-    "domain": "ui",
-    "keywords": [
-      "Visualforce",
-      "renderAs",
-      "PDF",
-      "帳票"
-    ],
-    "source": "gen",
-    "diff": 1
-  },
-  {
     "id": 140,
     "question": "Visualforce ページから、アップロード済みの画像や JavaScript などの静的リソースを参照したい。どのグローバル変数を使いますか。",
     "choices": [
@@ -7611,12 +7586,12 @@
       "外部でホストされているスクリプトの読み込み"
     ],
     "answers": [
+      "ドキュメントからのファイルの読み込み",
       "重複するスクリプトの1回限りの読み込み",
-      "読み込み順序の指定",
-      "スクリプトを並行して読み込む"
+      "読み込み順序の指定"
     ],
-    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ドキュメントからのファイルの読み込み　これは不正解です。<ltng:require> は静的リソースを対象とし、ドキュメントから直接読み込む機能ではありません。\n\n□重複するスクリプトの1回限りの読み込み　これは正解です。同じスクリプトが既に読み込まれていれば再読み込みを避け、1回だけロードします。\n\n□読み込み順序の指定　これは正解です。scripts 属性に列挙した順に読み込まれるため、依存関係のある読み込み順を制御できます。\n\n□スクリプトを並行して読み込む　これは正解です。相互に依存しない複数スクリプトは並行して読み込めます。\n\n□外部でホストされているスクリプトの読み込み　これは不正解です。CSP 制限により外部ホストのスクリプトは直接読み込めず、静的リソース経由が必要です。\n\n補足：Lightning では外部リソースは静的リソースに格納してから参照するのが基本です。",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
+    "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ドキュメントからのファイルの読み込み　これは正解です。ltng:require は静的リソースやドキュメントに保存したスクリプト/スタイルを読み込めます。\n\n□ 重複するスクリプトの1回限りの読み込み　これは正解です。同じスクリプトが複数の ltng:require やコンポーネントで指定されても、一度だけ読み込まれます。\n\n□ 読み込み順序の指定　これは正解です。scripts/styles 属性に列挙した順に読み込まれます（依存関係のある読み込み順を制御できます）。\n\n□ スクリプトを並行して読み込む　これは不正解です。1つの ltng:require 内では指定順に「順次」読み込まれます。並行読み込みが必要なら、独立したスクリプトごとに別々の ltng:require タグに分けます。\n\n□ 外部でホストされているスクリプトの読み込み　これは不正解です。CDN など Salesforce 外でホストされたスクリプトは読み込めません。静的リソースとしてアップロードして利用します。\n\n補足：ltng:require の機能は「ドキュメント/静的リソースからの読み込み」「重複の1回読み込み」「読み込み順序の指定」です。",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/ltng:require",
     "multi": true,
     "domain": "ui",
     "keywords": [
@@ -11369,32 +11344,6 @@
     "diff": 2
   },
   {
-    "id": 537,
-    "question": "Batchable インターフェースを実装するときに Apex コードが Apex クラスの execute() メソッド内で実行される場合、ガバナ制限に関して正しい 2 つのステートメントはどれですか。\n2つの回答を選択してください",
-    "choices": [
-      "Apex ガバナ制限は、execute() メソッドの各反復ごとにリセットされます。",
-      "トランザクションの非同期性のため、Apex ガバナー制限を超えることはできません。",
-      "Apex ガバナー制限では、非同期制限レベルが使用されます。",
-      "Apex クラスのコンストラクターを呼び出すときに、Apex ガバナー制限が省略されます。"
-    ],
-    "answers": [
-      "Apex ガバナ制限は、execute() メソッドの各反復ごとにリセットされます。",
-      "Apex ガバナー制限では、非同期制限レベルが使用されます。"
-    ],
-    "explanation": "2つ選びます。\n□ A：正解。バッチの execute() は各実行が別トランザクション扱いで、ガバナ制限がリセットされます。\n□ C：正解。バッチは非同期の（より緩い）制限が適用されます。\n□ B：不正解。非同期でも制限を超えることはあります。\n□ D：不正解。コンストラクタ呼び出しで制限が省かれることはありません。\n参考：バッチ Apex の制限",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_batch_interface.htm",
-    "multi": true,
-    "domain": "logic",
-    "keywords": [
-      "Batchable",
-      "ガバナ制限",
-      "非同期",
-      "execute"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
     "id": 538,
     "question": "Lightning Web コンポーネントで使用するために、AccountController クラスに updateAccounts という Apex メソッドが含まれているコード ステートメントはどれですか。",
     "choices": [
@@ -11540,30 +11489,6 @@
       "DML",
       "処理レコード数",
       "一括"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
-    "id": 546,
-    "question": "「高」、「中」、「低」の値は、異なるオブジェクトにわたる複数の選択リストの共通値として識別されます。\n開発者が選択リストとその値のメンテナンスを効率化し、値を上記の値に制限するために実行できるアプローチは何ですか?",
-    "choices": [
-      "各オブジェクトに選択リストを作成し、値を含むグローバル選択リスト値セットを使用します。",
-      "各オブジェクトに必須フィールドとして選択リストを作成し、「入力された順序ではなくアルファベット順に値を表示する」を選択します。",
-      "各オブジェクトに選択リストを作成し、データの整合性を確保するための検証ルールを追加します。",
-      "各オブジェクトに選択リストを作成し、「選択リストを値セットで定義された値に制限する」を選択します。"
-    ],
-    "answers": [
-      "各オブジェクトに選択リストを作成し、値を含むグローバル選択リスト値セットを使用します。"
-    ],
-    "explanation": "□ A：正解。グローバル選択リスト値セットを使うと、同じ値（高/中/低）を複数オブジェクトで共有でき、保守が容易で値も限定されます。\n□ B：不正解。アルファベット順表示は保守の効率化になりません。\n□ C：不正解。検証ルールは値の保守を効率化しません。\n□ D：不正解。値の制限は整合性確保で、オブジェクト横断の保守簡素化にはなりません。\n参考：グローバル選択リスト",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.fields_creating_global_picklists.htm&type=5",
-    "multi": false,
-    "domain": "fund",
-    "keywords": [
-      "グローバル選択リスト",
-      "値セット",
-      "選択リスト"
     ],
     "source": "jpnshiken",
     "diff": 2
@@ -12168,33 +12093,6 @@
     "diff": 3
   },
   {
-    "id": 578,
-    "question": "変更セット展開の 3 つの特徴は何ですか?\n3 つの回答を選択してください。2 つの組織間で変更セットを送信するには、デプロイメント接続が必要です。",
-    "choices": [
-      "変更セットはカスタム設定データを展開できます。",
-      "変更セットは関連する組織間でのみ使用できます。",
-      "デプロイメントは一方向の単一トランザクションで実行されます。",
-      "2 つの組織間で変更セットを送信するには、デプロイメント接続が必要です。",
-      "変更セットを使用してレコードを転送できます。"
-    ],
-    "answers": [
-      "変更セットは関連する組織間でのみ使用できます。",
-      "デプロイメントは一方向の単一トランザクションで実行されます。",
-      "2 つの組織間で変更セットを送信するには、デプロイメント接続が必要です。"
-    ],
-    "explanation": "3つ選びます。変更セットの特徴です。\n□ B：正解。関連する組織間（本番とそのサンドボックス等）でのみ使えます。\n□ C：正解。デプロイは一方向・単一トランザクションで実行されます。\n□ D：正解。組織間で送るにはデプロイ接続が必要です。\n□ A：不正解。カスタム設定の「データ」は展開できません。\n□ E：不正解。レコード（データ）は転送できません。\n参考：変更セット",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.changesets_best_practices.htm&type=5",
-    "multi": true,
-    "domain": "deploy",
-    "keywords": [
-      "変更セット",
-      "デプロイ",
-      "デプロイ接続"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
     "id": 579,
     "question": "Universal Containers は、新しい Salesforce アプリケーションを構築するために、完全に宣言型の開発を使用することを決定しました。\nこのアプリケーションのビジネス ロジック レイヤーを構築するために使用できる 2 つのオプションはどれですか?\n2つの回答を選択してください",
     "choices": [
@@ -12241,30 +12139,6 @@
       "共有",
       "FLS",
       "LWC"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
-    "id": 582,
-    "question": "Aura アプリケーション イベントは従来のパブリッシュ/サブスクライブ モデルに従うため、イベントを起動するにはどの方法が使用されますか?",
-    "choices": [
-      "fire()",
-      "sendEvent()",
-      "FireEvent()",
-      "emit()"
-    ],
-    "answers": [
-      "fire()"
-    ],
-    "explanation": "□ A：正解。Aura のアプリケーションイベント（pub/sub）は fire() メソッドで発火します。\n□ B：不正解。sendEvent() は Aura の正しいメソッドではありません。\n□ C：不正解。FireEvent() は存在しません。\n□ D：不正解。emit() は Aura イベントの仕組みではありません。\n参考：Aura アプリケーションイベント",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
-    "multi": false,
-    "domain": "ui",
-    "keywords": [
-      "Aura",
-      "アプリケーションイベント",
-      "fire"
     ],
     "source": "jpnshiken",
     "diff": 2
@@ -12621,30 +12495,6 @@
     "diff": 2
   },
   {
-    "id": 597,
-    "question": "サンドボックスで作業中に、テスト ランナーで Apex テストを実行すると失敗します。ただし、匿名実行ウィンドウで Apex ロジックを実行すると、例外やエラーは発生せず成功します。\nメソッドがサンドボックス テスト フレームワークでは失敗したのに、開発者コンソールでは成功したのはなぜですか?",
-    "choices": [
-      "テスト メソッドは、特定のユーザーとして実行するために system.runAs を使用しません。",
-      "テスト メソッドは @future メソッドを呼び出しています。",
-      "テスト メソッドはサンドボックス内の既存のデータに依存します。",
-      "テスト メソッドのコードに構文エラーがあります。"
-    ],
-    "answers": [
-      "テスト メソッドはサンドボックス内の既存のデータに依存します。"
-    ],
-    "explanation": "□ C：正解。Apex テストは原則として組織の既存データにアクセスできない（分離）ため、既存データに依存するテストは失敗します（匿名実行は実データを見るので成功）。\n□ A：不正解。runAs は文脈切替で分離の原因ではありません。\n□ B：不正解。@future の有無は本失敗の原因ではありません。\n□ D：不正解。構文エラーならコンパイルできません。\n参考：テストデータの分離",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_best_practices.htm",
-    "multi": false,
-    "domain": "deploy",
-    "keywords": [
-      "テスト分離",
-      "既存データ",
-      "SeeAllData"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
     "id": 598,
     "question": "他のレコードの挿入に失敗した場合に、レコード リスト内の一部のレコードを挿入できるようにするには、どのステートメントを使用する必要がありますか。",
     "choices": [
@@ -12739,33 +12589,6 @@
       "カスタムイベント",
       "detail",
       "伝播"
-    ],
-    "source": "jpnshiken",
-    "diff": 2
-  },
-  {
-    "id": 602,
-    "question": "Aura コンポーネントで JavaScript リソースをロードするときの <ltng: require> タグの 3 つの機能は何ですか?\n3つの回答を選択してください",
-    "choices": [
-      "重複スクリプトの1回限りの読み込み",
-      "スクリプトを並列に読み込む",
-      "ドキュメントからファイルを読み込む",
-      "読み込み順序の指定",
-      "外部でホストされているスクリプトをロードしています"
-    ],
-    "answers": [
-      "重複スクリプトの1回限りの読み込み",
-      "読み込み順序の指定",
-      "外部でホストされているスクリプトをロードしています"
-    ],
-    "explanation": "3つ選びます。<ltng:require> の機能です。\n□ A：正解。重複参照でも 1 回だけ読み込みます。\n□ D：正解。読み込み順序を指定できます。\n□ E：正解。外部ホストのスクリプトを読み込めます。\n□ B：不正解。並列ではなく順次読み込みます。\n□ C：不正解。ドキュメントからの読込ではありません。\n参考：ltng:require",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
-    "multi": true,
-    "domain": "ui",
-    "keywords": [
-      "Aura",
-      "ltng:require",
-      "スクリプト読込"
     ],
     "source": "jpnshiken",
     "diff": 2

@@ -32,13 +32,49 @@ function readJSON(p) {
 
 /* ---- 重複検出ヘルパー（出典横断の高類似ペアを警告） ----
  * tyson / jpnshiken など複数の問題集ダンプを取り込むと、同一の実試験問題が
- * 言い回しだけ変えて二重登録されやすい。問題文＋選択肢の文字3-gram Jaccard
- * 類似度で、異なる source 間のほぼ同一ペアを検出して警告する（CI は止めない＝判断は人手）。*/
+ * 「同じ英語原文を別々に和訳した」状態で二重登録されやすい。素の文字 3-gram だけ
+ * では訳ゆれ（主従関係⇔マスター/詳細、商談⇔取引⇔機会、レコード⇔記録 など）で
+ * 類似度が落ちて取りこぼすため、Salesforce 用語の訳ゆれを正規化してから
+ * ①問題文＋選択肢の 3-gram Jaccard と ②正解集合の一致 の2系統で照合する。
+ * ※ 文字ベースの近似のため万能ではない（文体差が大きいと拾えない）。警告どまり＝
+ *    判断は人手。新ダンプ取り込み時の重複統合の入口として使う。*/
+// よくある訳ゆれを代表トークンへ寄せる（長い語句から先に置換する）
+const _SYN = [
+  [['マスター詳細', 'マスター/詳細', 'マスター・詳細', '主従'], 'MD'],
+  [['連結オブジェクト', 'ジャンクション'], 'JUNC'],
+  [['取引先責任者', '連絡先'], 'CONTACT'],
+  [['取引先', 'アカウント'], 'ACCOUNT'],
+  [['商談', '取引', '機会'], 'OPP'],
+  [['レコードタイプ'], 'RECTYPE'],
+  [['レコード', '記録'], 'RECORD'],
+  [['フェーズ', 'ステージ'], 'STAGE'],
+  [['ステータス', '状況'], 'STATUS'],
+  [['組織情報', '会社情報'], 'COMPANYINFO'],
+  [['選択リスト', 'ピックリスト'], 'PICKLIST'],
+  [['項目自動更新', 'フィールドの更新', 'フィールド更新', '項目の更新'], 'FIELDUPDATE'],
+  [['カスタム項目', 'カスタムフィールド'], 'CUSTOMFIELD'],
+  [['項目', 'フィールド'], 'FIELD'],
+  [['無効化', '非アクティブ化'], 'DEACTIVATE'],
+  [['有効化', 'アクティブ化', 'アクティベーション'], 'ACTIVATE'],
+  [['重要な更新プログラム', '重要な更新', '重要なアップデート', 'リリース更新'], 'CRITICALUPDATE'],
+  [['積み上げ集計', 'ロールアップサマリー', 'ロールアップ集計', 'ロールアップ'], 'ROLLUP'],
+  [['対応付け', 'マッピング', 'マップします', 'マップ'], 'MAP'],
+  [['取引開始', 'コンバート', '変換'], 'CONVERT'],
+  [['ライトニングページ', 'lightningページ'], 'LIGHTNINGPAGE'],
+  [['所有者に基づく', '所有者ベース'], 'OWNERBASED'],
+  [['リレーションシップ', 'リレーション', '関係'], 'REL'],
+  [['公開グループ', 'パブリックグループ'], 'PUBGROUP'],
+  [['非公開グループ', 'プライベートグループ'], 'PRIVGROUP'],
+  [['プラットフォーム管理者', '管理者'], 'ADMIN'],
+  [['役割', 'ロール'], 'ROLE'],
+  [['メールアラート', 'メール アラート'], 'EMAILALERT'],
+];
 function _norm(s) {
-  return String(s || '')
+  let t = String(s || '').toLowerCase();
+  for (const [arr, canon] of _SYN) for (const w of arr) t = t.split(w.toLowerCase()).join(canon);
+  return t
     .replace(/[\s　]/g, '')
-    .replace(/[、。，．,\.・「」『』（）()\[\]【】！？!?：:；\-―ー~〜"“”']/g, '')
-    .toLowerCase();
+    .replace(/[、。，．,\.・「」『』（）()\[\]【】！？!?：:；\-―ー~〜"“”'’]/g, '');
 }
 function _grams(s, n = 3) {
   const g = new Set();
@@ -52,27 +88,29 @@ function _jaccard(a, b) {
   return inter / (a.size + b.size - inter);
 }
 function checkCrossSourceDuplicates(questions) {
-  const WARN = 0.55;   // これ以上を「重複の疑い」として警告
   const arr = questions
     .filter((q) => q.source && q.question)
     .map((q) => ({
       id: q.id, src: q.source,
-      g: _grams(_norm(q.question + (q.choices || []).slice().sort().join(''))),
+      g: _grams(_norm(q.question) + (q.choices || []).map(_norm).sort().join('')),
+      a: new Set((q.answers || []).map(_norm)),    // 正解集合（訳ゆれ正規化済み）
     }));
   let n = 0;
   for (let i = 0; i < arr.length; i++) {
     for (let j = i + 1; j < arr.length; j++) {
       if (arr[i].src === arr[j].src) continue;   // 出典横断のみ
-      const s = _jaccard(arr[i].g, arr[j].g);
-      if (s >= WARN) {
+      const sb = _jaccard(arr[i].g, arr[j].g);          // 本文の類似度
+      const sa = _jaccard(arr[i].a, arr[j].a);          // 正解集合の類似度
+      // 本文がよく似ている / 正解集合がほぼ一致しつつ本文も一定以上、のどちらかで警告
+      if (sb >= 0.5 || (sa >= 0.7 && sb >= 0.32)) {
         n++;
-        warn('出典横断の高類似ペア sim=' + s.toFixed(2) +
+        warn('出典横断の重複疑い 本文sim=' + sb.toFixed(2) + ' 正解sim=' + sa.toFixed(2) +
           '  #' + arr[i].id + '(' + arr[i].src + ') ⇔ #' + arr[j].id + '(' + arr[j].src + ')' +
-          (s >= 0.75 ? ' ＝ほぼ同一（重複の疑い）' : ''));
+          ((sb >= 0.7 || sa >= 0.99) ? ' ＝ほぼ同一' : ''));
       }
     }
   }
-  if (n) info('  （上記の高類似ペアは出典をまたいだ重複の可能性。要確認）');
+  if (n) info('  （上記は出典をまたいだ重複の可能性。要確認＝必要なら片方へ統合）');
 }
 
 /* ---- figures.js を評価して図キー一覧を得る（window スタブ） ---- */
