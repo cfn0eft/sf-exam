@@ -1642,5 +1642,294 @@
   "source": "jpnshiken",
   "diff": 2,
   "id": 68
+ },
+ {
+  "question": "Agentforce の標準アクションの例として適切なものはどれですか。",
+  "choices": [
+   "レコードの検索・取得（Query Records 等）",
+   "Apexトリガの自動生成",
+   "組織全体のバックアップ取得",
+   "新規ユーザーの作成"
+  ],
+  "answers": [
+   "レコードの検索・取得（Query Records 等）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ レコードの検索・取得（Query Records 等）　これは正解です。Salesforce はレコード検索などの標準アクションを提供し、すぐに利用できます。\n\n□ Apexトリガの自動生成　これは不正解です。標準アクションの例ではありません。\n\n□ 組織全体のバックアップ取得　これは不正解です。運用作業で、エージェントの標準アクションではありません。\n\n□ 新規ユーザーの作成　これは不正解です。管理操作で、代表的な標準アクションではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "標準アクション",
+   "Query Records",
+   "アクション"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 69
+ },
+ {
+  "question": "作成したエージェントを実際にユーザーへ提供するために必要な操作はどれですか。",
+  "choices": [
+   "エージェントを有効化（アクティブ化）する",
+   "エージェントを削除する",
+   "レポートを作成する",
+   "共有ルールを追加する"
+  ],
+  "answers": [
+   "エージェントを有効化（アクティブ化）する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ エージェントを有効化（アクティブ化）する　これは正解です。エージェントは有効化してはじめて対象チャネルやユーザーに提供されます。\n\n□ エージェントを削除する　これは不正解です。提供と逆の操作です。\n\n□ レポートを作成する　これは不正解です。提供可否とは無関係です。\n\n□ 共有ルールを追加する　これは不正解です。レコード共有の設定で、提供操作ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "有効化",
+   "アクティブ化",
+   "エージェント"
+  ],
+  "source": "jpnshiken",
+  "diff": 1,
+  "id": 70
+ },
+ {
+  "question": "サービス担当者がケースの長い履歴を素早く把握できるよう、AIに要約させたい。使う機能として最も適切なものはどれですか。",
+  "choices": [
+   "生成AIによるケース要約（Record Summary などの生成機能）",
+   "入力規則",
+   "ロールアップ集計",
+   "承認プロセス"
+  ],
+  "answers": [
+   "生成AIによるケース要約（Record Summary などの生成機能）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 生成AIによるケース要約（Record Summary などの生成機能）　これは正解です。レコード要約系の生成機能で、ケースの状況を素早く把握できます。\n\n□ 入力規則　これは不正解です。保存時チェックで、要約はしません。\n\n□ ロールアップ集計　これは不正解です。集計機能で、テキスト要約ではありません。\n\n□ 承認プロセス　これは不正解です。承認自動化で無関係です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "ケース要約",
+   "生成AI",
+   "Record Summary"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 71
+ },
+ {
+  "question": "プロンプトテンプレートを有効化する前に、出力を確認したい。Prompt Builder で行えることはどれですか。",
+  "choices": [
+   "サンプルレコードでプレビュー（テスト）して出力を確認する",
+   "本番ユーザーへ一斉送信する",
+   "Apexを書いて実行する",
+   "組織を複製する"
+  ],
+  "answers": [
+   "サンプルレコードでプレビュー（テスト）して出力を確認する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ サンプルレコードでプレビュー（テスト）して出力を確認する　これは正解です。Prompt Builder ではサンプルレコードで出力をプレビューし、調整してから有効化できます。\n\n□ 本番ユーザーへ一斉送信する　これは不正解です。確認の手段ではなくリスクが高い操作です。\n\n□ Apexを書いて実行する　これは不正解です。プレビューに必須ではありません。\n\n□ 組織を複製する　これは不正解です。出力確認とは無関係です。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics/create-and-ground-prompt-templates",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "プレビュー",
+   "テスト",
+   "Prompt Builder"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 72
+ },
+ {
+  "question": "プロンプトのグラウンディングで、機密データや権限外データの露出を防ぐ仕組みはどれですか。",
+  "choices": [
+   "セキュアデータ取得と Trust Layer のマスキング",
+   "全ユーザーへの一括共有",
+   "項目の一括公開",
+   "ロールの削除"
+  ],
+  "answers": [
+   "セキュアデータ取得と Trust Layer のマスキング"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ セキュアデータ取得と Trust Layer のマスキング　これは正解です。実行ユーザーがアクセスできるデータのみを使い、機密データはマスキングで保護します。\n\n□ 全ユーザーへの一括共有　これは不正解です。露出を増やす逆効果の操作です。\n\n□ 項目の一括公開　これは不正解です。機密保護に反します。\n\n□ ロールの削除　これは不正解です。露出防止の仕組みではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/einstein/genai/guide/trust.html",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "セキュアデータ取得",
+   "マスキング",
+   "Trust Layer"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 73
+ },
+ {
+  "question": "検索の再現率を高めるため、キーワード一致と意味（ベクトル）検索を組み合わせる方式を何と呼びますか。",
+  "choices": [
+   "ハイブリッド検索（Hybrid Search）",
+   "ロールアップ集計",
+   "シャーディング",
+   "正規化"
+  ],
+  "answers": [
+   "ハイブリッド検索（Hybrid Search）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ハイブリッド検索（Hybrid Search）　これは正解です。キーワード検索と意味（ベクトル）検索を組み合わせ、関連情報の取得精度を高めます。\n\n□ ロールアップ集計　これは不正解です。親子レコードの集計で、検索方式ではありません。\n\n□ シャーディング　これは不正解です。データ分割手法で無関係です。\n\n□ 正規化　これは不正解です。データ整形の処理で、検索方式ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=data.c360_a_ai_retriever_about.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "ハイブリッド検索",
+   "ベクトル検索",
+   "検索インデックス"
+  ],
+  "source": "jpnshiken",
+  "diff": 3,
+  "id": 74
+ },
+ {
+  "question": "大量の非構造ナレッジに対する高度なグラウンディング（リトリーバー）を行ううえで、一般的に基盤となるのはどれですか。",
+  "choices": [
+   "Data Cloud（Data 360）",
+   "メールリレーサーバー",
+   "承認プロセス",
+   "レポートタイプ"
+  ],
+  "answers": [
+   "Data Cloud（Data 360）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Data Cloud（Data 360）　これは正解です。大量の非構造データのインデックス化・検索（リトリーバー）は Data Cloud を基盤とします。\n\n□ メールリレーサーバー　これは不正解です。メール配信の仕組みで無関係です。\n\n□ 承認プロセス　これは不正解です。承認自動化で無関係です。\n\n□ レポートタイプ　これは不正解です。レポートの枠組みで無関係です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.data_library_concept.htm&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "Data Cloud",
+   "リトリーバー",
+   "非構造データ"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 75
+ },
+ {
+  "question": "厳格な変更管理プロセスのある組織で、本番のエージェント変更を管理する適切な方法はどれですか。",
+  "choices": [
+   "サンドボックスで変更・テストし、リリース手順で本番へ移行する",
+   "本番で直接編集して即時反映する",
+   "変更を一切記録しない",
+   "毎回エージェントを作り直す"
+  ],
+  "answers": [
+   "サンドボックスで変更・テストし、リリース手順で本番へ移行する"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ サンドボックスで変更・テストし、リリース手順で本番へ移行する　これは正解です。変更管理に沿い、サンドボックスで検証してからメタデータとして本番へ移行します。\n\n□ 本番で直接編集して即時反映する　これは不正解です。変更管理に反し、リスクが高い運用です。\n\n□ 変更を一切記録しない　これは不正解です。監査・統制の観点で不適切です。\n\n□ 毎回エージェントを作り直す　これは不正解です。非効率で管理性に欠けます。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "変更管理",
+   "サンドボックス",
+   "リリース"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 76
+ },
+ {
+  "question": "生成AIの利用をコンプライアンス監査に備えて記録・確認できるようにする、Trust Layer の要素はどれですか。",
+  "choices": [
+   "監査証跡（Audit Trail）",
+   "ページレイアウト",
+   "入力規則",
+   "ロール階層"
+  ],
+  "answers": [
+   "監査証跡（Audit Trail）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 監査証跡（Audit Trail）　これは正解です。プロンプトや応答などの記録を残し、コンプライアンス監査に備えられます。\n\n□ ページレイアウト　これは不正解です。画面設定で無関係です。\n\n□ 入力規則　これは不正解です。保存時チェックで無関係です。\n\n□ ロール階層　これは不正解です。共有の仕組みで無関係です。",
+  "reference_url": "https://developer.salesforce.com/docs/einstein/genai/guide/trust.html",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "監査証跡",
+   "コンプライアンス",
+   "Trust Layer"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 77
+ },
+ {
+  "question": "エージェントが要求の処理に必要な情報を持っていない場合の適切な挙動はどれですか。",
+  "choices": [
+   "不足情報をユーザーに確認するか、適切にフォールバックする",
+   "適当な値を捏造して実行する",
+   "セッションを落とす",
+   "実行ユーザーを昇格する"
+  ],
+  "answers": [
+   "不足情報をユーザーに確認するか、適切にフォールバックする"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 不足情報をユーザーに確認するか、適切にフォールバックする　これは正解です。必要な情報が足りない場合は確認を促すか、安全にフォールバックするのが適切です。\n\n□ 適当な値を捏造して実行する　これは不正解です。ハルシネーションのリスクが高く危険です。\n\n□ セッションを落とす　これは不正解です。利用者体験として不適切です。\n\n□ 実行ユーザーを昇格する　これは不正解です。重大なセキュリティ問題です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/get-started-agents.html",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "フォールバック",
+   "確認",
+   "ハルシネーション回避"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 78
+ },
+ {
+  "question": "プロンプトテンプレートごとに使用する基盤モデルを選べることの利点として正しいものはどれですか。",
+  "choices": [
+   "用途に応じて精度やコストの最適なモデルを使い分けられる",
+   "Apexが不要になる",
+   "共有ルールが消える",
+   "レポートが自動で増える"
+  ],
+  "answers": [
+   "用途に応じて精度やコストの最適なモデルを使い分けられる"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 用途に応じて精度やコストの最適なモデルを使い分けられる　これは正解です。要件に合わせてモデルを選ぶことで、品質とコストのバランスを取れます。\n\n□ Apexが不要になる　これは不正解です。モデル選択とコードの要否は無関係です。\n\n□ 共有ルールが消える　これは不正解です。無関係です。\n\n□ レポートが自動で増える　これは不正解です。無関係です。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": false,
+  "domain": "prompt",
+  "keywords": [
+   "モデル選択",
+   "精度",
+   "コスト"
+  ],
+  "source": "jpnshiken",
+  "diff": 2,
+  "id": 79
+ },
+ {
+  "question": "サービスエージェントを顧客に提供できるチャネルの例として正しいものを2つ選びなさい。",
+  "choices": [
+   "Webチャット/メッセージング",
+   "音声",
+   "Apexトリガ",
+   "検証ルール"
+  ],
+  "answers": [
+   "Webチャット/メッセージング",
+   "音声"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Webチャット/メッセージング　これは正解です。エージェントはWebチャットやメッセージングのチャネルで顧客に提供できます。\n\n□ 音声　これは正解です。音声チャネルでも提供できます。\n\n□ Apexトリガ　これは不正解です。レコード処理の仕組みで、顧客チャネルではありません。\n\n□ 検証ルール　これは不正解です。保存時チェックで、チャネルではありません。",
+  "reference_url": "https://www.salesforce.com/agentforce/guide/",
+  "multi": true,
+  "domain": "agents",
+  "keywords": [
+   "チャネル",
+   "メッセージング",
+   "音声"
+  ],
+  "source": "jpnshiken",
+  "diff": 1,
+  "id": 80
  }
 ]
