@@ -165,7 +165,7 @@ for(let i=1;i<=200;i++){
   allQ.push({id:i,question:'Q'+i,choices:['x','y'],answers:['x'],domain:d});
   QDOMAIN[i]=d;
 }
-srcFilter='all';
+srcSel=new Set();
 `);
 
 t('pickWeightedExam: 重複なく公式ウェイト比で抽出', () => {
@@ -186,6 +186,30 @@ t('模試の重複回避: 新鮮な問題で足りる分野は直近出題を選
   eq(run('recentExamIds().size'), 30);
   run('pushRecentExam([]);pushRecentExam([])');   // 直近2回ぶんを空で上書き
   eq(run('recentExamIds().size'), 0, '直近2回のみ保持されていない');
+});
+
+/* ---- 出典フィルタ（複数選択） ---- */
+t('出典フィルタ: 複数の出典をトグルで選べる', () => {
+  run(`
+    __allQbak=allQ;
+    allQ=[{id:1,source:'tyson'},{id:2,source:'gen'},{id:3,source:'jpnshiken'},{id:4,source:'tyson'},{id:5,source:'gen'}];
+    setSrcFilter('all');
+  `);
+  try {
+    eq(run('scopedQ().length'), 5, '初期はすべて対象');
+    run("setSrcFilter('tyson')");
+    eq(run('scopedQ().map(q=>q.id).join(",")'), '1,4', 'tyson のみ');
+    run("setSrcFilter('gen')");                  // 追加選択（複数同時）
+    eq(run('scopedQ().map(q=>q.id).join(",")'), '1,2,4,5', 'tyson+gen');
+    eq(run("localStorage.getItem('sfq_src')"), 'tyson,gen', 'カンマ区切りで保存');
+    run("setSrcFilter('tyson')");                // 1つだけ解除
+    eq(run('scopedQ().map(q=>q.id).join(",")'), '2,5', 'gen のみ');
+    run("setSrcFilter('gen')");                  // 全解除＝すべてに戻る
+    eq(run('scopedQ().length'), 5, '全解除はすべて扱い');
+    eq(run("localStorage.getItem('sfq_src')"), 'all', '空選択は all で保存');
+  } finally {
+    run("allQ=__allQbak; srcSel=new Set(); try{localStorage.removeItem('sfq_src');}catch(e){}");
+  }
 });
 
 t('freshFirst: 新鮮な問題が前に並ぶ', () => {
