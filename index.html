@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=98"></script>
+<script src="maintenance.js?v=99"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格（アドミニストレーター・Platform アプリビルダー・デベロッパー）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -162,17 +162,14 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     { slug:'agentforce', storageKey:'sfqaf_v1', icon:'🤖', title:'Salesforce 認定<br>Agentforce Specialist',
       desc:'AIエージェント・プロンプト・Data 360・Trust Layer・テスト/ガバナンスを網羅。最新の公式6分野に対応。',
       meta:['68問','26用語','合格72%'] },
-    { coming:true, icon:'📈', title:'Sales Cloud コンサルタント', desc:'公式5分野（予測・生成AI含む）。問題を準備中。' },
-    { coming:true, icon:'🎧', title:'Service Cloud コンサルタント', desc:'公式8分野。ケース・チャネル・ナレッジ。問題を準備中。' },
-    { coming:true, icon:'🌐', title:'Experience Cloud コンサルタント', desc:'公式8分野。サイト構築・共有・認証。問題を準備中。' },
-    { coming:true, icon:'🔐', title:'Sharing & Visibility アーキテクト', desc:'公式4分野。権限・共有・可視性。問題を準備中。' }
+    { coming:true }
   ];
   (function renderCerts(){
     var grid = document.getElementById('cert-grid'); if (!grid) return;
     grid.innerHTML = CERTS.map(function (c) {
-      if (c.coming) return '<div class="card coming"><span class="coming-badge">準備中</span>'
-        + '<div class="card-icon">' + (c.icon || '🛠️') + '</div><h2 class="card-title">' + (c.title || '資格枠（未設定）') + '</h2>'
-        + '<p class="card-desc">' + (c.desc || '次に追加する資格の枠です。準備中。') + '</p>'
+      if (c.coming) return '<div class="card coming"><span class="coming-badge">追加予定</span>'
+        + '<div class="card-icon">🛠️</div><h2 class="card-title">資格枠（未設定）</h2>'
+        + '<p class="card-desc">次に追加する資格の枠です。準備中。</p>'
         + '<div class="card-meta"><span>Coming Soon</span></div></div>';
       var meta = (c.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
       var acq = '';
@@ -200,8 +197,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=98"></script>
-<script src="cloud-sync.js?v=98"></script>
+<script src="changelog.js?v=99"></script>
+<script src="cloud-sync.js?v=99"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
