@@ -11817,32 +11817,6 @@
     "diff": 2
   },
   {
-    "id": 564,
-    "question": "開発者がバッチ メソッドまたは将来のメソッドのステータスに関する情報を見つけることができる 2 つの場所はどこですか?\n2つの回答を選択してください",
-    "choices": [
-      "開発者コンソール",
-      "Apexジョブ",
-      "一時停止されたフローインタビューコンポーネント",
-      "Apex Flex キュー"
-    ],
-    "answers": [
-      "開発者コンソール",
-      "Apexジョブ"
-    ],
-    "explanation": "2つ選びます。バッチ/将来メソッドのステータス確認場所です。\n□ A：正解。開発者コンソールで実行ログ/状態を確認できます。\n□ B：正解。設定の「Apex ジョブ」でキュー/実行中/完了の状態を確認できます。\n□ C：不正解。一時停止フローインタビューは別物です。\n□ D：不正解。Apex Flex キューは実行順の管理用です。\n参考：Apex ジョブの監視",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_queueing_jobs.htm",
-    "multi": true,
-    "domain": "deploy",
-    "keywords": [
-      "Apexジョブ",
-      "開発者コンソール",
-      "非同期",
-      "ステータス"
-    ],
-    "source": "jpnshiken",
-    "diff": 1
-  },
-  {
     "id": 567,
     "question": "どの例外タイプをキャッチできないでしょうか?",
     "choices": [
