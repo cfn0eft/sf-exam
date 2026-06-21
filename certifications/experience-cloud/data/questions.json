@@ -29,13 +29,13 @@
   "choices": [
    "欧州担当のコミュニティマネージャーがシステム管理者権限を持っていない。",
    "事前構成済みの Insights レポートを GDPR 要件に合わせて変更する必要がある。",
-   "欧州向けの Experience Cloud サイトが Chatter を使用しておらず、事前構成済みの Insights レポートには Chatter が必要である。",
+   "欧州サイトが Chatter を使用しておらず、Insights レポートには Chatter が必要。",
    "欧州向けの Experience Cloud サイトのユーザー数が100万人を超えている。"
   ],
   "answers": [
-   "欧州向けの Experience Cloud サイトが Chatter を使用しておらず、事前構成済みの Insights レポートには Chatter が必要である。"
+   "欧州サイトが Chatter を使用しておらず、Insights レポートには Chatter が必要。"
   ],
-  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 欧州担当のコミュニティマネージャーがシステム管理者権限を持っていない。　これは不正解です。Insights レポートの利用はコミュニティ管理権限で足り、システム管理者権限がないことが事前構成レポートを使えない理由にはなりません。\n\n□ 事前構成済みの Insights レポートを GDPR 要件に合わせて変更する必要がある。　これは不正解です。GDPR は個人データの取り扱いに関わる規制ですが、事前構成済み Insights レポートが「使用できない（表示されない）」原因ではありません。GDPR 対応はレポートの利用可否そのものを左右しません。\n\n□ 欧州向けの Experience Cloud サイトが Chatter を使用しておらず、事前構成済みの Insights レポートには Chatter が必要である。　これは正解です。Salesforce Communities Management パッケージが提供する事前構成済みの Insights レポートは Chatter のデータ（投稿・コメント・フィードのフラグなど）を前提としています。Chatter を使用していない（Chatter なしの）サイトではこれらの事前構成レポートを利用できません。欧州サイトだけ Chatter が無効なため、そのサイトでレポートが使えない状況が生じます。\n\n□ 欧州向けの Experience Cloud サイトのユーザー数が100万人を超えている。　これは不正解です。ユーザー数の規模が事前構成済み Insights レポートの利用可否を左右するわけではありません。",
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 欧州担当のコミュニティマネージャーがシステム管理者権限を持っていない。　これは不正解です。Insights レポートの利用はコミュニティ管理権限で足り、システム管理者権限がないことが事前構成レポートを使えない理由にはなりません。\n\n□ 事前構成済みの Insights レポートを GDPR 要件に合わせて変更する必要がある。　これは不正解です。GDPR は個人データの取り扱いに関わる規制ですが、事前構成済み Insights レポートが「使用できない（表示されない）」原因ではありません。GDPR 対応はレポートの利用可否そのものを左右しません。\n\n□ 欧州サイトが Chatter を使用しておらず、Insights レポートには Chatter が必要。　これは正解です。Salesforce Communities Management パッケージが提供する事前構成済みの Insights レポートは Chatter のデータ（投稿・コメント・フィードのフラグなど）を前提としています。Chatter を使用していない（Chatter なしの）サイトではこれらの事前構成レポートを利用できません。欧州サイトだけ Chatter が無効なため、そのサイトでレポートが使えない状況が生じます。\n\n□ 欧州向けの Experience Cloud サイトのユーザー数が100万人を超えている。　これは不正解です。ユーザー数の規模が事前構成済み Insights レポートの利用可否を左右するわけではありません。",
   "reference_url": "https://help.salesforce.com/s/articleView?id=sf.networks_insights.htm&type=5",
   "multi": false,
   "domain": "adopt",
