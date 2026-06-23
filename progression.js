@@ -1,0 +1,275 @@
+/* =====================================================================
+ * progression.js — 資格のロック解除（直列進行）
+ * ---------------------------------------------------------------------
+ * LP・全資格ページで共有する「唯一の出典」。エンジン・CSS・同期は触らない。
+ *
+ * ルール:
+ *   アドミン → アプリビルダー → デベロッパー → （残り5資格から1つだけ選んで解除）
+ *   ある資格を「取得済み」にすると次の資格が解除される。
+ *   取得済みにした資格は問題が見られない・解けない（学習ロック）。
+ *   = 中身を見ずに取得済みだけ押して先取りするのを防ぐ（常に開くのは1資格）。
+ *
+ * 判定の出典:
+ *   - クラウド連動: cloud-sync が window.SFQ_PROGRESS / window.SFQ_IS_ADMIN を設定し
+ *     'sfq-progress' イベントを発火する（端末横断）。
+ *   - 未ログイン/localhost/file:// 等は localStorage を走査するフォールバック。
+ * ===================================================================== */
+(function () {
+  'use strict';
+
+  // 直列の前提チェーン
+  var ORDER = ['sf-admin', 'app-builder', 'developer'];
+  // デベロッパー取得後、ここから「1つずつ」順番に選んで解除できるプール
+  // （選んだ1つを取得すると、残りからまた1つ選べる＝くり返し解除）
+  var POOL = ['agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'];
+
+  // 一般公開済みの資格（ここに無い資格は「いずれ公開します」表示・管理者のみ裏で利用可）
+  // 公開準備ができた資格を1つずつここへ足していく。
+  var RELEASED = ['sf-admin', 'app-builder', 'developer'];
+  function isReleased(slug) { return RELEASED.indexOf(slug) >= 0; }
+
+  // slug → localStorage キー（クラウド未接続時のフォールバック判定に使う）
+  var KEY = {
+    'sf-admin': 'sfq_v4',
+    'app-builder': 'sfqab_v1',
+    'developer': 'sfqdev_v1',
+    'agentforce': 'sfqaf_v1',
+    'sales-cloud': 'sfqsales_v1',
+    'service-cloud': 'sfqservice_v1',
+    'experience-cloud': 'sfqexp_v1',
+    'sharing-visibility': 'sfqsva_v1'
+  };
+
+  // メッセージ用の短い資格名
+  var NAME = {
+    'sf-admin': 'アドミニストレーター',
+    'app-builder': 'アプリケーションビルダー',
+    'developer': 'デベロッパー',
+    'agentforce': 'Agentforce Specialist',
+    'sales-cloud': 'Sales Cloud コンサルタント',
+    'service-cloud': 'Service Cloud コンサルタント',
+    'experience-cloud': 'Experience Cloud コンサルタント',
+    'sharing-visibility': 'Sharing and Visibility アーキテクト'
+  };
+
+  function isPool(slug) { return POOL.indexOf(slug) >= 0; }
+
+  // クラウド未接続時は localStorage の各資格ストアを走査して進行状況を作る
+  function localProgress() {
+    var acq = {}, lk = {};
+    Object.keys(KEY).forEach(function (slug) {
+      try {
+        var raw = localStorage.getItem(KEY[slug]);
+        if (raw) { var s = JSON.parse(raw); if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; } }
+      } catch (e) {}
+    });
+    var el = '';
+    try { el = localStorage.getItem('sfq_elective') || ''; } catch (e) {}
+    return { acquired: acq, locked: lk, elective: el };
+  }
+
+  function progress() {
+    return (window.SFQ_PROGRESS && window.SFQ_PROGRESS.acquired) ? window.SFQ_PROGRESS : localProgress();
+  }
+  function isAdmin() { return !!window.SFQ_IS_ADMIN; }
+  // acquiredOf = 「取得済み」（バッジ・次の資格の解除に使う。新旧どちらの取得も含む）
+  function acquiredOf(slug, p) { p = p || progress(); return !!(p.acquired && p.acquired[slug]); }
+  // lockedOf = 今回のステップ制で取得し「学習ロックを伴う」もの。導入前からの取得は含まない（既存はロックしない）
+  function lockedOf(slug, p) { p = p || progress(); return !!(p.locked && p.locked[slug]); }
+  function electiveOf(p) { p = p || progress(); return p.elective || ''; }
+
+  // この資格が解除済み（＝アクセス可能なように前提を満たしている）か
+  function unlocked(slug, p) {
+    p = p || progress();
+    if (slug === 'sf-admin') return true;
+    if (slug === 'app-builder') return acquiredOf('sf-admin', p);
+    if (slug === 'developer') return acquiredOf('app-builder', p);
+    if (isPool(slug)) return acquiredOf('developer', p) && electiveOf(p) === slug;
+    return false;
+  }
+
+  // 選択したが「まだ取得していない」プール資格があるか（＝学習中の枠が埋まっている）
+  function pendingElective(p) {
+    p = p || progress();
+    var el = electiveOf(p);
+    return isPool(el) && !acquiredOf(el, p);
+  }
+
+  // 状態: 'open'（学習可）| 'acquired'（取得済み＝学習ロック）| 'locked'（未解除）| 'coming'（いずれ公開）
+  // 管理者は進行・公開状態を無視して常に 'open'。
+  function stateOf(slug, p) {
+    p = p || progress();
+    if (isAdmin()) return 'open';
+    if (!isReleased(slug)) return 'coming';
+    if (lockedOf(slug, p)) return 'acquired';            // 今回のステップ制で取得＝学習ロック
+    // 解除済み、または導入前から取得済み（既存はロックしない）なら学習可
+    return (unlocked(slug, p) || acquiredOf(slug, p)) ? 'open' : 'locked';
+  }
+
+  // この資格を今「選択して解除」できるか
+  // デベロッパー取得済み＆公開済み＆未取得＆現在は学習中の枠が空いている（前の選択を取得済み）プール資格
+  function canChoose(slug, p) {
+    p = p || progress();
+    if (isAdmin()) return false;
+    if (!isPool(slug) || !isReleased(slug)) return false;
+    if (!acquiredOf('developer', p)) return false;
+    if (acquiredOf(slug, p)) return false;
+    if (electiveOf(p) === slug) return false; // それは今の学習中の枠（open）
+    return !pendingElective(p);
+  }
+
+  // locked カードに出す理由テキスト
+  function lockReason(slug, p) {
+    p = p || progress();
+    if (slug === 'app-builder') return '「' + NAME['sf-admin'] + '」を取得すると解除されます';
+    if (slug === 'developer') return '「' + NAME['app-builder'] + '」を取得すると解除されます';
+    if (isPool(slug)) {
+      if (!acquiredOf('developer', p)) return '「' + NAME['developer'] + '」を取得すると、ここから順番に1つずつ解除できます';
+      if (pendingElective(p)) return '今は「' + (NAME[electiveOf(p)] || '別の資格') + '」を学習中です（取得すると次を選べます）';
+      return ''; // 選択可
+    }
+    return 'まだ解除されていません';
+  }
+
+  window.SFQ_PROG = {
+    ORDER: ORDER, POOL: POOL, KEY: KEY, NAME: NAME, RELEASED: RELEASED,
+    progress: progress, isAdmin: isAdmin, isReleased: isReleased,
+    acquiredOf: acquiredOf, lockedOf: lockedOf, electiveOf: electiveOf, pendingElective: pendingElective,
+    unlocked: unlocked, stateOf: stateOf, canChoose: canChoose,
+    lockReason: lockReason, renderGate: renderGate
+  };
+
+  /* ===== 各クイズページの全面ゲート（未解除 / 取得済みロック） ===== */
+  function injectStyle() {
+    if (document.getElementById('sfq-prog-style')) return;
+    var css =
+      '#sfq-prog-lock{position:fixed;inset:0;z-index:99990;display:none;align-items:center;justify-content:center;padding:24px;' +
+      'background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfq-prog-lock.show{display:flex}' +
+      '#sfq-prog-lock .pgl-card{max-width:420px;width:100%;background:#fff;border-radius:18px;padding:30px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}' +
+      '#sfq-prog-lock .pgl-ic{font-size:52px;line-height:1;margin-bottom:12px}' +
+      '#sfq-prog-lock .pgl-title{font-size:19px;font-weight:800;color:#0f172a;margin:0 0 8px}' +
+      '#sfq-prog-lock .pgl-sub{font-size:14px;line-height:1.7;color:#475569;margin:0 0 20px}' +
+      '#sfq-prog-lock .pgl-btn{display:block;width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer}' +
+      '#sfq-prog-lock .pgl-primary{background:#0176d3;color:#fff}' +
+      '#sfq-prog-lock .pgl-ghost{background:#eef2f7;color:#334155}' +
+      '@media(prefers-color-scheme:dark){#sfq-prog-lock .pgl-card{background:#1e293b}#sfq-prog-lock .pgl-title{color:#f1f5f9}#sfq-prog-lock .pgl-sub{color:#cbd5e1}#sfq-prog-lock .pgl-ghost{background:#334155;color:#e2e8f0}}' +
+      // ステップ制の説明モーダル
+      '#sfq-prog-info{position:fixed;inset:0;z-index:99995;display:none;align-items:center;justify-content:center;padding:20px;' +
+      'background:rgba(15,23,42,.6);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfq-prog-info.show{display:flex}' +
+      '#sfq-prog-info .pgi-card{width:min(96vw,520px);max-height:86vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35)}' +
+      '#sfq-prog-info .pgi-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-weight:800;font-size:16px;color:#0f172a}' +
+      '#sfq-prog-info .pgi-x{background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;line-height:1}' +
+      '#sfq-prog-info .pgi-body{padding:16px 18px 20px}' +
+      '#sfq-prog-info .pgi-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}' +
+      '#sfq-prog-info .pgi-step{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700}' +
+      '#sfq-prog-info .pgi-arrow{color:#94a3b8;font-weight:800}' +
+      '#sfq-prog-info .pgi-list{margin:0 0 14px;padding-left:20px;color:#334155;font-size:14px;line-height:1.8}' +
+      '#sfq-prog-info .pgi-list b{color:#0f172a}' +
+      '#sfq-prog-info .pgi-note{color:#64748b;font-size:12px;font-weight:600;margin-left:4px}' +
+      '#sfq-prog-info .pgi-how{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:11px 13px;font-size:13px;line-height:1.7;color:#334155}' +
+      '@media(prefers-color-scheme:dark){#sfq-prog-info .pgi-card{background:#1e293b}#sfq-prog-info .pgi-head{color:#f1f5f9;border-color:#334155}#sfq-prog-info .pgi-step{background:#1e3a5f;color:#93c5fd;border-color:#1e40af}#sfq-prog-info .pgi-list{color:#cbd5e1}#sfq-prog-info .pgi-list b{color:#f1f5f9}#sfq-prog-info .pgi-how{background:#0f172a;border-color:#334155;color:#cbd5e1}}';
+    var st = document.createElement('style');
+    st.id = 'sfq-prog-style';
+    st.textContent = css;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  function homeUrl() { return window.SFQ_HOME_URL || '../../index.html'; }
+
+  function buildEl() {
+    injectStyle();
+    var el = document.getElementById('sfq-prog-lock');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'sfq-prog-lock';
+    el.innerHTML = '<div class="pgl-card">' +
+      '<div class="pgl-ic" id="pgl-ic">🔒</div>' +
+      '<p class="pgl-title" id="pgl-title"></p>' +
+      '<p class="pgl-sub" id="pgl-sub"></p>' +
+      '<div id="pgl-actions"></div></div>';
+    document.body.appendChild(el);
+    return el;
+  }
+
+  // クイズページでのみ意味を持つ（CERT_CONFIG がある）。状態に応じて全面ゲートを出す。
+  function renderGate() {
+    var cfg = window.CERT_CONFIG;
+    if (!cfg || !cfg.slug) return; // LP 等では何もしない
+    var slug = cfg.slug;
+    var st = stateOf(slug);
+    var el = document.getElementById('sfq-prog-lock');
+    if (st === 'open') { if (el) el.classList.remove('show'); return; }
+    el = buildEl();
+    var ic = document.getElementById('pgl-ic');
+    var title = document.getElementById('pgl-title');
+    var sub = document.getElementById('pgl-sub');
+    var actions = document.getElementById('pgl-actions');
+    var homeBtn = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+    var reloadBtn = '<button class="pgl-btn pgl-ghost" id="pgl-reload">🔄 再確認</button>';
+    if (st === 'coming') {
+      ic.textContent = '🔜';
+      title.textContent = 'この資格はいずれ公開します';
+      sub.textContent = '現在準備中です。公開までもうしばらくお待ちください。';
+      actions.innerHTML = homeBtn + reloadBtn;
+    } else if (st === 'acquired') {
+      var d = (progress().acquired || {})[slug] || '';
+      ic.textContent = '🎓';
+      title.textContent = '取得済みのため学習はロック中です';
+      sub.innerHTML = (d ? '取得日: ' + d + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。';
+      actions.innerHTML = homeBtn + reloadBtn;
+    } else { // locked
+      ic.textContent = '🔒';
+      title.textContent = 'この資格はまだ解除されていません';
+      sub.textContent = lockReason(slug) || 'まだ解除されていません';
+      actions.innerHTML = homeBtn + reloadBtn;
+    }
+    document.getElementById('pgl-home').onclick = function () { location.href = homeUrl(); };
+    document.getElementById('pgl-reload').onclick = function () { location.reload(); };
+    el.classList.add('show');
+  }
+
+  /* ===== ステップ制の説明（LP・各資格ページで共有） ===== */
+  function ruleHtml() {
+    return '' +
+      '<div class="pgi-flow">' +
+        '<span class="pgi-step">① ' + NAME['sf-admin'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">② ' + NAME['app-builder'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">③ ' + NAME['developer'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">残りの資格を1つずつ</span>' +
+      '</div>' +
+      '<ul class="pgi-list">' +
+        '<li>最初は <b>' + NAME['sf-admin'] + '</b> だけが学習できます。</li>' +
+        '<li>その資格を <b>「取得済み」</b> にすると <b>次の資格が解除</b> されます（②→③の順）。</li>' +
+        '<li>取得済みにした資格は <b>学習・解答ができなくなります</b>。⚠️ <b>一度「取得済み」にすると取り消せません</b>。</li>' +
+        '<li><b>' + NAME['developer'] + '</b> まで取得すると、残りの資格を <b>1つずつ</b> 選んで解除できます（取得するたびに次を選べます）。<span class="pgi-note">※順次公開予定</span></li>' +
+      '</ul>' +
+      '<div class="pgi-how"><b>「取得済みにする」場所：</b> 各資格ホームの「🎓 資格の取得」カード／👤マイページ／合格した模試の結果画面。</div>';
+  }
+  function openInfo() {
+    injectStyle();
+    var ov = document.getElementById('sfq-prog-info');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'sfq-prog-info';
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeInfo(); });
+      document.body.appendChild(ov);
+    }
+    ov.innerHTML = '<div class="pgi-card"><div class="pgi-head"><span>🎓 資格はステップ制で解除します</span>' +
+      '<button class="pgi-x" id="pgi-x" aria-label="閉じる">✕</button></div>' +
+      '<div class="pgi-body">' + ruleHtml() + '</div></div>';
+    document.getElementById('pgi-x').onclick = closeInfo;
+    ov.classList.add('show');
+  }
+  function closeInfo() { var ov = document.getElementById('sfq-prog-info'); if (ov) ov.classList.remove('show'); }
+  window.SFQ_PROG.ruleHtml = ruleHtml;
+  window.SFQ_PROG.openInfo = openInfo;
+  window.SFQ_PROG.closeInfo = closeInfo;
+
+  // 進行状況が更新されたら（ログイン完了・取得/取消・選択）ゲートを再評価
+  window.addEventListener('sfq-progress', renderGate);
+  // 初回（localhost フォールバック等）。クラウド連動時は直後の 'sfq-progress' で上書きされる。
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGate);
+  else renderGate();
+})();
