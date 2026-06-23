@@ -56,23 +56,26 @@
 
   // クラウド未接続時は localStorage の各資格ストアを走査して進行状況を作る
   function localProgress() {
-    var acq = {};
+    var acq = {}, lk = {};
     Object.keys(KEY).forEach(function (slug) {
       try {
         var raw = localStorage.getItem(KEY[slug]);
-        if (raw) { var s = JSON.parse(raw); if (s && s.acquiredDate) acq[slug] = s.acquiredDate; }
+        if (raw) { var s = JSON.parse(raw); if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; } }
       } catch (e) {}
     });
     var el = '';
     try { el = localStorage.getItem('sfq_elective') || ''; } catch (e) {}
-    return { acquired: acq, elective: el };
+    return { acquired: acq, locked: lk, elective: el };
   }
 
   function progress() {
     return (window.SFQ_PROGRESS && window.SFQ_PROGRESS.acquired) ? window.SFQ_PROGRESS : localProgress();
   }
   function isAdmin() { return !!window.SFQ_IS_ADMIN; }
+  // acquiredOf = 「取得済み」（バッジ・次の資格の解除に使う。新旧どちらの取得も含む）
   function acquiredOf(slug, p) { p = p || progress(); return !!(p.acquired && p.acquired[slug]); }
+  // lockedOf = 今回のステップ制で取得し「学習ロックを伴う」もの。導入前からの取得は含まない（既存はロックしない）
+  function lockedOf(slug, p) { p = p || progress(); return !!(p.locked && p.locked[slug]); }
   function electiveOf(p) { p = p || progress(); return p.elective || ''; }
 
   // この資格が解除済み（＝アクセス可能なように前提を満たしている）か
@@ -98,8 +101,9 @@
     p = p || progress();
     if (isAdmin()) return 'open';
     if (!isReleased(slug)) return 'coming';
-    if (acquiredOf(slug, p)) return 'acquired';
-    return unlocked(slug, p) ? 'open' : 'locked';
+    if (lockedOf(slug, p)) return 'acquired';            // 今回のステップ制で取得＝学習ロック
+    // 解除済み、または導入前から取得済み（既存はロックしない）なら学習可
+    return (unlocked(slug, p) || acquiredOf(slug, p)) ? 'open' : 'locked';
   }
 
   // この資格を今「選択して解除」できるか
@@ -130,7 +134,7 @@
   window.SFQ_PROG = {
     ORDER: ORDER, POOL: POOL, KEY: KEY, NAME: NAME, RELEASED: RELEASED,
     progress: progress, isAdmin: isAdmin, isReleased: isReleased,
-    acquiredOf: acquiredOf, electiveOf: electiveOf, pendingElective: pendingElective,
+    acquiredOf: acquiredOf, lockedOf: lockedOf, electiveOf: electiveOf, pendingElective: pendingElective,
     unlocked: unlocked, stateOf: stateOf, canChoose: canChoose,
     lockReason: lockReason, renderGate: renderGate
   };
@@ -202,24 +206,27 @@
     var title = document.getElementById('pgl-title');
     var sub = document.getElementById('pgl-sub');
     var actions = document.getElementById('pgl-actions');
+    var homeBtn = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+    var reloadBtn = '<button class="pgl-btn pgl-ghost" id="pgl-reload">🔄 再確認</button>';
     if (st === 'coming') {
       ic.textContent = '🔜';
       title.textContent = 'この資格はいずれ公開します';
       sub.textContent = '現在準備中です。公開までもうしばらくお待ちください。';
-      actions.innerHTML = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+      actions.innerHTML = homeBtn + reloadBtn;
     } else if (st === 'acquired') {
       var d = (progress().acquired || {})[slug] || '';
       ic.textContent = '🎓';
       title.textContent = '取得済みのため学習はロック中です';
       sub.innerHTML = (d ? '取得日: ' + d + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。';
-      actions.innerHTML = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+      actions.innerHTML = homeBtn + reloadBtn;
     } else { // locked
       ic.textContent = '🔒';
       title.textContent = 'この資格はまだ解除されていません';
       sub.textContent = lockReason(slug) || 'まだ解除されていません';
-      actions.innerHTML = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+      actions.innerHTML = homeBtn + reloadBtn;
     }
     document.getElementById('pgl-home').onclick = function () { location.href = homeUrl(); };
+    document.getElementById('pgl-reload').onclick = function () { location.reload(); };
     el.classList.add('show');
   }
 
