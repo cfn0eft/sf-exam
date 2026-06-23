@@ -211,15 +211,8 @@
       var d = (progress().acquired || {})[slug] || '';
       ic.textContent = '🎓';
       title.textContent = '取得済みのため学習はロック中です';
-      sub.innerHTML = (d ? '取得日: ' + d + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。<br>もう一度学習するには取得を取り消してください。';
-      actions.innerHTML =
-        '<button class="pgl-btn pgl-ghost" id="pgl-undo">取り消して学習を再開</button>' +
-        '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
-      var undo = document.getElementById('pgl-undo');
-      undo.onclick = function () {
-        if (typeof window.unacquireCert === 'function') window.unacquireCert();
-        else { try { var raw = localStorage.getItem(KEY[slug]); if (raw) { var s = JSON.parse(raw); s.acquiredDate = ''; localStorage.setItem(KEY[slug], JSON.stringify(s)); } } catch (e) {} renderGate(); }
-      };
+      sub.innerHTML = (d ? '取得日: ' + d + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。';
+      actions.innerHTML = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
     } else { // locked
       ic.textContent = '🔒';
       title.textContent = 'この資格はまだ解除されていません';
@@ -242,7 +235,7 @@
       '<ul class="pgi-list">' +
         '<li>最初は <b>' + NAME['sf-admin'] + '</b> だけが学習できます。</li>' +
         '<li>その資格を <b>「取得済み」</b> にすると <b>次の資格が解除</b> されます（②→③の順）。</li>' +
-        '<li>取得済みにした資格は <b>学習・解答ができなくなります</b>（あとから取り消せば、また学べます）。</li>' +
+        '<li>取得済みにした資格は <b>学習・解答ができなくなります</b>。⚠️ <b>一度「取得済み」にすると取り消せません</b>。</li>' +
         '<li><b>' + NAME['developer'] + '</b> まで取得すると、残りの資格を <b>1つずつ</b> 選んで解除できます（取得するたびに次を選べます）。<span class="pgi-note">※順次公開予定</span></li>' +
       '</ul>' +
       '<div class="pgi-how"><b>「取得済みにする」場所：</b> 各資格ホームの「🎓 資格の取得」カード／👤マイページ／合格した模試の結果画面。</div>';

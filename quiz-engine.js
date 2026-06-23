@@ -2276,7 +2276,7 @@ function renderMypage(){
   if(ed){const t=new Date();t.setHours(0,0,0,0);const e=new Date(ed+'T00:00:00');const dl=Math.round((e-t)/86400000);const unans=allQ.length-answered;
     planInfo=dl>=0?('受験まで あと '+dl+'日'+(dl>0&&unans>0?' ・ 未着手 '+unans+'問 → 目安 '+Math.ceil(unans/dl)+'問/日':'')):'受験日は過ぎました';}
   const acqHtml=store.acquiredDate
-    ? '<div class="mp-acqdone"><span class="mp-acqic">🎓</span><span class="mp-main"><div class="mp-acqt">この資格は取得済みです 🎉</div><div class="mp-osub">取得日: '+escH(store.acquiredDate)+'</div></span><button class="mp-undo" onclick="unacquireCert()">取り消し</button></div>'
+    ? '<div class="mp-acqdone"><span class="mp-acqic">🎓</span><span class="mp-main"><div class="mp-acqt">この資格は取得済みです 🎉</div><div class="mp-osub">取得日: '+escH(store.acquiredDate)+'</div></span></div>'
     : '<div class="mp-opt" style="border:none;padding:0"><span class="mp-ic">🎓</span><span class="mp-main">資格の取得<div class="mp-osub">本番試験に合格したら記録しましょう</div></span><button class="mp-acqbtn" onclick="acquireCert()">取得済みにする</button></div>';
   host.innerHTML=
     '<div class="card">'+accHtml+'</div>'
@@ -2341,20 +2341,14 @@ function __notifyProgress(){
   }catch(e){}
 }
 function acquireCert(){
-  if(!confirm('この資格を「取得済み」にしますか？\n取得済みにすると、この資格の問題は学習・解答ができなくなり、次の資格が解除されます。'))return;
+  if(!confirm('⚠️ 本当にこの資格を「取得済み」にしますか？\n\n・一度「取得済み」にすると取り消せません。\n・この資格の問題は学習・解答ができなくなります。\n・次の資格が解除されます。'))return;
   store.acquiredDate=_today();save();
   homeStats();renderMypage();
   try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(true);}catch(e){}
   __notifyProgress();
   toast('🎓 取得済みにしました！おめでとうございます 🎉');
 }
-function unacquireCert(){
-  if(!confirm('「取得済み」を取り消しますか？\nこの資格の学習を再開できますが、解除した先の資格は再びロックされます。'))return;
-  store.acquiredDate='';save();homeStats();renderMypage();
-  try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(false);}catch(e){}
-  __notifyProgress();
-  toast('取得済みを取り消しました');
-}
+// ※「取得済み」は一度設定すると取り消せない仕様（取り消し機能は提供しない）。
 // ホームに「取得して次へ進む」カードを表示（取得導線をわかりやすく）。
 // 取得済みのときは進行ゲートが画面を覆うのでカードは出さない。
 function renderHomeProgress(){
@@ -2373,7 +2367,7 @@ function renderHomeProgress(){
   card.innerHTML=
     '<div class="hp-row"><span class="hp-ic">🎓</span><div class="hp-main">'
     +'<div class="hp-t">合格したら「取得済み」にして次へ進もう</div>'
-    +'<div class="hp-sub">取得済みにすると<b>次の資格が解除</b>されます。取得後はこの資格の学習がロックされます（あとから取り消せば再開できます）。</div>'
+    +'<div class="hp-sub">取得済みにすると<b>次の資格が解除</b>されます。⚠️ <b>一度取得すると取り消せません</b>。取得後はこの資格の学習・解答ができなくなります。</div>'
     +'</div></div>'
     +'<div class="hp-actions">'
     +'<button class="hp-acqbtn" onclick="acquireCert()">🎓 この資格を取得済みにする</button>'
