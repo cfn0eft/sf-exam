@@ -115,6 +115,7 @@
       '.sfqc-acc-actions button{border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700;cursor:pointer}' +
       '.sfqc-act-detail{background:#eef2ff;color:#4338ca}' +
       '.sfqc-act-reset{background:#fef9c3;color:#854d0e}' +
+      '.sfqc-act-revoke{background:#dcfce7;color:#15803d}' +
       '.sfqc-act-del{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-detail{display:none;padding:0 14px 14px;border-top:1px dashed #e2e8f0}' +
       '.sfqc-detail.show{display:block}' +
@@ -2659,11 +2660,17 @@
     var examDateLabel = s.examDate ? esc(s.examDate) : '未設定';
     var goalLabel = s.goal ? (s.goal + '問/日') : '未設定';
     var lastExam = s.examLastTs ? fmtDate(s.examLastTs) : '—';
+    var acqDate = (c.store && c.store.acquiredDate) || '';
+    // 「取得済み」は本人からは取り消せない仕様。管理者だけがここから取り消せる。
+    var revokeBtn = acqDate
+      ? '<button class="sfqc-act-revoke" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">🎓 取得取消</button>'
+      : '';
     return '' +
       '<div class="sfqc-cert">' +
         '<div class="sfqc-cert-head">' +
-          '<span class="sfqc-cert-name">📘 ' + esc(c.cert) + '</span>' +
+          '<span class="sfqc-cert-name">📘 ' + esc(c.cert) + (acqDate ? ' <span class="sfqc-acc-access ok">🎓 取得済み</span>' : '') + '</span>' +
           '<span class="sfqc-cert-actions">' +
+            revokeBtn +
             '<button class="sfqc-act-reset" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">リセット</button>' +
             '<button class="sfqc-act-del" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">削除</button>' +
           '</span>' +
@@ -2690,6 +2697,7 @@
           kv('最終学習日', s.lastStudyDate || '—') +
           kv('受験予定日', examDateLabel) +
           kv('日次目標', goalLabel) +
+          kv('資格取得', acqDate || '未取得') +
         '</div>' +
       '</div>';
   }
@@ -2746,6 +2754,9 @@
     box.innerHTML = html;
     box.classList.add('show');
 
+    box.querySelectorAll('.sfqc-act-revoke').forEach(function (b) {
+      b.addEventListener('click', function () { revokeAcquire(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
+    });
     box.querySelectorAll('.sfqc-act-reset').forEach(function (b) {
       b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
     });
@@ -2862,6 +2873,30 @@
       var n = res.filter(Boolean).length; adminSelUsers = {};
       logAdmin('一括リセット', n + '人'); toastSafe(n + ' 人の進捗をリセットしました'); renderAdmin();
     });
+  }
+
+  // 「取得済み」の取り消し（管理者のみ）。本人は取り消せない仕様のため、ここが唯一の取消手段。
+  // 当該資格のサブストアの acquiredDate のみ空にして書き戻す（他の進捗は保持）。
+  function revokeAcquire(uid, cert, name) {
+    if (!isAdmin || !db) return;
+    var u = findUser(uid); if (!u) return;
+    var c = u.certs.filter(function (x) { return x.cert === cert; })[0];
+    if (!c || !c.store || !c.store.acquiredDate) { toastSafe('この資格は取得済みではありません'); return; }
+    if (!confirm('「' + name + '」［' + cert + '］の「取得済み」を取り消します。\n本人の学習ロックが解除され、再び学習できるようになります。\n（進捗データはそのまま保持されます）\n\nよろしいですか？')) return;
+    var ref = db.collection(COLLECTION).doc(uid);
+    var FP = firebase.firestore.FieldPath;
+    var ns;
+    try { ns = JSON.parse(JSON.stringify(c.store)); } catch (e) { ns = c.store; }
+    ns.acquiredDate = '';
+    var p = (cert === '(旧)' || cert === '—')
+      ? ref.update('store', ns, 'updated', Date.now())
+      : ref.update(new FP('stores', cert), ns, 'updated', Date.now());
+    p.then(function () {
+        c.store = ns; u.updated = Date.now(); refreshUser(u);
+        logAdmin('取得済み取消', name + '［' + cert + '］');
+        toastSafe('「' + name + '」［' + cert + '］の取得済みを取り消しました'); renderAdmin();
+      })
+      .catch(function (e) { alert('取り消しに失敗しました: ' + (e && e.message)); });
   }
 
   function resetAccount(uid, cert, name) {
