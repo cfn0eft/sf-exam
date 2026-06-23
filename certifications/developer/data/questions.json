@@ -11130,10 +11130,10 @@
       "@InvocableMethod\nglobal static List<Recommendation> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
     ],
     "answers": [
-      "@InvocableMethod\nglobal static List<Recommendation> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
+      "@InvocableMethod\nglobal static List<List<Recommendation>> getLevel(List<ContactWrapper> input)\n{ /*implementation*/ }"
     ],
-    "explanation": "@InvocableMethod のメソッドは static で、入力/戻り値とも List 型である必要があります。\n□ D：正解。global static List<Recommendation> getLevel(List<ContactWrapper>) が正しい定義です（Recommendation を返す）。\n□ A/C：不正解。List<List<Recommendation>> は Enhance Element の戻り値型として不適切（A は冗長、C は static でも List<List> が不一致）。\n□ B：不正解。static でなく、入力/戻り値も List でないため無効です。\n参考：Invocable メソッド",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
+    "explanation": "Next Best Action の Enhance 要素が呼ぶ Apex は @InvocableMethod 付きの static メソッドで、戻り値は List<List<Recommendation>>（推奨のリストのリスト）である必要があります。\n□ A：正解。global static List<List<Recommendation>> getLevel(List<ContactWrapper>) が正しい定義です。\n□ B：不正解。static でなく、入力も戻り値も単一型（List でない）ため Invocable メソッドとして無効です。\n□ C：不正解。戻り値型は正しいものの static が無いため呼び出せません。\n□ D：不正解。static は正しいものの、Enhance 要素の戻り値は List<Recommendation> ではなく List<List<Recommendation>> である必要があります。\n参考：NBA Enhance 要素",
+    "reference_url": "https://help.salesforce.com/s/articleView?id=platform.nba_strategy_elements_enhance.htm&type=5",
     "multi": false,
     "domain": "logic",
     "keywords": [
@@ -11994,13 +11994,13 @@
     "id": 577,
     "question": "経営陣は、年間売上高が100万ドルを超える取引先に対して商談を自動的に作成するよう依頼しました。開発者は、この要件を満たすために、取引先オブジェクトに次のトリガを作成しました。\nfor (Account a : Trigger.new) {\nif (a.AnnualRevenue > 1000000) {\nList<Opportunity> oppList = [SELECT Id FROM Opportunity WHERE AccountId = :a.Id]; if (oppList.size() == 0) { Opportunity oppty = new Opportunity(Name = a.Name, StageName = 'Prospecting', CloseDate = System.\ntoday().addDays(30));\ninsert oppty;\n}\n}\n}\nユーザーはUIから取引先レコードを更新でき、年間売上高の高い取引先向けに作成された商談を確認できます。しかし、管理者がデータローダーを使用して179件の取引先リストをアップロードしようとすると、システム例外エラーが発生し、アップロードに失敗します。\n上記のコード セグメントを修正するために開発者が実行する必要がある 2 つのアクションはどれですか。\n2つの答えを選択してください",
     "choices": [
-      "for ループの外側にある既存の商談をクエリします。",
+      "既存の商談を照会する SOQL クエリを for ループの外側に移動します。",
       "作成時に商談のすべての必須フィールドが追加されているかどうかを確認します。",
       "商談を保存する DML を for ループの外側に移動します。",
       "データベース クエリを使用して商談を照会します。"
     ],
     "answers": [
-      "for ループの外側にある既存の商談をクエリします。",
+      "既存の商談を照会する SOQL クエリを for ループの外側に移動します。",
       "商談を保存する DML を for ループの外側に移動します。"
     ],
     "explanation": "2つ選びます。179 件の一括取込で失敗するのはバルク化不足です。\n□ A：正解。既存商談の照会（SOQL）をループの外に出します。\n□ C：正解。insert（DML）をループの外に出し、リストにためて 1 回で実行します。\n□ B：不正解。必須項目の確認は本エラー（制限超過）の解ではありません。\n□ D：不正解。Database.query への変更は本質的解決ではありません。\n参考：トリガーのバルク化",
@@ -12468,7 +12468,7 @@
   },
   {
     "id": 600,
-    "question": "開発者は、更新前イベントでアカウント オブジェクトにトリガーを記述し、カウント フィールドを増分します。レコード トリガー フローも、アカウントが作成または更新されるたびにカウント フィールドを増分します。\nアカウントに他の自動化ロジックが実装されていないと仮定して、初期値ゼロでアカウントが挿入された場合、カウント フィールドの値は何ですか?",
+    "question": "開発者は、アカウントオブジェクトに更新前（before update）イベントのトリガーを記述し、カウントフィールドを増分します。ワークフロールールも、アカウントが作成または更新されるたびにカウントフィールドを増分します。このワークフロールールの項目自動更新は「ワークフロールールを再評価しない」設定です。\nアカウントに他の自動化ロジックが実装されていないと仮定して、初期値ゼロでアカウントが挿入された場合、カウントフィールドの値は何ですか?",
     "choices": [
       "4",
       "2",
@@ -12476,16 +12476,16 @@
       "3"
     ],
     "answers": [
-      "4"
+      "2"
     ],
-    "explanation": "挿入時：保存前トリガーで +1、保存後フローで +1。続く更新時：保存前トリガーで +1、保存後フローで +1。\n□ A：正解。最終的に count = 4 になります。\n□ B/C/D：不正解。作成と更新の両方で前後の自動化が動くため 4 です。\n参考：実行順序",
+    "explanation": "トリガーは「更新前」イベントのみで発火します。\n①挿入時：挿入は更新ではないため更新前トリガーは発火しません。ワークフロールールが作成時に発火しカウントを 1 にします。その項目自動更新が更新イベントを発生させます。\n②その更新で更新前トリガーが発火しカウントを 2 にします。ワークフロールールは「再評価しない」設定のため再実行されません。\n□ B：正解。最終的に count = 2 です。\n□ A/C/D：不正解。挿入時にトリガーは動かず、ワークフローも再評価しないため 2 で確定します。\n参考：実行順序",
     "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_triggers_order_of_execution.htm",
     "multi": false,
     "domain": "logic",
     "keywords": [
       "実行順序",
       "トリガー",
-      "レコードトリガーフロー",
+      "ワークフロールール",
       "count"
     ],
     "source": "jpnshiken",
