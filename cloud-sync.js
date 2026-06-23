@@ -942,6 +942,7 @@
         return;
       }
       hideLock();
+      publishProgress(data); // 資格のロック解除（直列進行）の状態を全ページへ通知
       if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
@@ -996,6 +997,39 @@
       hideOverlay(); setStatus('オフライン'); toastSafe('オフライン: ローカルの進捗を表示中');
     });
   }
+
+  // ===== 資格のロック解除（直列進行・progression.js が判定の出典として使う）=====
+  // doc 全体の stores から各資格の取得済み日を集め、選択した解除資格 elective とともに公開する。
+  function publishProgress(data) {
+    try {
+      var acq = {};
+      var stores = (data && data.stores) || {};
+      Object.keys(stores).forEach(function (slug) {
+        var s = stores[slug];
+        if (s && s.acquiredDate) acq[slug] = s.acquiredDate;
+      });
+      window.SFQ_IS_ADMIN = !!isAdmin;
+      window.SFQ_PROGRESS = { acquired: acq, elective: (data && data.elective) || '' };
+      window.dispatchEvent(new Event('sfq-progress'));
+    } catch (e) {}
+  }
+  // 残り5資格から1つだけ選んで解除する（本人 doc の doc 直下 elective に保存。ルール変更不要）。
+  window.__cloudSetElective = function (slug) {
+    if (!currentUser || !db) { // localhost / 未ログイン時はローカルに退避
+      try { localStorage.setItem('sfq_elective', slug); } catch (e) {}
+      if (!window.SFQ_PROGRESS) window.SFQ_PROGRESS = { acquired: {}, elective: '' };
+      window.SFQ_PROGRESS.elective = slug;
+      try { window.dispatchEvent(new Event('sfq-progress')); } catch (e) {}
+      return Promise.resolve();
+    }
+    return db.collection(COLLECTION).doc(currentUser.uid)
+      .set({ elective: slug, updated: Date.now() }, { merge: true })
+      .then(function () {
+        if (!window.SFQ_PROGRESS) window.SFQ_PROGRESS = { acquired: {}, elective: '' };
+        window.SFQ_PROGRESS.elective = slug;
+        try { window.dispatchEvent(new Event('sfq-progress')); } catch (e) {}
+      });
+  };
 
   // 管理者からの返信(#7)を本人に通知。未読（localStorage の既読 ts より新しい）だけモーダル表示。
   function surfaceReplies(fbReplies) {
