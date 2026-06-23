@@ -33,7 +33,7 @@
   function sanitizeId(s) { return (s || '').trim().toLowerCase().replace(/[^a-z0-9._\-]/g, ''); }
   var ADMIN_IDS = (window.SFQ_ADMIN_IDS || []).map(sanitizeId);
 
-  var auth = null, db = null, currentUser = null, saveTimer = null;
+  var auth = null, db = null, currentUser = null, saveTimer = null, cloudDirty = false;
   var currentName = '', currentEmail = '', isAdmin = false;
   var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
 
@@ -1179,6 +1179,8 @@
       // （自分の書込は冒頭の hasPendingWrites で除外済み＝サーバ確定値のみ反映。
       //   承認状態の即時ロック/解除は startAccessWatch が担当する）
       if (d.access && d.access !== 'approved') return; // 停止/承認待ちは startAccessWatch がロック
+      // 未保存のローカル変更がある間は反映しない（取得直後など、保存前にサーバの古い値で巻き戻すのを防ぐ）
+      if (cloudDirty) return;
       publishProgress(d); // 進行状況（取得済み/ロック/選択）→ ゲート・LPカードを即時更新
       // この資格の進捗を他端末/管理者操作に追従（クイズページのみ。未保存ローカル変更は上の guard で保護）
       if (window.__setStore) {
@@ -1973,13 +1975,15 @@
     if (!currentUser || !db) return;
     if (accessLocked) return; // 停止/承認待ち中はクラウドへ書き込まない
     setStatus('保存中…');
+    cloudDirty = true; // 未保存のローカル変更あり（この間はリアルタイム反映でローカルを上書きしない）
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
+      saveTimer = null;
       var st = window.__getStore ? window.__getStore() : null;
-      if (!st) return;
+      if (!st) { cloudDirty = false; return; }
       saveCertStore(currentUser.uid, st)
-        .then(function () { setStatus('保存済み'); })
-        .catch(function () { setStatus('オフライン'); });
+        .then(function () { cloudDirty = false; setStatus('保存済み'); })
+        .catch(function () { cloudDirty = false; setStatus('オフライン'); });
     }, 800);
   };
 
