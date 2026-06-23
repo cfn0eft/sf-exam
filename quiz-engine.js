@@ -77,12 +77,12 @@ function freshFirst(list){const rec=recentExamIds();if(!rec.size)return shuffle(
 // --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
-  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};
+  return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',acqLock:0,time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
 // --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
-window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; if(!store.lessons||typeof store.lessons!=='object')store.lessons={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
+window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(store.acqLock==null)store.acqLock=0; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; if(!store.lessons||typeof store.lessons!=='object')store.lessons={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
 function recH(id,ok,low){
@@ -2333,16 +2333,19 @@ function __notifyProgress(){
   try{
     var slug=(window.CERT_CONFIG&&CERT_CONFIG.slug)||'';
     if(!slug)return;
-    if(!window.SFQ_PROGRESS)window.SFQ_PROGRESS={acquired:{},elective:''};
+    if(!window.SFQ_PROGRESS)window.SFQ_PROGRESS={acquired:{},locked:{},elective:''};
     if(!window.SFQ_PROGRESS.acquired)window.SFQ_PROGRESS.acquired={};
+    if(!window.SFQ_PROGRESS.locked)window.SFQ_PROGRESS.locked={};
     if(store.acquiredDate)window.SFQ_PROGRESS.acquired[slug]=store.acquiredDate;
     else delete window.SFQ_PROGRESS.acquired[slug];
+    if(store.acquiredDate&&store.acqLock)window.SFQ_PROGRESS.locked[slug]=1;
+    else delete window.SFQ_PROGRESS.locked[slug];
     window.dispatchEvent(new Event('sfq-progress'));
   }catch(e){}
 }
 function acquireCert(){
   if(!confirm('⚠️ 本当にこの資格を「取得済み」にしますか？\n\n・一度「取得済み」にすると取り消せません。\n・この資格の問題は学習・解答ができなくなります。\n・次の資格が解除されます。'))return;
-  store.acquiredDate=_today();save();
+  store.acquiredDate=_today();store.acqLock=1;save();
   homeStats();renderMypage();
   try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(true);}catch(e){}
   __notifyProgress();
@@ -2496,7 +2499,7 @@ function lessonCheck(id,idx){
 
 function resetAll(){
   if(!confirm('進捗データをすべてリセットしますか？'))return;
-  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
+  store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',acqLock:0,time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
 // ===== SRS（間隔反復・SM-2簡易版）=====

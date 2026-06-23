@@ -1003,14 +1003,14 @@
   // doc 全体の stores から各資格の取得済み日を集め、選択した解除資格 elective とともに公開する。
   function publishProgress(data) {
     try {
-      var acq = {};
+      var acq = {}, lk = {};
       var stores = (data && data.stores) || {};
       Object.keys(stores).forEach(function (slug) {
         var s = stores[slug];
-        if (s && s.acquiredDate) acq[slug] = s.acquiredDate;
+        if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; }
       });
       window.SFQ_IS_ADMIN = !!isAdmin;
-      window.SFQ_PROGRESS = { acquired: acq, elective: (data && data.elective) || '' };
+      window.SFQ_PROGRESS = { acquired: acq, locked: lk, elective: (data && data.elective) || '' };
       window.dispatchEvent(new Event('sfq-progress'));
     } catch (e) {}
   }
@@ -2228,7 +2228,7 @@
       }
       // 管理者自身の doc から操作ログを取り込む（#4）
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2721,6 +2721,7 @@
       '<div>状態: ' + (isOnline(u) ? '🟢 オンライン' : '⚪ オフライン') + '（最終アクセス ' + esc(u.lastSeen ? fmtDateTime(u.lastSeen) : '—') + '）</div>' +
       '<div>最終ログイン: ' + esc(u.lastLogin ? fmtDateTime(u.lastLogin) : '—') + '</div>' +
       (u.req && u.req.ts ? '<div>申請: ' + esc(u.req.name || u.name) + '（' + esc(fmtDate(u.req.ts)) + '）</div>' : '') +
+      (u.elective ? '<div>選択中の解除資格(elective): <code>' + esc(u.elective) + '</code> <button class="sfqc-act-revoke sfqc-el-reset" data-eluid="' + esc(u.uid) + '" data-elname="' + esc(u.name) + '">選択をリセット</button></div>' : '') +
       '</div>';
     // ログイン履歴（直近・秒精度）
     if (u.logins && u.logins.length) {
@@ -2754,8 +2755,11 @@
     box.innerHTML = html;
     box.classList.add('show');
 
-    box.querySelectorAll('.sfqc-act-revoke').forEach(function (b) {
+    box.querySelectorAll('.sfqc-act-revoke[data-uid]').forEach(function (b) {
       b.addEventListener('click', function () { revokeAcquire(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
+    });
+    box.querySelectorAll('.sfqc-el-reset').forEach(function (b) {
+      b.addEventListener('click', function () { adminResetElective(b.getAttribute('data-eluid'), b.getAttribute('data-elname')); });
     });
     box.querySelectorAll('.sfqc-act-reset').forEach(function (b) {
       b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
@@ -2887,7 +2891,7 @@
     var FP = firebase.firestore.FieldPath;
     var ns;
     try { ns = JSON.parse(JSON.stringify(c.store)); } catch (e) { ns = c.store; }
-    ns.acquiredDate = '';
+    ns.acquiredDate = ''; ns.acqLock = 0;
     var p = (cert === '(旧)' || cert === '—')
       ? ref.update('store', ns, 'updated', Date.now())
       : ref.update(new FP('stores', cert), ns, 'updated', Date.now());
@@ -2897,6 +2901,20 @@
         toastSafe('「' + name + '」［' + cert + '］の取得済みを取り消しました'); renderAdmin();
       })
       .catch(function (e) { alert('取り消しに失敗しました: ' + (e && e.message)); });
+  }
+
+  // 選択した解除資格(elective)のリセット（管理者のみ）。選び間違いの救済。
+  function adminResetElective(uid, name) {
+    if (!isAdmin || !db || !uid) return;
+    if (!confirm('「' + name + '」が選択中の「解除する資格(elective)」をリセットします。\n本人は残りの資格からもう一度選び直せるようになります。\n（取得済みの資格や進捗には影響しません）\n\nよろしいですか？')) return;
+    var FV = firebase.firestore.FieldValue;
+    db.collection(COLLECTION).doc(uid).update({ elective: FV.delete(), updated: Date.now() })
+      .then(function () {
+        var u = findUser(uid); if (u) { u.elective = ''; u.updated = Date.now(); }
+        logAdmin('elective リセット', name);
+        toastSafe('「' + name + '」の選択をリセットしました'); renderAdmin();
+      })
+      .catch(function (e) { alert('リセットに失敗しました: ' + (e && e.message)); });
   }
 
   function resetAccount(uid, cert, name) {
