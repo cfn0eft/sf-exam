@@ -1299,3 +1299,17 @@ body[data-fs=small] .cdef{font-size:12px}
 .mp-acqhint b{color:var(--text)}
 .mp-acqinfo{display:inline-block;margin-left:6px;border:1px solid var(--border);background:var(--card);color:var(--text-sub);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;cursor:pointer}
 
+/* ===== 資格取得の確認モーダル（ネイティブ confirm の代替） ===== */
+.acq-ov{display:none;position:fixed;inset:0;z-index:99996;background:rgba(15,23,42,.6);
+  align-items:center;justify-content:center;padding:20px}
+.acq-ov.on{display:flex}
+.acq-box{width:min(94vw,400px);background:var(--card);border-radius:16px;padding:24px 22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
+.acq-box .acq-ic{font-size:46px;line-height:1;margin-bottom:10px}
+.acq-box .acq-t{font-size:17px;font-weight:800;color:var(--text);margin-bottom:10px}
+.acq-box .acq-msg{font-size:13px;line-height:1.8;color:var(--text-sub);text-align:left;margin-bottom:18px}
+.acq-box .acq-msg b{color:var(--danger,#dc2626)}
+.acq-actions{display:flex;gap:10px}
+.acq-actions button{flex:1;border:none;border-radius:11px;padding:13px;font-size:14px;font-weight:800;cursor:pointer}
+.acq-actions .acq-cancel{background:var(--muted);color:var(--text-sub)}
+.acq-actions .acq-ok{background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00}
