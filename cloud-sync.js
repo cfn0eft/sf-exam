@@ -47,6 +47,7 @@
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
+  var noticeBoundaryTimer = null; // 予約お知らせ（publishAt が未来）の配信時刻に再チェックするタイマー
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
   var adminBroadcasts = [];        // 管理者ビュー用：一斉お知らせレコード一覧 [{id,...}]
   var adminColUnsub = null, adminRenderTimer = null; // 管理者ビューのライブ購読（DM未読バッジ等の即時反映）
@@ -1134,6 +1135,7 @@
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
       ownLoaded = true; // 既読マップ取得済み
       surfaceNotices();
+      scheduleNoticeBoundary(); // 予約お知らせがあれば配信時刻に再チェック
       surfaceReplies(d.fbReplies); // 管理者からのフィードバック返信(#7)も即時通知（既読は seen マップで抑止）
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
@@ -1149,6 +1151,7 @@
       });
       lastBroadcasts = arr;
       surfaceNotices();
+      scheduleNoticeBoundary(); // 予約の一斉お知らせも配信時刻にポップさせる
       checkMaintenance();
     }, function () {});
     if (maintTimer) clearInterval(maintTimer);
@@ -1161,6 +1164,7 @@
     if (maintUnsub) { maintUnsub(); maintUnsub = null; }
     if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
+    if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
     lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null; ownLoaded = false;
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
@@ -1195,6 +1199,24 @@
       items.sort(function (a, b) { return b.ts - a.ts; });
       showNoticeModal(items);
     } catch (e) {}
+  }
+  // 予約お知らせ（publishAt が未来）を、その配信時刻ちょうどにポップさせるためのタイマー。
+  // doc は予約時に1度しか変化しないため、配信時刻には snapshot が再発火しない。
+  // そこで一番近い未来の publishAt に setTimeout を張り、到来したら surfaceNotices を再実行する。
+  function scheduleNoticeBoundary() {
+    if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
+    var now = Date.now(), next = 0;
+    var consider = function (x) { var at = (x && (x.publishAt || x.ts)) || 0; if (at > now && (!next || at < next)) next = at; };
+    lastBroadcasts.forEach(consider);
+    (lastNotices || []).forEach(consider);
+    if (!next) return;
+    // 上限6時間（長期予約はタイマーを張り続けず、次回の snapshot/ログインで拾う）。setTimeout 桁あふれも回避。
+    var delay = Math.max(500, Math.min(next - now + 250, 6 * 60 * 60 * 1000));
+    noticeBoundaryTimer = setTimeout(function () {
+      noticeBoundaryTimer = null;
+      surfaceNotices();
+      scheduleNoticeBoundary(); // 次の予約に向けて張り直す
+    }, delay);
   }
   // items を1つのモーダルで表示。opts.preview=true のときは管理者向け「送信プレビュー」（既読は記録しない）
   function showNoticeModal(items, opts) {
