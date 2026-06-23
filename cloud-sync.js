@@ -40,6 +40,8 @@
   /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
   var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
+  /* アクセス権のリアルタイム監視（個別の停止/承認を即時反映）の状態 */
+  var accessUnsub = null, watchedAccess = null, accessLocked = false;
   var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
@@ -653,9 +655,10 @@
     }
     hideOverlay();
     elLock.classList.add('show');
+    accessLocked = true; // ロック中はクラウド保存を止める（停止後の上書き防止）
     setStatus('');
   }
-  function hideLock() { if (elLock) elLock.classList.remove('show'); }
+  function hideLock() { if (elLock) elLock.classList.remove('show'); accessLocked = false; }
 
   // 承認待ちユーザーが「お名前」を入れて利用を申請する。access は pending のまま、
   // name/req を本人 doc に書く（Firestore ルールで pending 維持の書込は本人に許可）。
@@ -878,6 +881,7 @@
   function doLogout() {
     if (!auth) return;
     closeAdmin();
+    stopAccessWatch();
     stopUserMessaging();
     stopPresence();
     if (window.__setStore) window.__setStore(emptyStore());
@@ -913,6 +917,8 @@
     flushPendingFeedback(); // 未ログイン中に退避した報告があれば送信
 
     setStatus('確認中…');
+    // 自 doc のアクセス権をリアルタイム購読（管理者の「個別の停止/承認」を即時反映）。
+    if (!isAdmin) startAccessWatch(user.uid);
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
       var data = (doc.exists && doc.data()) || {};
 
@@ -1067,6 +1073,44 @@
      ・チャット     … 各利用者 doc の `chat[]`（本人・管理者が双方向に追記、realtime）
      利用者側は自 doc を onSnapshot で購読し、未読を検知してポップ／バッジ表示する。
      =================================================================== */
+
+  /* ===================================================================
+     アクセス権のリアルタイム監視（個別の停止/承認を即時反映）
+     ・管理者がアカウントを「停止」または承認取消 → 利用中でも即ロック。
+     ・「承認」 → 承認待ち画面のまま待っている人を即解除して同期開始。
+     再ログインや「再確認」ボタンを押さなくても反映される。
+     =================================================================== */
+  function startAccessWatch(uid) {
+    if (!db || !uid || isAdmin) return;
+    if (accessUnsub) { accessUnsub(); accessUnsub = null; }
+    watchedAccess = null; // 初回スナップショットは現状把握のみ（初期判定は onLogin の get が担当）
+    accessUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
+      if (snap.metadata && snap.metadata.hasPendingWrites) return; // 自分の書込は無視
+      var d = (snap.exists && snap.data()) || {};
+      var acc = d.access || 'pending';
+      if (watchedAccess === null) { watchedAccess = acc; return; }
+      if (acc === watchedAccess) return; // アクセス権に変化なし
+      var prev = watchedAccess; watchedAccess = acc;
+      if (acc === 'approved' && prev !== 'approved') {
+        onLogin(currentUser);          // 承認された → 即解除して同期開始
+      } else {
+        lockNowDueToAccess(acc, d);     // 停止/承認取消/却下 → 即ロック
+      }
+    }, function () {});
+  }
+  function stopAccessWatch() {
+    if (accessUnsub) { accessUnsub(); accessUnsub = null; }
+    watchedAccess = null;
+  }
+  // 利用中に管理者がアクセス権を変更（停止/承認取消）したら、その場でロックして同期を止める。
+  function lockNowDueToAccess(acc, d) {
+    try { if (currentUser) localStorage.removeItem('sfq_access_' + currentUser.uid); } catch (e) {}
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; } // 保留中の保存を破棄
+    stopUserMessaging();  // チャット/お知らせ購読を停止
+    stopPresence();       // 在席ハートビートを停止
+    showLock(acc === 'blocked' ? 'blocked' : (acc || 'pending'),
+      { reqName: (d && d.req && d.req.name) || (d && d.name) || currentName || '' });
+  }
 
   // 承認済みの一般利用者がログインしたら、リアルタイム購読とチャットUIを開始
   function startUserMessaging(uid) {
@@ -1846,6 +1890,7 @@
   /* ---------------- クラウド保存（デバウンス） ---------------- */
   window.__cloudSave = function () {
     if (!currentUser || !db) return;
+    if (accessLocked) return; // 停止/承認待ち中はクラウドへ書き込まない
     setStatus('保存中…');
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
@@ -3218,8 +3263,9 @@
         onLogin(user);
       } else {
         currentUser = null; isAdmin = false;
+        stopAccessWatch(); stopUserMessaging(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
-        showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
+        hideLock(); showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
       }
     });
   }
