@@ -119,6 +119,7 @@
       '.sfqc-acc-actions button{border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700;cursor:pointer}' +
       '.sfqc-act-detail{background:#eef2ff;color:#4338ca}' +
       '.sfqc-act-reset{background:#fef9c3;color:#854d0e}' +
+      '.sfqc-act-revoke{background:#dcfce7;color:#15803d}' +
       '.sfqc-act-del{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-detail{display:none;padding:0 14px 14px;border-top:1px dashed #e2e8f0}' +
       '.sfqc-detail.show{display:block}' +
@@ -956,6 +957,7 @@
         return;
       }
       hideLock();
+      publishProgress(data); // 資格のロック解除（直列進行）の状態を全ページへ通知
       if (isAdmin) watchAdminPending(); // 管理者は承認待ち件数をライブ購読で通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
@@ -1010,6 +1012,39 @@
       hideOverlay(); setStatus('オフライン'); toastSafe('オフライン: ローカルの進捗を表示中');
     });
   }
+
+  // ===== 資格のロック解除（直列進行・progression.js が判定の出典として使う）=====
+  // doc 全体の stores から各資格の取得済み日を集め、選択した解除資格 elective とともに公開する。
+  function publishProgress(data) {
+    try {
+      var acq = {}, lk = {};
+      var stores = (data && data.stores) || {};
+      Object.keys(stores).forEach(function (slug) {
+        var s = stores[slug];
+        if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; }
+      });
+      window.SFQ_IS_ADMIN = !!isAdmin;
+      window.SFQ_PROGRESS = { acquired: acq, locked: lk, elective: (data && data.elective) || '' };
+      window.dispatchEvent(new Event('sfq-progress'));
+    } catch (e) {}
+  }
+  // 残り5資格から1つだけ選んで解除する（本人 doc の doc 直下 elective に保存。ルール変更不要）。
+  window.__cloudSetElective = function (slug) {
+    if (!currentUser || !db) { // localhost / 未ログイン時はローカルに退避
+      try { localStorage.setItem('sfq_elective', slug); } catch (e) {}
+      if (!window.SFQ_PROGRESS) window.SFQ_PROGRESS = { acquired: {}, elective: '' };
+      window.SFQ_PROGRESS.elective = slug;
+      try { window.dispatchEvent(new Event('sfq-progress')); } catch (e) {}
+      return Promise.resolve();
+    }
+    return db.collection(COLLECTION).doc(currentUser.uid)
+      .set({ elective: slug, updated: Date.now() }, { merge: true })
+      .then(function () {
+        if (!window.SFQ_PROGRESS) window.SFQ_PROGRESS = { acquired: {}, elective: '' };
+        window.SFQ_PROGRESS.elective = slug;
+        try { window.dispatchEvent(new Event('sfq-progress')); } catch (e) {}
+      });
+  };
 
   // 管理者からの返信(#7)を本人に通知。未読（localStorage の既読 ts より新しい）だけモーダル表示。
   function surfaceReplies(fbReplies) {
@@ -1139,6 +1174,22 @@
       surfaceReplies(d.fbReplies); // 管理者からのフィードバック返信(#7)も即時通知（既読は seen マップで抑止）
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
+
+      // ---- リアルタイム反映：資格のロック解除・他端末の進捗を即時同期 ----
+      // （自分の書込は冒頭の hasPendingWrites で除外済み＝サーバ確定値のみ反映。
+      //   承認状態の即時ロック/解除は startAccessWatch が担当する）
+      if (d.access && d.access !== 'approved') return; // 停止/承認待ちは startAccessWatch がロック
+      publishProgress(d); // 進行状況（取得済み/ロック/選択）→ ゲート・LPカードを即時更新
+      // この資格の進捗を他端末/管理者操作に追従（クイズページのみ。未保存ローカル変更は上の guard で保護）
+      if (window.__setStore) {
+        var cs = d.stores && d.stores[CERT_KEY];
+        if (cs) {
+          try {
+            var cur = window.__getStore && window.__getStore();
+            if (JSON.stringify(cur) !== JSON.stringify(cs)) { window.__setStore(cs); if (window.__refreshUI) window.__refreshUI(); }
+          } catch (e) {}
+        }
+      }
     }, function () {});
     // 一斉お知らせ（レコード）＋メンテナンス設定を broadcast コレクションでまとめて購読
     if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
@@ -2268,7 +2319,7 @@
       }
       // 管理者自身の doc から操作ログを取り込む（#4）
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2700,11 +2751,17 @@
     var examDateLabel = s.examDate ? esc(s.examDate) : '未設定';
     var goalLabel = s.goal ? (s.goal + '問/日') : '未設定';
     var lastExam = s.examLastTs ? fmtDate(s.examLastTs) : '—';
+    var acqDate = (c.store && c.store.acquiredDate) || '';
+    // 「取得済み」は本人からは取り消せない仕様。管理者だけがここから取り消せる。
+    var revokeBtn = acqDate
+      ? '<button class="sfqc-act-revoke" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">🎓 取得取消</button>'
+      : '';
     return '' +
       '<div class="sfqc-cert">' +
         '<div class="sfqc-cert-head">' +
-          '<span class="sfqc-cert-name">📘 ' + esc(c.cert) + '</span>' +
+          '<span class="sfqc-cert-name">📘 ' + esc(c.cert) + (acqDate ? ' <span class="sfqc-acc-access ok">🎓 取得済み</span>' : '') + '</span>' +
           '<span class="sfqc-cert-actions">' +
+            revokeBtn +
             '<button class="sfqc-act-reset" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">リセット</button>' +
             '<button class="sfqc-act-del" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">削除</button>' +
           '</span>' +
@@ -2731,6 +2788,7 @@
           kv('最終学習日', s.lastStudyDate || '—') +
           kv('受験予定日', examDateLabel) +
           kv('日次目標', goalLabel) +
+          kv('資格取得', acqDate || '未取得') +
         '</div>' +
       '</div>';
   }
@@ -2754,6 +2812,7 @@
       '<div>状態: ' + (isOnline(u) ? '🟢 オンライン' : '⚪ オフライン') + '（最終アクセス ' + esc(u.lastSeen ? fmtDateTime(u.lastSeen) : '—') + '）</div>' +
       '<div>最終ログイン: ' + esc(u.lastLogin ? fmtDateTime(u.lastLogin) : '—') + '</div>' +
       (u.req && u.req.ts ? '<div>申請: ' + esc(u.req.name || u.name) + '（' + esc(fmtDate(u.req.ts)) + '）</div>' : '') +
+      (u.elective ? '<div>選択中の解除資格(elective): <code>' + esc(u.elective) + '</code> <button class="sfqc-act-revoke sfqc-el-reset" data-eluid="' + esc(u.uid) + '" data-elname="' + esc(u.name) + '">選択をリセット</button></div>' : '') +
       '</div>';
     // ログイン履歴（直近・秒精度）
     if (u.logins && u.logins.length) {
@@ -2787,6 +2846,12 @@
     box.innerHTML = html;
     box.classList.add('show');
 
+    box.querySelectorAll('.sfqc-act-revoke[data-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { revokeAcquire(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
+    });
+    box.querySelectorAll('.sfqc-el-reset').forEach(function (b) {
+      b.addEventListener('click', function () { adminResetElective(b.getAttribute('data-eluid'), b.getAttribute('data-elname')); });
+    });
     box.querySelectorAll('.sfqc-act-reset').forEach(function (b) {
       b.addEventListener('click', function () { resetAccount(b.getAttribute('data-uid'), b.getAttribute('data-cert'), b.getAttribute('data-name')); });
     });
@@ -2903,6 +2968,44 @@
       var n = res.filter(Boolean).length; adminSelUsers = {};
       logAdmin('一括リセット', n + '人'); toastSafe(n + ' 人の進捗をリセットしました'); renderAdmin();
     });
+  }
+
+  // 「取得済み」の取り消し（管理者のみ）。本人は取り消せない仕様のため、ここが唯一の取消手段。
+  // 当該資格のサブストアの acquiredDate のみ空にして書き戻す（他の進捗は保持）。
+  function revokeAcquire(uid, cert, name) {
+    if (!isAdmin || !db) return;
+    var u = findUser(uid); if (!u) return;
+    var c = u.certs.filter(function (x) { return x.cert === cert; })[0];
+    if (!c || !c.store || !c.store.acquiredDate) { toastSafe('この資格は取得済みではありません'); return; }
+    if (!confirm('「' + name + '」［' + cert + '］の「取得済み」を取り消します。\n本人の学習ロックが解除され、再び学習できるようになります。\n（進捗データはそのまま保持されます）\n\nよろしいですか？')) return;
+    var ref = db.collection(COLLECTION).doc(uid);
+    var FP = firebase.firestore.FieldPath;
+    var ns;
+    try { ns = JSON.parse(JSON.stringify(c.store)); } catch (e) { ns = c.store; }
+    ns.acquiredDate = ''; ns.acqLock = 0;
+    var p = (cert === '(旧)' || cert === '—')
+      ? ref.update('store', ns, 'updated', Date.now())
+      : ref.update(new FP('stores', cert), ns, 'updated', Date.now());
+    p.then(function () {
+        c.store = ns; u.updated = Date.now(); refreshUser(u);
+        logAdmin('取得済み取消', name + '［' + cert + '］');
+        toastSafe('「' + name + '」［' + cert + '］の取得済みを取り消しました'); renderAdmin();
+      })
+      .catch(function (e) { alert('取り消しに失敗しました: ' + (e && e.message)); });
+  }
+
+  // 選択した解除資格(elective)のリセット（管理者のみ）。選び間違いの救済。
+  function adminResetElective(uid, name) {
+    if (!isAdmin || !db || !uid) return;
+    if (!confirm('「' + name + '」が選択中の「解除する資格(elective)」をリセットします。\n本人は残りの資格からもう一度選び直せるようになります。\n（取得済みの資格や進捗には影響しません）\n\nよろしいですか？')) return;
+    var FV = firebase.firestore.FieldValue;
+    db.collection(COLLECTION).doc(uid).update({ elective: FV.delete(), updated: Date.now() })
+      .then(function () {
+        var u = findUser(uid); if (u) { u.elective = ''; u.updated = Date.now(); }
+        logAdmin('elective リセット', name);
+        toastSafe('「' + name + '」の選択をリセットしました'); renderAdmin();
+      })
+      .catch(function (e) { alert('リセットに失敗しました: ' + (e && e.message)); });
   }
 
   function resetAccount(uid, cert, name) {

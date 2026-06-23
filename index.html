@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=111"></script>
+<script src="maintenance.js?v=115"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格（アドミニストレーター・Platform アプリビルダー・デベロッパー）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -66,6 +66,21 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 .card.acq{border-color:#f5c451;box-shadow:0 0 0 1px #f5c451, var(--shadow)}
 .adminonly-badge{position:absolute;top:12px;left:12px;background:#475569;
   color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;z-index:3}
+/* 進行ロック: 未解除 / 選択して解除 / 学習中 */
+.card.locked{background:var(--muted);cursor:not-allowed;color:var(--muted-text);font-family:inherit;text-align:left;width:100%}
+.card.locked:hover{transform:none;box-shadow:var(--shadow);border-color:var(--border)}
+.card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{filter:grayscale(1);opacity:.6}
+.lock-badge{position:absolute;top:12px;right:12px;background:var(--muted-text);color:#fff;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;z-index:3}
+.lock-reason{font-size:12px;color:var(--text-sub);font-weight:600;margin-top:12px;
+  padding-top:10px;border-top:1px dashed var(--border)}
+.card.choosable{cursor:pointer;font-family:inherit;text-align:left;width:100%;
+  border-color:#3b82f6;box-shadow:0 0 0 1px #3b82f6, var(--shadow)}
+.card.choosable:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:#2563eb}
+.choose-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#60a5fa,#2563eb);
+  color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;z-index:3}
+.cur-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#34d399,#059669);
+  color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;z-index:3}
 .footer{text-align:center;color:var(--text-sub);font-size:12px;margin-top:48px}
 .footer a{color:var(--accent);text-decoration:none}
 .footer a:hover{text-decoration:underline}
@@ -128,6 +143,11 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </button>
 
   <div class="sec-label">利用可能な資格</div>
+  <button class="lp-news lp-rule" type="button" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">
+    <span class="lp-news-ic">🎓</span>
+    <span class="lp-news-main"><span class="lp-news-t">資格はステップ制で順番に解除します</span><span class="lp-news-sub">前の資格を「取得済み」にすると次が解除。進め方をくわしく見る</span></span>
+    <span class="lp-news-arrow">›</span>
+  </button>
   <div class="grid" id="cert-grid"></div>
 
 </div>
@@ -147,6 +167,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ログインすると右上にアカウントバッジ（ログアウト／👑管理者）が出る。
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
+<!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有。renderCerts より先に読む -->
+<script src="progression.js?v=115"></script>
 <script>
   /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
      meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
@@ -161,41 +183,78 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     { slug:'developer', storageKey:'sfqdev_v1', icon:'⚡', title:'Salesforce 認定<br>Platform デベロッパー',
       desc:'Apex・SOQL/SOSL・トリガ・LWC/Aura/Visualforce・テスト/リリースを網羅。公式4分野対応。',
       meta:['499問','75用語','合格68%'] },
-    { slug:'agentforce', storageKey:'sfqaf_v1', icon:'🤖', title:'Salesforce 認定<br>Agentforce Specialist', adminOnly:true,
+    { slug:'agentforce', storageKey:'sfqaf_v1', icon:'🤖', title:'Salesforce 認定<br>Agentforce Specialist',
       desc:'AIエージェント・プロンプト・Data 360・Trust Layer・テスト/ガバナンスを網羅。最新の公式6分野に対応。',
       meta:['138問','26用語','合格73%'] },
-    { slug:'sales-cloud', storageKey:'sfqsales_v1', icon:'📈', title:'Salesforce 認定<br>Sales Cloud コンサルタント', adminOnly:true,
+    { slug:'sales-cloud', storageKey:'sfqsales_v1', icon:'📈', title:'Salesforce 認定<br>Sales Cloud コンサルタント',
       desc:'リード・商談・売上予測・価格表・テリトリ・Sales Cloud AI を網羅。公式分野に対応し、教科書・用語帳・比較表も搭載。',
       meta:['200問','67用語','合格69%'] },
-    { slug:'service-cloud', storageKey:'sfqservice_v1', icon:'🎧', title:'Salesforce 認定<br>Service Cloud コンサルタント', adminOnly:true,
+    { slug:'service-cloud', storageKey:'sfqservice_v1', icon:'🎧', title:'Salesforce 認定<br>Service Cloud コンサルタント',
       desc:'ケース管理・Omni-Channel・ナレッジ・エンタイトルメント・チャネル・分析を網羅。公式8分野に対応。',
       meta:['120問','75用語','合格67%'] },
-    { slug:'experience-cloud', storageKey:'sfqexp_v1', icon:'🌐', title:'Salesforce 認定<br>Experience Cloud コンサルタント', adminOnly:true,
+    { slug:'experience-cloud', storageKey:'sfqexp_v1', icon:'🌐', title:'Salesforce 認定<br>Experience Cloud コンサルタント',
       desc:'サイト構築・共有・ゲストユーザー・認証/SSO・ブランド・テンプレートを網羅。公式8分野に対応。',
       meta:['132問','63用語','合格62%'] },
-    { slug:'sharing-visibility', storageKey:'sfqsva_v1', icon:'🔐', title:'Salesforce 認定<br>Sharing and Visibility アーキテクト', adminOnly:true,
+    { slug:'sharing-visibility', storageKey:'sfqsva_v1', icon:'🔐', title:'Salesforce 認定<br>Sharing and Visibility アーキテクト',
       desc:'権限・OWD・ロール階層・共有ルール・レコードアクセス・大規模データの可視性設計を網羅。公式4分野に対応。',
       meta:['81問','54用語','合格67%'] },
     { coming:true }
   ];
-  (function renderCerts(){
+  // 残り5資格から1つずつ選んで解除（確認のうえ elective を保存→カード再描画→その資格へ）
+  function lpChooseElective(slug){
+    var P = window.SFQ_PROG, name = (P && P.NAME[slug]) || slug;
+    if (!confirm(name + ' を解除しますか？\n\n一度に学習できるのは1資格です。取得済みにすると、残りからまた1つ選べます。')) return;
+    var go = function(){ renderCerts(); location.href = 'certifications/' + slug + '/index.html'; };
+    try {
+      if (window.__cloudSetElective) window.__cloudSetElective(slug).then(go).catch(function(){ alert('解除に失敗しました。通信状況を確認してもう一度お試しください。'); });
+      else go();
+    } catch (e) { go(); }
+  }
+  window.lpChooseElective = lpChooseElective;
+
+  function renderCerts(){
     var grid = document.getElementById('cert-grid'); if (!grid) return;
+    var P = window.SFQ_PROG;
     grid.innerHTML = CERTS.map(function (c) {
       if (c.coming) return '<div class="card coming"><span class="coming-badge">追加予定</span>'
         + '<div class="card-icon">🛠️</div><h2 class="card-title">資格枠（未設定）</h2>'
         + '<p class="card-desc">次に追加する資格の枠です。準備中。</p>'
         + '<div class="card-meta"><span>Coming Soon</span></div></div>';
       var meta = (c.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
-      var acq = '';
-      try { var raw = c.storageKey && localStorage.getItem(c.storageKey); if (raw) { var s = JSON.parse(raw); if (s && s.acquiredDate) acq = '<span class="acq-badge">🎓 取得済み</span>'; } } catch (e) {}
-      var adm = c.adminOnly ? '<span class="adminonly-badge">🔒 管理者専用</span>' : '';
-      return '<a class="card' + (acq ? ' acq' : '') + '" href="certifications/' + c.slug + '/index.html">' + acq + adm
-        + '<div class="card-icon">' + (c.icon || '📘') + '</div>'
+      var inner = '<div class="card-icon">' + (c.icon || '📘') + '</div>'
         + '<h2 class="card-title">' + c.title + '</h2>'
         + '<p class="card-desc">' + (c.desc || '') + '</p>'
-        + '<div class="card-meta">' + meta + '</div></a>';
+        + '<div class="card-meta">' + meta + '</div>';
+      // progression.js が未読込なら従来どおり素のリンクで出す（フォールバック）
+      if (!P) return '<a class="card" href="certifications/' + c.slug + '/index.html">' + inner + '</a>';
+      var st = P.stateOf(c.slug);
+      if (st === 'coming') {
+        return '<div class="card coming"><span class="coming-badge">🔜 いずれ公開</span>' + inner
+          + '<div class="lock-reason">現在準備中です。順次公開予定。</div></div>';
+      }
+      // 取得済み（今回ロック分・導入前のバッジ分どちらも）はカードに金バッジ。クリックは可能（ページ側でロック判定）
+      if (P.acquiredOf(c.slug)) {
+        return '<a class="card acq" href="certifications/' + c.slug + '/index.html"><span class="acq-badge">🎓 取得済み</span>' + inner + '</a>';
+      }
+      if (st === 'open') {
+        var badge = '';
+        if (P.isAdmin() && !P.isReleased(c.slug)) badge = '<span class="adminonly-badge">🔧 準備中（管理者）</span>';
+        else if (!P.isAdmin()) badge = '<span class="cur-badge">▶ 学習中</span>';
+        return '<a class="card" href="certifications/' + c.slug + '/index.html">' + badge + inner + '</a>';
+      }
+      // locked
+      if (P.canChoose(c.slug)) {
+        return '<button type="button" class="card choosable" onclick="lpChooseElective(\'' + c.slug + '\')"><span class="choose-badge">🔓 選択して解除</span>' + inner + '</button>';
+      }
+      var reason = P.lockReason(c.slug);
+      return '<div class="card locked" aria-disabled="true"><span class="lock-badge">🔒 ロック中</span>' + inner
+        + (reason ? '<div class="lock-reason">' + reason + '</div>' : '') + '</div>';
     }).join('');
-  })();
+  }
+  window.renderCerts = renderCerts;
+  renderCerts();
+  // ログイン完了・取得/取消・選択でロック状態が変わったら再描画
+  window.addEventListener('sfq-progress', renderCerts);
 
   // cloud-sync のオーバーレイ/バッジをOSのダーク設定に追従させる
   // （LP本体の配色は @media(prefers-color-scheme) で別途対応済み）
@@ -212,8 +271,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=111"></script>
-<script src="cloud-sync.js?v=111"></script>
+<script src="changelog.js?v=115"></script>
+<script src="cloud-sync.js?v=115"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
