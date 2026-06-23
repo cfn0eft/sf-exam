@@ -11068,10 +11068,10 @@
       "Find、Retrieve、Identify などの追加の関連動詞を使用します。"
     ],
     "answers": [
-      "各アクションを「Get」という動詞で開始して、一貫した命名規則を使用します。"
+      "Find、Retrieve、Identify などの追加の関連動詞を使用します。"
     ],
-    "explanation": "それぞれの選択肢について説明します。\n\n□ 動詞を削除し名詞のみにする：不正解です。動詞があるほうが意図とアクションを対応づけやすく、削除は逆効果です。\n\n□ 先頭に「Salesforce」を付ける：不正解です。文脈改善に役立たず、冗長です。\n\n□ 各アクションを動詞「Get」で始める一貫した命名規則を使う：正解です。一貫した命名は LLM がアクションを分類・選択しやすくし、推論時の曖昧さを減らします。\n\n□ Find、Retrieve、Identify など別の動詞を併用：不正解です。動詞が不揃いだとモデルが混乱します。\n\n参考：エージェントのアクション命名",
-    "reference_url": "https://help.salesforce.com/s/articleView?id=sf.agent_builder.htm&language=ja&type=5",
+    "explanation": "それぞれの選択肢について説明します。\n\n□ 動詞を削除し名詞のみにする：不正解です。動詞があるほうがエージェントは意図とアクションを対応づけやすく、削除は逆効果です。\n\n□ 先頭に「Salesforce」を付ける：不正解です。文脈改善に役立たず冗長で、アクションの区別にもなりません。\n\n□ すべて動詞「Get」で始めて統一する：不正解です。公式は「アクションを似た名前にすると推論エンジン（エージェント）が混乱するので避ける」としています。3つとも「Get〜」だと名前が似すぎて、どのアクションを呼ぶべきか判断しにくくなります。\n\n□ Find、Retrieve、Identify など関連しつつ多様な動詞を使う：正解です。Salesforce 公式は「varied but related verbs（関連はするが多様な動詞）」を使い、似すぎる名前を避けるよう推奨しています（例：「Get Project Details」「Get Task Details」ではなく「Locate Project Details」「Retrieve Task Information」）。これにより推論エンジンが各アクションを識別しやすくなります。\n\n参考：Agentforce 向け自然言語命令の書き方（アクション命名）",
+    "reference_url": "https://developer.salesforce.com/blogs/2025/01/how-to-write-effective-natural-language-instructions-for-agentforce",
     "keywords": [
       "Agentforce",
       "アクション命名",
