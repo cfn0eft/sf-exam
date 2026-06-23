@@ -1284,4 +1284,18 @@ body[data-fs=small] .cdef{font-size:12px}
   }
   .confetti{display:none !important}
 }
+/* ===== ホームの「取得して次へ進む」カード（取得導線をわかりやすく） ===== */
+.home-progress{border:1.5px solid #f5c451;background:linear-gradient(180deg,#fffaf0,var(--card))}
+[data-theme=dark] .home-progress{background:linear-gradient(180deg,#2a2410,var(--card));border-color:#6b5212}
+.home-progress .hp-row{display:flex;gap:10px;align-items:flex-start}
+.home-progress .hp-ic{font-size:26px;line-height:1.1;flex-shrink:0}
+.home-progress .hp-t{font-weight:800;font-size:15px;margin-bottom:4px}
+.home-progress .hp-sub{font-size:12.5px;color:var(--text-sub);line-height:1.6}
+.home-progress .hp-sub b{color:var(--text)}
+.home-progress .hp-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.home-progress .hp-acqbtn{flex:1;min-width:180px;border:none;border-radius:10px;padding:11px 14px;font-weight:800;font-size:14px;cursor:pointer;background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00}
+.home-progress .hp-infobtn{border:1.5px solid var(--border);background:var(--card);color:var(--text-sub);border-radius:10px;padding:11px 14px;font-size:13px;font-weight:700;cursor:pointer}
+.mp-acqhint{margin-top:12px;padding-top:11px;border-top:1px dashed var(--border);font-size:12.5px;color:var(--text-sub);line-height:1.6}
+.mp-acqhint b{color:var(--text)}
+.mp-acqinfo{display:inline-block;margin-left:6px;border:1px solid var(--border);background:var(--card);color:var(--text-sub);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;cursor:pointer}
 
