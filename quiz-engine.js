@@ -2320,16 +2320,31 @@ function setDarkMode(on){applyDark(on);try{localStorage.setItem('dark',on?'1':'0
 window.__sfqOnAccount=function(){var p=document.getElementById('pg-mypage');if(p&&p.classList.contains('active'))renderMypage();};
 
 /* ===== 資格の取得（取得済みの記録と主張表示） ===== */
+// 取得状態が変わったら progression.js（資格のロック解除）へ通知し、ゲートを再評価させる。
+function __notifyProgress(){
+  try{
+    var slug=(window.CERT_CONFIG&&CERT_CONFIG.slug)||'';
+    if(!slug)return;
+    if(!window.SFQ_PROGRESS)window.SFQ_PROGRESS={acquired:{},elective:''};
+    if(!window.SFQ_PROGRESS.acquired)window.SFQ_PROGRESS.acquired={};
+    if(store.acquiredDate)window.SFQ_PROGRESS.acquired[slug]=store.acquiredDate;
+    else delete window.SFQ_PROGRESS.acquired[slug];
+    window.dispatchEvent(new Event('sfq-progress'));
+  }catch(e){}
+}
 function acquireCert(){
+  if(!confirm('この資格を「取得済み」にしますか？\n取得済みにすると、この資格の問題は学習・解答ができなくなり、次の資格が解除されます。'))return;
   store.acquiredDate=_today();save();
   homeStats();renderMypage();
   try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(true);}catch(e){}
+  __notifyProgress();
   toast('🎓 取得済みにしました！おめでとうございます 🎉');
 }
 function unacquireCert(){
-  if(!confirm('「取得済み」を取り消しますか？'))return;
+  if(!confirm('「取得済み」を取り消しますか？\nこの資格の学習を再開できますが、解除した先の資格は再びロックされます。'))return;
   store.acquiredDate='';save();homeStats();renderMypage();
   try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(false);}catch(e){}
+  __notifyProgress();
   toast('取得済みを取り消しました');
 }
 // ホームのヒーローに取得済みバッジ／リボンを反映
