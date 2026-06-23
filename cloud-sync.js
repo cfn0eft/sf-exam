@@ -1120,6 +1120,28 @@
       surfaceNotices();
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
+
+      // ---- リアルタイム反映：資格のロック解除・承認状態・他端末の進捗を即時同期 ----
+      // （自分の書込は冒頭の hasPendingWrites で除外済み＝サーバ確定値のみ反映）
+      publishProgress(d); // 進行状況（取得済み/ロック/選択）→ ゲート・LPカードを即時更新
+      // 承認状態の変化を即反映（管理者が停止/承認したらリロード不要で反映）
+      if (d.access !== 'approved') {
+        try { localStorage.removeItem('sfq_access_' + uid); } catch (e) {}
+        showLock(d.access || 'pending', { reqName: (d.req && d.req.name) || d.name || '' });
+        return;
+      }
+      try { localStorage.setItem('sfq_access_' + uid, 'approved'); } catch (e) {}
+      hideLock();
+      // この資格の進捗を他端末/管理者操作に追従（クイズページのみ。未保存ローカル変更は上の guard で保護）
+      if (window.__setStore) {
+        var cs = d.stores && d.stores[CERT_KEY];
+        if (cs) {
+          try {
+            var cur = window.__getStore && window.__getStore();
+            if (JSON.stringify(cur) !== JSON.stringify(cs)) { window.__setStore(cs); if (window.__refreshUI) window.__refreshUI(); }
+          } catch (e) {}
+        }
+      }
     }, function () {});
     // 一斉お知らせ（レコード）＋メンテナンス設定を broadcast コレクションでまとめて購読
     if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
