@@ -506,6 +506,7 @@
           '<div id="sfqc-lock-msg" class="sfqc-msg"></div>' +
         '</div>' +
         '<div class="sfqc-row">' +
+          '<button id="sfqc-lock-home" class="sfqc-btn sfqc-btn-primary" style="display:none">ホームへ戻る</button>' +
           '<button id="sfqc-lock-reload" class="sfqc-btn sfqc-btn-ghost">再確認</button>' +
           '<button id="sfqc-lock-logout" class="sfqc-btn sfqc-btn-ghost">ログアウト</button>' +
         '</div>' +
@@ -602,6 +603,7 @@
     // ロック画面のボタン
     document.getElementById('sfqc-lock-logout').addEventListener('click', doLogout);
     document.getElementById('sfqc-lock-reload').addEventListener('click', function () { if (currentUser) onLogin(currentUser); });
+    document.getElementById('sfqc-lock-home').addEventListener('click', function () { location.href = HOME_URL; });
     document.getElementById('sfqc-lock-apply').addEventListener('click', doApplyAccess);
     var lockName = document.getElementById('sfqc-lock-name');
     if (lockName) lockName.addEventListener('keydown', function (e) { if (e.key === 'Enter') doApplyAccess(); });
@@ -620,13 +622,22 @@
     var form = document.getElementById('sfqc-lock-form');
     var nameIn = document.getElementById('sfqc-lock-name');
     var lockMsg = document.getElementById('sfqc-lock-msg');
-    var showForm = (state !== 'blocked'); // 停止中（意図的にブロック）は申請フォームを出さない
+    var showForm = (state !== 'blocked' && state !== 'adminonly'); // 停止中・管理者専用は申請フォームを出さない
+    var adminOnly = (state === 'adminonly');
+    var reloadBtn = document.getElementById('sfqc-lock-reload');
+    var homeBtn = document.getElementById('sfqc-lock-home');
+    // 管理者専用は「再確認」しても状況は変わらないので、代わりに「ホームへ戻る」を出す
+    if (reloadBtn) reloadBtn.style.display = adminOnly ? 'none' : '';
+    if (homeBtn) homeBtn.style.display = adminOnly ? '' : 'none';
     if (state === 'blocked') {
       if (t) t.textContent = '🚫 利用が停止されています';
       if (s) s.innerHTML = 'このアカウントは現在ご利用いただけません。<br>心当たりがない場合は管理者にお問い合わせください。';
     } else if (state === 'error') {
       if (t) t.textContent = '⚠️ 確認できませんでした';
       if (s) s.innerHTML = 'アクセス権を確認できませんでした。<br>通信環境を確認して「再確認」を押してください。';
+    } else if (state === 'adminonly') {
+      if (t) t.textContent = '🔒 この資格は管理者専用です';
+      if (s) s.innerHTML = 'この資格は現在、管理者のみご利用いただけます。<br>ホームに戻って他の資格をご利用ください。';
     } else {
       if (t) t.textContent = '⏳ 承認待ちです';
       if (s) s.innerHTML = '下のフォームにお名前を入れて「利用を申請」してください。<br>管理者の承認後にご利用いただけます（承認されたら「再確認」）。';
@@ -923,6 +934,13 @@
           return;
         }
       }
+      // ---- 管理者専用の資格ゲート ----
+      // SFQ_ADMIN_ONLY=true のページ（一部資格）は管理者以外アクセス不可。
+      // 承認済みの一般利用者でもロックして問題に触らせない。
+      if (window.SFQ_ADMIN_ONLY && !isAdmin) {
+        showLock('adminonly');
+        return;
+      }
       hideLock();
       if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
@@ -965,6 +983,8 @@
       surfaceReplies(data.fbReplies);   // 管理者からの未読の返信があれば通知(#7)
       syncNewsSeen(data);               // アップデートのお知らせ既読をクラウドと同期（再表示防止）
     }).catch(function () {
+      // 管理者専用の資格は、オフラインでも管理者以外をロックする。
+      if (window.SFQ_ADMIN_ONLY && !isAdmin) { showLock('adminonly'); return; }
       // 読込失敗（オフライン等）。承認を確認できないので、過去に承認済みの端末のみ素通しする。
       if (!isAdmin) {
         var cached = '';
