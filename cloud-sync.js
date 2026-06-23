@@ -42,6 +42,7 @@
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
   /* アクセス権のリアルタイム監視（個別の停止/承認を即時反映）の状態 */
   var accessUnsub = null, watchedAccess = null, accessLocked = false;
+  var adminPendingUnsub = null; // 管理者の申請通知バッジのライブ購読（パネル非表示でも即更新）
   var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
@@ -704,10 +705,12 @@
     var dot = document.getElementById('sfqc-badge-dot');
     if (dot) dot.style.display = (adminPendingCount > 0 && isAdmin) ? 'inline-block' : 'none';
   }
-  // 管理者ログイン時に承認待ち（access==='pending'）の件数を数えてバッジ表示する
-  function refreshAdminPending() {
+  // 管理者ログイン中は承認待ち（実申請のみ）の件数をライブ購読してバッジに即反映する。
+  // 管理者ビューを開いていなくても、新しい利用申請が届いた瞬間に通知ドット/件数が更新される。
+  function watchAdminPending() {
     if (!isAdmin || !db) return;
-    db.collection(COLLECTION).get().then(function (snap) {
+    if (adminPendingUnsub) { adminPendingUnsub(); adminPendingUnsub = null; }
+    adminPendingUnsub = db.collection(COLLECTION).onSnapshot(function (snap) {
       var n = 0;
       snap.forEach(function (d) {
         if (currentUser && d.id === currentUser.uid) return; // 管理者自身は除外
@@ -716,7 +719,10 @@
         if ((data.access || 'pending') !== 'approved' && data.req && data.req.ts) n++;
       });
       setAdminPending(n);
-    }).catch(function () {});
+    }, function () {});
+  }
+  function stopAdminPending() {
+    if (adminPendingUnsub) { adminPendingUnsub(); adminPendingUnsub = null; }
   }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
 
@@ -882,6 +888,7 @@
     if (!auth) return;
     closeAdmin();
     stopAccessWatch();
+    stopAdminPending();
     stopUserMessaging();
     stopPresence();
     if (window.__setStore) window.__setStore(emptyStore());
@@ -948,7 +955,7 @@
         return;
       }
       hideLock();
-      if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
+      if (isAdmin) watchAdminPending(); // 管理者は承認待ち件数をライブ購読で通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
       recordLogin(user.uid, data);     // ログイン日時を記録（履歴つき）
@@ -1127,6 +1134,7 @@
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
       ownLoaded = true; // 既読マップ取得済み
       surfaceNotices();
+      surfaceReplies(d.fbReplies); // 管理者からのフィードバック返信(#7)も即時通知（既読は seen マップで抑止）
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
     }, function () {});
@@ -3263,7 +3271,7 @@
         onLogin(user);
       } else {
         currentUser = null; isAdmin = false;
-        stopAccessWatch(); stopUserMessaging(); stopPresence();
+        stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
         hideLock(); showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
       }
