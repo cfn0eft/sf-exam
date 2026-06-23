@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=108"></script>
+<script src="maintenance.js?v=109"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格（アドミニストレーター・Platform アプリビルダー・デベロッパー）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -163,7 +163,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
 <!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有。renderCerts より先に読む -->
-<script src="progression.js?v=108"></script>
+<script src="progression.js?v=109"></script>
 <script>
   /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
      meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
@@ -195,10 +195,10 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
       meta:['81問','54用語','合格67%'] },
     { coming:true }
   ];
-  // 残り5資格から1つだけ選んで解除（確認のうえ elective を保存→カード再描画→その資格へ）
+  // 残り5資格から1つずつ選んで解除（確認のうえ elective を保存→カード再描画→その資格へ）
   function lpChooseElective(slug){
     var P = window.SFQ_PROG, name = (P && P.NAME[slug]) || slug;
-    if (!confirm(name + ' を解除しますか？\n\n選んで解除できるのは1資格のみです（あとから変更できません）。')) return;
+    if (!confirm(name + ' を解除しますか？\n\n一度に学習できるのは1資格です。取得済みにすると、残りからまた1つ選べます。')) return;
     var go = function(){ renderCerts(); location.href = 'certifications/' + slug + '/index.html'; };
     try {
       if (window.__cloudSetElective) window.__cloudSetElective(slug).then(go).catch(function(){ alert('解除に失敗しました。通信状況を確認してもう一度お試しください。'); });
@@ -223,12 +223,18 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
       // progression.js が未読込なら従来どおり素のリンクで出す（フォールバック）
       if (!P) return '<a class="card" href="certifications/' + c.slug + '/index.html">' + inner + '</a>';
       var st = P.stateOf(c.slug);
+      if (st === 'coming') {
+        return '<div class="card coming"><span class="coming-badge">🔜 いずれ公開</span>' + inner
+          + '<div class="lock-reason">現在準備中です。順次公開予定。</div></div>';
+      }
       if (st === 'acquired') {
         return '<a class="card acq" href="certifications/' + c.slug + '/index.html"><span class="acq-badge">🎓 取得済み</span>' + inner + '</a>';
       }
       if (st === 'open') {
-        var cur = !P.isAdmin() ? '<span class="cur-badge">▶ 学習中</span>' : '';
-        return '<a class="card" href="certifications/' + c.slug + '/index.html">' + cur + inner + '</a>';
+        var badge = '';
+        if (P.isAdmin() && !P.isReleased(c.slug)) badge = '<span class="adminonly-badge">🔧 準備中（管理者）</span>';
+        else if (!P.isAdmin()) badge = '<span class="cur-badge">▶ 学習中</span>';
+        return '<a class="card" href="certifications/' + c.slug + '/index.html">' + badge + inner + '</a>';
       }
       // locked
       if (P.canChoose(c.slug)) {
@@ -259,8 +265,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=108"></script>
-<script src="cloud-sync.js?v=108"></script>
+<script src="changelog.js?v=109"></script>
+<script src="cloud-sync.js?v=109"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}

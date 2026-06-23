@@ -19,8 +19,14 @@
 
   // 直列の前提チェーン
   var ORDER = ['sf-admin', 'app-builder', 'developer'];
-  // デベロッパー取得後、ここから「1つだけ」選んで解除できるプール
+  // デベロッパー取得後、ここから「1つずつ」順番に選んで解除できるプール
+  // （選んだ1つを取得すると、残りからまた1つ選べる＝くり返し解除）
   var POOL = ['agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'];
+
+  // 一般公開済みの資格（ここに無い資格は「いずれ公開します」表示・管理者のみ裏で利用可）
+  // 公開準備ができた資格を1つずつここへ足していく。
+  var RELEASED = ['sf-admin', 'app-builder', 'developer'];
+  function isReleased(slug) { return RELEASED.indexOf(slug) >= 0; }
 
   // slug → localStorage キー（クラウド未接続時のフォールバック判定に使う）
   var KEY = {
@@ -79,20 +85,33 @@
     return false;
   }
 
-  // 状態: 'open'（学習可）| 'acquired'（取得済み＝学習ロック）| 'locked'（未解除）
-  // 管理者は進行を無視して常に 'open'。
+  // 選択したが「まだ取得していない」プール資格があるか（＝学習中の枠が埋まっている）
+  function pendingElective(p) {
+    p = p || progress();
+    var el = electiveOf(p);
+    return isPool(el) && !acquiredOf(el, p);
+  }
+
+  // 状態: 'open'（学習可）| 'acquired'（取得済み＝学習ロック）| 'locked'（未解除）| 'coming'（いずれ公開）
+  // 管理者は進行・公開状態を無視して常に 'open'。
   function stateOf(slug, p) {
     p = p || progress();
     if (isAdmin()) return 'open';
+    if (!isReleased(slug)) return 'coming';
     if (acquiredOf(slug, p)) return 'acquired';
     return unlocked(slug, p) ? 'open' : 'locked';
   }
 
-  // この資格を「選択して解除」できるか（デベロッパー取得済み＆未選択のプール資格）
+  // この資格を今「選択して解除」できるか
+  // デベロッパー取得済み＆公開済み＆未取得＆現在は学習中の枠が空いている（前の選択を取得済み）プール資格
   function canChoose(slug, p) {
     p = p || progress();
     if (isAdmin()) return false;
-    return isPool(slug) && acquiredOf('developer', p) && !electiveOf(p);
+    if (!isPool(slug) || !isReleased(slug)) return false;
+    if (!acquiredOf('developer', p)) return false;
+    if (acquiredOf(slug, p)) return false;
+    if (electiveOf(p) === slug) return false; // それは今の学習中の枠（open）
+    return !pendingElective(p);
   }
 
   // locked カードに出す理由テキスト
@@ -101,18 +120,17 @@
     if (slug === 'app-builder') return '「' + NAME['sf-admin'] + '」を取得すると解除されます';
     if (slug === 'developer') return '「' + NAME['app-builder'] + '」を取得すると解除されます';
     if (isPool(slug)) {
-      if (!acquiredOf('developer', p)) return '「' + NAME['developer'] + '」を取得すると、ここから1つ選んで解除できます';
-      var el = electiveOf(p);
-      if (el && el !== slug) return '選択して解除できるのは1資格のみです（' + (NAME[el] || '別の資格') + ' を選択済み）';
+      if (!acquiredOf('developer', p)) return '「' + NAME['developer'] + '」を取得すると、ここから順番に1つずつ解除できます';
+      if (pendingElective(p)) return '今は「' + (NAME[electiveOf(p)] || '別の資格') + '」を学習中です（取得すると次を選べます）';
       return ''; // 選択可
     }
     return 'まだ解除されていません';
   }
 
   window.SFQ_PROG = {
-    ORDER: ORDER, POOL: POOL, KEY: KEY, NAME: NAME,
-    progress: progress, isAdmin: isAdmin,
-    acquiredOf: acquiredOf, electiveOf: electiveOf,
+    ORDER: ORDER, POOL: POOL, KEY: KEY, NAME: NAME, RELEASED: RELEASED,
+    progress: progress, isAdmin: isAdmin, isReleased: isReleased,
+    acquiredOf: acquiredOf, electiveOf: electiveOf, pendingElective: pendingElective,
     unlocked: unlocked, stateOf: stateOf, canChoose: canChoose,
     lockReason: lockReason, renderGate: renderGate
   };
@@ -168,7 +186,12 @@
     var title = document.getElementById('pgl-title');
     var sub = document.getElementById('pgl-sub');
     var actions = document.getElementById('pgl-actions');
-    if (st === 'acquired') {
+    if (st === 'coming') {
+      ic.textContent = '🔜';
+      title.textContent = 'この資格はいずれ公開します';
+      sub.textContent = '現在準備中です。公開までもうしばらくお待ちください。';
+      actions.innerHTML = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+    } else if (st === 'acquired') {
       var d = (progress().acquired || {})[slug] || '';
       ic.textContent = '🎓';
       title.textContent = '取得済みのため学習はロック中です';
