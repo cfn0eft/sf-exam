@@ -40,10 +40,14 @@
   /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
   var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
+  /* アクセス権のリアルタイム監視（個別の停止/承認を即時反映）の状態 */
+  var accessUnsub = null, watchedAccess = null, accessLocked = false;
+  var adminPendingUnsub = null; // 管理者の申請通知バッジのライブ購読（パネル非表示でも即更新）
   var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
+  var noticeBoundaryTimer = null; // 予約お知らせ（publishAt が未来）の配信時刻に再チェックするタイマー
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
   var adminBroadcasts = [];        // 管理者ビュー用：一斉お知らせレコード一覧 [{id,...}]
   var adminColUnsub = null, adminRenderTimer = null; // 管理者ビューのライブ購読（DM未読バッジ等の即時反映）
@@ -654,9 +658,10 @@
     }
     hideOverlay();
     elLock.classList.add('show');
+    accessLocked = true; // ロック中はクラウド保存を止める（停止後の上書き防止）
     setStatus('');
   }
-  function hideLock() { if (elLock) elLock.classList.remove('show'); }
+  function hideLock() { if (elLock) elLock.classList.remove('show'); accessLocked = false; }
 
   // 承認待ちユーザーが「お名前」を入れて利用を申請する。access は pending のまま、
   // name/req を本人 doc に書く（Firestore ルールで pending 維持の書込は本人に許可）。
@@ -702,10 +707,12 @@
     var dot = document.getElementById('sfqc-badge-dot');
     if (dot) dot.style.display = (adminPendingCount > 0 && isAdmin) ? 'inline-block' : 'none';
   }
-  // 管理者ログイン時に承認待ち（access==='pending'）の件数を数えてバッジ表示する
-  function refreshAdminPending() {
+  // 管理者ログイン中は承認待ち（実申請のみ）の件数をライブ購読してバッジに即反映する。
+  // 管理者ビューを開いていなくても、新しい利用申請が届いた瞬間に通知ドット/件数が更新される。
+  function watchAdminPending() {
     if (!isAdmin || !db) return;
-    db.collection(COLLECTION).get().then(function (snap) {
+    if (adminPendingUnsub) { adminPendingUnsub(); adminPendingUnsub = null; }
+    adminPendingUnsub = db.collection(COLLECTION).onSnapshot(function (snap) {
       var n = 0;
       snap.forEach(function (d) {
         if (currentUser && d.id === currentUser.uid) return; // 管理者自身は除外
@@ -714,7 +721,10 @@
         if ((data.access || 'pending') !== 'approved' && data.req && data.req.ts) n++;
       });
       setAdminPending(n);
-    }).catch(function () {});
+    }, function () {});
+  }
+  function stopAdminPending() {
+    if (adminPendingUnsub) { adminPendingUnsub(); adminPendingUnsub = null; }
   }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
 
@@ -879,6 +889,8 @@
   function doLogout() {
     if (!auth) return;
     closeAdmin();
+    stopAccessWatch();
+    stopAdminPending();
     stopUserMessaging();
     stopPresence();
     if (window.__setStore) window.__setStore(emptyStore());
@@ -914,6 +926,8 @@
     flushPendingFeedback(); // 未ログイン中に退避した報告があれば送信
 
     setStatus('確認中…');
+    // 自 doc のアクセス権をリアルタイム購読（管理者の「個別の停止/承認」を即時反映）。
+    if (!isAdmin) startAccessWatch(user.uid);
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
       var data = (doc.exists && doc.data()) || {};
 
@@ -944,7 +958,7 @@
       }
       hideLock();
       publishProgress(data); // 資格のロック解除（直列進行）の状態を全ページへ通知
-      if (isAdmin) refreshAdminPending(); // 管理者は承認待ち件数を通知バッジに反映
+      if (isAdmin) watchAdminPending(); // 管理者は承認待ち件数をライブ購読で通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
       try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
       recordLogin(user.uid, data);     // ログイン日時を記録（履歴つき）
@@ -1103,6 +1117,44 @@
      利用者側は自 doc を onSnapshot で購読し、未読を検知してポップ／バッジ表示する。
      =================================================================== */
 
+  /* ===================================================================
+     アクセス権のリアルタイム監視（個別の停止/承認を即時反映）
+     ・管理者がアカウントを「停止」または承認取消 → 利用中でも即ロック。
+     ・「承認」 → 承認待ち画面のまま待っている人を即解除して同期開始。
+     再ログインや「再確認」ボタンを押さなくても反映される。
+     =================================================================== */
+  function startAccessWatch(uid) {
+    if (!db || !uid || isAdmin) return;
+    if (accessUnsub) { accessUnsub(); accessUnsub = null; }
+    watchedAccess = null; // 初回スナップショットは現状把握のみ（初期判定は onLogin の get が担当）
+    accessUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
+      if (snap.metadata && snap.metadata.hasPendingWrites) return; // 自分の書込は無視
+      var d = (snap.exists && snap.data()) || {};
+      var acc = d.access || 'pending';
+      if (watchedAccess === null) { watchedAccess = acc; return; }
+      if (acc === watchedAccess) return; // アクセス権に変化なし
+      var prev = watchedAccess; watchedAccess = acc;
+      if (acc === 'approved' && prev !== 'approved') {
+        onLogin(currentUser);          // 承認された → 即解除して同期開始
+      } else {
+        lockNowDueToAccess(acc, d);     // 停止/承認取消/却下 → 即ロック
+      }
+    }, function () {});
+  }
+  function stopAccessWatch() {
+    if (accessUnsub) { accessUnsub(); accessUnsub = null; }
+    watchedAccess = null;
+  }
+  // 利用中に管理者がアクセス権を変更（停止/承認取消）したら、その場でロックして同期を止める。
+  function lockNowDueToAccess(acc, d) {
+    try { if (currentUser) localStorage.removeItem('sfq_access_' + currentUser.uid); } catch (e) {}
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; } // 保留中の保存を破棄
+    stopUserMessaging();  // チャット/お知らせ購読を停止
+    stopPresence();       // 在席ハートビートを停止
+    showLock(acc === 'blocked' ? 'blocked' : (acc || 'pending'),
+      { reqName: (d && d.req && d.req.name) || (d && d.name) || currentName || '' });
+  }
+
   // 承認済みの一般利用者がログインしたら、リアルタイム購読とチャットUIを開始
   function startUserMessaging(uid) {
     if (!db || !uid || isAdmin) return;
@@ -1118,20 +1170,16 @@
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
       ownLoaded = true; // 既読マップ取得済み
       surfaceNotices();
+      scheduleNoticeBoundary(); // 予約お知らせがあれば配信時刻に再チェック
+      surfaceReplies(d.fbReplies); // 管理者からのフィードバック返信(#7)も即時通知（既読は seen マップで抑止）
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
 
-      // ---- リアルタイム反映：資格のロック解除・承認状態・他端末の進捗を即時同期 ----
-      // （自分の書込は冒頭の hasPendingWrites で除外済み＝サーバ確定値のみ反映）
+      // ---- リアルタイム反映：資格のロック解除・他端末の進捗を即時同期 ----
+      // （自分の書込は冒頭の hasPendingWrites で除外済み＝サーバ確定値のみ反映。
+      //   承認状態の即時ロック/解除は startAccessWatch が担当する）
+      if (d.access && d.access !== 'approved') return; // 停止/承認待ちは startAccessWatch がロック
       publishProgress(d); // 進行状況（取得済み/ロック/選択）→ ゲート・LPカードを即時更新
-      // 承認状態の変化を即反映（管理者が停止/承認したらリロード不要で反映）
-      if (d.access !== 'approved') {
-        try { localStorage.removeItem('sfq_access_' + uid); } catch (e) {}
-        showLock(d.access || 'pending', { reqName: (d.req && d.req.name) || d.name || '' });
-        return;
-      }
-      try { localStorage.setItem('sfq_access_' + uid, 'approved'); } catch (e) {}
-      hideLock();
       // この資格の進捗を他端末/管理者操作に追従（クイズページのみ。未保存ローカル変更は上の guard で保護）
       if (window.__setStore) {
         var cs = d.stores && d.stores[CERT_KEY];
@@ -1154,6 +1202,7 @@
       });
       lastBroadcasts = arr;
       surfaceNotices();
+      scheduleNoticeBoundary(); // 予約の一斉お知らせも配信時刻にポップさせる
       checkMaintenance();
     }, function () {});
     if (maintTimer) clearInterval(maintTimer);
@@ -1166,6 +1215,7 @@
     if (maintUnsub) { maintUnsub(); maintUnsub = null; }
     if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
+    if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
     lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null; ownLoaded = false;
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
@@ -1200,6 +1250,24 @@
       items.sort(function (a, b) { return b.ts - a.ts; });
       showNoticeModal(items);
     } catch (e) {}
+  }
+  // 予約お知らせ（publishAt が未来）を、その配信時刻ちょうどにポップさせるためのタイマー。
+  // doc は予約時に1度しか変化しないため、配信時刻には snapshot が再発火しない。
+  // そこで一番近い未来の publishAt に setTimeout を張り、到来したら surfaceNotices を再実行する。
+  function scheduleNoticeBoundary() {
+    if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
+    var now = Date.now(), next = 0;
+    var consider = function (x) { var at = (x && (x.publishAt || x.ts)) || 0; if (at > now && (!next || at < next)) next = at; };
+    lastBroadcasts.forEach(consider);
+    (lastNotices || []).forEach(consider);
+    if (!next) return;
+    // 上限6時間（長期予約はタイマーを張り続けず、次回の snapshot/ログインで拾う）。setTimeout 桁あふれも回避。
+    var delay = Math.max(500, Math.min(next - now + 250, 6 * 60 * 60 * 1000));
+    noticeBoundaryTimer = setTimeout(function () {
+      noticeBoundaryTimer = null;
+      surfaceNotices();
+      scheduleNoticeBoundary(); // 次の予約に向けて張り直す
+    }, delay);
   }
   // items を1つのモーダルで表示。opts.preview=true のときは管理者向け「送信プレビュー」（既読は記録しない）
   function showNoticeModal(items, opts) {
@@ -1903,6 +1971,7 @@
   /* ---------------- クラウド保存（デバウンス） ---------------- */
   window.__cloudSave = function () {
     if (!currentUser || !db) return;
+    if (accessLocked) return; // 停止/承認待ち中はクラウドへ書き込まない
     setStatus('保存中…');
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
@@ -3327,8 +3396,9 @@
         onLogin(user);
       } else {
         currentUser = null; isAdmin = false;
+        stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
-        showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
+        hideLock(); showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
       }
     });
   }
