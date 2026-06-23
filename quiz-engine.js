@@ -2344,7 +2344,28 @@ function __notifyProgress(){
   }catch(e){}
 }
 function acquireCert(){
-  if(!confirm('⚠️ 本当にこの資格を「取得済み」にしますか？\n\n・一度「取得済み」にすると取り消せません。\n・この資格の問題は学習・解答ができなくなります。\n・次の資格が解除されます。'))return;
+  // ネイティブ confirm はブラウザ設定（Brave/iOS等）でブロックされ無反応になることがあるため、自前モーダルで確認する
+  showAcqConfirm();
+}
+function hideAcqConfirm(){var ov=document.getElementById('acq-confirm-ov');if(ov)ov.classList.remove('on');}
+function showAcqConfirm(){
+  var ov=document.getElementById('acq-confirm-ov');
+  if(!ov){
+    ov=document.createElement('div');ov.id='acq-confirm-ov';ov.className='acq-ov';
+    ov.innerHTML='<div class="acq-box" role="dialog" aria-modal="true">'
+      +'<div class="acq-ic">🎓</div>'
+      +'<div class="acq-t">この資格を「取得済み」にしますか？</div>'
+      +'<div class="acq-msg">・一度「取得済み」にすると<b>取り消せません</b>。<br>・この資格の問題は学習・解答ができなくなります。<br>・次の資格が解除されます。</div>'
+      +'<div class="acq-actions"><button class="acq-cancel" id="acq-cancel">キャンセル</button><button class="acq-ok" id="acq-ok">🎓 取得済みにする</button></div>'
+      +'</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click',function(e){if(e.target===ov)hideAcqConfirm();});
+  }
+  document.getElementById('acq-cancel').onclick=hideAcqConfirm;
+  document.getElementById('acq-ok').onclick=function(){hideAcqConfirm();doAcquireCert();};
+  ov.classList.add('on');
+}
+function doAcquireCert(){
   store.acquiredDate=_today();store.acqLock=1;save();
   homeStats();renderMypage();
   try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(true);}catch(e){}
