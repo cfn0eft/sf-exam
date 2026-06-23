@@ -2391,10 +2391,10 @@ function renderHomeProgress(){
   card.innerHTML=
     '<div class="hp-row"><span class="hp-ic">🎓</span><div class="hp-main">'
     +'<div class="hp-t">合格したら「取得済み」にして次へ進もう</div>'
-    +'<div class="hp-sub">取得済みにすると<b>次の資格が解除</b>されます。⚠️ <b>一度取得すると取り消せません</b>。取得後はこの資格の学習・解答ができなくなります。</div>'
+    +'<div class="hp-sub"><b>次の資格が解除</b>されます（⚠️ 取り消し不可）。</div>'
     +'</div></div>'
     +'<div class="hp-actions">'
-    +'<button class="hp-acqbtn" onclick="acquireCert()">🎓 この資格を取得済みにする</button>'
+    +'<button class="hp-acqbtn" onclick="acquireCert()">🎓 取得済みにする</button>'
     +'<button class="hp-infobtn" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">❓ ステップ制とは？</button>'
     +'</div>';
 }
