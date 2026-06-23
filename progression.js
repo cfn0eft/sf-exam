@@ -149,7 +149,23 @@
       '#sfq-prog-lock .pgl-btn{display:block;width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer}' +
       '#sfq-prog-lock .pgl-primary{background:#0176d3;color:#fff}' +
       '#sfq-prog-lock .pgl-ghost{background:#eef2f7;color:#334155}' +
-      '@media(prefers-color-scheme:dark){#sfq-prog-lock .pgl-card{background:#1e293b}#sfq-prog-lock .pgl-title{color:#f1f5f9}#sfq-prog-lock .pgl-sub{color:#cbd5e1}#sfq-prog-lock .pgl-ghost{background:#334155;color:#e2e8f0}}';
+      '@media(prefers-color-scheme:dark){#sfq-prog-lock .pgl-card{background:#1e293b}#sfq-prog-lock .pgl-title{color:#f1f5f9}#sfq-prog-lock .pgl-sub{color:#cbd5e1}#sfq-prog-lock .pgl-ghost{background:#334155;color:#e2e8f0}}' +
+      // ステップ制の説明モーダル
+      '#sfq-prog-info{position:fixed;inset:0;z-index:99995;display:none;align-items:center;justify-content:center;padding:20px;' +
+      'background:rgba(15,23,42,.6);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfq-prog-info.show{display:flex}' +
+      '#sfq-prog-info .pgi-card{width:min(96vw,520px);max-height:86vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35)}' +
+      '#sfq-prog-info .pgi-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-weight:800;font-size:16px;color:#0f172a}' +
+      '#sfq-prog-info .pgi-x{background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;line-height:1}' +
+      '#sfq-prog-info .pgi-body{padding:16px 18px 20px}' +
+      '#sfq-prog-info .pgi-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}' +
+      '#sfq-prog-info .pgi-step{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700}' +
+      '#sfq-prog-info .pgi-arrow{color:#94a3b8;font-weight:800}' +
+      '#sfq-prog-info .pgi-list{margin:0 0 14px;padding-left:20px;color:#334155;font-size:14px;line-height:1.8}' +
+      '#sfq-prog-info .pgi-list b{color:#0f172a}' +
+      '#sfq-prog-info .pgi-note{color:#64748b;font-size:12px;font-weight:600;margin-left:4px}' +
+      '#sfq-prog-info .pgi-how{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:11px 13px;font-size:13px;line-height:1.7;color:#334155}' +
+      '@media(prefers-color-scheme:dark){#sfq-prog-info .pgi-card{background:#1e293b}#sfq-prog-info .pgi-head{color:#f1f5f9;border-color:#334155}#sfq-prog-info .pgi-step{background:#1e3a5f;color:#93c5fd;border-color:#1e40af}#sfq-prog-info .pgi-list{color:#cbd5e1}#sfq-prog-info .pgi-list b{color:#f1f5f9}#sfq-prog-info .pgi-how{background:#0f172a;border-color:#334155;color:#cbd5e1}}';
     var st = document.createElement('style');
     st.id = 'sfq-prog-style';
     st.textContent = css;
@@ -213,6 +229,43 @@
     document.getElementById('pgl-home').onclick = function () { location.href = homeUrl(); };
     el.classList.add('show');
   }
+
+  /* ===== ステップ制の説明（LP・各資格ページで共有） ===== */
+  function ruleHtml() {
+    return '' +
+      '<div class="pgi-flow">' +
+        '<span class="pgi-step">① ' + NAME['sf-admin'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">② ' + NAME['app-builder'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">③ ' + NAME['developer'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">残りの資格を1つずつ</span>' +
+      '</div>' +
+      '<ul class="pgi-list">' +
+        '<li>最初は <b>' + NAME['sf-admin'] + '</b> だけが学習できます。</li>' +
+        '<li>その資格を <b>「取得済み」</b> にすると <b>次の資格が解除</b> されます（②→③の順）。</li>' +
+        '<li>取得済みにした資格は <b>学習・解答ができなくなります</b>（あとから取り消せば、また学べます）。</li>' +
+        '<li><b>' + NAME['developer'] + '</b> まで取得すると、残りの資格を <b>1つずつ</b> 選んで解除できます（取得するたびに次を選べます）。<span class="pgi-note">※順次公開予定</span></li>' +
+      '</ul>' +
+      '<div class="pgi-how"><b>「取得済みにする」場所：</b> 各資格ホームの「🎓 資格の取得」カード／👤マイページ／合格した模試の結果画面。</div>';
+  }
+  function openInfo() {
+    injectStyle();
+    var ov = document.getElementById('sfq-prog-info');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'sfq-prog-info';
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeInfo(); });
+      document.body.appendChild(ov);
+    }
+    ov.innerHTML = '<div class="pgi-card"><div class="pgi-head"><span>🎓 資格はステップ制で解除します</span>' +
+      '<button class="pgi-x" id="pgi-x" aria-label="閉じる">✕</button></div>' +
+      '<div class="pgi-body">' + ruleHtml() + '</div></div>';
+    document.getElementById('pgi-x').onclick = closeInfo;
+    ov.classList.add('show');
+  }
+  function closeInfo() { var ov = document.getElementById('sfq-prog-info'); if (ov) ov.classList.remove('show'); }
+  window.SFQ_PROG.ruleHtml = ruleHtml;
+  window.SFQ_PROG.openInfo = openInfo;
+  window.SFQ_PROG.closeInfo = closeInfo;
 
   // 進行状況が更新されたら（ログイン完了・取得/取消・選択）ゲートを再評価
   window.addEventListener('sfq-progress', renderGate);

@@ -369,6 +369,7 @@ function homeStats(){
   }catch(e){}
   try{renderStreakBanner();}catch(e){}
   try{renderHomeAcq();}catch(e){}
+  try{renderHomeProgress();}catch(e){}
   try{renderDaily();}catch(e){}
   try{renderResumeBanner();}catch(e){}
   try{renderNews();}catch(e){}
@@ -1490,6 +1491,10 @@ function beginCase(id){
 // ===== 使い方ガイド（全機能カタログ・チュートリアル） =====
 // 新規ユーザーが全機能を把握できる常設リファレンス。act があれば「開く」で実際に試せる。
 const GUIDE=[
+  {cat:'🎓 資格のステップ制', items:[
+    {ic:'🔓',name:'資格は順番に解除',desc:'アドミニストレーター→アプリビルダー→デベロッパー→残りを1つずつ。前の資格を「取得済み」にすると次が解除されます。',act:'progress'},
+    {ic:'🎓',name:'取得済みにする方法',desc:'ホームの「🎓 資格の取得」カード／マイページ／合格した模試の結果画面から。取得後は学習ロック（取り消せば再開）。',act:'progress'}
+  ]},
   {cat:'📖 学習する', items:[
     {ic:'📖',name:'学習モード',desc:'1問ずつ解いて、解説をその場で確認。間違いは自動で復習キューへ。',act:'study'},
     {ic:'💡',name:'段階的ヒント',desc:'解答前に「分野→明らかな誤りを薄く」の順にヒント。学習中の「ヒントを見る」かHキーで。'},
@@ -1567,6 +1572,7 @@ function guideAct(a){
     else if(a==='shortcut')toggleShortcutHelp(true);
     else if(a==='news')openNews();
     else if(a==='feedback')openFeedback();
+    else if(a==='progress'){if(window.SFQ_PROG)SFQ_PROG.openInfo();}
   }catch(e){}
 }
 
@@ -2276,7 +2282,9 @@ function renderMypage(){
     '<div class="card">'+accHtml+'</div>'
     +'<button class="mp-guidebtn" onclick="openGuide()">❓ 使い方ガイド（すべての機能の説明）</button>'
     +'<div class="sec-label">資格の取得</div>'
-    +'<div class="card">'+acqHtml+'</div>'
+    +'<div class="card">'+acqHtml
+    +'<div class="mp-acqhint">資格は<b>ステップ制</b>です。取得済みにすると次の資格が解除されます。<button class="mp-acqinfo" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">❓ くわしく</button></div>'
+    +'</div>'
     +'<div class="sec-label">学習の記録</div>'
     +'<div class="card"><div class="mp-sumtop"><div class="mp-ring"><svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="'+ringCol+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 32 32)"/></svg><div class="mp-rt" style="color:'+ringCol+'">'+overall+'%</div></div>'
     +'<div><div class="mp-sumlab">'+ringLab+'</div><div class="mp-sumsub">総合到達度（合格ライン '+PASS+'%）</div></div></div>'
@@ -2346,6 +2354,31 @@ function unacquireCert(){
   try{if(document.getElementById('pg-exam').classList.contains('active'))renderExamAcq(false);}catch(e){}
   __notifyProgress();
   toast('取得済みを取り消しました');
+}
+// ホームに「取得して次へ進む」カードを表示（取得導線をわかりやすく）。
+// 取得済みのときは進行ゲートが画面を覆うのでカードは出さない。
+function renderHomeProgress(){
+  const home=document.getElementById('pg-home');if(!home)return;
+  let card=document.getElementById('home-progress');
+  if(store.acquiredDate){ if(card)card.style.display='none'; return; }
+  if(!card){
+    card=document.createElement('div');
+    card.id='home-progress';
+    card.className='card home-progress';
+    const hero=home.querySelector('.home-hero');
+    if(hero&&hero.parentNode)hero.parentNode.insertBefore(card,hero.nextSibling);
+    else home.insertBefore(card,home.firstChild);
+  }
+  card.style.display='';
+  card.innerHTML=
+    '<div class="hp-row"><span class="hp-ic">🎓</span><div class="hp-main">'
+    +'<div class="hp-t">合格したら「取得済み」にして次へ進もう</div>'
+    +'<div class="hp-sub">取得済みにすると<b>次の資格が解除</b>されます。取得後はこの資格の学習がロックされます（あとから取り消せば再開できます）。</div>'
+    +'</div></div>'
+    +'<div class="hp-actions">'
+    +'<button class="hp-acqbtn" onclick="acquireCert()">🎓 この資格を取得済みにする</button>'
+    +'<button class="hp-infobtn" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">❓ ステップ制とは？</button>'
+    +'</div>';
 }
 // ホームのヒーローに取得済みバッジ／リボンを反映
 function renderHomeAcq(){

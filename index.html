@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=109"></script>
+<script src="maintenance.js?v=110"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格（アドミニストレーター・Platform アプリビルダー・デベロッパー）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -143,6 +143,11 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </button>
 
   <div class="sec-label">利用可能な資格</div>
+  <button class="lp-news lp-rule" type="button" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">
+    <span class="lp-news-ic">🎓</span>
+    <span class="lp-news-main"><span class="lp-news-t">資格はステップ制で順番に解除します</span><span class="lp-news-sub">前の資格を「取得済み」にすると次が解除。進め方をくわしく見る</span></span>
+    <span class="lp-news-arrow">›</span>
+  </button>
   <div class="grid" id="cert-grid"></div>
 
 </div>
@@ -163,7 +168,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
 <!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有。renderCerts より先に読む -->
-<script src="progression.js?v=109"></script>
+<script src="progression.js?v=110"></script>
 <script>
   /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
      meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
@@ -265,8 +270,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=109"></script>
-<script src="cloud-sync.js?v=109"></script>
+<script src="changelog.js?v=110"></script>
+<script src="cloud-sync.js?v=110"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
