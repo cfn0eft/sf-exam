@@ -11447,16 +11447,16 @@
   },
   {
     "id": 545,
-    "question": "次のコード スニペットは、2,000 件を超えるリード レコードがある環境で Lightning Web コンポーネントによって実行されます。\n\nApex トランザクション内でどのガバナー制限を超える可能性がありますか?",
+    "question": "次のコードは、2,000 件を超えるリードレコードがある環境で Lightning Web コンポーネントから実行されます。\n\nList<Lead> leads = [SELECT Id, Status FROM Lead];\nfor (Lead ld : leads) {\n    ld.Status = 'Working - Contacted';\n    update ld;\n}\n\nこの Apex トランザクション内で超過する可能性が最も高いガバナ制限はどれですか?",
     "choices": [
       "発行されたSOQLクエリの合計数",
       "発行されたDMLステートメントの合計数",
       "DML文の結果として処理されたレコードの合計数"
     ],
     "answers": [
-      "DML文の結果として処理されたレコードの合計数"
+      "発行されたDMLステートメントの合計数"
     ],
-    "explanation": "2,000 件超のリードを 1 度に更新するコードでは、DML で処理されるレコードの合計数の制限（1 トランザクション 10,000 行）に達する可能性が高いです。\n□ C：正解。DML 文の結果として処理されたレコードの合計数（DML 行数）を超過します。\n□ A：不正解。SOQL クエリ数の制限ではありません。\n□ B：不正解。DML ステートメント「数」ではなく処理「行数」が問題です。\n参考：DML 行数のガバナ制限",
+    "explanation": "DML（update）をループの内側で実行しているため、リード 1 件ごとに DML ステートメントを 1 回発行します。2,000 件を処理し終える前に「1 トランザクションあたりの DML ステートメント数（上限 150）」に達し、151 回目で System.LimitException が発生します。\n□ 正解：発行された DML ステートメントの合計数（上限 150）。ループ内 DML が原因です。\n□ 不正解：SOQL クエリは 1 回だけで、クエリ数（上限 100）の問題ではありません。\n□ 不正解：処理レコード行数（上限 10,000）ではなく、ステートメント「数」が先に上限へ達します。修正するにはループ外で一括更新（update leads;）します。\n参考：DML ステートメント数のガバナ制限",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm",
     "multi": false,
     "domain": "logic",
@@ -11574,12 +11574,12 @@
       "1 個のアカウントが挿入されます。",
       "アカウントは挿入されません。",
       "200 個のアカウントが挿入されます。",
-      "201 個のアカウントが挿入されます。"
+      "2 回目の挿入で例外がスローされ、処理が中断される。"
     ],
     "answers": [
-      "201 個のアカウントが挿入されます。"
+      "2 回目の挿入で例外がスローされ、処理が中断される。"
     ],
-    "explanation": "for (i=0; i<=200; i++) は 0〜200 の 201 回実行され、毎回 insert されます。\n□ D：正解。201 件の取引先が挿入されます。\n□ A：不正解。1 件だけではありません。\n□ B：不正解。挿入は実行され、エラーにはなりません。\n□ C：不正解。200 件ではなく 201 件です（境界に注意）。\n参考：ループ構文",
+    "explanation": "同じ acct を繰り返し insert しています。最初の insert で acct に ID が割り当てられるため、2 回目の insert では「ID が設定済みのレコードは挿入できない」という System.DmlException がスローされ、ループは完了しません。\n□ 正解：2 回目の insert で例外がスローされます。insert は ID 未設定のレコードにのみ使えます（既存レコードの再保存は update を使う）。\n□ 不正解：1 件だけ確定して挿入されるわけではありません。問われているのは「2 回目で例外になる」点です。\n□ 不正解：「まったく挿入されない」が結論ではなく、例外による中断が正しい説明です。\n□ 不正解：200 件・201 件いずれも挿入されません（境界の数え方ではなく例外が論点）。\n参考：DML（insert）の基本",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
     "multi": false,
     "domain": "logic",
@@ -11751,9 +11751,9 @@
     "answers": [
       "String nextPage = controller.save().getUrl();",
       "ApexPages.currentPage().getParameters().put('input','TestValue');",
-      "public ExtendedController(ApexPages.StandardController cntrl) { }"
+      "Test.setCurrentPage(pageRef);"
     ],
-    "explanation": "3つ選びます。カスタムコントローラのテストで有用な文です。\n□ A：正解。save() の戻り URL を検証します。\n□ B：正解。ApexPages.currentPage().getParameters().put(...) で URL パラメータを設定して分岐を検証します。\n□ D：正解。拡張コントローラのコンストラクタ（StandardController を受け取る）を生成します。\n□ C：不正解。insert pageRef はテストに無関係です。\n□ E：不正解（重複）。Test.setCurrentPage 自体は有用ですが本問の正答3つは A/B/D です。\n参考：Visualforce のテスト",
+    "explanation": "3つ選びます。カスタムコントローラのテストで有用な文です。\n□ 正解：String nextPage = controller.save().getUrl(); で save() の遷移先 URL を検証します。\n□ 正解：ApexPages.currentPage().getParameters().put(...) で URL パラメータを設定し、分岐を検証します。\n□ 正解：Test.setCurrentPage(pageRef); でテスト中のページコンテキストを設定し、パラメータを読み取らせます。\n□ 不正解：insert pageRef; は PageReference を挿入できず、テストにも無関係です。\n□ 不正解：public ExtendedController(ApexPages.StandardController cntrl){} は「拡張コントローラ」のコンストラクタです。本問はカスタムコントローラのテストなので使いません（カスタムコントローラは引数なしのコンストラクタ）。\n参考：Visualforce のテスト",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing.htm",
     "multi": true,
     "domain": "deploy",
@@ -12197,14 +12197,14 @@
     "choices": [
       "フロー",
       "呼び出し可能なメソッド",
-      "将来のメソッド",
+      "@future メソッド",
       "トリガー"
     ],
     "answers": [
       "フロー",
       "呼び出し可能なメソッド"
     ],
-    "explanation": "2つ選びます。スクリプト化手順＋REST 呼び出しを実現する組み合わせです。\n□ A：正解。フローで担当者を手順に沿って誘導し、Apex アクションを呼べます。\n□ B：正解。Invocable メソッドでフローから Apex を呼び、REST エンドポイントを叩いて結果を返せます。\n□ C：不正解。将来メソッドは非同期で、リアルタイムに値を返せません。\n□ D：不正解。トリガーは DB イベント用で手順誘導には使いません。\n参考：フローと Invocable メソッド",
+    "explanation": "2つ選びます。スクリプト化手順＋REST 呼び出しを実現する組み合わせです。\n□ A：正解。フローで担当者を手順に沿って誘導し、Apex アクションを呼べます。\n□ B：正解。Invocable メソッドでフローから Apex を呼び、REST エンドポイントを叩いて結果を返せます。\n□ C：不正解。@future メソッドは非同期で、リアルタイムに値を返せません。\n□ D：不正解。トリガーは DB イベント用で手順誘導には使いません。\n参考：フローと Invocable メソッド",
     "reference_url": "https://help.salesforce.com/s/articleView?id=sf.flow_concepts.htm&type=5",
     "multi": true,
     "domain": "logic",
@@ -12245,7 +12245,7 @@
     "id": 590,
     "question": "コードが実行されると、DML 例外がスローされます。\n例外が適切に処理されるようにするには、開発者はどのようにコードを変更すればよいでしょうか?",
     "choices": [
-      "アップセット DML ステートメントを実装します。",
+      "upsert DML ステートメントを実装します。",
       "変更データキャプチャを実装します。",
       "DML の try/catch ブロックを実装します。",
       "アカウントのリストから null 項目を削除します。"
@@ -12323,13 +12323,13 @@
     "id": 593,
     "question": "以下のコンポーネント コード要件を参照してください。\n<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>\n要件：\n* モバイル デバイスの場合、情報は 3 行に表示されます。\n* デスクトップとタブレットの場合、情報は 1 行に表示されます。\n要件 2 が期待どおりに表示されません。\nデスクトップとタブレットの要件を満たす正しいコンポーネント コードを持つオプションはどれですか。",
     "choices": [
-      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:\nlayoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
-      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:\nlayoutItem>\n<lightning:layoutItem size=\"12\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
-      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\">{!v.account.AccountNumber}</lightning:\nlayoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
-      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Name}<\n/lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.\nAccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Industry}<\n/lightning:layoutItem>\n</lightning:layout>"
+      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
+      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
+      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>",
+      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>"
     ],
     "answers": [
-      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Name}<\n/lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.\nAccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Industry}<\n/lightning:layoutItem>\n</lightning:layout>"
+      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>"
     ],
     "explanation": "モバイル=3 行（size=12）、デスクトップ/タブレット=1 行にするには、medium と large の両方のサイズ指定が要ります。\n□ D：正解。size=12・mediumDeviceSize=6・largeDeviceSize=4 を各 layoutItem に指定します。\n□ A：不正解。medium のみ指定でデスクトップ要件を満たせません。\n□ B：不正解。medium と large の値が不整合です。\n□ C：不正解。medium=6 のみではデスクトップで 1 行になりません。\n参考：lightning:layout のレスポンシブ",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
@@ -12495,16 +12495,16 @@
     "id": 601,
     "question": "Lightning Web コンポーネントのカスタムイベントに当てはまる 2 つの特性はどれですか?\n2つの回答を選択してください",
     "choices": [
-      "@wire で装飾されたプロパティを使用して、カスタム イベントのペイロードでデータを渡すことができます。",
-      "データは、detail というプロパティを使用してカスタム イベントのペイロードに渡される場合があります。",
-      "デフォルトでは、カスタム イベントは、その直下のコンテナーと直下の子コンポーネントにのみ伝播します。",
-      "デフォルトでは、カスタム イベントはその直下のコンテナーにのみ伝播します。"
+      "@wire で取得したプロパティを使えば、カスタムイベントのペイロードでデータを渡せる。",
+      "データは detail というプロパティを使って、カスタムイベントのペイロードで渡せる。",
+      "既定（bubbles=false・composed=false）ではイベントはバブリングせず、ディスパッチ元を内包する直近の親コンポーネントでのみ処理できる。",
+      "既定でもカスタムイベントは DOM をバブリングし、シャドウ境界を越えて祖先コンポーネントまで伝播する。"
     ],
     "answers": [
-      "データは、detail というプロパティを使用してカスタム イベントのペイロードに渡される場合があります。",
-      "デフォルトでは、カスタム イベントは、その直下のコンテナーと直下の子コンポーネントにのみ伝播します。"
+      "データは detail というプロパティを使って、カスタムイベントのペイロードで渡せる。",
+      "既定（bubbles=false・composed=false）ではイベントはバブリングせず、ディスパッチ元を内包する直近の親コンポーネントでのみ処理できる。"
     ],
-    "explanation": "2つ選びます。LWC のカスタムイベントの特性です。\n□ B：正解。データは CustomEvent の detail プロパティで渡せます。\n□ C：正解。既定では直近の親と子（直下のコンテナ/子）にのみ伝播し、composed/bubbles で制御します。\n□ A：不正解。@wire でイベントのペイロードを渡すことはありません。\n□ D：不正解。「直近のコンテナのみ」という記述は不正確です。\n参考：LWC のイベント伝播",
+    "explanation": "2つ選びます。LWC のカスタムイベントの特性です。\n□ 正解：データは CustomEvent の detail プロパティに載せて渡し、受け手は event.detail で取り出します。\n□ 正解：既定では bubbles=false・composed=false なのでイベントはバブリングせず、ディスパッチしたコンポーネントを内包する直近の親でのみ処理できます（子コンポーネントへは伝播しません）。\n□ 不正解：@wire はデータ取得用のデコレータで、イベントのペイロード送信には使いません。\n□ 不正解：既定ではバブリングもシャドウ境界越えもしません。祖先まで伝播させるには bubbles・composed を true にする必要があります。\n参考：LWC のイベント伝播",
     "reference_url": "https://developer.salesforce.com/docs/component-library/documentation/en/lwc",
     "multi": true,
     "domain": "ui",
@@ -12570,17 +12570,17 @@
   },
   {
     "id": 606,
-    "question": "多くの開発者のチームが、本番組織と同じ構成を持つ独自の組織で作業します。\nこのシナリオに最適な組織の種類はどれですか?",
+    "question": "多数の開発者が、本番組織と同じ構成（メタデータ）を持つ各自専用の環境で並行して開発したいと考えています。各開発者に割り当てる環境として最適なものはどれですか?",
     "choices": [
-      "開発者サンドボックス",
-      "フルサンドボックス",
-      "開発者エディション",
-      "パートナー開発者エディション"
+      "Developer サンドボックス（本番のメタデータをコピーし、本番データは含まない開発者個人用の環境）",
+      "Full サンドボックス（本番のメタデータと全データを複製する大規模なステージング環境）",
+      "Developer Edition 組織（本番から独立した無料の開発用組織。本番の構成は引き継がない）",
+      "Partner Developer Edition 組織（AppExchange パッケージ開発向けの ISV パートナー用組織）"
     ],
     "answers": [
-      "開発者サンドボックス"
+      "Developer サンドボックス（本番のメタデータをコピーし、本番データは含まない開発者個人用の環境）"
     ],
-    "explanation": "□ A：正解。Developer サンドボックスは本番と同じ構成を持ち、開発者が個別に独立して作業するのに最適です。\n□ B：不正解。フルサンドボックスはステージング/テスト用で個人作業には過剰です。\n□ C：不正解。Developer Edition は本番に接続されずサンドボックス機能もありません。\n□ D：不正解。Partner Developer Edition は ISV の AppExchange 開発用です。\n参考：サンドボックスの種類",
+    "explanation": "□ 正解：Developer サンドボックスは本番のメタデータ（構成）をコピーした個人用の環境で、開発者が各自独立して作業するのに最適です。本番データは含みません。\n□ 不正解：Full サンドボックスは全データを複製するステージング/負荷テスト向けで、開発者個人用には過剰です。\n□ 不正解：Developer Edition は本番から独立した無料組織で、本番の構成を引き継ぎません。\n□ 不正解：Partner Developer Edition は ISV が AppExchange アプリを開発するための組織です。\n参考：サンドボックスの種類",
     "reference_url": "https://help.salesforce.com/s/articleView?id=platform.data_sandbox_environments.htm&language=ja&type=5",
     "multi": false,
     "domain": "deploy",
