@@ -2693,6 +2693,7 @@
           '<button class="sfqc-mini" id="sfqc-ubulk-notice"' + (selN ? '' : ' disabled') + '>📩 一括お知らせ</button>' +
           '<button class="sfqc-mini" id="sfqc-ubulk-mokon"' + (selN ? '' : ' disabled') + '>🛠 メンテ許可</button>' +
           '<button class="sfqc-mini" id="sfqc-ubulk-mokoff"' + (selN ? '' : ' disabled') + '>🛠 許可解除</button>' +
+          '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-unapprove"' + (selN ? '' : ' disabled') + ' title="承認待ちに戻します（本人は再申請が必要・進捗は残ります）">⏳ 承認解除</button>' +
           '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-block"' + (selN ? '' : ' disabled') + '>⏸ 一括停止</button>' +
           '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-reset"' + (selN ? '' : ' disabled') + '>🗑 一括リセット</button>' +
         '</div>';
@@ -2868,6 +2869,7 @@
     var exSweep = document.getElementById('sfqc-expire-sweep'); if (exSweep) exSweep.addEventListener('click', sweepExpiredAccess);
     var ubMOn = document.getElementById('sfqc-ubulk-mokon'); if (ubMOn) ubMOn.addEventListener('click', function () { bulkMaintOk(true); });
     var ubMOff = document.getElementById('sfqc-ubulk-mokoff'); if (ubMOff) ubMOff.addEventListener('click', function () { bulkMaintOk(false); });
+    var ubU = document.getElementById('sfqc-ubulk-unapprove'); if (ubU) ubU.addEventListener('click', bulkUnapprove);
     var ubB = document.getElementById('sfqc-ubulk-block'); if (ubB) ubB.addEventListener('click', bulkBlock);
     var ubR = document.getElementById('sfqc-ubulk-reset'); if (ubR) ubR.addEventListener('click', bulkResetUsers);
     // フィードバックへの返信(#7)
@@ -3141,6 +3143,35 @@
   function bulkNotice() {
     var uids = Object.keys(adminSelUsers); if (!uids.length) return;
     openCompose({ mode: 'notice', uids: uids }); // 複数宛て個別お知らせ
+  }
+  // 選択したアカウントの承認をまとめて解除＝「承認待ち」に戻す（本人は再申請が必要）。
+  // ・対象は「✅ 承認済み」だけ。停止中（blocked）は意図的な締め出しなので触らない。
+  // ・req を消して再申請を求める。過去の休眠失効の記録（expiredAt）も消して、
+  //   ロック画面の文言が「失効しました」ではなく通常の「承認待ちです」になるようにする。
+  function bulkUnapprove() {
+    var uids = Object.keys(adminSelUsers); if (!isAdmin || !db || !uids.length) return;
+    var targets = uids.filter(function (uid) { var u = findUser(uid); return u && u.access === 'approved'; });
+    var skipped = uids.length - targets.length;
+    if (!targets.length) { toastSafe('選択の中に承認済みのアカウントがありません'); return; }
+    if (!confirm(targets.length + ' 人の承認を解除して「承認待ち」に戻します。\n' +
+      '本人は次回ログイン時に利用申請のやり直しが必要です（学習の進捗は消えません）。\n' +
+      (skipped ? '※ 停止中・承認待ちの ' + skipped + ' 件は対象外です。\n' : '') +
+      '\nよろしいですか？')) return;
+    var FV = firebase.firestore.FieldValue, ts = Date.now();
+    Promise.all(targets.map(function (uid) {
+      return db.collection(COLLECTION).doc(uid)
+        .set({ access: 'pending', req: FV.delete(), expiredAt: FV.delete(), updated: ts }, { merge: true })
+        .then(function () {
+          var u = findUser(uid); if (u) { u.access = 'pending'; u.req = null; u.expiredAt = 0; u.updated = ts; }
+          delete adminSelApps[uid];
+          return true;
+        }).catch(function () { return false; });
+    })).then(function (res) {
+      var n = res.filter(Boolean).length; adminSelUsers = {};
+      logAdmin('一括承認解除', n + '件');
+      toastSafe(n + ' 人の承認を解除しました' + (n < targets.length ? '（' + (targets.length - n) + '件失敗）' : ''));
+      renderAdmin();
+    });
   }
   function bulkBlock() {
     var uids = Object.keys(adminSelUsers); if (!isAdmin || !db || !uids.length) return;
