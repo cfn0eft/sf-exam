@@ -25,7 +25,8 @@
 
   // 一般公開済みの資格（ここに無い資格は「いずれ公開します」表示・管理者のみ裏で利用可）
   // 公開準備ができた資格を1つずつここへ足していく。
-  var RELEASED = ['sf-admin', 'app-builder', 'developer'];
+  // 2026-07-30: 準備中だったプール5資格（Agentforce / Sales / Service / Experience / Sharing & Visibility）を公開＝全8資格が公開済み。
+  var RELEASED = ['sf-admin', 'app-builder', 'developer', 'agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'];
   function isReleased(slug) { return RELEASED.indexOf(slug) >= 0; }
 
   // slug → localStorage キー（クラウド未接続時のフォールバック判定に使う）
@@ -243,7 +244,7 @@
         '<li>最初は <b>' + NAME['sf-admin'] + '</b> だけが学習できます。</li>' +
         '<li>その資格を <b>「取得済み」</b> にすると <b>次の資格が解除</b> されます（②→③の順）。</li>' +
         '<li>取得済みにした資格は <b>学習・解答ができなくなります</b>。⚠️ <b>一度「取得済み」にすると取り消せません</b>。</li>' +
-        '<li><b>' + NAME['developer'] + '</b> まで取得すると、残りの資格を <b>1つずつ</b> 選んで解除できます（取得するたびに次を選べます）。<span class="pgi-note">※順次公開予定</span></li>' +
+        '<li><b>' + NAME['developer'] + '</b> まで取得すると、残りの資格を <b>1つずつ</b> 選んで解除できます（取得するたびに次を選べます）。<span class="pgi-note">※5資格すべて公開済み</span></li>' +
       '</ul>' +
       '<div class="pgi-how"><b>「取得済みにする」場所：</b> 各資格ホームの「🎓 資格の取得」カード／👤マイページ／合格した模試の結果画面。</div>';
   }
