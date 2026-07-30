@@ -74,9 +74,9 @@ window.SFQ_FIREBASE_CONFIG = {
      detail を外してください。
    ============================================================= */
 window.SFQ_EMAILJS = {
-  serviceId:  "",   // 例: "service_xxxxxxx"
-  templateId: "",   // 例: "template_xxxxxxx"
-  publicKey:  ""    // 例: "AbCdEfGhIjKlMnOp"（Public Key。秘密鍵ではありません）
+  serviceId:  "service_5lywlqe",
+  templateId: "template_j139e3s",
+  publicKey:  "Xdy5x_z6ZnTmFzgPr"   // Public Key（公開前提の値。秘密鍵ではありません）
 };
 
 /* ---- 以下は通常は編集不要です ---- */
