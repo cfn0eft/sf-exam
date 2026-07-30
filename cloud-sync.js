@@ -42,6 +42,7 @@
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
   /* アクセス権のリアルタイム監視（個別の停止/承認を即時反映）の状態 */
   var accessUnsub = null, watchedAccess = null, accessLocked = false;
+  var lockedAccess = '';   // 今ロック画面を出している理由の access 値（'pending'|'blocked' 等）。申請の書込み方を決める
   var adminPendingUnsub = null; // 管理者の申請通知バッジのライブ購読（パネル非表示でも即更新）
   var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
@@ -635,8 +636,13 @@
     var form = document.getElementById('sfqc-lock-form');
     var nameIn = document.getElementById('sfqc-lock-name');
     var lockMsg = document.getElementById('sfqc-lock-msg');
-    var showForm = (state !== 'blocked' && state !== 'adminonly'); // 停止中・管理者専用は申請フォームを出さない
+    // 管理者専用ページ以外は申請フォームを出す。停止中も「解除の申請」ができる
+    // （停止中の申請は access を 'blocked' のまま req だけ書く＝自分では解除できない。doApplyAccess 参照）
+    var blocked = (state === 'blocked');
+    lockedAccess = state;                    // doApplyAccess が「解除申請」かどうかを判断するのに使う
+    var showForm = (state !== 'adminonly');
     var adminOnly = (state === 'adminonly');
+    var applyBtn = document.getElementById('sfqc-lock-apply');
     var reloadBtn = document.getElementById('sfqc-lock-reload');
     var homeBtn = document.getElementById('sfqc-lock-home');
     // 管理者専用は「再確認」しても状況は変わらないので、代わりに「ホームへ戻る」を出す
@@ -644,7 +650,9 @@
     if (homeBtn) homeBtn.style.display = adminOnly ? '' : 'none';
     if (state === 'blocked') {
       if (t) t.textContent = '🚫 利用が停止されています';
-      if (s) s.innerHTML = 'このアカウントは現在ご利用いただけません。<br>心当たりがない場合は管理者にお問い合わせください。';
+      if (s) s.innerHTML = info.applied
+        ? 'このアカウントは現在ご利用いただけません。<br>解除の申請を受け付けています。管理者の対応をお待ちください。'
+        : 'このアカウントは現在ご利用いただけません。<br>解除をご希望の場合は、下のフォームにお名前を入れて「解除を申請」してください。';
     } else if (state === 'error') {
       if (t) t.textContent = '⚠️ 確認できませんでした';
       if (s) s.innerHTML = 'アクセス権を確認できませんでした。<br>通信環境を確認して「再確認」を押してください。';
@@ -665,12 +673,15 @@
       if (s) s.innerHTML = 'ご利用には管理者の承認が必要です。<br>下のフォームにお名前を入れて「利用を申請」してください。';
     }
     if (form) form.style.display = showForm ? '' : 'none';
+    if (applyBtn) applyBtn.textContent = blocked ? 'この内容で解除を申請する' : 'この内容で利用を申請する';
     if (showForm && nameIn) {
-      // 申請済みの名前 > ログインID から復元（ユーザーは上書き可）
-      if (!nameIn.value) nameIn.value = info.reqName || currentName || '';
+      // 名前は自動で埋めない（ログインIDが入ると管理者が誰か分からないため、毎回きちんと入力してもらう）
+      nameIn.value = '';
       if (lockMsg) {
-        if (info.applied) { lockMsg.textContent = '申請済みです（内容を更新して再申請もできます）。'; lockMsg.className = 'sfqc-msg ok'; }
-        else { lockMsg.textContent = ''; lockMsg.className = 'sfqc-msg'; }
+        if (info.applied) {
+          lockMsg.textContent = blocked ? '解除を申請済みです（入力すると再申請できます）。' : '申請済みです（入力すると再申請できます）。';
+          lockMsg.className = 'sfqc-msg ok';
+        } else { lockMsg.textContent = ''; lockMsg.className = 'sfqc-msg'; }
       }
     }
     hideOverlay();
@@ -678,24 +689,29 @@
     accessLocked = true; // ロック中はクラウド保存を止める（停止後の上書き防止）
     setStatus('');
   }
-  function hideLock() { if (elLock) elLock.classList.remove('show'); accessLocked = false; }
+  function hideLock() { if (elLock) elLock.classList.remove('show'); accessLocked = false; lockedAccess = ''; }
 
   // 承認待ちユーザーが「お名前」を入れて利用を申請する。access は pending のまま、
   // name/req を本人 doc に書く（Firestore ルールで pending 維持の書込は本人に許可）。
+  // 停止中（blocked）からの「解除の申請」も同じフォームで行うが、その場合は
+  // access を書き換えず（= blocked 維持）req だけ書く。自分で停止を解除はできない。
   function doApplyAccess() {
     if (!currentUser || !db) return;
     var nameIn = document.getElementById('sfqc-lock-name');
     var lockMsg = document.getElementById('sfqc-lock-msg');
     var nm = (nameIn ? nameIn.value : '').trim();
     if (!nm) { if (lockMsg) { lockMsg.textContent = 'お名前を入力してください。'; lockMsg.className = 'sfqc-msg err'; } return; }
+    var isBlocked = (lockedAccess === 'blocked');
     if (lockMsg) { lockMsg.textContent = '申請中…'; lockMsg.className = 'sfqc-msg'; }
-    db.collection(COLLECTION).doc(currentUser.uid).set({
-      access: 'pending', name: nm, email: currentEmail,
-      req: { name: nm, ts: Date.now() }, updated: Date.now()
-    }, { merge: true })
+    var rec = { name: nm, email: currentEmail, req: { name: nm, ts: Date.now(), unblock: isBlocked }, updated: Date.now() };
+    if (!isBlocked) rec.access = 'pending';   // 停止中は access に触らない（ルール上も本人は blocked→pending にできない扱いにする）
+    db.collection(COLLECTION).doc(currentUser.uid).set(rec, { merge: true })
       .then(function () {
         currentName = nm; setBadge(nm);
-        if (lockMsg) { lockMsg.textContent = '申請を受け付けました。承認をお待ちください。'; lockMsg.className = 'sfqc-msg ok'; }
+        if (lockMsg) {
+          lockMsg.textContent = isBlocked ? '解除の申請を受け付けました。管理者の対応をお待ちください。' : '申請を受け付けました。承認をお待ちください。';
+          lockMsg.className = 'sfqc-msg ok';
+        }
       })
       .catch(function (e) {
         if (lockMsg) { lockMsg.textContent = '申請に失敗しました（' + (e && e.code || 'error') + '）。'; lockMsg.className = 'sfqc-msg err'; }
@@ -2595,11 +2611,20 @@
     var m = ACCESS_CHIP[accessStateOf(u)] || ACCESS_CHIP.noreq;
     return '<span class="sfqc-acc-access ' + m[0] + '" title="' + esc(m[2]) + '">' + m[1] + '</span>';
   }
+  // 申請の日付チップ。停止中からの申請は「解除申請」として区別する（対応が別だから）
+  function reqChipHTML(u) {
+    if (!(u && u.req && u.req.ts)) return '';
+    var unblock = (u.access === 'blocked');
+    return '<span class="sfqc-acc-access pend" title="' + (unblock ? '停止の解除を申請しています' : 'あなたの承認を待っています') + '">' +
+      (unblock ? '📩 解除申請 ' : '📝 申請 ') + esc(fmtDate(u.req.ts)) + '</span>';
+  }
   function applicationsSectionHTML() {
     var apps = adminUsers.filter(isApplicant);
     apps.sort(function (a, b) { return (b.req.ts || 0) - (a.req.ts || 0); }); // 申請の新しい順
-    var head = '<div class="sfqc-sec" style="margin-top:0">🔔 新規申請 ' +
-      '<span class="sfqc-fb-count">' + apps.length + '件</span></div>';
+    // 停止中からの「解除の申請」も同じ節に出す（対応するのは管理者だから）
+    var unblockN = apps.filter(function (u) { return u.access === 'blocked'; }).length;
+    var head = '<div class="sfqc-sec" style="margin-top:0">🔔 申請（あなたの対応待ち） ' +
+      '<span class="sfqc-fb-count">' + apps.length + '件' + (unblockN ? '（うち解除申請 ' + unblockN + '件）' : '') + '</span></div>';
     if (!apps.length) {
       adminSelApps = {};
       return head + '<div class="sfqc-empty" style="padding:14px">あなたの承認を待っている申請はありません。<br>' +
@@ -2619,7 +2644,7 @@
     var cards = apps.map(function (u) {
       var isBlock = (u.access === 'blocked');
       var stateChip = accessChipHTML(u);   // この節は全員「申請あり」なので 📩 承認待ち（申請あり）になる
-      var reqChip = '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>';
+      var reqChip = reqChipHTML(u);   // 停止中からの申請は「📩 解除申請」になる
       // 休眠で承認が失効した「再申請」かを区別できるようにする（新規登録の申請と混ざらないように）
       var expChip = u.expiredAt ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効 ' + esc(fmtDate(u.expiredAt)) + '</span>' : '';
       var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
@@ -2682,8 +2707,11 @@
           '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
         '</div>';
       // アクセス状態ごとの件数（チップに出す＝「あと何件承認すればいいか」が一目で分かる）
-      var accessCounts = { approved: 0, applied: 0, noreq: 0, blocked: 0 };
-      adminUsers.forEach(function (u) { var k = accessStateOf(u); if (accessCounts[k] != null) accessCounts[k]++; });
+      var accessCounts = { approved: 0, applied: 0, noreq: 0, blocked: 0, unblockReq: 0 };
+      adminUsers.forEach(function (u) {
+        var k = accessStateOf(u); if (accessCounts[k] != null) accessCounts[k]++;
+        if (k === 'blocked' && u.req && u.req.ts) accessCounts.unblockReq++;   // 停止中からの解除申請
+      });
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
           '<span class="sfqc-sort-label">資格:</span>' + certChips +
           '<span class="sfqc-sort-label">状態:</span>' +
@@ -2694,7 +2722,9 @@
           '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">✅ 承認済み ' + accessCounts.approved + '</button>' +
           '<button class="sfqc-fchip' + (adminAccess === 'applied' ? ' on' : '') + '" data-access="applied" title="本人が申請済み＝あなたの承認を待っています">📩 承認待ち（申請あり） ' + accessCounts.applied + '</button>' +
           '<button class="sfqc-fchip' + (adminAccess === 'noreq' ? ' on' : '') + '" data-access="noreq" title="まだ本人が利用申請をしていません">✋ 未申請 ' + accessCounts.noreq + '</button>' +
-          '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">🚫 停止中 ' + accessCounts.blocked + '</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked"' +
+            (accessCounts.unblockReq ? ' title="うち ' + accessCounts.unblockReq + ' 件は解除を申請しています"' : '') +
+            '>🚫 停止中 ' + accessCounts.blocked + (accessCounts.unblockReq ? '（📩' + accessCounts.unblockReq + '）' : '') + '</button>' +
           '<button class="sfqc-fchip' + (adminMaintOk ? ' on' : '') + '" data-maintok="1" title="メンテナンス中でも利用できるアカウントだけを表示">🛠 メンテ許可</button>' +
         '</div>';
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
@@ -2737,9 +2767,8 @@
         var dago = admDaysAgo(a.lastStudyDate);
         var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
         var accChip = accessChipHTML(u);   // ✅承認済み / 📩承認待ち（申請あり） / ✋未申請 / 🚫停止中
-        // 申請日は行にも出す（いつからあなたの承認を待っているかが分かる）
-        var reqAtChip = (accessStateOf(u) === 'applied')
-          ? '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>' : '';
+        // 申請日は行にも出す（いつからあなたの承認/対応を待っているかが分かる）
+        var reqAtChip = reqChipHTML(u);
         var accBtn = (u.access === 'approved')
           ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
           : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
@@ -3046,7 +3075,11 @@
   // （完全に締め出すときは「停止」を使う。却下後も本人は再申請できる）
   function rejectApplication(uid, name) {
     if (!isAdmin || !db || !uid) return;
-    if (!confirm('「' + name + '」の利用申請を却下します。\n（アカウントは「承認待ち」のままで、本人は再申請できます。完全に締め出す場合は「停止」を使ってください）\n\nよろしいですか？')) return;
+    var ru = findUser(uid), rBlocked = !!(ru && ru.access === 'blocked');
+    if (!confirm('「' + name + '」の' + (rBlocked ? '解除申請' : '利用申請') + 'を却下します。\n' +
+      (rBlocked ? '（アカウントは「停止中」のままです。本人は再度、解除を申請できます）'
+                : '（アカウントは「承認待ち」のままで、本人は再申請できます。完全に締め出す場合は「停止」を使ってください）') +
+      '\n\nよろしいですか？')) return;
     var FV = firebase.firestore.FieldValue;
     db.collection(COLLECTION).doc(uid).update({ req: FV.delete(), updated: Date.now() })
       .then(function () {
