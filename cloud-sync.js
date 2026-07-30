@@ -47,6 +47,9 @@
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
   var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
+  // メンテナンス中でも利用できるアカウント（progress/{uid}.maintOk が true）。
+  // 管理者ビューの「🛠 メンテ許可」で付与/解除する。付与は管理者だけ（Firestore ルールの isAdmin() 全権）。
+  var maintExempt = false;
   var noticeBoundaryTimer = null; // 予約お知らせ（publishAt が未来）の配信時刻に再チェックするタイマー
   var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
   var adminBroadcasts = [];        // 管理者ビュー用：一斉お知らせレコード一覧 [{id,...}]
@@ -413,8 +416,11 @@
       '.sfqc-acc-access.ok{background:#dcfce7;color:#15803d}' +
       '.sfqc-acc-access.pend{background:#fef9c3;color:#854d0e}' +
       '.sfqc-acc-access.block{background:#fee2e2;color:#b91c1c}' +
+      '.sfqc-acc-access.maint{background:#ffedd5;color:#9a3412}' +
       '.sfqc-act-approve{background:#dcfce7;color:#15803d}' +
       '.sfqc-act-block{background:#fee2e2;color:#b91c1c}' +
+      '.sfqc-act-maint{background:#ffedd5;color:#9a3412}' +
+      '.sfqc-act-maint.on{background:#9a3412;color:#fff}' +
       '.sfqc-act-reject{background:#fef3c7;color:#92400e}' +
       /* 新規申請・承認待ちセクション */
       '.sfqc-app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}' +
@@ -957,6 +963,8 @@
         return;
       }
       hideLock();
+      // メンテ中も利用を許可されたアカウントか（checkMaintenance より先に確定させる）
+      maintExempt = !!data.maintOk;
       publishProgress(data); // 資格のロック解除（直列進行）の状態を全ページへ通知
       if (isAdmin) watchAdminPending(); // 管理者は承認待ち件数をライブ購読で通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
@@ -1165,6 +1173,9 @@
     ownDocUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
       if (snap.metadata && snap.metadata.hasPendingWrites) return; // 自分の書込は無視（ちらつき防止）
       var d = (snap.exists && snap.data()) || {};
+      // メンテ許可フラグの付与/解除を即時反映（管理者が操作した瞬間に入れる/締め出す）
+      var mok = !!d.maintOk;
+      if (mok !== maintExempt) { maintExempt = mok; checkMaintenance(); }
       lastNotices = Array.isArray(d.notices) ? d.notices : [];
       lastChat = Array.isArray(d.chat) ? d.chat : [];
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
@@ -1219,6 +1230,7 @@
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
     lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null; ownLoaded = false;
+    maintExempt = false; // ログアウト時は許可を持ち越さない（次のログインで doc から読み直す）
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
@@ -1661,6 +1673,11 @@
         '<button class="sfqc-mini" id="sfqc-maint-queue">📋 キューを管理</button></span></div>' +
       '<div class="sfqc-bc-meta"><span>🔁 定期メンテ：' + esc(rec) + '</span>' +
         '<button class="sfqc-mini" id="sfqc-maint-edit-recur">⚙️ 定期メンテを管理</button></div>';
+    // メンテ中でも利用できるアカウント（maintOk）の一覧。ユーザータブの「🛠 メンテ許可」で切替える。
+    var exempts = adminUsers.filter(function (u) { return u.maintOk; });
+    html += '<div class="sfqc-bc-meta"><span>🛠 メンテ中も利用可：<b>' + exempts.length + '</b> 人' +
+        (exempts.length ? '（' + esc(exempts.slice(0, 5).map(function (u) { return u.name || u.uid; }).join('・')) + (exempts.length > 5 ? ' ほか' : '') + '）' : '') +
+      '</span><span style="color:#64748b">ユーザータブの「🛠 メンテ許可」で切替</span></div>';
     return html + '</div>';
   }
   function toggleFullStop() {
@@ -1923,6 +1940,15 @@
     var tb = document.querySelector('.topbar'); if (tb) tb.style.top = h ? (h + 'px') : '';
     if (elBadge) elBadge.style.top = h ? (h + 9) + 'px' : '';
   }
+  /* メンテ画面へ転送すべきか（純粋関数・テストから検証する）。
+     メンテを素通りできる例外は2つで、どちらも緊急全停止（fullStop）にも効く:
+       ① exempt  … 管理者が「🛠 メンテ許可」を付けたアカウント（progress/{uid}.maintOk）
+       ② preview … プレビュー合言葉を知っている端末（中身の確認用）
+     ※ 管理者自身は checkMaintenance の冒頭で対象外。 */
+  function maintShouldBlock(st, exempt, preview) {
+    if (!st || !st.active) return false;
+    return !exempt && !preview;
+  }
   function checkMaintenance() {
     if (isAdmin) return; // 管理者は対象外
     var overlay = document.getElementById('sfqc-maint');
@@ -1934,18 +1960,22 @@
     var msg = ent.msg || (lastMaint && lastMaint.msg) || 'ただいまメンテナンスを実施しています。しばらくお待ちください。';
     var preMsg = up.preMsg || '';                                   // 予告は「次に始まるメンテ」固有の設定を使う
     var preMin = (up.preMin != null) ? up.preMin : 60;
-    if (st.active) {
-      // プレビュー合言葉を知っている端末はメンテ中でも素通り（中身の確認用）
-      if (window.SFQ_hasPreview && window.SFQ_hasPreview()) {
-        overlay.classList.remove('show'); banner.classList.remove('show'); applyBannerOffset(0);
-        return;
-      }
+    var preview = !!(window.SFQ_hasPreview && window.SFQ_hasPreview());
+    if (maintShouldBlock(st, maintExempt, preview)) {
       // メンテ中：リッチな全画面メンテ画面 (maintenance.html) へ転送（管理者は冒頭で return 済み）。
       // 終了予定・メッセージ・緊急全停止かを sessionStorage で引き継ぐ。
       try { sessionStorage.setItem('sfq_maint', JSON.stringify({ msg: msg, end: st.end || 0, full: !!st.full, id: ent.id || '', tasks: (ent.tasks && ent.tasks.length ? ent.tasks : null), ts: now })); } catch (e) {}
       var maintUrl = (HOME_URL || 'index.html').replace(/index\.html(?:[?#].*)?$/, 'maintenance.html');
       location.replace(maintUrl);
       return;
+    }
+    if (st.active) {
+      // 素通り中：なぜ使えているのかが分かるようバナーで明示する（オーバーレイは出さない）
+      overlay.classList.remove('show');
+      banner.textContent = maintExempt
+        ? '🛠 ただいまメンテナンス中です（このアカウントは利用を許可されています）'
+        : '🛠 ただいまメンテナンス中です（プレビュー中）';
+      banner.classList.add('show');
     } else {
       overlay.classList.remove('show');
       if (st.upcoming && st.upcoming - now <= preMin * 60000) {
@@ -2027,6 +2057,7 @@
   var adminActivity = 'all'; // 'all'|'week'|'dormant'
   var adminPass = false;     // 合格者のみ
   var adminAccess = 'all';   // 'all'|'approved'|'pending'|'blocked'（アクセス状態フィルタ）
+  var adminMaintOk = false;  // true＝メンテ中も利用可（maintOk）のアカウントだけに絞る
   var adminPendingCount = 0; // 承認待ち件数（バッジ通知用）
   var adminTab = 'users';    // 管理者ビューのタブ：'users'|'dash'|'msg'（ダッシュボードとDMを分離）
   var dmFilter = '';         // メッセージタブの名前絞り込み
@@ -2323,7 +2354,7 @@
       }
       // 管理者自身の doc から操作ログを取り込む（#4）
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2460,6 +2491,7 @@
     else if (adminActivity === 'dormant') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) >= 30; });
     if (adminPass) list = list.filter(function (u) { return u.agg.examPassed > 0; });
     if (adminAccess !== 'all') list = list.filter(function (u) { return (u.access || 'pending') === adminAccess; });
+    if (adminMaintOk) list = list.filter(function (u) { return !!u.maintOk; });
     list.sort(function (a, b) {
       if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
       if (adminSort === 'rate')     return b.agg.rate - a.agg.rate;
@@ -2569,6 +2601,7 @@
           '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">承認済み</button>' +
           '<button class="sfqc-fchip' + (adminAccess === 'pending' ? ' on' : '') + '" data-access="pending">承認待ち</button>' +
           '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">停止中</button>' +
+          '<button class="sfqc-fchip' + (adminMaintOk ? ' on' : '') + '" data-maintok="1" title="メンテナンス中でも利用できるアカウントだけを表示">🛠 メンテ許可</button>' +
         '</div>';
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
           '<span class="sfqc-sort-label">並び順:</span>' +
@@ -2583,6 +2616,8 @@
           '<label class="sfqc-app-selall"><input type="checkbox" id="sfqc-usel-all"' + (selN && selN === list.length ? ' checked' : '') + '> すべて選択</label>' +
           '<span class="sfqc-count">' + selN + ' 人選択</span>' +
           '<button class="sfqc-mini" id="sfqc-ubulk-notice"' + (selN ? '' : ' disabled') + '>📩 一括お知らせ</button>' +
+          '<button class="sfqc-mini" id="sfqc-ubulk-mokon"' + (selN ? '' : ' disabled') + '>🛠 メンテ許可</button>' +
+          '<button class="sfqc-mini" id="sfqc-ubulk-mokoff"' + (selN ? '' : ' disabled') + '>🛠 許可解除</button>' +
           '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-block"' + (selN ? '' : ' disabled') + '>⏸ 一括停止</button>' +
           '<button class="sfqc-mini sfqc-danger" id="sfqc-ubulk-reset"' + (selN ? '' : ' disabled') + '>🗑 一括リセット</button>' +
         '</div>';
@@ -2603,12 +2638,16 @@
         var accBtn = (u.access === 'approved')
           ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
           : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
+        // メンテ中も利用できるアカウント（maintOk）。チップで可視化し、ボタンでその場で切替
+        var maintChip = u.maintOk ? '<span class="sfqc-acc-access maint" title="メンテナンス中でもログイン・学習できます">🛠 メンテ中も可</span>' : '';
+        var maintBtn = '<button class="sfqc-act-maint' + (u.maintOk ? ' on' : '') + '" data-mok-uid="' + esc(u.uid) + '" data-mok-name="' + esc(u.name) + '" data-mok-state="' + (u.maintOk ? '0' : '1') + '" title="メンテナンス中でも利用できるアカウントにする">' +
+          (u.maintOk ? '🛠 メンテ許可を解除' : '🛠 メンテ許可') + '</button>';
         html +=
           '<div class="sfqc-acc">' +
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + maintChip +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
@@ -2623,7 +2662,7 @@
                 '<span>最終アクセス ' + (u.lastSeen ? esc(fmtAgo(u.lastSeen)) : '—') + '</span>' +
               '</span>' +
               '<span class="sfqc-acc-actions">' +
-                accBtn +
+                accBtn + maintBtn +
                 '<button class="sfqc-act-detail" data-i="' + i + '">詳細 ▾</button>' +
               '</span>' +
             '</div>' +
@@ -2677,6 +2716,12 @@
     });
     body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
       b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
+    });
+    body.querySelectorAll('[data-maintok]').forEach(function (b) {
+      b.addEventListener('click', function () { adminMaintOk = !adminMaintOk; renderAdmin(); });
+    });
+    body.querySelectorAll('[data-mok-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { setMaintOk(b.getAttribute('data-mok-uid'), b.getAttribute('data-mok-name'), b.getAttribute('data-mok-state') === '1'); });
     });
     body.querySelectorAll('[data-rej-uid]').forEach(function (b) {
       b.addEventListener('click', function () { rejectApplication(b.getAttribute('data-rej-uid'), b.getAttribute('data-rej-name')); });
@@ -2742,6 +2787,8 @@
     var uselAll = document.getElementById('sfqc-usel-all');
     if (uselAll) uselAll.addEventListener('change', function () { adminSelUsers = {}; if (uselAll.checked) filterSortUsers().forEach(function (u) { adminSelUsers[u.uid] = 1; }); renderAdmin(); });
     var ubN = document.getElementById('sfqc-ubulk-notice'); if (ubN) ubN.addEventListener('click', bulkNotice);
+    var ubMOn = document.getElementById('sfqc-ubulk-mokon'); if (ubMOn) ubMOn.addEventListener('click', function () { bulkMaintOk(true); });
+    var ubMOff = document.getElementById('sfqc-ubulk-mokoff'); if (ubMOff) ubMOff.addEventListener('click', function () { bulkMaintOk(false); });
     var ubB = document.getElementById('sfqc-ubulk-block'); if (ubB) ubB.addEventListener('click', bulkBlock);
     var ubR = document.getElementById('sfqc-ubulk-reset'); if (ubR) ubR.addEventListener('click', bulkResetUsers);
     // フィードバックへの返信(#7)
@@ -2914,6 +2961,44 @@
         toastSafe('「' + name + '」を' + verb + 'しました'); renderAdmin();
       })
       .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
+  }
+
+  /* ── メンテナンス中でも利用できるアカウント（progress/{uid}.maintOk） ──
+     ・true のアカウントは checkMaintenance() の転送を素通りし、代わりに橙バナーが出る。
+     ・緊急全停止（fullStop）にも効く。付与/解除できるのは管理者だけ（Firestore ルールの isAdmin() 全権）。
+     ・maintenance.js の MANUAL_MAINTENANCE（手動オーバーライド）は Firebase を見ないため対象外＝
+       その場合はプレビュー合言葉 ?preview= を使う。 */
+  function setMaintOk(uid, name, on) {
+    if (!isAdmin || !db) return;
+    var verb = on ? 'メンテナンス中も利用できるように' : 'メンテナンス中の利用を';
+    if (!confirm('「' + name + '」を' + verb + (on ? 'します。' : '不可（通常どおり）にします。') + 'よろしいですか？')) return;
+    db.collection(COLLECTION).doc(uid).set({ maintOk: on, updated: Date.now() }, { merge: true })
+      .then(function () {
+        var u = findUser(uid); if (u) { u.maintOk = on; u.updated = Date.now(); }
+        logAdmin('メンテ許可', name + '／' + (on ? 'ON' : 'OFF'));
+        toastSafe('「' + name + '」のメンテ許可を' + (on ? '付与' : '解除') + 'しました'); renderAdmin();
+      })
+      .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
+  }
+
+  // 選択したアカウントのメンテ許可をまとめて付与/解除
+  function bulkMaintOk(on) {
+    if (!isAdmin || !db) return;
+    var uids = Object.keys(adminSelUsers); if (!uids.length) return;
+    if (!confirm(uids.length + ' 人のメンテ許可を' + (on ? '付与' : '解除') + 'します。よろしいですか？')) return;
+    var ts = Date.now();
+    var ps = uids.map(function (uid) {
+      return db.collection(COLLECTION).doc(uid).set({ maintOk: on, updated: ts }, { merge: true })
+        .then(function () { return { uid: uid, ok: true }; })
+        .catch(function () { return { uid: uid, ok: false }; });
+    });
+    Promise.all(ps).then(function (res) {
+      var done = 0;
+      res.forEach(function (r) { if (!r.ok) return; done++; var u = findUser(r.uid); if (u) { u.maintOk = on; u.updated = ts; } });
+      logAdmin('一括メンテ許可', done + '件／' + (on ? 'ON' : 'OFF'));
+      toastSafe(done + ' 人のメンテ許可を' + (on ? '付与' : '解除') + 'しました' + (done < uids.length ? '（' + (uids.length - done) + '件失敗）' : ''));
+      renderAdmin();
+    });
   }
 
   // 選択した申請をまとめて承認（#8）
@@ -3339,7 +3424,8 @@
   }
 
   // テスト用フック：純粋な集計ロジックだけを公開（本番動作には影響しない）。tools/test-cloud-sync.js が参照。
-  window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore };
+  window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
+    maintStatus: maintStatus, maintShouldBlock: maintShouldBlock };
 
   /* ---------------- 初期化 ---------------- */
   function init() {
