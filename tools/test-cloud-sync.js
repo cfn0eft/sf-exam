@@ -136,5 +136,41 @@ t('emptyStore: 必須フィールドを持つ空ストア', () => {
   eq(s.answered, 0); eq(s.examCount, 0); eq(s.examFull, 0); eq(s.rate, 0);
 });
 
+/* ---- メンテナンス中でも利用できるアカウント（maintOk）の判定 ---- */
+const NOW = 1800000000000;                                  // 固定の基準時刻
+const IN_MAINT = { queue: [{ start: NOW - 60000, end: NOW + 60000, msg: 'メンテ中' }] };
+const NO_MAINT = { queue: [{ start: NOW + 3600000, end: NOW + 7200000, msg: '未来のメンテ' }] };
+
+t('maintShouldBlock: メンテ中は通常アカウントを転送する', () => {
+  const st = T.maintStatus(IN_MAINT, NOW);
+  ok(st.active, 'メンテ中と判定されること');
+  eq(T.maintShouldBlock(st, false, false), true, '例外なし＝転送');
+});
+
+t('maintShouldBlock: メンテ許可(maintOk)のアカウントは転送しない', () => {
+  const st = T.maintStatus(IN_MAINT, NOW);
+  eq(T.maintShouldBlock(st, true, false), false, 'exempt＝素通り');
+});
+
+t('maintShouldBlock: 緊急全停止(fullStop)でもメンテ許可は素通りできる', () => {
+  const st = T.maintStatus({ fullStop: true }, NOW);
+  ok(st.active && st.entry, 'fullStop はメンテ中扱い');
+  eq(T.maintShouldBlock(st, false, false), true, '通常アカウントは転送');
+  eq(T.maintShouldBlock(st, true, false), false, 'メンテ許可は素通り');
+});
+
+t('maintShouldBlock: プレビュー合言葉の端末は転送しない', () => {
+  const st = T.maintStatus(IN_MAINT, NOW);
+  eq(T.maintShouldBlock(st, false, true), false, 'preview＝素通り');
+});
+
+t('maintShouldBlock: メンテ中でなければ誰も転送しない', () => {
+  const st = T.maintStatus(NO_MAINT, NOW);
+  eq(st.active, false, '未来のメンテはアクティブでない');
+  eq(T.maintShouldBlock(st, false, false), false);
+  eq(T.maintShouldBlock(st, true, false), false);
+  eq(T.maintShouldBlock(null, false, false), false, '設定なしも転送しない');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
