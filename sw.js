@@ -62,9 +62,14 @@ function isData(url) {
   return url.origin === self.location.origin && /\/data\/[^/]+\.json$/.test(url.pathname);
 }
 
-// レスポンスをキャッシュに入れてよいか（正常応答のみ。404/5xx/opaque失敗を永続化しない）
+// 同一オリジン用: 正常応答のみキャッシュ（404/5xx やエラーページを永続化しない）
 function cacheable(r) {
   return r && r.ok && (r.type === 'basic' || r.type === 'cors' || r.type === 'default');
+}
+// クロスオリジン用: Firebase CDN の <script src> は no-cors の opaque 応答(status0/ok=false)になるが、
+// これをキャッシュしないとオフラインで SDK を読めなくなる。opaque は中身を検査できないので許容する。
+function cacheableCross(r) {
+  return r && (r.ok || r.type === 'opaque');
 }
 
 self.addEventListener('fetch', (e) => {
@@ -77,7 +82,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) {
     e.respondWith(
       fetch(req).then((r) => {
-        if (cacheable(r)) { const cp = r.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {})); }
+        if (cacheableCross(r)) { const cp = r.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {})); }
         return r;
       }).catch(() => caches.match(req))
     );
