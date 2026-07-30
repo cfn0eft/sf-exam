@@ -148,8 +148,14 @@ function validateCert(slug, figKeys) {
 
   const ids = new Set();
   const caseGroups = {};   // case名 -> {n, scenarios:Set}
+  // スキーマで想定しているキー。ここに無いキーは「タイポ or 未使用の死んだデータ」の疑いとして警告する。
+  const KNOWN_Q_KEYS = new Set(['id', 'question', 'choices', 'answers', 'explanation', 'reference_url', 'multi', 'domain', 'keywords', 'source', 'diff', 'fig', 'expFig', 'case', 'scenario']);
+  const unknownKeys = {};
+  let fewChoices = 0;   // 本番形式(4択以上)でない問題の数
   questions.forEach((q) => {
     const tag = 'q[id=' + q.id + ']';
+    Object.keys(q).forEach((k) => { if (!KNOWN_Q_KEYS.has(k)) unknownKeys[k] = (unknownKeys[k] || 0) + 1; });
+    if (Array.isArray(q.choices) && q.choices.length >= 2 && q.choices.length < 4) fewChoices++;
     if (typeof q.id !== 'number') err(tag + ' id が数値でない');
     else if (ids.has(q.id)) err('ID 重複: ' + q.id);
     else ids.add(q.id);
@@ -193,6 +199,15 @@ function validateCert(slug, figKeys) {
     if (g.n < 2) warn('ケース "' + c + '" の問題が1問だけ（束ねる意味がない）');
     if (g.scenarios.size > 1) err('ケース "' + c + '" の scenario 文が複数ある（全問同一にする）');
   });
+  // スキーマ外キー（死んだデータ・タイポの検出）
+  Object.keys(unknownKeys).forEach((k) => warn('スキーマ外のキー "' + k + '" が ' + unknownKeys[k] + '問にある（タイポか、参照されていない死んだデータの疑い）'));
+  // 本番形式（4択以上）でない問題の数（agentforce/service-cloud に3択が多い＝難易度が構造的に低く出る）
+  if (fewChoices) warn('選択肢が4件未満（本番形式でない）問題が ' + fewChoices + '問');
+  // domains.json の map（問題ID→分野の手動対応表。sf-admin のみ）が実在する問題IDを指しているか
+  if (domains.map) {
+    const orphans = Object.keys(domains.map).map(Number).filter((id) => !ids.has(id));
+    if (orphans.length) warn('domains.json の map に存在しない問題IDが ' + orphans.length + '件: ' + orphans.slice(0, 12).join(',') + (orphans.length > 12 ? ' …' : ''));
+  }
   info('  questions: ' + questions.length + '問 / case: ' + Object.keys(caseGroups).length + '件');
   checkCrossSourceDuplicates(questions);
 
@@ -200,12 +215,17 @@ function validateCert(slug, figKeys) {
   try { vocab = readJSON(path.join(dir, 'vocab.json')); }
   catch (e) { err('vocab.json が読めない: ' + e.message); vocab = []; }
   let terms = 0;
+  const vTitles = new Set();
   (vocab || []).forEach((ch, i) => {
     if (!ch.chapter) err('vocab[' + i + '] chapter がない');
     (ch.terms || []).forEach((t) => {
       terms++;
       if (!t.title) err('vocab 章「' + (ch.chapter || i) + '」に title の無い用語');
+      else if (vTitles.has(t.title)) warn('用語 title 重複: ' + t.title);
+      else vTitles.add(t.title);
       if (t.fig && !figKeys.has(slug + '/' + t.fig)) err('用語「' + t.title + '」の fig が figures.js にない: ' + slug + '/' + t.fig);
+      // 用語→関連問題の逆引き（questions[]）が実在する問題IDを指しているか（問題削除で腐るのを防ぐ）
+      if (Array.isArray(t.questions)) t.questions.forEach((qid) => { if (!ids.has(qid)) warn('用語「' + t.title + '」の questions に存在しない問題ID: ' + qid); });
     });
   });
   info('  vocab: ' + (vocab || []).length + '章 ' + terms + '語');

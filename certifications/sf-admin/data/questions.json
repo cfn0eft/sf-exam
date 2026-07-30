@@ -1,7 +1,6 @@
 [
   {
     "id": 1,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice1",
     "question": "Cloud Kicks社にはプロダクトオーナーのチームがあり、プロダクトチームだけでフィードバックやアイデアを共有するスペースが必要です。チームのコラボレーションを支援するために、管理者はSalesforceをどのように活用すべきでしょうか。",
     "choices": [
       "クイックアクションを使用してコミュニケーションを記録する。",
@@ -28,7 +27,6 @@
   },
   {
     "id": 2,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice2",
     "question": "営業マネージャーは、商談のフェーズに応じた重要な値を表示するために何が実装できるかを知りたがっています。この要件を満たすために、管理者はどのツールを使用すべきでしょうか。",
     "choices": [
       "商談セールスプロセス",
@@ -55,7 +53,6 @@
   },
   {
     "id": 3,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice3",
     "question": "Northern Trail Outfitters社では、Salesforceの取引先に安全で適切なパスワードを選択するよう従業員に奨励したいと考えています。管理者が設定できるパスワードポリシーはどれですか。3つ選びなさい。",
     "choices": [
       "最大ログイン試行回数",
@@ -85,7 +82,6 @@
   },
   {
     "id": 4,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice4",
     "question": "Universal Containers社の管理者が、同社のSalesforceの現在のセキュリティ設定を見直しています。Salesforceへの不正アクセスを防ぐために、管理者は何をすべきでしょうか。",
     "choices": [
       "セッションのTLS要件を無効にする。",
@@ -114,7 +110,6 @@
   },
   {
     "id": 5,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice5",
     "question": "Universal Containers社の管理者は、Salesforceでブランディング(ブランド設定)したいと考えています。 管理者が留意すべき考慮事項はどれですか。2つ選びなさい。",
     "choices": [
       "テーマは、Salesforce ClassicとSalesforceモバイルアプリに適用されます。",
@@ -142,7 +137,6 @@
   },
   {
     "id": 6,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice6",
     "question": "Universal Containers社は、組織で[データ保護とプライバシー]を有効にしています。データプライバシー情報を追跡するための個人項目を使用できるページレイアウトはどれですか。",
     "choices": [
       "ケース、商談",
@@ -171,7 +165,6 @@
   },
   {
     "id": 7,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice7",
     "question": "Cloud Kicks社(CK)のサポート担当者が、ケースを閉じようとすると、ケースの状況項目の選択リストに「Closed」オプションが見つからないと報告しています。CKは管理者に解決策を見つけるよう依頼しています。なぜサポート担当者は、指定された選択リストに「Closed」オプションが表示されないのでしょうか。",
     "choices": [
       "ケースレコードタイプに、選択リスト値としてClosedがない。",
@@ -200,7 +193,6 @@
   },
   {
     "id": 8,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice8",
     "question": "Universal Containers社の金庫担当副社長は、営業チームのメンバーが商談の完了予定日(CloseDate)を過去の日付に変更できないようにしたいと考えています。 管理者は、この要件を満たすために何を構成する必要がありますか。",
     "choices": [
       "割り当てルール",
@@ -229,7 +221,6 @@
   },
   {
     "id": 9,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice9",
     "question": "Universal Containers社のユーザーは、商談ページで販売フェーズを視覚的に確認したいと考えています。管理者は商談にパスを設定しています。パスの構成で重要な考慮事項はどれですか。",
     "choices": [
       "所有者項目は[重要な項目]パネルで編集できます。",
@@ -258,7 +249,6 @@
   },
   {
     "id": 10,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice10",
     "question": "Cloud Kicks社の管理者は、ユーザーが1つのレコードで複数のスタイルを選択できないように、会社の靴スタイル項目のデータ型を変更するよう依頼されました。これを達成するために管理者が行うべき手順はどれですか。2つ選びなさい。",
     "choices": [
       "項目のデータ型を変更した後、適切な靴スタイルの値を再度有効にする。",
@@ -288,7 +278,6 @@
   },
   {
     "id": 11,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice11",
     "question": "Ursa Major Solar社は、取引先をシルバー、ゴールド、プラチナレベルに分類しています。シルバーまたはゴールドの取引先に新しいケースが作成されると、通常のサポートキューに入ります。取引先がプラチナレベルの場合、自動的に優先サポートキューに入ります。管理者はこれを実現するために何を使用すべきでしょうか。",
     "choices": [
       "割り当てルール",
@@ -315,7 +304,6 @@
   },
   {
     "id": 12,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice12",
     "question": "ユーザーがUI(ユーザーインターフェース)を介してSalesforceにログインするとき、システムが認証のためにチェックする設定はどれですか。2つ選びなさい。",
     "choices": [
       "ユーザーの[ユーザーインターフェースログインの多要素認証]権限",
@@ -343,7 +331,6 @@
   },
   {
     "id": 13,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice13",
     "question": "Cloud Kicks社のユーザーは、ケースページで自分のロールに役立つ情報を見たいと思っています。管理者はページをより動的に、より使いやすくするにはどうすればよいでしょうか。",
     "choices": [
       "[レコードの詳細]コンポーネントから項目を削除する。",
@@ -372,7 +359,6 @@
   },
   {
     "id": 14,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice14",
     "question": "Cloud Kicks社では、リードソースが選択されている場合にのみ、商談が成立(Closed Won)したフェーズを選択できるようにしたいと考えています。管理者はこの目標をどのように達成すべきですか。",
     "choices": [
       "連動選択リストを設定し、リードソース項目をフェーズ項目の連動項目に設定する。",
@@ -399,7 +385,6 @@
   },
   {
     "id": 15,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice15",
     "question": "Cloud Kicks社のマーケティングチームは、キャンペーンを使用して商品への関心を喚起しています。現在、管理者に値の追加や削除を依頼していますが、これには非常に時間がかかります。マーケティングチームがキャンペーンメンバーの状況項目の選択リスト値を自分でカスタマイズできるようにするには、どのユーザー権限を設定すればよいですか。2つ選びなさい。",
     "choices": [
       "[キャンペーン]オブジェクトの編集権限",
@@ -427,7 +412,6 @@
   },
   {
     "id": 16,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice16",
     "question": "Cloud Kicks社のサポートユーザーチームは、内部営業担当者がオンラインから関心を示した見込み客にフォローアップ電話をかけるのを支援しています。現在、チームはリードオブジェクトにアクセスできません。管理者はどのように適切なアクセスを提供すべきですか。",
     "choices": [
       "新しいプロファイルを作成する。",
@@ -454,7 +438,6 @@
   },
   {
     "id": 17,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice17",
     "question": "Cloud Kicks社は、靴のデザインを商品ごとに追跡したいと考えています。靴のデザインは削除できないようにする必要があり、さまざまな段階にわたって1つの商品に複数のデザインが存在する可能性があります。この要件を満たすために、管理者はどのステップを構成する必要がありますか。2つ選びなさい。",
     "choices": [
       "靴のデザインオブジェクトに商品へのカスタム参照関係項目を作成する。",
@@ -484,7 +467,6 @@
   },
   {
     "id": 18,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice18",
     "question": "Universal Containers社は、より厳密なユーザーパスワードを要求することで、組織のセキュリティを向上させたいと考えています。管理者は、次のうちどれを設定する必要がありますか。2つ選びなさい。",
     "choices": [
       "ユーザー名と異なるパスワード",
@@ -514,7 +496,6 @@
   },
   {
     "id": 19,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice19",
     "question": "DreamHouse Realty社(DR)の管理者は、[メールを送信]クイックアクションをケースページのレイアウトに追加しました。クイックアクションが期待通りに表示されるようにするには、どの機能を有効にする必要がありますか。",
     "choices": [
       "メール通知",
@@ -541,7 +522,6 @@
   },
   {
     "id": 20,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice20",
     "question": "Cloud Kicks社(CK)には新しい管理者がおり、今後のライセンス購入の予算を立てるため、Salesforceの使用状況の詳細をメモにまとめるよう求められています。管理者は、CKが購入したライセンスの種類と使用可能数を確認するには、どこに行けばよいでしょうか。",
     "choices": [
       "[設定]でライセンスの種類を検索する。",
@@ -570,7 +550,6 @@
   },
   {
     "id": 21,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice21",
     "question": "Cloud Kicks社の管理者は、サポートケースの作成方法に関係なく、ケースの優先順位に基づいてサポートケースを自動的にキューに割り当てる必要があります。管理者はどのツールを使用すべきですか。",
     "choices": [
       "メール-to-ケース",
@@ -598,7 +577,6 @@
   },
   {
     "id": 22,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice22",
     "question": "管理者が取引先オブジェクトにカスタムテキストエリア項目を作成し、サービスチームのページレイアウトに追加しました。サービスチームのマネージャーはこの項目の追加を気に入り、サービス担当者が取引先ページですぐに見つけられるように強調表示パネルに表示させたいと考えています。 管理者はこれをどのように実現すればよいでしょうか。",
     "choices": [
       "ページレイアウトエディターから、項目を強調表示パネルにドラッグする。",
@@ -625,7 +603,6 @@
   },
   {
     "id": 23,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice23",
     "question": "Universal Containers社の管理者は、2つの既存のカスタムオブジェクト間に多対多のリレーションシップを作成するように求められました。多対多のリレーションを有効にするとき、管理者が取るべき手順はどれですか。2つ選びなさい。",
     "choices": [
       "新しいオブジェクトに2つの主従関係を作成する。",
@@ -653,7 +630,6 @@
   },
   {
     "id": 24,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice24",
     "question": "Northern Trail Outfitters社は、取引先責任者を表示するために、組織で取引先責任者階層を使用したいと考えています。管理者は取引先責任者階層に関して何を考慮すべきですか。",
     "choices": [
       "取引先責任者階層に表示される取引先責任者は、ユーザーによるレコードレベルのアクセスに制限されます。",
@@ -680,7 +656,6 @@
   },
   {
     "id": 25,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice25",
     "question": "DreamHouse Realty社(DR)の管理者は、エージェントの能力とスキルセットに基づいてケースを割り当てる簡単な方法を求めています。この要件を満たすために、管理者はどの機能を有効にする必要がありますか。",
     "choices": [
       "エスカレーションルール",
@@ -707,7 +682,6 @@
   },
   {
     "id": 26,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice26",
     "question": "Northern Trail Outfitters社ではケースオブジェクトを非公開に設定しています。サポートマネジャーは、担当者が予想以上に幅広い参照権限を持ち、グループのダッシュボード上のすべてのケースを見ることができるという懸念を示しました。担当者がダッシュボードのデータに不適切にアクセスできる原因は何でしょうか。",
     "choices": [
       "ダッシュボードのフィルター",
@@ -734,7 +708,6 @@
   },
   {
     "id": 27,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice27",
     "question": "Cloud Kicks社の管理者は、ユーザーがSalesforceに定期的なToDoを追加できないということを報告されました。ユーザーが定期的なToDoを追加できるようにするために、管理者が使用するソリューションはどれですか。2つ選びなさい。",
     "choices": [
       "[活動設定]で[定期的な ToDo の作成の有効化]をオンにする。",
@@ -762,7 +735,6 @@
   },
   {
     "id": 28,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice28",
     "question": "Cloud Kicks社は、契約金額項目にある金額に基づいて、取引先を小、中、大に分類するレポートを作成したいと考えています。この要求を満たすために、管理者はどの機能を使用する必要がありますか。",
     "choices": [
       "検索条件ロジック",
@@ -789,7 +761,6 @@
   },
   {
     "id": 29,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice29",
     "question": "DreamHouse Realty社(DR)のブローカーは、取引先責任者のレコードを参照する際に、1つまたは複数のケースに関する特定の情報を確認する必要があります。このレコードのケース名、ケースID、顧客名、原因、状況、オープン日時です。管理者が設定で行うべき変更はどれですか。2つ選びなさい。",
     "choices": [
       "ページレイアウトエディターを使用して、関連リスト種別を拡張リストに変更する。",
@@ -817,7 +788,6 @@
   },
   {
     "id": 30,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice30",
     "question": "Cloud Kicks社のマーケティングユーザーは、変換したリードを表示および編集できる必要があります。管理者は彼らに「取引開始済みのリードを表示および編集」権限を割り当てました。今、マーケティングユーザーが編集のために変換したリードにアクセスする方法はどれですか。2つ選びなさい。",
     "choices": [
       "グローバル検索結果から見つける。",
@@ -845,7 +815,6 @@
   },
   {
     "id": 31,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice31",
     "question": "AW Computing社 は、リードオブジェクトにMarket Segmentという新しいカスタムテキスト項目を追加しました。リードが変換されるとき、新しい項目が取引先レコードにコピーされません。リードのMarket Segment項目が、変換された取引先レコードにコピーされるようにするには、管理者はどうすればよいですか。",
     "choices": [
       "リードのMarket Segment項目が取引先の正しい項目に対応付けされていることを確認する。",
@@ -872,7 +841,6 @@
   },
   {
     "id": 32,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice32",
     "question": "モバイルナビゲーションメニューで利用可能なナビゲーション項目はどれですか。3つ選びなさい。",
     "choices": [
       "Chatter",
@@ -902,7 +870,6 @@
   },
   {
     "id": 33,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice33",
     "question": "Ursa Major Solar社の営業担当者は、案件の管理に苦労しています。リーダーシップチームは、営業担当者が優先順位をつけ、より多くの案件を獲得できるよう、管理者に依頼しました。管理者は何をすればより多くの案件を獲得できるでしょうか。",
     "choices": [
       "Einstein 活動キャプチャ",
@@ -929,7 +896,6 @@
   },
   {
     "id": 34,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice34",
     "question": "潜在的なセッションの脆弱性を特定し、修正するために管理者が使用すべきツールはどれですか。",
     "choices": [
       "セキュリティ状態チェック",
@@ -956,7 +922,6 @@
   },
   {
     "id": 35,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice35",
     "question": "Northern Trail Outfitters社は、カスタムオブジェクトのInvoiceを使用して、外部の請求システムから顧客の支払い情報を収集します。すべてのInvoiceレコードにBilling System項目が必要です。管理者は、この要件をどのように満たす必要がありますか。",
     "choices": [
       "この項目を必須項目にする。",
@@ -983,7 +948,6 @@
   },
   {
     "id": 36,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice36",
     "question": "Ursa Major Solar社のコールセンターマネージャーは、ケースの発生源、状況、所有者別に掘り下げて表示できるケースダッシュボードをエージェントに提供したいと考えています。この要求を満たすために、管理者はダッシュボードに何を追加する必要がありますか。",
     "choices": [
       "ダッシュボードフィルター",
@@ -1010,7 +974,6 @@
   },
   {
     "id": 37,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice37",
     "question": "Cloud Kicks社では、セールスユーザーとマーケティングユーザーで異なる選択リストの値を表示できる必要があります。この要件を満たすオプションはどれですか。2つ選びなさい。",
     "choices": [
       "1つのページレイアウト、2つのレコードタイプ、1つの選択リスト",
@@ -1040,7 +1003,6 @@
   },
   {
     "id": 38,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice38",
     "question": "可視性がSalesforceモバイルアプリに限定されているLightningアプリで利用できるナビゲーション項目はどれですか。",
     "choices": [
       "ホームページ",
@@ -1067,7 +1029,6 @@
   },
   {
     "id": 39,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice39",
     "question": "Cloud Kicks社には出荷というカスタムオブジェクトがあります。この会社は取引先ページからすべての出荷アイテムを見たいのです。取引先が削除されても、出荷情報は残っていなければなりません。管理者は、出荷と取引先との間にどのようなリレーションを作成する必要がありますか。",
     "choices": [
       "出荷には、取引先に対する主従関係が必要です。",
@@ -1097,7 +1058,6 @@
   {
     "id": 40,
     "expFig": "automation-tools",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice40",
     "question": "管理者は、取引先責任者を更新するレコードトリガフローを作成しました。管理者は、フローが実行されているアクティブレコードの値をどのように参照すればよいですか。",
     "choices": [
       "{!Contact.Id}グローバル変数を使用する。",
@@ -1124,7 +1084,6 @@
   },
   {
     "id": 41,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice41",
     "question": "管理者は、取引先の簡単な項目更新を自動化するよう依頼されました。サポートエージェントが取引先のステータス項目を「監査済み」に変更した場合、取引先の監査日項目を今日の日付で自動的に更新してほしいとのことです。この自動化を完了するために、管理者はどのツールを使用すべきでしょうか。",
     "choices": [
       "フロービルダー",
@@ -1151,7 +1110,6 @@
   },
   {
     "id": 42,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice42",
     "question": "ダッシュボードのレポートをクリックしてレポートの詳細を表示すると、レポートの値とダッシュボードに表示される値が異なることにユーザーが気づきました。このような現象が発生する理由は何でしょうか。2つ選びなさい。",
     "choices": [
       "レポートを更新する必要がある。",
@@ -1180,7 +1138,6 @@
   {
     "id": 43,
     "expFig": "role-hierarchy",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice43",
     "question": "Cloud Kicks社は、靴オブジェクトの組織全体のデフォルトを非公開に設定しています。営業マネージャーは、チーム内の営業担当者全員の靴のレコードを含むレポートを表示できる必要があります。レポートへの適切なアクセスを提供するために、管理者が構成すべき項目はどれですか。3つ選びなさい。",
     "choices": [
       "フォルダアクセス",
@@ -1210,7 +1167,6 @@
   },
   {
     "id": 44,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice44",
     "question": "Ursa Major Solar社のサポートチームは、ケースのホームページで分割ビューを使用することを望んでいます。時々、チームは別のサポートアプリケーションから出荷情報を表示する場合があります。チームが分割リストビューを使用できるようにするには、管理者は何を設定すればよいですか。",
     "choices": [
       "アプリのナビゲーションバーに「出荷」タブを追加する。",
@@ -1237,7 +1193,6 @@
   },
   {
     "id": 45,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice45",
     "question": "DreamHouse Realty社(DR)のユーザーは、自分が所有する商談しか見ることができません。経営陣は、パイプラインにあるすべてのオープンな商談を全社的なダッシュボードに表示し、ユーザーが会社の業績をいつでも確認できるようにしたいと考えています。管理者は、共有設定を変更せずに、どのようにダッシュボードを作成すればよいでしょうか。",
     "choices": [
       "すべての商談を見ることができるユーザーとして、実行中のユーザーを設定してダッシュボードを作成する。",
@@ -1264,7 +1219,6 @@
   },
   {
     "id": 46,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice46",
     "question": "Cloud Kicks社(CK)は新しい販売アプリケーションを必要としています。管理者はAppExchangeにアプリケーションパッケージがあり、サンドボックスでテストを開始して、それがCKのニーズに対応しているかどうかを確認したいと考えています。管理パッケージをサンドボックスにインストールする際に考慮すべき点は何ですか。2つ選びなさい。",
     "choices": [
       "パッケージのメタデータを変更した場合は、本番環境で再作成する必要がある。",
@@ -1292,7 +1246,6 @@
   },
   {
     "id": 47,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice47",
     "question": "DreamHouse Realty社(DR)では、戸建てとコンドミニアムの両方の販売のために、定期的にオープンハウス(現地見学会)を開催しています。コンドミニアムのオープンハウスの場合、いくつか特別な手続きが必要です。代理店はリクエストを提出し、自治会から承認を受ける必要があります。管理者は、コンドミニアムのオープンハウス用レコードを作成するときにのみ、これらの追加の工程が表示されるようにするにはどうすればよいでしょうか。",
     "choices": [
       "ページレイアウトを1つにする。>レコードタイプを使用して、適切なステータスの選択リスト値が表示されるようにする。",
@@ -1319,7 +1272,6 @@
   },
   {
     "id": 48,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice48",
     "question": "Northern Trail Outfitters社は、各マーケティングキャンペーンでどれだけの収益が発生したかを計算したいと考えています。管理者はこの情報をどのように提供すればよいでしょうか。",
     "choices": [
       "キャンペーンレコードを更新するために定期的にデータジョブを実行する。",
@@ -1346,7 +1298,6 @@
   },
   {
     "id": 49,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice49",
     "question": "AW Computing社の管理者は、商談が成立した際に、顧客歓迎タスクと主担当者への歓迎メールを自動的に送信したいと考えています。これを実現するのに最も適した自動化ツールは何ですか。",
     "choices": [
       "アウトバウンドメッセージ",
@@ -1373,7 +1324,6 @@
   },
   {
     "id": 50,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice50",
     "question": "Salesforceのオブジェクトを操作する際に、管理者が留意すべき点は何ですか。2つ選びなさい。",
     "choices": [
       "新しい標準オブジェクトを作成できます。",
@@ -1402,7 +1352,6 @@
   {
     "id": 51,
     "expFig": "security-layers",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice51",
     "question": "管理者が、Universal Containers社の新入社員10名分の新規ユーザーを作成しました。これらのユーザーがSalesforce組織の取引先オブジェクトにアクセスできないのはなぜですか。",
     "choices": [
       "組織全体のデフォルトが非公開に設定されている。",
@@ -1431,7 +1380,6 @@
   },
   {
     "id": 52,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice52",
     "question": "Cloud Kicks社の管理者が、新しいクラウドシューズの返品を追跡するための新しい項目を作成しました。あるユーザーが、新しい項目が利用できない旨のケースを管理者に提出しました。この問題をトラブルシューティングするために管理者が行うべきステップはどれですか。2つ選びなさい。",
     "choices": [
       "ユーザーのプロファイルのページレイアウトが更新されていることを確認する。",
@@ -1461,7 +1409,6 @@
   },
   {
     "id": 53,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice53",
     "question": "Universal Containers社(UC)には、各取引先に関連付けられているオープンケースの数をカウントし、毎週金曜日の夕方にこの値で取引先を更新したいと考えています。UCには、常に数百件のオープンケースがあります。管理者は、この要求を完了するために何を使用する必要がありますか。",
     "choices": [
       "積み上げ集計項目を使用する。",
@@ -1488,7 +1435,6 @@
   },
   {
     "id": 54,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice54",
     "question": "Cloud Kicks社の役員は、商談オブジェクトの期待収益項目が正しくない値を表示していることに気づきました。管理者はどのようにこれを修正する必要がありますか。",
     "choices": [
       "フェーズに関連付けられている[期待収益]項目を更新する。",
@@ -1515,7 +1461,6 @@
   },
   {
     "id": 55,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice55",
     "question": "Cloud Kicks社のユーザーは、2週間ごとに繰り返すToDoを作成できるようにしたいと考えています。この要求を満たすために、管理者は何をすべきでしょうか。",
     "choices": [
       "繰り返しToDoの作成を有効にする。",
@@ -1544,7 +1489,6 @@
   },
   {
     "id": 56,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice56",
     "question": "Northern Trail Outfitters社の人事部では、Salesforceのカスタムオブジェクトを使用して、マネージャーに関するフィードバックを従業員に提供したいと考えています。マネージャーは、部下からのフィードバックレコードを見ることができないようにすることが重要です。この要件を満たすために、管理者はカスタムオブジェクトをどのように設定すればよいでしょうか。",
     "choices": [
       "デフォルトの外部アクセス権を非公開に設定する。",
@@ -1571,7 +1515,6 @@
   },
   {
     "id": 57,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice57",
     "question": "管理者が人事部から、あるユーザーのSaiesforceへのアクセス権を直ちに削除するよう急遽要請を受けました。このユーザーは、Direct Managerという階層項目に属するユーザーです。管理者はこの要求を満たすために何をすべきですか。",
     "choices": [
       "ユーザーのプロファイルを読み取り専用に変更し、Direct Manager項目で参照されないようにする。",
@@ -1598,7 +1541,6 @@
   },
   {
     "id": 58,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice58",
     "question": "Ursa Major Solar社は、ケース上にパスを持っています。同社は、ユーザーがパス上のステータス値に従うことを要求したいと考えています。エージェントは、ケースを以前のステータスに戻すことを禁止する必要があります。この要求を満たすために、管理者が使用すべき機能はどれですか。",
     "choices": [
       "グローバル選択リスト値セット",
@@ -1625,7 +1567,6 @@
   },
   {
     "id": 59,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice59",
     "question": "Cloud Kicks社の管理者が、退社したユーザーを無効化したいと考えています。ユーザーを無効化できない理由は何ですか。2つ選びなさい。",
     "choices": [
       "ユーザーがテリトリー階層の一部である。",
@@ -1654,7 +1595,6 @@
   {
     "id": 60,
     "expFig": "automation-tools",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice60",
     "question": "Cloud Kicks社の管理者は、休暇申請の承認プロセスを作成しました。承認プロセスの一部として追加可能な自動アクションはどれですか。2つ選びなさい。",
     "choices": [
       "項目自動更新",
@@ -1684,7 +1624,6 @@
   },
   {
     "id": 61,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice61",
     "question": "管理者が重要な更新プログラムを確認しました。管理者は、重要な更新プログラムの有効化をどのように進めるべきですか。",
     "choices": [
       "運用環境で重要な更新プログラムを有効化する。",
@@ -1711,7 +1650,6 @@
   },
   {
     "id": 62,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice62",
     "question": "Cloud Kicks社はデータエクスポートサービスを利用してバックアップでデータを保護しようとしています。管理者がエクスポートのスケジュールを立てる際に覚えておくべき考慮事項はどれですか。2つ選びなさい。",
     "choices": [
       "メタデータのバックアップは別のプロセスで実行する必要があります。",
@@ -1739,7 +1677,6 @@
   },
   {
     "id": 63,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice63",
     "question": "Cloud Kicks社の管理者は、メールまたはWeb経由で作成されたすべてのケースを自動ケースキューに送信する割り当てルールを作成しています。手動で作成されたケースは、作成したエージェントが所有するはずですが、手動で作成されたケースの所有者が管理者になっています。この問題のトラブルシューティングで、管理者はどう対応すればよいでしょうか。",
     "choices": [
       "エスカレーションルールが、ケース作成時にケースの所有者を変更しています。",
@@ -1767,7 +1704,6 @@
   },
   {
     "id": 64,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice64",
     "question": "Northern Trail Outfitters社は、Salesforceから外部の人事システムに経費報告を開始したいと考えています。このプロセスは、マネージャーとディレクターによるレビューが必要です。管理者はどのツールを設定する必要がありますか。2つ選びなさい。",
     "choices": [
       "クイックアクション",
@@ -1795,7 +1731,6 @@
   },
   {
     "id": 65,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice65",
     "question": "Universal Containers社は、月初に新しい求人広告を作成しました。その求人がまだ募集中で、ステータスが”面接中”でない場合、30日後に副社長にChatterの投稿を送信するプロセススケジュールアクションが発生しました。その月の10日に、応募者が面接し、求人広告のステータスが”面接中”に更新されました。この場合、Chatter 投稿はどうなりますか。",
     "choices": [
       "保留中のChatter 投稿は30日後に送信される。",
@@ -1822,7 +1757,6 @@
   },
   {
     "id": 66,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice66",
     "question": "Northern Trail Outfitters社は、すべてのマーケティングユーザーに1つのプロファイルを使用し、キャンペーンオブジェクトへの読み取り専用アクセスを提供しています。現在、数名のマーケティングユーザーがキャンペーンの包括的な編集アクセス権を必要としています。管理者はどのようにこの要求を満たすべきでしょうか。",
     "choices": [
       "マーケティングユーザーのチェックボックス",
@@ -1849,7 +1783,6 @@
   },
   {
     "id": 67,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice67",
     "question": "Cloud Kicks社はカスタム項目を削除することにしました。削除された場合、項目のデータはどうなりますか。",
     "choices": [
       "項目のデータは20日間保存されます。",
@@ -1876,7 +1809,6 @@
   },
   {
     "id": 68,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice68",
     "question": "Universal Containers社の管理者は、ユーザーがネットワーク外からSalesforceにアクセスできないようにするよう求められました。この構成で考慮すべきことは何ですか。2つ選びなさい。",
     "choices": [
       "IPアドレスの制限を、プロファイルまたは組織全体に対して設定する。",
@@ -1904,7 +1836,6 @@
   },
   {
     "id": 69,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice69",
     "question": "Cloud Kicks社は、2月1日に始まり12ヶ月を有する会計年度をレポートに表示させたいと考えています。管理者はこの要件にどのように対処すべきでしょうか。",
     "choices": [
       "会計年度を[標準]に設定し、期間を12ヶ月に設定する。",
@@ -1930,7 +1861,6 @@
   {
     "id": 70,
     "expFig": "lead-conversion",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice70",
     "question": "Universal Containers社では、リードに商品カテゴリというカスタム項目があります。管理者は、リードの変換時にこの情報を商談の一部にしたいと考えています。この要求を満たすために、管理者はどのようなアクションを取るべきですか。",
     "choices": [
       "リードのカスタム項目を商品の商品カテゴリ項目に対応付けする。",
@@ -1959,7 +1889,6 @@
   },
   {
     "id": 71,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice71",
     "question": "Ursa Major Solar社の管理者は、商談が終了するたびに外部の会計システムに情報を送信する必要があります。管理者は、これを達成するためにどのようなワークフローアクションを使用する必要がありますか。",
     "choices": [
       "アウトバウンドメッセージ",
@@ -1986,7 +1915,6 @@
   },
   {
     "id": 72,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice72",
     "question": "AW Computing(AWC)社は、独立した請負業者と仕事をすることがあり、その請負業者はSalesforceの取引先責任者として保存されます。 契約業者はしばしば代理店を変更し、 AWCはレコードの履歴の正確性を維持したいと考えています。AWCは取引先責任者の追跡に何を使用すべきでしょうか。",
     "choices": [
       "取引先責任者を追跡するためにパートナーコミュニティを使用する。",
@@ -2013,7 +1941,6 @@
   },
   {
     "id": 73,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice73",
     "question": "Ursa Major Solar社には、サポートキューに転送されるサービスレベルアグリーメント(SLA)がある。24時間のSLAを満たすケースは、自動的に次の層のキューに再割り当てされる必要があります。この要件を満たすには、どの機能を使用する必要がありますか。",
     "choices": [
       "Einstein ケース分類の割り当てルール",
@@ -2041,7 +1968,6 @@
   },
   {
     "id": 75,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice75",
     "question": "DreamHouse Realty社(DR)では、定期的に顧客からの保証作業依頼を処理しており、顧客にケースを作成するためのセルフサービスオプションを提供したいと考えています。この要求を満たすために、管理者はどのソリューションを使用する必要がありますか。2つ選びなさい。",
     "choices": [
       "ケースキュー",
@@ -2069,7 +1995,6 @@
   },
   {
     "id": 76,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice76",
     "question": "Cloud Kicks社の管理者は、顧客が電話で問題を問い合わせたときにサービス担当者が同じ質問をするのに役立つ画面フローを作成しました。この画面はケースから見えるようにする必要があります。画面フローはどのように配置する必要がありますか。",
     "choices": [
       "Lightning ページ",
@@ -2096,7 +2021,6 @@
   },
   {
     "id": 77,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice77",
     "question": "Cloud Kicks社の管理者は、カスタム項目を持つ新しいカスタムオブジェクトへのアクセス権を複数のユーザーに与える必要があります。この要件を満たすために管理者が使用すべきオプションはどれですか。2つ選びなさい。",
     "choices": [
       "権限セットグループをユーザーに割り当てる。",
@@ -2124,7 +2048,6 @@
   },
   {
     "id": 78,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice78",
     "question": "オブジェクトマネージャーで項目を必須としてマークする際に、考慮する機能はどれですか。2つ選びなさい。",
     "choices": [
       "項目は、そのオブジェクトのAPIを介してレコードを保存するために必要ではありません。",
@@ -2152,7 +2075,6 @@
   },
   {
     "id": 79,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice79",
     "question": "Universal Containers社(UC)の顧客から、サポートケースの対応が十分でないというフィードバックがありました。UCは、2時間以上開いているすべての未割り当てのケースを緊急ケースキューに送り、サポートマネージャーに警告を出したいと考えています。この要件を満たすために管理者が設定すべき機能はどれですか。",
     "choices": [
       "ケースのダッシュボードの更新",
@@ -2180,7 +2102,6 @@
   },
   {
     "id": 80,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice80",
     "question": "Cloud Kicks社の管理者が、過去90日間のクローズした商談のファイルをエクスポートする必要があります。このファイルには、商談名、ID、完了予定日、および金額が含まれている必要があります。管理者はこのファイルをどのようにエクスポートしますか。",
     "choices": [
       "データインポートウィザード",
@@ -2208,7 +2129,6 @@
   },
   {
     "id": 81,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice81",
     "question": "カスタム項目のデータ型をテキストから選択リストに変更する場合、管理者はどのようなデータ損失を考慮する必要がありますか。2つ選びなさい。",
     "choices": [
       "グローバル値セットの使用によるデータ損失はありません。",
@@ -2236,7 +2156,6 @@
   },
   {
     "id": 82,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice82",
     "question": "Cloud Kicks社のサポートエージェントは、顧客のケースを解決するためのリソースを探すのに多くの時間を費やしています。エージェントは、ケースページのレイアウトからドキュメントや類似のケースを見つける、より効率的な方法を必要としています。管理者はどのようにこの要件を満たすべきでしょうか。",
     "choices": [
       "記事とデータカテゴリでナレッジを構成する。",
@@ -2263,7 +2182,6 @@
   },
   {
     "id": 83,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice83",
     "question": "Clod Kicks社には同じ画面に2つの質問が表示される画面フローがありますが、一度に必要なのは1つだけです。管理者は、必要な質問のみを表示するように求められています。管理者はこれをどのように完了させるべきでしょうか。",
     "choices": [
       "[コンポーネントの表示を設定]を使用して、不要な質問を非表示にする。",
@@ -2290,7 +2208,6 @@
   },
   {
     "id": 84,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice84",
     "question": "Cloud Kicks社(CK)は、特定の顧客に関する情報を取引先責任者に、靴やアクセサリーに関する情報をカスタム商品オブジェクトに保存します。CKの管理者は、取引先責任者が複数の商品に興味があることを表すために何を使用すべきでしょうか。",
     "choices": [
       "ロール",
@@ -2317,7 +2234,6 @@
   },
   {
     "id": 85,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice85",
     "question": "Northern Trail Outfitters社では、新規取引先が作成されたときに自動的に項目値を設定する新しいフローがあります。このフローはプロセスによって起動されますが、フローが正しく動作しません。問題を特定するために、管理者は何をすべきでしょうか。",
     "choices": [
       "フロービルダーのデフォルトのデバッグ機能を使用する。",
@@ -2344,7 +2260,6 @@
   },
   {
     "id": 86,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice86",
     "question": "Ursa Major Solar社は、クロスセルの商談タイプの案件が減少していることに気づいており、組織内の専門家チームとすべてのクロスセル商談を共有したいと考えています。会社にはさまざまなロールがあり、商談の組織全体のデフォルトは非公開に設定されています。管理者はこれをどのように実現すればよいですか。",
     "choices": [
       "専門家チームを公開グループに追加し、[条件に基づく共有ルール]でレコードへのアクセス権を付与する。",
@@ -2371,7 +2286,6 @@
   },
   {
     "id": 87,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice87",
     "question": "AW Computing社の管理者は、Salesforceにログインできないユーザーと作業しています。ユーザーがログインできない原因を特定するために、管理者は何をすべきでしょうか。",
     "choices": [
       "セキュリティトークンを確認する。",
@@ -2398,7 +2312,6 @@
   },
   {
     "id": 88,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice88",
     "question": "Cloud Kicks社では、公開されているホームページにアクセスしながら、顧客が自分のケースを作成できるようにしたいと考えています。管理者は何を推奨すべきでしょうか。",
     "choices": [
       "SMS 送信",
@@ -2426,7 +2339,6 @@
   {
     "id": 89,
     "expFig": "relationships",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice89",
     "question": "Ursa Major Solar社の管理者は、作業項目とプロジェクトというカスタムオブジェクトのリレーションシップを主従関係から参照関係に変更するよう求められました。管理者がこの要件を満たすことを妨げる可能性のあるシナリオはどれですか。",
     "choices": [
       "レコードの保存するために参照関係が必要です。",
@@ -2453,7 +2365,6 @@
   },
   {
     "id": 90,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice90",
     "question": "Cloud Kicks社は、AppExchangeからアプリケーションを試して、そのアプリケーションがニーズに合っていることを確認したいと考えています。管理者が提案すべきのオプションはどれですか。2つ選びなさい。",
     "choices": [
       "本番環境でテスト運用する。",
@@ -2481,7 +2392,6 @@
   },
   {
     "id": 91,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice91",
     "question": "Cloud Kicks社の管理者が、特定の条件を満たすレコードを検索し、それらのレコードの値を後でフローで使用するために変数に格納する必要があるフローを構築しています。管理者はどのフロー要素を追加すべきですか。",
     "choices": [
       "割り当て",
@@ -2510,7 +2420,6 @@
   },
   {
     "id": 92,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice92",
     "question": "Cloud Kicks社のカスタマーサクセス担当者が休暇に入り、複数のケースの所有者を変更する必要があります。この要求を満たすことができるのはどのユーザーですか。2つ選びなさい。",
     "choices": [
       "取引先に参照権限を持つユーザー",
@@ -2538,7 +2447,6 @@
   },
   {
     "id": 93,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice93",
     "question": "Northern Trail Outfitters社の管理者は、割り当てられたライセンスと権限セットを追跡するためにスプレッドシートを使用しています。Salesforceでこれを追跡するには、どのような機能を使用すれはよいですか。",
     "choices": [
       "ログイン履歴",
@@ -2565,7 +2473,6 @@
   },
   {
     "id": 94,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice94",
     "question": "Ursa Major Solar社は、経費報告書の提出、振り分け、承認を簡素化するために、ユーザーを支援するガイド付き経費報告書プロセスを作りたいと考えています。このソリューションを構築するために、管理者はどのツールを使用する必要がありますか。2つ選びなさい。",
     "choices": [
       "入力規則",
@@ -2593,7 +2500,6 @@
   },
   {
     "id": 95,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice95",
     "question": "管理者が、最近のアップデートの一環として作成されたフローを更新するよう求められました。管理者が編集のためにフローを開くと、フロービルダーのツールボックスには4つの要素しか表示されません。割り当て要素、決定要素、レコードを取得要素、ループ要素です。この原因は何でしょうか。",
     "choices": [
       "フローは画面フローである。",
@@ -2620,7 +2526,6 @@
   },
   {
     "id": 96,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice96",
     "question": "Cloud Kicks社には靴という名前のカスタムオブジェクトがあります。管理者は、取引先と靴の間にリレーションシップが作成されたときに、靴のレコードが孤立しないようにすることを求められています。この要件を満たすために、管理者は何をすべきでしょうか。",
     "choices": [
       "間接参照関係を作成する。",
@@ -2647,7 +2552,6 @@
   },
   {
     "id": 97,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice97",
     "question": "Ursa Major Solar社では、取引先レコードに2つの異なるページレイアウトを使用しています。1つのページレイアウトは顧客取引先に関する項目を反映し、もう1つのページレイアウトはパートナー取引先に関する項目を含んでいます。管理者は、顧客取引先ページレイアウトを営業およびサポートユーザーに割り当て、パートナー取引先ページレイアウトをパートナー管理チームに割り当てました。この要件を満たすために、管理者は何を構成すべきでしょうか。",
     "choices": [
       "公開グループと[条件に基づくの共有ルール]を使用して、顧客取引先をパートナーチームと共有する。",
@@ -2674,7 +2578,6 @@
   },
   {
     "id": 98,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice98",
     "question": "セールスフェーズの設定フローでカスタマイズ可能なオブジェクトはどれですか。2つ選びなさい。",
     "choices": [
       "リード",
@@ -2702,7 +2605,6 @@
   },
   {
     "id": 99,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice99",
     "question": "Universal Containers社の管理者は、商談が$500,000に達したときに営業部長にアラートを出す簡単な方法が必要です。管理者は、この要件を満たすために何を構成する必要がありますか。",
     "choices": [
       "ホームページ上の強調表示パネルコンポーネント",
@@ -2731,7 +2633,6 @@
   },
   {
     "id": 100,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice100",
     "question": "Universal Containers社のユーザーが退社しました。管理者は後任のユーザーのために新しいユーザーを作成する必要がありますが、利用可能なユーザーライセンスをすべて割り当てています。新しいユーザーのためにユーザーライセンスを解放するために、管理者は何をすべきですか。",
     "choices": [
       "元従業員のユーザーレコードを無効化する。",
@@ -2758,7 +2659,6 @@
   },
   {
     "id": 101,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice101",
     "question": "Cloud Kicks社では、商談の組織全体のデフォルトが非公開に設定されています。管理者はどの機能を使用して、商談レコードにアクセスできるようにする必要がありますか。2つ選びなさい。",
     "choices": [
       "共有セット",
@@ -2786,7 +2686,6 @@
   },
   {
     "id": 102,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice102",
     "question": "Ursa Major Solar社は、設置したすべてのパネルに1年間の保証を提供しています。設置の詳細は、「設置」というカスタムオブジェクトに保存され、保証情報も含まれます。設置レコードは、設置者がモバイルアプリから作成します。設置が遅れたり問題が発生した場合、顧客満足度を向上させるために、顧客に長期保証が提供されることがあります。Salesforceをどのように構成して保証の有効期限を記録すればよいでしょうか。",
     "choices": [
       "保証有効期限項目のデフォルト値として数式を使用する。",
@@ -2813,7 +2712,6 @@
   },
   {
     "id": 103,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice103",
     "question": "Universal Containers社には、LinkedInのデータを表示するコンポーネントを持つ取引先責任者Lightningレコードページがあります。営業チームは、営業ユーザーが携帯電話を使用しているときにのみ、このコンポーネントを表示したいと考えています。[コンポーネントの表示を設定]をどのように構築すればよいですか。2つ選びなさい。",
     "choices": [
       "ユーザー>プロファイル>プロファイル名=営業ユーザー",
@@ -2841,7 +2739,6 @@
   },
   {
     "id": 104,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice104",
     "question": "Cloud Kicks社の幹部から、ダッシュボードに不正確なデータが表示されているとの報告がありました。管理者はソースレポートを変更していることを発見しました。ソースレポートの整合性を維持するために、管理者が取るべきアクションはどれですか。2つ選びなさい。",
     "choices": [
       "参照アクセス権がある新しいレポートフォルダを作成する。",
@@ -2869,7 +2766,6 @@
   },
   {
     "id": 105,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice105",
     "question": "Cloud Kicks社の営業マネージャーは、従業員の休暇を承認しています。管理者は、営業部長が休暇で不在の間、予備マネージャーがこれらの申請を見て対応できるようにするよう求められました。管理者は、この要件を満たすために何を使用する必要がありますか。",
     "choices": [
       "委任された承認者",
@@ -2899,7 +2795,6 @@
   {
     "id": 106,
     "expFig": "record-access",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice106",
     "question": "Universal Containers社は、商談の非公開の共有モデルを持ち、商談チームを使用しています。条件に基づく共有ルールは使用していません。Universal Containers社の営業担当者が退職し、そのユーザーレコードが無効化されました。後日、その担当者が同じ職場で再雇用されました。Salesforce管理者は、古いユーザレコードを有効化します。そのユーザーは、同じデフォルトの商談チームに追加されますが、退職前にそのユーザーが担当していたのと同じレコードを見ることができなくなります。考えられる原因は何ですか。",
     "choices": [
       "レコードがユーザーと手動で共有された。",
@@ -2926,7 +2821,6 @@
   },
   {
     "id": 107,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice107",
     "question": "別のシステムからレコードをインポートして更新する場合、管理者は識別子として何を使用すべきですか。",
     "choices": [
       "リッチテキスト項目",
@@ -2953,7 +2847,6 @@
   },
   {
     "id": 108,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice108",
     "question": "Cloud Kicks社の管理者は、リードのカスタム選択リスト項目を用意していますが、リードが変換されたときに取引先責任者にこの項目がありません。これらの値が入力されていることを確認するために、管理者が行うべき作業はどれですか。2つ選びなさい。",
     "choices": [
       "取引先責任者にカスタム選択リスト項目を作成する。",
@@ -2981,7 +2874,6 @@
   },
   {
     "id": 109,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice109",
     "question": "アプリケーションランチャーでタブを非表示にしたり、アプリでタブを利用可能にした場合に、ユーザーがこのタブの下にあるレコードを表示できるようにするプロファイルの設定はどれですか。",
     "choices": [
       "オブジェクト権限",
@@ -3008,7 +2900,6 @@
   },
   {
     "id": 110,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice110",
     "question": "Northern Trail Outfitters社の営業担当者は、商談の[確度 (%)]項目の値を変更する方法を求めています。この要求に応えるために、管理者は何を提案すればよいでしょうか。",
     "choices": [
       "新しいフェーズの選択リスト値を定義する。",
@@ -3035,7 +2926,6 @@
   },
   {
     "id": 111,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice111",
     "question": "Cloud Kicks社では、7日以上開いているケースの所有者を変更する必要があります。管理者はこの要件をどのように対応すればよいですか。",
     "choices": [
       "自動レスポンスルール",
@@ -3063,7 +2953,6 @@
   },
   {
     "id": 112,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice112",
     "question": "Ursa Major Solar社は、太陽光発電製品の売上を追跡するために商談を利用しています。同社には、異なるエネルギー市場に特化した2つの営業チームがあります。サービスチームもまた、商談を使用して設置を追跡したいと考えています。3つのチームはすべて、異なる項目とフェーズを使用する必要があります。管理者は、この要件をどのように構成する必要がありますか。",
     "choices": [
       "セールスプロセスを3つ作成する。3つのレコードタイプと1つのページレイアウトを作成する。",
@@ -3091,7 +2980,6 @@
   {
     "id": 113,
     "expFig": "profile-permset",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice113",
     "question": "管理者が、権限セットグループを含む管理パッケージをインストールしました。インストールされた権限セットグループには、いくつかのオブジェクトの削除権限が含まれておりますが、管理者は権限セットグループのユーザーがレコードを削除できないようにする必要があります。管理者は、削除権限を制御するために何をすべきでしょうか。",
     "choices": [
       "権限セットグループとミュート権限セットを使用して、選択した権限をミュートする。",
@@ -3118,7 +3006,6 @@
   },
   {
     "id": 114,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice114",
     "question": "DreamHouse Realty社(DR)では、検査員が物件検査の結果を提出するためのフォームをExperience Cloudサイトで提供したいと考えています。この要件を満たすために、管理者がページに配置すべき機能はどれですか。",
     "choices": [
       "関連リスト",
@@ -3145,7 +3032,6 @@
   },
   {
     "id": 115,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice115",
     "question": "AW Computing社のCTOは、顧客満足度向上のため、ケースに関する新しいポリシーを定めました。ケースの理由が[インストール]であるすべてのケースは、メールで直ちに承認され、適切なエージェントに割り当てられなければなりません。4時間経っても[新規]ステータスのままのケースは、サポート管理者にエスカレーションしなければなりません。この要件には、どのようなケース管理ツールを利用する必要がありますか。",
     "choices": [
       "自動レスポンスルール、マクロ、エンタイトルメント",
@@ -3172,7 +3058,6 @@
   },
   {
     "id": 116,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice116",
     "question": "AW Computing社は、ユーザーが取引先の[年間売上]項目を負の値または1,000億ドルを超える金額に更新できないようにしたいと考えています。管理者は、この要求をどのように達成すればよいですか。",
     "choices": [
       "取引先の[年間売上]項目が0以下または1,000億ドルを超える場合にエラーを表示する入力規則を作成する。",
@@ -3199,7 +3084,6 @@
   },
   {
     "id": 117,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice117",
     "question": "Ursa Major Solar社の営業チームは、リードがWebサイトのフォームに入力するたびに、カスタマイズされたメールを送信したいと考えています。彼らは、リードオブジェクトの[業種]項目の値に基づいて異なるメッセージを送信したいと考えています。この要件を満たすために、管理者は何を設定する必要がありますか。",
     "choices": [
       "入力規則を使用して、ワークフローをトリガーし、リードにメールを送信する。",
@@ -3226,7 +3110,6 @@
   },
   {
     "id": 118,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice118",
     "question": "Cloud Kicks社のユーザーが、商談オブジェクトにカスタム選択リストを適用する際に、商談の種類によって異なるオプションがあることを報告しています。管理者は選択リストのオプションをどこで更新する必要がありますか。",
     "choices": [
       "項目とリレーション",
@@ -3253,7 +3136,6 @@
   },
   {
     "id": 119,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice119",
     "question": "Universal Containers社の管理者は、項目値に基づいてレコードを削除する自動化された方法を必要としています。管理者はどのような自動化ソリューションを使用する必要がありますか。",
     "choices": [
       "ワークフロールール",
@@ -3280,7 +3162,6 @@
   },
   {
     "id": 120,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice120",
     "question": "Universal Containers社の管理者は、コンテナ(Containers__c)と購入(Purchase__c)という2つのオブジェクトを作成しました。管理者は、すべてのコンテナレコードをSalesforceの購入レコードに表示するよう要求しました。コンテナ(Containers__c)と購入(Purchase__c)の間のどのタイプのリレーションシップがこの要件を満たすことができますか。",
     "choices": [
       "積み上げ集計項目",
@@ -3307,7 +3188,6 @@
   },
   {
     "id": 121,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice121",
     "question": "Ursa Major Solar社の管理者が誤ってレコードをオブジェクトにインポートしてしまいました。このインポートを元に戻すには、どのツールを使用する必要がありますか。2つ選びなさい。",
     "choices": [
       "マンスリーエクスポートサービス",
@@ -3336,7 +3216,6 @@
   },
   {
     "id": 122,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice122",
     "question": "商談が[Closed Lost]になったときに、不成立の理由をリッチテキスト項目に入力する必要があります。管理者はこの要件をどのように構成すればよいですか。",
     "choices": [
       "ページレイアウトの[不成立の理由]項目の項目プロパティにある必須チェックボックスを選択する。",
@@ -3363,7 +3242,6 @@
   },
   {
     "id": 123,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice123",
     "question": "DreamHouse Realty社(DR)の営業担当副社長から、異なるチーム間の企業売上を可視化するダッシュボードの要望がありました。データの重要な部分は、年間の全売上高の合計と、企業売上目標までの進捗状況です。この数値と目標合計までの進捗を1つの値として効果的に表示するダッシュボードコンポーネントはどれでしょうか。",
     "choices": [
       "テーブル",
@@ -3392,7 +3270,6 @@
   },
   {
     "id": 124,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice124",
     "question": "Cloud Kicks社の営業担当者は、100万ドル以上の商談を獲得する可能性が高いときに通知を受けたいと考えています。この要件を満たす機能はどれですか。",
     "choices": [
       "重要な項目",
@@ -3419,7 +3296,6 @@
   },
   {
     "id": 125,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice125",
     "question": "Ursa Major Solar社の管理者は、顧客保証ケース用に新しいレコードタイプを作成しました。管理者は、ユーザーに新しいレコードタイプを表示するためにどの割り当てを使用する必要がありますか。2つ選びなさい。",
     "choices": [
       "プロファイルの割り当て",
@@ -3447,7 +3323,6 @@
   },
   {
     "id": 126,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice126",
     "question": "Northern Trail Outfitters社の管理者がSalesforce組織で新しいユーザーを追加できません。この問題の原因は何でしょうか。",
     "choices": [
       "ユーザー名が会社のメールアドレスではない。",
@@ -3472,7 +3347,6 @@
   },
   {
     "id": 127,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice127",
     "question": "Cloud Kicks社で商談が交渉フェーズに達するために、商談の金額項目は営業ユーザーにとって必須となります。しかし、営業マネージャーは、金額を入力せずに商談を交渉フェーズに進めることが必要です。管理者は、営業ユーザーに対して交渉フェーズでこの項目を必須にし、マネージャーにはその制約を受けずに商談を進められるようにするにはどうすればよいでしょうか。",
     "choices": [
       "すべてのユーザーにこの項目を必須にする。",
@@ -3499,7 +3373,6 @@
   },
   {
     "id": 128,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice128",
     "question": "DreamHouse Realty社(DR)の仲介業者が、オープンハウスイベントの夜をダブルブッキングしています。イベントマネージャーは、仲介業者がイベントの詳細を記入し、日程をリクエストできるよう、イベント送信プロセスを望んでいます。管理者はどのようにこの要求を達成すべきでしょうか。",
     "choices": [
       "イベント日付項目を更新するワークフローロールを作成する。",
@@ -3526,7 +3399,6 @@
   },
   {
     "id": 129,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice129",
     "question": "AW Computing社の管理者はカスタム選択リスト項目を作成しました。ビジネスユーザーは、この項目をテキスト項目にするよう要求しました。管理者は項目のデータ型を変更しようとしましたが、他の機能によって参照されているため、変更できません。項目のデータ型を変更できないようにしているのは、どの機能ですか。",
     "choices": [
       "数式項目",
@@ -3553,7 +3425,6 @@
   },
   {
     "id": 130,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice130",
     "question": "Universal Containers社は、営業チームAと営業チームBの2つの営業チームがあります。どちらのロールも同じマネージャーロールの部下です。管理者は、営業チームAが所有するレコードを営業チームBとどのように共有すべきですか。",
     "choices": [
       "階層を使用した共有",
@@ -3580,7 +3451,6 @@
   },
   {
     "id": 131,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice131",
     "question": "DreamHouse Realty社(DR)の管理者は、Salesforce モバイルアプリケーションのカスタマイズページを作成する必要があります。管理者が[Lightning アプリケーションビルダー]を使用して作成およびカスタマイズできるページは、どのタイプですか。2つ選びなさい。",
     "choices": [
       "ユーザーページ",
@@ -3609,7 +3479,6 @@
   {
     "id": 132,
     "expFig": "automation-tools",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice132",
     "question": "DreamHouse Realty社(DR)には承認プロセスがあります。管理者がレコードを承認しようとしましたが、エラーが表示されました。この要求をトラブルシューティングするために、管理者は何を確認すべきですか。",
     "choices": [
       "プロセスの次の承認者に委任承認者を追加する。",
@@ -3636,7 +3505,6 @@
   },
   {
     "id": 133,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice133",
     "question": "DreamHouse Realty社(DR)は、取引先とケースに適用されるカテゴリで、レコードタイプに応じた値で一貫した選択リストを使用する必要があります。この要件を満たすために管理者が使用すべき機能はどれですか。2つ選びなさい。",
     "choices": [
       "連動選択リスト",
@@ -3664,7 +3532,6 @@
   },
   {
     "id": 134,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice134",
     "question": "管理者がカスタマイズできる標準項目の属性はどれですか。3つ選びなさい。",
     "choices": [
       "選択リスト値",
@@ -3694,7 +3561,6 @@
   },
   {
     "id": 135,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice135",
     "question": "管理者は、子レコードへのアクセスを制限した2つのオブジェクト間に1対多のリレーションシップを作成する必要があります。管理者はどのようなデータ型の項目を使用する必要がありますか。",
     "choices": [
       "積み上げ集計項目",
@@ -3721,7 +3587,6 @@
   },
   {
     "id": 136,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice136",
     "question": "Cloud Kicks社の営業マネージャーは、30%以上の商談割引は営業担当副社長の承認が必要なビジネスプロセスを設定したいと考えています。10%以上の割引は、ユーザーのマネージャーの承認が必要です。管理者は承認プロセスの作成を任されています。この承認プロセスを設定する前に、管理者が確認する必要がある考慮事項はどれですか。2つ選びなさい。",
     "choices": [
       "割引額を記録するために、商談にカスタム割引額項目を作成する。",
@@ -3750,7 +3615,6 @@
   },
   {
     "id": 137,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice137",
     "question": "Cloud Kicks社の営業担当者は、商談レコードで割引を使用することで、商品の売上を獲得しています。商談が獲得されると、関連する商談商品に手動で割引を適用しなければなりません。営業マネージャーは、この時間のかかる作業を自動化する方法はないかと尋ねてきました。管理者は、この要件を実現するために何を使用する必要がありますか。",
     "choices": [
       "フロービルダー",
@@ -3777,7 +3641,6 @@
   },
   {
     "id": 138,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice138",
     "question": "クライアントサービスチームとカスタマーサポートチームは同じプロファイルを共有していますが、権限セットは異なります。Lightningレコードページレイアウトのカスタムオブジェクトの保持する関連リストをクライアントサービスチームに制限する必要があります。管理者は、この要求を満たすために何を使用する必要がありますか。",
     "choices": [
       "共有設定",
@@ -3804,7 +3667,6 @@
   },
   {
     "id": 139,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice139",
     "question": "Ursa Major Solar社は従業員全員に素晴らしい経験を提供しています。従業員管理委員会は、他の従業員の投稿を制限しながら、最新情報を投稿したいと考えています。この要求に応えるために、管理者は何を作成すべきでしょうか。",
     "choices": [
       "Chatter ストリーム",
@@ -3831,7 +3693,6 @@
   },
   {
     "id": 140,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice140",
     "question": "新しいリードは、リードのアドレスに基づいて正しい営業担当者に割り当てられる必要があります。管理者はこの要件をどのように構成すればよいですか。",
     "choices": [
       "数式項目を作成する。",
@@ -3858,7 +3719,6 @@
   },
   {
     "id": 141,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice141",
     "question": "管理者は、自分の組織で行われた最近の設定変更を確認するために、どのツールを使用すべきですか。",
     "choices": [
       "リリース更新",
@@ -3885,7 +3745,6 @@
   },
   {
     "id": 142,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice142",
     "question": "Cloud Kicks社は、Salesforceを利用して商品の出荷を追跡するためのより良い方法に取り組んでいます。管理者が座標を取得するために使用すべき項目はどれですか。",
     "choices": [
       "地理位置情報",
@@ -3912,7 +3771,6 @@
   },
   {
     "id": 143,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice143",
     "question": "AW Computing社は、ケースのLightningレコードページを改善したいと考えています。具体的には、(1)ケースページから関連する取引先のステータスを直接編集できるようにする、(2)レコードタイプが「クリティカル」のときにのみ太字フォントで重要なメッセージを表示する、という2点を実現したい。これらの要件を満たすために使用すべきLightningページの標準コンポーネントを2つ選びなさい。",
     "choices": [
       "関連リスト",
@@ -3940,7 +3798,6 @@
   },
   {
     "id": 144,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice144",
     "question": "Northern Trail Outfitters社のユーザーが Salesforce にログインできません。このユーザーのログイン履歴によると、このユーザーは何度もログインを試み、組織からロックアウトされています。管理者は、このユーザーがSalesforceにログインするのを支援するための手段はどれですか。2つ選びなさい。",
     "choices": [
       "ユーザーとしてログインし、ロックを解除してパスワードをリセットする。",
@@ -3968,7 +3825,6 @@
   },
   {
     "id": 145,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice145",
     "question": "Northern Trail Outfitters社は、商談の主要な利害関係者である取引先責任者のROIを追跡したいと考えています。営業担当副社長は、この情報に商談上でアクセスでき、レポートに利用できるようにすることを要求しました。これらの要件を満たすために、管理者はどのオプションを構成する必要がありますか。2つ選びなさい。",
     "choices": [
       "[キャンペーンメンバーの役割]をカスタマイズする。",
@@ -3997,7 +3853,6 @@
   },
   {
     "id": 146,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice146",
     "question": "Cloud Kicks社のビジネス開発チームでは、取引先の作成プロセスには入力項目が多すぎ、ページが乱雑に感じられると考えています。彼らは管理者にプロセスを簡素化するよう要請しました。管理者はどの自動化ツールを使うべきか。",
     "choices": [
       "承認プロセス",
@@ -4024,7 +3879,6 @@
   },
   {
     "id": 147,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice147",
     "question": "AW Computing社の管理者が、サポートチームのレポートフォルダーの作成を手伝ってほしいと依頼されました。Support Reportsというフォルダーと、その下にあるHelpdeskとR&Dという2つのフォルダーが必要です。サポート組織は、サポートエージェント、R&D、およびサポートマネージャーに公開グループを使用しています。サポートエージェントは、Helpdeskレポートを実行できる必要がありますが、R&Dレポートを参照できないようにする必要があります。サポートマネージャーは、すべてのレポートを参照および編集できる必要があります。これらのフォルダーはどの方法で共有する必要がありますか。2つ選びなさい。",
     "choices": [
       "R&Dフォルダーをサポートマネージャーと編集アクセス権で共有する。",
@@ -4052,7 +3906,6 @@
   },
   {
     "id": 148,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice148",
     "question": "Cloud Kicks社は、異なる商品カテゴリー(シューズ、アパレル、アクセサリー)のリードを多くの異なるソースから生成しています。3つのカテゴリーすべてに使用されるリードソースもあれば、1つのカテゴリーに特化したリードソースもあります。マーケティング担当副社長は、選択した商品カテゴリーに基づいて適切なリードソースのみを表示するよう要求しています。この要件を満たすために、管理者はSalesforceをどのように設定すればよいでしょうか。",
     "choices": [
       "カテゴリーごとにページレイアウトを作成し、カテゴリーに基づいてリードソース項目を絞り込む。",
@@ -4079,7 +3932,6 @@
   },
   {
     "id": 149,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice149",
     "question": "Universal Containers社の管理者は、ユーザーが新しいリードを作成するための画面フローを持っています。リードソースが[検索エンジン]の場合、管理者はユーザーに選択リストから特定の検索エンジンを選択させる必要があります。リードソースが[検索エンジン]でない場合、この選択リストは非表示にする必要があります。管理者はこの要件をどのように設定すればよいですか。",
     "choices": [
       "リードソースが[検索エンジン]の場合のみ、特定の検索エンジンを保持するために、ユーザーを2番目の画面に誘導する決定要素を割り当てる。",
@@ -4106,7 +3958,6 @@
   },
   {
     "id": 150,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice150",
     "question": "Cloud Kicks社の営業ユーザーは、取引先オブジェクトの業種項目のデータを商談ページレイアウトに表示することを要求しています。これを達成するために、管理者はどのデータ型の項目を作成すべきですか。",
     "choices": [
       "カスタム取引先項目",
@@ -4133,7 +3984,6 @@
   },
   {
     "id": 151,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice151",
     "question": "管理者は、AW Computing社の営業チームとマーケティングチームのためにダッシュボードを作成しなければならないという厳しい期限に追われています。予算を増やさずに期限を守るために、管理者は何をすべきでしょうか。",
     "choices": [
       "ダッシュボードを作成するために、営業チームとマーケティングチームの誰かをトレーニングする。",
@@ -4160,7 +4010,6 @@
   },
   {
     "id": 152,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice152",
     "question": "Salesforceユーザーのグローバルチームをサポートする管理者が、[会社の設定]を行うよう依頼されました。 管理者が設定できる項目はどれですか。2つ選びなさい。",
     "choices": [
       "ログイン時間",
@@ -4188,7 +4037,6 @@
   },
   {
     "id": 153,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice153",
     "question": "Ursa Major Solar社の管理者は、VP顧客からの未割り当てのケースが5時間以内に適切なサービス担当者に転送されるようにする必要があります。VIP顧客は24時間サポートにアクセスできます。どのように設定すればよいですか。",
     "choices": [
       "割り当てルール",
@@ -4216,7 +4064,6 @@
   },
   {
     "id": 154,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice154",
     "question": "Northern Trail Outfitters社には、取引先に新しいケースを作成するカスタムクイックアクションがあります。管理者は、このクイックアクションを Salesforceモバイルアプリで利用できるようにするにはどうすればよいですか。",
     "choices": [
       "カスタムLightning アプリケーションを作成する。",
@@ -4243,7 +4090,6 @@
   },
   {
     "id": 155,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice155",
     "question": "Ursa Major Solar社の営業担当者は、一連のネットワーキングイベントを立ち上げました。彼らは毎月1回イベントを開催しており、月ごと、シリーズごとにキャンペーンのROIをレポートできるようにしたいと考えています。レポートを簡略化するために、管理者はキャンペーンをどのように設定すればよいですか。",
     "choices": [
       "毎月のイベントタイプに異なるレコードタイプを追加する。",
@@ -4270,7 +4116,6 @@
   },
   {
     "id": 156,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice156",
     "question": "管理者は、顧客を失ったときにユーザーが記入するフォームをSalesforceに作成したいと考えています。この目標を達成するためのウィザードの作成をサポートしている自動化ツールはどれですか。",
     "choices": [
       "プロセスビルダー",
@@ -4297,7 +4142,6 @@
   },
   {
     "id": 157,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice157",
     "question": "DreamHouse Realty社(DR)では、将来の内覧が重なるのを防ぐため、内覧は今年中に行うよう定めています。どうすれば、内覧会の日付が今年度内であることを確実にすることができますか。",
     "choices": [
       "ユーザーの内覧カレンダーをSalesforceに同期し、今年だけを表示するように絞り込む。",
@@ -4326,7 +4170,6 @@
   },
   {
     "id": 158,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice158",
     "question": "Northern Trail Outfitters社の管理者がSalesforceで新しいユーザーを追加できません。この問題の原因は何でしょうか。",
     "choices": [
       "ユーザー名がすでに他の関連組織で使用されている。",
@@ -4353,7 +4196,6 @@
   },
   {
     "id": 159,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice159",
     "question": "Northern Trail Outfitters社には2つの異なるセールスプロセスがあります。一つは4つのフェーズを持つ商談用、もう一つは8つのフェーズを持つパートナー商談用です。どちらのプロセスも、ページレイアウトと選択リストの値のオプションが異なります。これらの要件を満たすために、管理者は何を設定する必要がありますか。",
     "choices": [
       "ユーザーが正確なセールスのフェーズ情報を入力していることを保証する入力規則",
@@ -4380,7 +4222,6 @@
   },
   {
     "id": 160,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice160",
     "question": "Ursa Major Solar社では、保証満了日の30日前にリマインドメールを送信するフローが設定されています。ある顧客が保証をさらに3年間更新しました。この場合、フロー内のメール要素の期待される動作は何ですか。",
     "choices": [
       "顧客のメールアドレスが見つからないため、メールは送信されない。",
@@ -4408,7 +4249,6 @@
   {
     "id": 161,
     "expFig": "relationships",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice161",
     "question": "DreamHouse Realty社(DR)チームは、オープンハウスを主オブジェクト、訪問者を従オブジェクトとする主従関係を設定しています。訪問者数を追跡するために、管理者はどのようなデータ型の項目をオープンハウスオブジェクトに追加すべきでしょうか。",
     "choices": [
       "積み上げ集計項目",
@@ -4435,7 +4275,6 @@
   },
   {
     "id": 162,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice162",
     "question": "Cloud Kicks社は、各メンバーが各案件に貢献した努力の度合いに基づいて、商談のチームメンバーにクレジットを与えたいと考えています。この要件を満たすために、管理者はどの機能を使用すべきでしょうか。",
     "choices": [
       "フェーズ",
@@ -4462,7 +4301,6 @@
   },
   {
     "id": 163,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice163",
     "question": "Northern Trail Outfitters社は、Salesforceにリードを入力するインターンを雇っており、既存のリードから新しいレコードを識別する方法を求めています。この要件を満たすために、管理者はどのようなアプローチを取るべきでしょうか。",
     "choices": [
       "個別のリードLightningアプリを作成する。",
@@ -4490,7 +4328,6 @@
   {
     "id": 164,
     "expFig": "lead-conversion",
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice164",
     "question": "DreamHouse Realty社(DR)のイベントマネージャーは、オープンハウスを成功させたホットリードを、関連する商談の取引先責任者にする必要があります。関連するキャンペーンメンバーの履歴を保持したまま、キャンペーンからどのようにこれを達成すべきでしょうか。",
     "choices": [
       "リードを削除し、新しい取引先責任者と商談を作成する。",
@@ -4517,7 +4354,6 @@
   },
   {
     "id": 165,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice165",
     "question": "Ursa Major Solar社の営業とカスタマーケアは、取引先レコードのケース関連リストに異なる項目を表示する必要があります。営業ユーザはケースのオープン日と状況を、カスタマーケアは所有者、状況、取引先責任者名を表示する必要があります。管理者は何を使用すればよいでしょうか。",
     "choices": [
       "ルックアップ検索条件",
@@ -4544,7 +4380,6 @@
   },
   {
     "id": 166,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice166",
     "question": "Ursa Major Solar社の管理者は、AppExchangeの存在を知り、それが同社のビジネスにいかに役立つかを知ったばかりです。AppExchangeを介して実現できるアクションはどれですか。2つ選びなさい。",
     "choices": [
       "認定開発者やコンサルタントを見つける。",
@@ -4572,7 +4407,6 @@
   },
   {
     "id": 167,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice167",
     "question": "Universal Containers社(UC)には、UCのカスタマーサポートチームが作業する必要のあるタスクを管理するためのキューがあります。同じチームが、UCのケースの一部を作業することになります。サポートチームを支援するために管理者が使用すべきオプションはどれですか。2つ選びなさい。",
     "choices": [
       "ケースをキューに割り当てるフローを作成する。",
@@ -4600,7 +4434,6 @@
   },
   {
     "id": 168,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice168",
     "question": "Universal Containers社は、ケースの詳細な状況を探す際のユーザーエクスペリエンスを改善しようとしています。同社は現在、ケースのすべてのレコードタイプに使用される1つのサポートプロセスを持っています。サポートプロセスには10個の状況値があります。サービス担当者は、作業しているケースの種類にもよりますが、5つ以上は必要ないと言っています。管理者は、現在の実装をどのように改善すべきでしょうか。",
     "choices": [
       "ケースの状況項目の値の数を5つに減らす。",
@@ -4627,7 +4460,6 @@
   },
   {
     "id": 169,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice169",
     "question": "ある営業担当者が退職しました。管理者は、すべての取引先と商談を新しい営業担当者に再割り当てし、チームはそのまま維持するよう求められました。管理者はどのツールを使用すればよいでしょうか。",
     "choices": [
       "データローダー",
@@ -4654,7 +4486,6 @@
   },
   {
     "id": 170,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice170",
     "question": "Northern Trail Outfitters社は、顧客から受信したメールが自動的にケースを生成することを望んでいます。管理者は、メールが正しいキューに送信されるように、どのようにすればよいでしょうか。",
     "choices": [
       "フローを利用して正しいキューを特定し、ケースを割り当てる。",
@@ -4681,7 +4512,6 @@
   },
   {
     "id": 171,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice171",
     "question": "Cloud Kicks社のサポートマネージャーは、顧客にできるだけ早く対応したいと考えています。彼らは、顧客の問題を解決するのに役立つトラブルシューティングのヒントを上位5つを回答することを要求しています。これらの要件を満たすために、管理者は何を提案すべきですか。",
     "choices": [
       "自動レスポンスルール",
@@ -4708,7 +4538,6 @@
   },
   {
     "id": 172,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice172",
     "question": "Ursa Major Solar社は、どのマーケティング活動がチームの商談獲得に役立っているかを知りたがっています。このような情報を提供するために、管理者はどのような設定を行う必要がありますか。",
     "choices": [
       "キャンペーン階層",
@@ -4735,7 +4564,6 @@
   },
   {
     "id": 173,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice173",
     "question": "Cloud Kicks社(CK)は、[Needs Review(レビューが必要)]というチェックボックス項目で、商談を商品エンジニアリングの誰かがレビューすべきかどうかを把握します。また、CKには、商談に[商品タイプ]という選択リスト項目があります。営業担当者が商談を保存するとき、商品タイプを選択するか、[Needs Review(レビューが必要)]ボックスをチェックする必要があります。管理者はこれを達成するために何を使用する必要がありますか。",
     "choices": [
       "保存前更新を実行するフロー",
@@ -4762,7 +4590,6 @@
   },
   {
     "id": 174,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice174",
     "question": "管理者がデータローダーを使用して、新しいAPIからカスタムオブジェクトに新しいレコードを一括インポートしようと計画しています。管理者はデータローダーを使用するために何をする必要がありますか。",
     "choices": [
       "データのインポートを許可する権限セットを追加する。",
@@ -4789,7 +4616,6 @@
   },
   {
     "id": 175,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice175",
     "question": "DreamHouse Realty社(DR)は、新しい住宅管理サービスを発表しました。この商品は、同社が過去に提供したものとは異なるビジネスモデルです。この要件を満たすために、管理者は何を設定すべきでしょうか。",
     "choices": [
       "新しいクイックアクションを作成する。",
@@ -4816,7 +4642,6 @@
   },
   {
     "id": 176,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice176",
     "question": "Universal Containers社は、商談がクローズされた場合、同じ取引先にある他のすべてのオープンな商談がクローズされたものとしてマークされなければならないことを要求しています。管理者は、この要求を実装するためにどの自動化ソリューションを使用する必要がありますか。",
     "choices": [
       "クイックアクション",
@@ -4843,7 +4668,6 @@
   },
   {
     "id": 177,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice177",
     "question": "Universal Containers社のIT管理者がシステムのセキュリティ監査を行っています。管理者は、システムのセキュリティの健全性をどのようにまとめればよいでしょうか。",
     "choices": [
       "組織全体のデフォルトを非公開に変更し、可視性を制限する。",
@@ -4870,7 +4694,6 @@
   },
   {
     "id": 178,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice178",
     "question": "Cloud Kicks社の分析ユーザーは、オブジェクトの参照、作成、編集のアクセス権が必要で、レコードの削除を制限する必要があります。この要件を満たすために管理者は何をすべきですか。",
     "choices": [
       "参照、作成、編集を含む権限セットを作成し、割り当てる。",
@@ -4897,7 +4720,6 @@
   },
   {
     "id": 179,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice179",
     "question": "主従関係の特徴はどれですか。3つ選びなさい。",
     "choices": [
       "積み上げ集計項目は主従関係でのみサポートされる。",
@@ -4926,7 +4748,6 @@
   },
   {
     "id": 180,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice180",
     "question": "Ursa Solar Major社は、サービスチーム向けにSalesforceを評価しています。サポートのユースケースを考えている管理者が利用できる標準オブジェクトはどれですか。3つ選びなさい。",
     "choices": [
       "リクエスト",
@@ -4956,7 +4777,6 @@
   },
   {
     "id": 181,
-    "url": "https://tysonblog-whitelabel.com/salesforce-admin-practice181",
     "question": "Northern Trail Outfitters社のマーケティングディレクターが、リードの状況項目を”適格”とマークするために予算項目に入力するよう要求しています。この要求を満たすために、管理者はどのツールを使用すべきですか。",
     "choices": [
       "リード変換",
@@ -4983,7 +4803,6 @@
   },
   {
     "id": 182,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_overview.htm",
     "question": "Cloud Kicks社の管理者は、カスタマーサービスチームが顧客の問い合わせに24時間対応できるように、自律的に会話できるAIエージェントを導入したいと考えています。管理者はどの機能を使用すべきでしょうか。",
     "choices": [
       "フロービルダーでスクリーンフローを作成する。",
@@ -5010,7 +4829,6 @@
   },
   {
     "id": 183,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_agent_builder.htm",
     "question": "Ursa Major Solar社の管理者は、Agent Builderを使用してAgentforceエージェントを設定しています。エージェントが特定の業務を実行するための範囲と手順を定義するには、何を設定すればよいでしょうか。",
     "choices": [
       "プロファイルとページレイアウト",
@@ -5037,7 +4855,6 @@
   },
   {
     "id": 184,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_testing.htm",
     "question": "Northern Trail Outfitters社の管理者は、Agentforceエージェントを本番環境にリリースする前に、エージェントの会話の動作を確認したいと考えています。管理者はどの機能を使用すべきでしょうか。",
     "choices": [
       "デバッグログを有効化する。",
@@ -5064,7 +4881,6 @@
   },
   {
     "id": 185,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_security.htm",
     "question": "AW Computing社のAgentforceエージェントが、顧客の問い合わせに応答する際に特定のレコードにアクセスできません。管理者はどこでエージェントのデータアクセス権限を確認・修正すべきでしょうか。",
     "choices": [
       "エージェントのプロンプト（指示）を修正する。",
@@ -5091,7 +4907,6 @@
   },
   {
     "id": 186,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_prompt_builder.htm",
     "question": "Universal Containers社の管理者は、AgentforceエージェントがSalesforceのデータを参照して、一貫したトーンと形式でメールを生成するテンプレートを作成したいと考えています。管理者はどの機能を使用すべきでしょうか。",
     "choices": [
       "メールテンプレートを作成する。",
@@ -5118,7 +4933,6 @@
   },
   {
     "id": 187,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_actions.htm",
     "question": "DreamHouse Realty社の管理者は、Agentforceエージェントが顧客からの問い合わせを受けた際に自動的にケースを作成できるようにしたいと考えています。この機能を実現するために管理者がAgent Builderで設定するものはどれですか。（2つ選んでください）",
     "choices": [
       "トピックにケース作成に関する指示（Instructions）を追加する。",
@@ -5148,7 +4962,6 @@
   },
   {
     "id": 188,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_topics.htm",
     "question": "Cloud Kicks社の管理者は、Agentforceエージェントが扱うべきでない話題（例：競合他社の情報や政治的な話題）について応答しないようにしたいと考えています。管理者はどのように設定すべきでしょうか。",
     "choices": [
       "エージェントを無効化して、対象外の話題が来たら手動で対応する。",
@@ -5175,7 +4988,6 @@
   },
   {
     "id": 189,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_use_cases.htm",
     "question": "Ursa Major Solar社の管理者は、Agentforceの導入を検討しています。Agentforceが対応できるユースケースとして正しいものはどれですか。（2つ選んでください）",
     "choices": [
       "顧客からのチャット問い合わせに自律的に応答してケースを解決する。",
@@ -5204,7 +5016,6 @@
   },
   {
     "id": 190,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_channels.htm",
     "question": "Cloud Kicks社の管理者は、Agentforceエージェントを設定する際に、エージェントが対応するチャネル（顧客との接点）を選択する必要があります。Agentforceエージェントが対応できるチャネルとして正しいものはどれですか。",
     "choices": [
       "Experience Cloud サイトに埋め込んだWebチャットのみで、外部メッセージングには対応しない",
@@ -5232,7 +5043,6 @@
   },
   {
     "id": 191,
-    "url": "https://help.salesforce.com/s/articleView?id=sf.agentforce_einstein_comparison.htm",
     "question": "Universal Containers社の管理者は、既存のSalesforce自動化ツールとAgentforceの違いを理解しようとしています。Agentforceと従来のフロービルダーの違いとして正しいものはどれですか。",
     "choices": [
       "フロービルダーはAIを使用し、Agentforceはルールベースの自動化を行う。",
@@ -5260,7 +5070,6 @@
   },
   {
     "id": 192,
-    "url": "",
     "question": "Cloud Kicks社の管理者は、ケースが保存されるたびに、同じケースレコードの「優先度」項目を自動的に更新したいと考えています（他レコードの参照・更新は不要）。最もパフォーマンスが高く、コードも不要な方法はどれですか。",
     "choices": [
       "レコードトリガフロー（保存前 / before-save）で項目を更新する",
@@ -5285,7 +5094,6 @@
   },
   {
     "id": 193,
-    "url": "",
     "question": "Universal Containers社は、毎晩、契約終了日を過ぎたすべての「契約」レコードのステータスを「失効」に一括更新したいと考えています。管理者が使うべき自動化ツールはどれですか。",
     "choices": [
       "スケジュールトリガフロー",
@@ -5310,7 +5118,6 @@
   },
   {
     "id": 194,
-    "url": "",
     "question": "サポートチームは、エージェントが顧客から複数の情報を順番に入力して新規ケースを作成できる「ガイド付きウィザード」をSalesforceの画面上に作りたいと考えています。管理者はどのフロー種別を使うべきですか。",
     "choices": [
       "画面フロー",
@@ -5335,7 +5142,6 @@
   },
   {
     "id": 195,
-    "url": "",
     "question": "NTO社では、経費レコードが提出されると、金額に応じてマネージャー→ディレクターの順に承認を要求し、各段階で承認・却下を記録し、承認待ちの間はレコードをロックする必要があります。最も適した機能はどれですか。",
     "choices": [
       "承認プロセス",
@@ -5359,7 +5165,6 @@
   },
   {
     "id": 196,
-    "url": "",
     "question": "管理者が作成したレコードトリガフローが、大量レコードのデータインポート時に「SOQLクエリの上限を超過しました」というエラーで失敗します。ベストプラクティスとして正しい対処はどれですか。",
     "choices": [
       "ループの内側ではなく外側で「取得」「更新」などのデータ操作要素を実行する",
@@ -5386,7 +5191,6 @@
   {
     "id": 197,
     "expFig": "relationships",
-    "url": "",
     "question": "「取引先」（主）と「請求書」（従）が主従関係にあります。管理者はコードを使わずに、各取引先に紐づく請求書の合計金額を取引先レコードに表示したいと考えています。最も適切な方法はどれですか。",
     "choices": [
       "積み上げ集計（ロールアップサマリー）項目を作成する",
@@ -5411,7 +5215,6 @@
   },
   {
     "id": 198,
-    "url": "",
     "question": "Cloud Kicks社は、Lightningレコードページ上で項目を1つずつ自由に配置し、条件に応じて項目を表示／非表示にしたいと考えています。ページレイアウトに依存せず項目単位で制御できる機能はどれですか。",
     "choices": [
       "ダイナミックフォーム",
@@ -5435,7 +5238,6 @@
   },
   {
     "id": 199,
-    "url": "",
     "question": "管理者は、Lightningアプリケーションビルダーで、商談の「フェーズ」が特定の値のときだけあるコンポーネントを表示したいと考えています。何を設定すべきですか。",
     "choices": [
       "コンポーネントの表示ルール（コンポーネントの可視性）を設定する",
@@ -5460,7 +5262,6 @@
   },
   {
     "id": 200,
-    "url": "",
     "question": "積み上げ集計（ロールアップサマリー）項目を作成するには、2つのオブジェクト間にどのリレーションが必要ですか。",
     "choices": [
       "主従関係",
@@ -5484,7 +5285,6 @@
   },
   {
     "id": 201,
-    "url": "",
     "question": "「セミナー」と「参加者」のように、1件のセミナーに複数の参加者、1人の参加者が複数のセミナーに関連する多対多の関係を、コードを使わずに実現するには、管理者は何を作成すべきですか。",
     "choices": [
       "2つの主従関係を持つ連結（ジャンクション）オブジェクト",
@@ -5509,7 +5309,6 @@
   },
   {
     "id": 202,
-    "url": "",
     "question": "管理者が、既存データのある「テキスト」項目を「選択リスト」項目に型変更しようとしています。管理者が最も注意すべきことは何ですか。",
     "choices": [
       "データが失われる可能性があるため、事前にエクスポートでバックアップし、影響を確認する",
@@ -5534,7 +5333,6 @@
   },
   {
     "id": 203,
-    "url": "",
     "question": "NTO社では、同じ「ケース」オブジェクトについて、営業チームとサポートチームで異なる選択リストの値と異なるページレイアウトを表示する必要があります。管理者はどう構成すべきですか。",
     "choices": [
       "チームごとにレコードタイプを作成し、選択リスト値とページレイアウトを割り当てる",
@@ -5560,7 +5358,6 @@
   {
     "id": 204,
     "expFig": "record-access",
-    "url": "",
     "question": "ある カスタムオブジェクトの組織全体のデフォルト（OWD）は「非公開」です。管理者は、特定のロールのユーザー全員が、別の特定の公開グループが所有するレコードを参照できるようにしたいと考えています。レコード所有者を変えずに、最小限の追加アクセスを与える方法はどれですか。",
     "choices": [
       "共有ルールを作成する",
@@ -5586,7 +5383,6 @@
   {
     "id": 205,
     "expFig": "profile-permset",
-    "url": "",
     "question": "管理者は、複数の権限セットをまとめた権限セットグループをユーザーに割り当てていますが、そのグループに含まれる1つの危険な権限だけを、グループのメンバーに対して無効化したいと考えています。何を使うべきですか。",
     "choices": [
       "ミュート権限セットをグループに追加する",
@@ -5610,7 +5406,6 @@
   },
   {
     "id": 206,
-    "url": "",
     "question": "Ursa Major Solar社は、組織全体のすべての直接ログインユーザーに多要素認証（MFA）を強制したいと考えています。管理者はどこで設定しますか。",
     "choices": [
       "[設定] > [ID] > [多要素認証] で組織全体の設定を有効化する",
@@ -5635,7 +5430,6 @@
   },
   {
     "id": 207,
-    "url": "",
     "question": "ある営業担当者が急に退職しました。管理者は、所有レコードの引き継ぎが完了するまでの間、このユーザーのログインを直ちに止めたいと考えています。ただし、ライセンスはまだ解放できません（割り当ての都合上、無効化はすぐにできない）。最も適切な操作はどれですか。",
     "choices": [
       "ユーザーを凍結する",
@@ -5660,7 +5454,6 @@
   },
   {
     "id": 208,
-    "url": "",
     "question": "管理者は、自社のセキュリティ設定（パスワードポリシーやセッション設定など）が推奨基準とどれだけ乖離しているかを、スコアとして一目で把握したいと考えています。どの機能を使うべきですか。",
     "choices": [
       "セキュリティヘルスチェック",
@@ -5685,7 +5478,6 @@
   },
   {
     "id": 209,
-    "url": "",
     "question": "管理者は、特定のプロファイルに属するユーザーが、会社のオフィスのIPアドレス範囲からのみログインできるように制限したい（範囲外は完全にブロック）と考えています。何を設定しますか。",
     "choices": [
       "プロファイルのログインIPアドレスの制限（範囲）を設定する",
@@ -5710,7 +5502,6 @@
   },
   {
     "id": 210,
-    "url": "",
     "question": "営業マネージャーは、ダッシュボードを開いた各ユーザーが「自分のデータ」に基づいた数値を見られるようにしたいと考えています（閲覧者ごとに表示が変わる）。管理者はどのダッシュボードを構成すべきですか。",
     "choices": [
       "動的ダッシュボード（実行ユーザーをログインユーザーにする）",
@@ -5735,7 +5526,6 @@
   },
   {
     "id": 211,
-    "url": "",
     "question": "管理者は、1つのダッシュボードで、地域（東日本／西日本）を切り替えて同じ指標を見られるようにしたいと考えています。ダッシュボードを地域ごとに複製せずに実現する方法はどれですか。",
     "choices": [
       "ダッシュボードフィルタを追加する",
@@ -5759,7 +5549,6 @@
   },
   {
     "id": 212,
-    "url": "",
     "question": "管理者は、サポートチームのレポートを集めたフォルダを作成し、サポートエージェントには参照のみ、サポートマネージャーには編集まで許可したいと考えています。どう設定しますか。",
     "choices": [
       "レポートフォルダを共有し、エージェントには「閲覧者」、マネージャーには「管理者／編集者」アクセスを付与する",
@@ -5784,7 +5573,6 @@
   },
   {
     "id": 213,
-    "url": "",
     "question": "管理者は、コンプライアンス目的で、組織のデータのバックアップを定期的（週次など）にエクスポートして保管したいと考えています。Salesforce標準で使える方法はどれですか。",
     "choices": [
       "データエクスポートサービス（スケジュールエクスポート）を使う",
@@ -5809,7 +5597,6 @@
   },
   {
     "id": 214,
-    "url": "",
     "question": "営業マネージャーは、商談の各フェーズで「次に何をすべきか」のガイダンスと、入力すべき重要項目を、レコードページ上に視覚的に表示したいと考えています。管理者が使うべき機能はどれですか。",
     "choices": [
       "パス（重要な項目とガイダンスを設定）",
@@ -5834,7 +5621,6 @@
   },
   {
     "id": 216,
-    "url": "",
     "question": "営業チームは、各商談に関与する取引先責任者（意思決定者、推進者など）と、その役割を記録・把握したいと考えています。管理者は何を活用すべきですか。",
     "choices": [
       "商談の取引先責任者の役割（Contact Roles）",
@@ -5859,7 +5645,6 @@
   },
   {
     "id": 217,
-    "url": "",
     "question": "AW Computing社では、新しいケースが作成されたときに、製品カテゴリに応じて適切なサポートキュー／担当者へ自動的に割り当てたいと考えています。管理者は何を構成すべきですか。",
     "choices": [
       "ケースの割り当てルール",
@@ -5884,7 +5669,6 @@
   },
   {
     "id": 218,
-    "url": "",
     "question": "サポート部門では、優先度「高」のケースが2時間以内に対応されない場合、自動的にサポートマネージャーへ引き上げ、通知したいと考えています。管理者は何を使うべきですか。",
     "choices": [
       "ケースのエスカレーションルール",
@@ -5908,7 +5692,6 @@
   },
   {
     "id": 219,
-    "url": "",
     "question": "コンタクトセンターでは、ケースやチャットなどの作業を、エージェントのスキルや対応可能件数（キャパシティ）に応じてリアルタイムに自動で割り振りたいと考えています。管理者が活用すべき機能はどれですか。",
     "choices": [
       "オムニチャネル（Omni-Channel）",
@@ -5933,7 +5716,6 @@
   },
   {
     "id": 220,
-    "url": "",
     "question": "ユーザーから、一定間隔で繰り返すToDo（タスク）を作成できるようにしてほしいという要望があります。管理者は何をすべきですか。",
     "choices": [
       "繰り返しToDo（タスク）の作成を有効にする",
@@ -5958,7 +5740,6 @@
   },
   {
     "id": 221,
-    "url": "",
     "question": "管理者は、Salesforceモバイルアプリのナビゲーションメニューに表示される項目とその順序を、自社の利用状況に合わせてカスタマイズしたいと考えています。どこで設定しますか。",
     "choices": [
       "Salesforceナビゲーション（モバイルナビゲーションメニュー）の設定でメニュー項目を構成する",
@@ -5982,7 +5763,6 @@
   },
   {
     "id": 222,
-    "url": "",
     "question": "Cloud Kicks社は、以前のEinstein Bot（事前に定義した対話フローで応答するボット）からの移行を検討しています。Agentforce（エージェント）がEinstein Botと最も異なる点はどれですか。",
     "choices": [
       "大規模言語モデル（LLM）を使って自律的に推論し、トピックとアクションから適切な対応を判断する",
@@ -6007,7 +5787,6 @@
   },
   {
     "id": 223,
-    "url": "",
     "question": "Ursa Major Solar社の管理者は、Agent Builderでエージェントにアクションを追加しようとしています。Agentforceのアクションとして割り当てられるものはどれですか。（2つ選んでください）",
     "choices": [
       "フロー",
@@ -6034,7 +5813,6 @@
   },
   {
     "id": 224,
-    "url": "",
     "question": "Northern Trail Outfitters社の管理者は、本番リリース前に、想定される多数の問い合わせ（テスト発話）をまとめてエージェントに与え、トピックの認識やアクションの実行結果を一括で検証したいと考えています。最も適した機能はどれですか。",
     "choices": [
       "Agentforce Testing Center（テストセンター）で一括テストを実行する",
@@ -6059,7 +5837,6 @@
   },
   {
     "id": 225,
-    "url": "",
     "question": "AW Computing社のサービスエージェント（Agentforce）が、複雑な問い合わせで自力で解決できない場合に、人間のサポート担当者へ引き継げるようにしたいと考えています。管理者はどう設計すべきですか。",
     "choices": [
       "人間の担当者へエスカレーション（転送）するアクションをトピックに設定する",
@@ -6084,7 +5861,6 @@
   },
   {
     "id": 226,
-    "url": "",
     "question": "Cloud Kicks社の営業チームは、Webから来た大量のインバウンドリードに対し、初動の質問対応や情報提供、商談化の見込み確認を自律的に行わせ、有望なものを担当者へ引き継ぎたいと考えています。最も適したAgentforceの活用はどれですか。",
     "choices": [
       "セールス（SDR）系のエージェントで、リードへの初動対応・育成・有望リードの引き継ぎを自律化する",
@@ -6109,7 +5885,6 @@
   },
   {
     "id": 227,
-    "url": "",
     "question": "Ursa Major Solar社のエージェントが、ある状況で意図したアクションを使わず、対応の手順も期待どおりになりません（データアクセス権の問題ではない）。管理者がまず見直すべきものはどれですか。",
     "choices": [
       "該当トピックの指示（Instructions）を、いつ・どのアクションを・どう使うか明確になるよう調整する",
@@ -6134,7 +5909,6 @@
   },
   {
     "id": 228,
-    "url": "",
     "question": "DreamHouse Realty社の管理者は、Agentforceエージェントが、思い込み（不正確な情報）ではなく、自社のナレッジ記事やSalesforceのレコードに基づいて正確に回答するようにしたいと考えています。管理者がとるべき方法はどれですか。",
     "choices": [
       "ナレッジ記事やレコードデータをエージェントの参照元（グラウンディング）として与え、それを使うアクション／トピックを設定する",
@@ -6159,7 +5933,6 @@
   },
   {
     "id": 229,
-    "url": "",
     "question": "Universal Containers社の管理者が、初めてAgentforceエージェントを作成します。エージェントを構築・公開するまでの基本的な流れとして正しいものはどれですか。",
     "choices": [
       "Agent Builderでエージェントを作成し、トピックと（フロー等の）アクションを設定→会話プレビューで検証→チャネルに接続して有効化する",
@@ -6184,7 +5957,6 @@
   },
   {
     "id": 230,
-    "url": "",
     "question": "Universal Containers社では、出張申請（カスタムオブジェクト）の組織全体のデフォルトが「公開／参照・更新可能」で、全社員が互いの申請を閲覧できます。監査部門のメンバーについてだけは、共有設定で見えるレコードのうち『自分が所有する申請』に表示を絞り込みたい（他ユーザーの共有は一切変えずに、特定ユーザーの見える範囲だけを狭めたい）と考えています。コードを使わずに実現する最適な方法はどれですか。",
     "choices": [
       "制限ルール（Restriction Rule）を作成し、対象ユーザーが参照できるレコードを所有者＝自分の申請のみに絞り込む",
@@ -6210,7 +5982,6 @@
   {
     "id": 231,
     "expFig": "security-layers",
-    "url": "",
     "question": "管理者が取引先に「社会保障番号」項目を作成しました。詳細ページのレイアウトからこの項目を削除したにもかかわらず、一部のユーザーがレポート・API・データエクスポートでこの項目の値を参照できてしまいます。すべての参照経路でこの項目を確実に非表示にするには、管理者は何をすべきですか。",
     "choices": [
       "項目レベルセキュリティ（FLS）で、対象のプロファイル／権限セットに対して当該項目の「参照可能」を外す",
@@ -6236,7 +6007,6 @@
   {
     "id": 232,
     "expFig": "profile-permset",
-    "url": "",
     "question": "あるユーザーのプロファイルでは商談オブジェクトの「削除」権限が付与されていません。一方、このユーザーに割り当てられた権限セットでは商談の「削除」が有効になっています。権限の組み合わせに関する説明として正しいものを2つ選びなさい。",
     "choices": [
       "権限はプロファイルと権限セットで加算され、いずれかで許可されていればユーザーは商談を削除できる",
@@ -6262,7 +6032,6 @@
   },
   {
     "id": 233,
-    "url": "",
     "question": "管理者は、データ品質チームに「取引先」オブジェクトの全レコードを参照・更新できる権限を与えたいと考えています。ただし、他のすべてのオブジェクトのデータには手を出させたくありません。共有ルールを増やさずに、取引先だけ全件アクセスを与える最適な方法はどれですか。",
     "choices": [
       "権限セットで取引先オブジェクトの「すべて表示（View All）」「すべて編集（Modify All）」を付与する",
@@ -6286,7 +6055,6 @@
   },
   {
     "id": 234,
-    "url": "",
     "question": "Universal Containers社では、各部門のチームリーダーに、自部門のロールに属するユーザーのパスワードリセットやユーザー作成だけを任せたいと考えています。ただし、システム全体の管理権限（全データ編集など）は与えたくありません。管理者はどの機能を使うべきですか。",
     "choices": [
       "委任管理（Delegated Administration）を設定し、管理対象のロールや権限セットを限定して権限を委任する",
@@ -6311,7 +6079,6 @@
   },
   {
     "id": 235,
-    "url": "",
     "question": "管理者は、地域ごとの送料率や承認しきい値といった「アプリの設定値」をSalesforceに保存し、入力規則や数式から参照したいと考えています。さらにその設定値は、Sandboxから本番へ変更セットやパッケージで配布できる必要があります。最も適した格納先はどれですか。",
     "choices": [
       "カスタムメタデータ型（Custom Metadata Types）にレコードを作成する",
@@ -6336,7 +6103,6 @@
   },
   {
     "id": 236,
-    "url": "",
     "question": "Ursa Major Solar社では、取引先オブジェクトで25項目の変更履歴を追跡するよう依頼されました。管理者が項目履歴管理を設定しようとすると、すべての項目を追跡対象にできません。最も妥当な理由と対処はどれですか。",
     "choices": [
       "1オブジェクトあたり履歴追跡できるのは最大20項目のため、追跡項目を20以下に絞るか、要件を見直す必要がある",
@@ -6361,7 +6127,6 @@
   },
   {
     "id": 237,
-    "url": "",
     "question": "管理者は、「国」選択リストの値に応じて「都道府県／州」選択リストの選択肢を絞り込む連動選択リスト（依存関係）を設定します。連動選択リストに関する正しい説明を2つ選びなさい。",
     "choices": [
       "制御項目には選択リストまたはチェックボックスを使用でき、依存項目はカスタム選択リストでなければならない",
@@ -6387,7 +6152,6 @@
   },
   {
     "id": 238,
-    "url": "",
     "question": "管理者は商談オブジェクトに対し、(1)組織のデフォルトのレコードページ、(2)「営業」アプリのデフォルト、(3)「営業」アプリ＋特定のレコードタイプ＋特定のプロファイル向けの割り当て、の3種類のLightningレコードページを有効化しました。営業アプリを使い、対象プロファイル・対象レコードタイプの商談を開いたユーザーには、どのページが表示されますか。",
     "choices": [
       "アプリ＋レコードタイプ＋プロファイルの割り当て（最も具体的な割り当て）",
@@ -6412,7 +6176,6 @@
   },
   {
     "id": 239,
-    "url": "",
     "question": "Universal Containers社は、基幹ERPに保管された数百万件の請求明細を、Salesforce上でリアルタイムに参照したいと考えています。データをSalesforceにコピー（保存）したくはありません。コードを最小限に抑えつつ実現する仕組みはどれですか。",
     "choices": [
       "Salesforce Connectを使い、外部データを外部オブジェクトとしてオンデマンドで参照する",
@@ -6437,7 +6200,6 @@
   },
   {
     "id": 240,
-    "url": "",
     "question": "ある取引先で、保存前（before-save）レコードトリガフローが「信用ランク」項目を自動設定します。同じオブジェクトには「信用ランクが空欄なら保存させない」という入力規則もあります。ユーザーが信用ランクを空欄のまま保存した場合の挙動として正しいものはどれですか。",
     "choices": [
       "保存前フローが先に信用ランクを設定するため、入力規則は値ありとみなしエラーにならず保存される",
@@ -6462,7 +6224,6 @@
   },
   {
     "id": 241,
-    "url": "",
     "question": "1つの取引先オブジェクトに、保存後（after-save）レコードトリガフローが3つ存在し、いずれも「作成または更新時」に起動します。実行される順序を管理者が明示的に制御したい場合、どうすべきですか。",
     "choices": [
       "各レコードトリガフローの「トリガの実行順序（Trigger Order）」に数値を設定して順序を制御する",
@@ -6487,7 +6248,6 @@
   },
   {
     "id": 242,
-    "url": "",
     "question": "管理者が経費承認の承認プロセスを設計しています。承認プロセスに関する正しい説明を2つ選びなさい。",
     "choices": [
       "承認のために申請されたレコードは、承認／却下が確定するまで自動的にロックでき、ロック中は通常編集できない",
@@ -6513,7 +6273,6 @@
   },
   {
     "id": 243,
-    "url": "",
     "question": "保存後（after-save）レコードトリガフローから、商談の成立時に外部の出荷システムへWeb APIコール（コールアウト）を行いたいと考えています。トランザクションを長引かせず、保存処理の失敗が外部連携に影響しないようにする推奨アプローチはどれですか。",
     "choices": [
       "レコードトリガフローの「非同期で実行（Run Asynchronously）」パスでコールアウトのアクションを実行する",
@@ -6538,7 +6297,6 @@
   },
   {
     "id": 244,
-    "url": "",
     "question": "管理者が商談に保存前（「高速項目更新／Fast Field Updates」に最適化）のレコードトリガフローを作成し、商談自身の項目を更新するところまでは成功しました。続けて「関連する取引先」の項目も同じフローで更新しようとしましたが、関連レコードを更新する手段が見当たりません。正しい理解と対処はどれですか。",
     "choices": [
       "高速項目更新（保存前）では起動レコード自身の項目しか更新できない。関連レコードを更新するには「アクションと関連レコード（保存後）」に最適化したフローを使う",
@@ -6563,7 +6321,6 @@
   },
   {
     "id": 245,
-    "url": "",
     "question": "DreamHouse Realty社は、毎週末時点の「オープンケース件数」をスナップショットとして保存し、数か月にわたる推移を後からレポートで分析したいと考えています。標準のレポートはその時点の最新値しか表示しません。コードを使わずに履歴を蓄積する方法はどれですか。",
     "choices": [
       "レポートスナップショット（分析スナップショット）を設定し、ソースレポートの結果を定期的にカスタムオブジェクトのレコードとして保存する",
@@ -6590,7 +6347,6 @@
   },
   {
     "id": 246,
-    "url": "",
     "question": "営業管理者は「過去90日間に1件も商談が紐づいていない取引先」の一覧をレポートで出したいと考えています。コードや数式項目を使わずに実現する最適な方法はどれですか。",
     "choices": [
       "「取引先」レポートにクロスフィルタを追加し、「商談を持たない（without 商談）」条件と日付のサブフィルタを設定する",
@@ -6615,7 +6371,6 @@
   },
   {
     "id": 247,
-    "url": "",
     "question": "管理者がデータ投入ツールを選定しています。データインポートウィザードとデータローダの違いについて、正しい説明を2つ選びなさい。",
     "choices": [
       "データインポートウィザードは一度に最大50,000件まで、重複の検出・防止に対応するが、扱えるオブジェクトは主要な標準オブジェクトとカスタムオブジェクトに限られる",
@@ -6641,7 +6396,6 @@
   },
   {
     "id": 248,
-    "url": "",
     "question": "サマリーレポートで、商談を「地域」でグループ化しています。各地域の金額合計が「全体の総計に占める割合（％）」を、行グループ単位で表示したいと考えています。最も適した方法はどれですか。",
     "choices": [
       "カスタムサマリー数式を作成し、PARENTGROUPVAL関数で各グループの金額合計を総計で割って割合を求める",
@@ -6667,7 +6421,6 @@
   {
     "id": 249,
     "expFig": "report-formats",
-    "url": "",
     "question": "管理者は、行に「商品カテゴリ」、列に「四半期」を取り、その交差セルに売上合計を表示する二次元のクロス集計レポートを作成したいと考えています。どのレポート形式を使うべきですか。",
     "choices": [
       "マトリックスレポート",
@@ -6692,7 +6445,6 @@
   },
   {
     "id": 250,
-    "url": "",
     "question": "Cloud Kicks社は、同じ商品を「一般顧客向け」と「卸売向け」で異なる定価で販売しています。営業担当者は商談の状況に応じて適切な価格表から商品を追加できる必要があります。管理者は何を構成すべきですか。",
     "choices": [
       "卸売用と一般用の複数のカスタム価格表（Price Book）を作成し、商品ごとに各価格表で異なる定価（価格表エントリ）を設定する",
@@ -6717,7 +6469,6 @@
   },
   {
     "id": 251,
-    "url": "",
     "question": "Universal Containers社は、商談から正式な見積書をPDFで顧客に提示し、複数案を作ったうえで、最終的に採用した見積の金額・商品を商談に反映（同期）したいと考えています。コードを使わずに実現する標準機能はどれですか。",
     "choices": [
       "見積（Quote）機能を有効化し、商談から見積を作成・PDF生成し、採用した見積を商談に同期（Sync）する",
@@ -6742,7 +6493,6 @@
   },
   {
     "id": 252,
-    "url": "",
     "question": "リードの取引開始（コンバート）処理について、正しい説明を2つ選びなさい。",
     "choices": [
       "リードを取引開始すると、取引先・取引先責任者が作成（または既存と照合）され、必要に応じて商談も作成できる",
@@ -6769,7 +6519,6 @@
   },
   {
     "id": 253,
-    "url": "",
     "question": "営業管理者は、各商談フェーズが予測（フォーキャスト）上どのカテゴリ（パイプライン／達成予測／コミット／成立）に積み上がるかを管理したいと考えています。フェーズとフォーキャストカテゴリの関係について正しい対処はどれですか。",
     "choices": [
       "各商談フェーズに対応するフォーキャストカテゴリを割り当て、共同フォーキャスト（Collaborative Forecasts）で集計する",
@@ -6794,7 +6543,6 @@
   },
   {
     "id": 254,
-    "url": "",
     "question": "Cloud Kicks社はサブスクリプション商品を扱い、1件の商談商品の金額を12か月に分割して、月ごとの収益発生を商談上で追跡したいと考えています。管理者が有効化・設定すべき機能はどれですか。",
     "choices": [
       "商品で収益スケジュール（Revenue Schedule）を有効化し、商談商品に分割スケジュールを設定する",
@@ -6819,7 +6567,6 @@
   },
   {
     "id": 255,
-    "url": "",
     "question": "Ursa Major Solar社は、サポート契約に応じて「初回応答は1時間以内、解決は24時間以内」というSLAをケース上で可視化し、期限が近づくとカウントダウンやアクションを発生させたいと考えています。最も適した機能はどれですか。",
     "choices": [
       "エンタイトルメント管理（Entitlements）とエンタイトルメントプロセス内のマイルストンを設定する",
@@ -6844,7 +6591,6 @@
   },
   {
     "id": 256,
-    "url": "",
     "question": "Cloud Kicks社のサポートエージェントは、よくある問い合わせに対して「ケースの状況を更新し、定型メールを送信し、ケースをクローズする」という同じ一連の操作を毎回手作業で繰り返しています。コードを使わずにこの繰り返し操作をワンクリックで実行できるようにする機能はどれですか。",
     "choices": [
       "マクロ（Macros）を作成し、ケースフィードで定型の一連アクションを一括実行できるようにする",
@@ -6868,7 +6614,6 @@
   },
   {
     "id": 257,
-    "url": "",
     "question": "管理者は、Web／メール経由で受け付けたケースに対して、(1)適切な担当者やキューへ割り当て、(2)受付確認の自動返信メールを顧客に送る、という2つの自動処理を分けて設計します。割り当てルールと自動応答ルールに関する正しい説明を2つ選びなさい。",
     "choices": [
       "割り当てルールは、条件に基づいてケースの所有者（ユーザーまたはキュー）を自動的に設定する",
@@ -6895,7 +6640,6 @@
   },
   {
     "id": 258,
-    "url": "",
     "question": "Cloud Kicks社では、特定の種類のケースに、サポート担当・エスカレーション担当・営業担当の3者が決まった役割で関与し、関係者がそのケースに必要なアクセス権を得て協働できるようにしたいと考えています。最小限の設定で繰り返し使える方法はどれですか。",
     "choices": [
       "定義済みケースチーム（Predefined Case Team）を作成し、役割とアクセスレベルを設定してケースに適用する",
@@ -6920,7 +6664,6 @@
   },
   {
     "id": 259,
-    "url": "",
     "question": "AW Computing社はLightning Knowledgeを利用しています。ナレッジ記事を製品ライン別に整理しつつ、特定のロールのユーザーには一部の製品カテゴリの記事だけを表示し、他のカテゴリは見せないようにしたいと考えています。最も適した方法はどれですか。",
     "choices": [
       "データカテゴリ（Data Category）で記事を分類し、データカテゴリグループの表示設定（Category Group Visibility）でロール等ごとに参照可能なカテゴリを制御する",
@@ -6945,7 +6688,6 @@
   },
   {
     "id": 260,
-    "url": "",
     "question": "Cloud Kicks社の営業担当者は、OutlookやGmailでやり取りしたメールや予定を、関連する取引先責任者や商談に手作業でひも付ける作業に時間を取られています。これを自動で取り込み、活動タイムラインに表示する標準機能はどれですか。",
     "choices": [
       "Einstein Activity Capture（活動の自動取得）を設定する",
@@ -6970,7 +6712,6 @@
   },
   {
     "id": 261,
-    "url": "",
     "question": "管理者は、特定条件の高額商談が成立したとき、対象の営業部長に対してSalesforceモバイルアプリとデスクトップのベル通知をリアルタイムに送りたいと考えています（メールではなくアプリ内通知）。コードを使わずに実現する方法はどれですか。",
     "choices": [
       "通知タイプ（カスタム通知）を作成し、レコードトリガフローの「カスタム通知を送信」アクションから対象ユーザーに送信する",
@@ -6995,7 +6736,6 @@
   },
   {
     "id": 262,
-    "url": "",
     "question": "管理者がLightningのリストビューを活用します。リストビューに関する正しい説明を2つ選びなさい。",
     "choices": [
       "リストビューは、自分のみ／すべてのユーザー／特定のユーザーグループ（公開グループ・ロール等）に可視性を限定して共有できる",
@@ -7020,7 +6760,6 @@
   },
   {
     "id": 263,
-    "url": "",
     "question": "サポートチームは、ケースのメール送信時に、ケースや取引先責任者の項目を差し込んだ定型メールを、チーム全員で共有して使いたいと考えています。Lightning Experienceで管理者が用意すべきものはどれですか。",
     "choices": [
       "差し込み項目を含むLightningメールテンプレートを作成し、拡張フォルダに保存してチームと共有する",
@@ -7045,7 +6784,6 @@
   },
   {
     "id": 264,
-    "url": "",
     "question": "Universal Containers社では、ユーザーがどの画面（ホーム、Chatter、任意のレコード）からでも、ワンクリックで「ToDoの記録」や「取引先責任者の新規作成」ができるようにしたいと考えています。管理者が作成すべきアクションの種類はどれですか。",
     "choices": [
       "グローバルクイックアクションを作成し、グローバルパブリッシャーレイアウトに追加する",
@@ -7070,7 +6808,6 @@
   },
   {
     "id": 265,
-    "url": "",
     "question": "AW Computing社のセキュリティ部門は、Agentforceや生成AI機能の利用にあたり、顧客の個人情報がLLMに渡る際にマスキングされ、プロンプト／応答が監査ログに残り、LLMプロバイダ側にデータが保持（学習に利用）されないことを保証したいと考えています。これらを担う仕組みはどれですか。",
     "choices": [
       "Einstein Trust Layer",
@@ -7095,7 +6832,6 @@
   },
   {
     "id": 266,
-    "url": "",
     "question": "DreamHouse Realty社は、Salesforce外にある大量のPDFマニュアルやサポートサイトの記事を、Agentforceエージェントの回答の根拠として活用したいと考えています。これらの非構造化データを取り込み、エージェントの応答にグラウンディングする基盤として最も適したものはどれですか。",
     "choices": [
       "Data Cloud を利用して非構造化データを取り込み、検索（リトリーバー）でエージェントの回答にグラウンディングする",
@@ -7120,7 +6856,6 @@
   },
   {
     "id": 267,
-    "url": "",
     "question": "Agent Builderにおける「トピック」について、正しい説明を2つ選びなさい。",
     "choices": [
       "トピックは、エージェントが対応する業務領域の単位で、その範囲を実現するための手順（インストラクション）と、実行できるアクションをまとめる",
@@ -7146,7 +6881,6 @@
   },
   {
     "id": 268,
-    "url": "",
     "question": "Agentforceエージェントが、ユーザーの要求を解釈し、関連するトピックやアクションを選び、必要なデータを取得して応答を組み立てる「推論・計画」の中核を担うコンポーネントはどれですか。",
     "choices": [
       "Atlas Reasoning Engine（推論エンジン）",
@@ -7171,7 +6905,6 @@
   },
   {
     "id": 269,
-    "url": "",
     "question": "Cloud Kicks社はAgentforceエージェントを本番稼働させました。管理者は、エージェントがどのトピックを多く扱い、どのアクションを実行し、人間へのエスカレーションがどれだけ発生したかを継続的にモニタリングして改善したいと考えています。最も適したアプローチはどれですか。",
     "choices": [
       "Agentforceの分析（ダッシュボードや会話・セッションのデータ）を活用し、トピックやアクションの利用状況・エスカレーション率を継続的に確認する",
@@ -7196,7 +6929,6 @@
   },
   {
     "id": 270,
-    "url": "claude-generated",
     "question": "Cloud Kicks社のセールスマネージャーは、四半期ごとに「成約率の前期比較」を1枚のレポートで見たいと要望しています。管理者がレポートで使うべき機能はどれですか。",
     "choices": [
       "レポートフォーミュラで PREVGROUPVAL() 関数を使って前期グループの値を参照する",
@@ -7222,7 +6954,6 @@
   },
   {
     "id": 271,
-    "url": "claude-generated",
     "question": "Universal Containers社では、地域グループごとの売上の「地域全体に占める割合」をレポートに出したいです。最も適切な関数はどれですか。",
     "choices": [
       "PARENTGROUPVAL() で親グループ値を分母にして比率を算出する",
@@ -7248,7 +6979,6 @@
   },
   {
     "id": 272,
-    "url": "claude-generated",
     "question": "NTO社のサポートマネージャーは「過去6ヶ月分のケース解決数の推移」を自動で記録し、月次レポートに使いたいです。Salesforceで適切な機能はどれですか。",
     "choices": [
       "レポートスナップショットで定期的にレポート結果をカスタムオブジェクトに保存する",
@@ -7274,7 +7004,6 @@
   },
   {
     "id": 273,
-    "url": "claude-generated",
     "question": "AW Computing社の管理者は、エグゼクティブごとに「自分の管轄部署のみのデータ」が見えるダッシュボードを1つだけ作りたいと相談されました。最も効率的な方法はどれですか。",
     "choices": [
       "動的ダッシュボードを使い、ログインユーザーの権限でデータを表示する",
@@ -7299,7 +7028,6 @@
   },
   {
     "id": 274,
-    "url": "claude-generated",
     "question": "動的ダッシュボード(Dynamic Dashboard)が1つの組織で作成できる数の上限として正しいものはどれですか（Enterprise Edition の標準上限）。",
     "choices": [
       "5個",
@@ -7324,7 +7052,6 @@
   },
   {
     "id": 275,
-    "url": "claude-generated",
     "question": "DreamHouse社のマーケティング部門は、1つのダッシュボードを使って「地域」「商品カテゴリ」を選択肢で切り替えながら同じKPIを見たいと言っています。管理者が使うべき機能はどれですか。",
     "choices": [
       "ダッシュボードフィルタを最大3個まで設定する",
@@ -7351,7 +7078,6 @@
   },
   {
     "id": 276,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、ある特定の状況に応じた商談だけを集計するレポートを作りたいです。標準レポートタイプでは扱えない複数オブジェクト結合が必要なため、管理者がまず作るべきものはどれですか。",
     "choices": [
       "カスタムレポートタイプ(Custom Report Type)",
@@ -7376,7 +7102,6 @@
   },
   {
     "id": 277,
-    "url": "claude-generated",
     "question": "カスタムレポートタイプ(CRT)で結合できる関連オブジェクトの階層上限として正しいものはどれですか（母体オブジェクト＋関連）。",
     "choices": [
       "関連4階層まで（母体含め最大5オブジェクト）",
@@ -7401,7 +7126,6 @@
   },
   {
     "id": 278,
-    "url": "claude-generated",
     "question": "Universal Containers社のエグゼクティブは、毎週月曜の朝に同じレポートをメールで受け取りたいと言っています。管理者がもっとも簡単に設定できる方法はどれですか。",
     "choices": [
       "レポート購読(Subscribe)を設定し、配信スケジュールと受信者を指定する",
@@ -7426,7 +7150,6 @@
   },
   {
     "id": 279,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、レポートに表示される「成約率」の数値が、別レポートと一致しないと指摘されました。考えられる原因として最も適切なものを2つ選びなさい。",
     "choices": [
       "レポートタイプの違い（標準 vs カスタム、Inner/Outer join 設定）で対象レコード範囲が異なる",
@@ -7452,7 +7175,6 @@
   },
   {
     "id": 280,
-    "url": "claude-generated",
     "question": "AW Computing社で「複数の観点を1枚のレポートで横並び表示したい（リード化数・契約数・解約数を縦に分けて1ヘッダで見る）」要件があります。最も適した形式はどれですか。",
     "choices": [
       "結合レポート(Joined Report)",
@@ -7478,7 +7200,6 @@
   {
     "id": 281,
     "expFig": "report-formats",
-    "url": "claude-generated",
     "question": "結合レポート(Joined Report)に関する制約として正しいものはどれですか。",
     "choices": [
       "ダッシュボードのソースには使えない",
@@ -7503,7 +7224,6 @@
   },
   {
     "id": 282,
-    "url": "claude-generated",
     "question": "Cloud Kicks社のマネージャーから「自分のレポートだけを部下と共有したい」と要望されました。管理者が取るべき方法はどれですか。",
     "choices": [
       "レポートを部下と共有可能なフォルダに移動し、そのフォルダの閲覧権限を部下に付与する",
@@ -7528,7 +7248,6 @@
   },
   {
     "id": 283,
-    "url": "claude-generated",
     "question": "レポートフォルダの共有権限のうち「閲覧者(Viewer)」ロールができることはどれですか。",
     "choices": [
       "フォルダ内のレポート閲覧・実行のみ（編集・削除は不可）",
@@ -7553,7 +7272,6 @@
   },
   {
     "id": 284,
-    "url": "claude-generated",
     "question": "Universal Containers社で、新しい外部システムから商談を週次でロードする要件があります。Salesforce 側で既存レコードがあれば更新、なければ作成したいです。管理者が選ぶべき手段はどれですか。",
     "choices": [
       "データローダで Upsert オペレーションを使い、外部 ID を一致条件として指定する",
@@ -7580,7 +7298,6 @@
   },
   {
     "id": 285,
-    "url": "claude-generated",
     "question": "外部 ID(External ID)項目について正しいものを2つ選びなさい。",
     "choices": [
       "Upsert 操作で既存レコードとの一致判定に使える",
@@ -7606,7 +7323,6 @@
   },
   {
     "id": 286,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、データインポート時に「既存と重複したレコードは取り込まないが、近似は警告だけ表示したい」と要望されました。Salesforce で構成する仕組みはどれですか。",
     "choices": [
       "重複ルール(Duplicate Rule)で「ブロック」と「許可（警告）」をシナリオ別に構成する",
@@ -7631,7 +7347,6 @@
   },
   {
     "id": 287,
-    "url": "claude-generated",
     "question": "重複ルール(Duplicate Rule)と一致ルール(Matching Rule)の関係として正しいものはどれですか。",
     "choices": [
       "一致ルールは「何を重複とみなすか」の基準で、重複ルールはその基準を呼び出して「ブロック/警告/許可」を制御する",
@@ -7656,7 +7371,6 @@
   },
   {
     "id": 288,
-    "url": "claude-generated",
     "question": "DreamHouse社で、Excelで作った取引先 5,000 件を一度にインポートしたいです。ノンデベロッパ管理者が使うべきツールはどれですか。",
     "choices": [
       "データインポートウィザード（ブラウザ起動、最大5万件）",
@@ -7684,7 +7398,6 @@
   },
   {
     "id": 289,
-    "url": "claude-generated",
     "question": "データインポートウィザードでサポートされていないオブジェクトはどれですか。",
     "choices": [
       "商談(Opportunity)",
@@ -7709,7 +7422,6 @@
   },
   {
     "id": 290,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、毎日の終わりに営業データのバックアップを取りたいです。標準で使える方法はどれですか。",
     "choices": [
       "週次データエクスポートサービスを設定する（または手動エクスポート）",
@@ -7734,7 +7446,6 @@
   },
   {
     "id": 291,
-    "url": "claude-generated",
     "question": "Universal Containers社で、レポートを「グラフ表示のみ」でレコード詳細ページに埋め込みたいです。最適な機能はどれですか。",
     "choices": [
       "Lightning レコードページに「レポートグラフ」コンポーネントを配置する",
@@ -7759,7 +7470,6 @@
   },
   {
     "id": 292,
-    "url": "claude-generated",
     "question": "サマリーレポートでグラフを作成する場合、必要となる前提はどれですか。",
     "choices": [
       "1つ以上のグループ化が必要",
@@ -7785,7 +7495,6 @@
   },
   {
     "id": 293,
-    "url": "claude-generated",
     "question": "AW Computing社で、ダッシュボードコンポーネントの最大個数として正しいものはどれですか。",
     "choices": [
       "20個",
@@ -7810,7 +7519,6 @@
   },
   {
     "id": 294,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、「データクオリティを継続的にモニタリングしたい」と相談されました。Salesforceで標準で使える機能はどれですか。",
     "choices": [
       "AppExchange の Data Quality Analysis Dashboards パッケージを導入する",
@@ -7836,7 +7544,6 @@
   },
   {
     "id": 295,
-    "url": "claude-generated",
     "question": "Universal Containers社で、商談ステージの変更履歴を1年分追跡したいです。最も適切な機能はどれですか。",
     "choices": [
       "項目履歴管理(Field History Tracking)で商談ステージ項目を有効化する",
@@ -7861,7 +7568,6 @@
   },
   {
     "id": 296,
-    "url": "claude-generated",
     "question": "Field History Tracking で1オブジェクトあたり履歴を有効化できる項目数の上限はどれですか。",
     "choices": [
       "20項目",
@@ -7886,7 +7592,6 @@
   },
   {
     "id": 297,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、レポート期間を「相対日付」で指定したい場合、どの表現を使えますか。",
     "choices": [
       "LAST 6 MONTHS, THIS QUARTER, NEXT 30 DAYS など",
@@ -7911,7 +7616,6 @@
   },
   {
     "id": 298,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、レポートでバケット項目(Bucket Field)を使う典型シーンはどれですか。",
     "choices": [
       "既存項目の値を「高/中/低」のようにグループ化して新たな分類で表示する",
@@ -7936,7 +7640,6 @@
   },
   {
     "id": 299,
-    "url": "claude-generated",
     "question": "Universal Containers社で、グラフのY軸が「件数」と「金額」両方を表示するレポートを作りたいです。設定すべきオプションはどれですか。",
     "choices": [
       "コンビネーションチャートで第2軸(Secondary Axis)を有効化する",
@@ -7961,7 +7664,6 @@
   },
   {
     "id": 300,
-    "url": "claude-generated",
     "question": "AW Computing社で、データインポート時に「自動応答ルール」「割り当てルール」「ワークフロー」を抑止したい場合、データローダで設定できる場所はどれですか。",
     "choices": [
       "設定画面の「ルールの実行」オプション（Lead/Case Assignment Rule をオフにする等）",
@@ -7986,7 +7688,6 @@
   },
   {
     "id": 301,
-    "url": "claude-generated",
     "question": "レポートの「最大行数」を超えた場合に表示されるメッセージとして正しいものはどれですか。",
     "choices": [
       "「最初の 2,000 行のみを表示しています」のような切り捨て通知が表示される",
@@ -8011,7 +7712,6 @@
   },
   {
     "id": 302,
-    "url": "claude-generated",
     "question": "「Joined レポート」のブロック数上限はどれですか。",
     "choices": [
       "5ブロック",
@@ -8036,7 +7736,6 @@
   },
   {
     "id": 303,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で「直近 30 日に作成された商談で、特定キャンペーン経由のもの」をレポート化したい。最も適切な構築方法はどれですか。",
     "choices": [
       "商談レポートで「キャンペーンソース」と「作成日」をフィルタする",
@@ -8061,7 +7760,6 @@
   },
   {
     "id": 304,
-    "url": "claude-generated",
     "question": "「集計ダッシュボードのソースとして使えないレポート形式」として正しいものはどれですか。",
     "choices": [
       "表形式(Tabular) かつ 行制限を設けていない",
@@ -8086,7 +7784,6 @@
   },
   {
     "id": 305,
-    "url": "claude-generated",
     "question": "Universal Containers社で、レポートを毎日エクスポートして「外部 BI ツールに取り込みたい」と要望されました。最適な機能はどれですか。",
     "choices": [
       "レポートを CSV または XLS 形式で「データのみ」エクスポートし、定期実行をスケジュール購読する",
@@ -8111,7 +7808,6 @@
   },
   {
     "id": 306,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、ダッシュボードを「3つのカラム」で表示したい。設定する箇所はどれですか。",
     "choices": [
       "ダッシュボード編集画面の「コンポーネントの幅/グリッドサイズ」設定",
@@ -8136,7 +7832,6 @@
   },
   {
     "id": 307,
-    "url": "claude-generated",
     "question": "DreamHouse社で、「特定商品の月次売上推移」を時系列でレポートしたいです。レポートに表示するメトリックスとして適切なものはどれですか。",
     "choices": [
       "商談（成立日）を時間軸グループにして、商品ごとの金額合計をサマリーする",
@@ -8161,7 +7856,6 @@
   },
   {
     "id": 308,
-    "url": "claude-generated",
     "question": "「カスタムレポートタイプ(CRT)」と「標準レポートタイプ」の違いとして正しいものを2つ選びなさい。",
     "choices": [
       "CRT は管理者が設計して関連オブジェクトを最大4階層まで指定できる",
@@ -8187,7 +7881,6 @@
   },
   {
     "id": 309,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、レポート所有者を変更する場面で「レポート購読の引き継ぎ」がどうなるか質問されました。正しいものはどれですか。",
     "choices": [
       "購読は所有者ベースで設定されているため、所有者変更しても元の購読者の購読は自動的に引き継がれる",
@@ -8212,7 +7905,6 @@
   },
   {
     "id": 310,
-    "url": "claude-generated",
     "question": "Universal Containers社のセールスマネージャーは、メールクライアント（Outlook）で送信したメールを Salesforce の取引先責任者に自動同期したいです。最適な機能はどれですか。",
     "choices": [
       "Einstein Activity Capture (EAC) を有効化してユーザーがメールアカウントを接続する",
@@ -8238,7 +7930,6 @@
   },
   {
     "id": 311,
-    "url": "claude-generated",
     "question": "Cloud Kicks社では、EAC をオンにしたユーザーのメール活動が「Activity Timeline」に表示されないと相談がありました。考えられる原因として最も適切なものはどれですか。",
     "choices": [
       "ユーザーが自分のメールアカウントを EAC に接続していない",
@@ -8263,7 +7954,6 @@
   },
   {
     "id": 312,
-    "url": "claude-generated",
     "question": "EAC と Lightning Sync の主な違いとして正しいものはどれですか。",
     "choices": [
       "EAC は新しい統合方式、Lightning Sync はレガシー（段階的廃止予定）",
@@ -8288,7 +7978,6 @@
   },
   {
     "id": 313,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、新人ユーザーをトレーニング中に「ログインできない」と言われ、本人の代わりに状況確認したいと考えています。安全な方法はどれですか。",
     "choices": [
       "設定の「ユーザーへのログイン(Login As)」機能を使い、新人のアカウントでサインインする",
@@ -8313,7 +8002,6 @@
   },
   {
     "id": 314,
-    "url": "claude-generated",
     "question": "「Login As」機能を使用するために必要な前提として正しいものはどれですか。",
     "choices": [
       "「ユーザーログイン許可」設定がユーザー側でオンになっている（または管理者が組織設定で常時許可している）",
@@ -8338,7 +8026,6 @@
   },
   {
     "id": 315,
-    "url": "claude-generated",
     "question": "AW Computing社の管理者は、Salesforce で「mycompany.lightning.force.com」のようなカスタム URL を使いたいです。設定すべき機能はどれですか。",
     "choices": [
       "マイドメイン(My Domain)を有効化してサブドメインを設定する",
@@ -8363,7 +8050,6 @@
   },
   {
     "id": 316,
-    "url": "claude-generated",
     "question": "マイドメイン(My Domain)を有効化する効果として正しいものを2つ選びなさい。",
     "choices": [
       "シングルサインオン(SSO)を構成できるようになる",
@@ -8389,7 +8075,6 @@
   },
   {
     "id": 317,
-    "url": "claude-generated",
     "question": "Universal Containers社の管理者は、「特定の管理者だけが特定部門のユーザーを作成・編集できる」状態にしたい。プロファイル単位での「すべての管理権限」を渡さずに実現する方法はどれですか。",
     "choices": [
       "委任管理(Delegated Administration)を構成し、対象ロール/部門のユーザー管理を委任する",
@@ -8414,7 +8099,6 @@
   },
   {
     "id": 318,
-    "url": "claude-generated",
     "question": "委任管理(Delegated Administration)グループで委任できる機能として正しいものを2つ選びなさい。",
     "choices": [
       "特定ロール配下のユーザー作成・編集",
@@ -8440,7 +8124,6 @@
   },
   {
     "id": 319,
-    "url": "claude-generated",
     "question": "Cloud Kicks社のマーケティングチームは、Slack や Teams のように Salesforce 内で部署別のディスカッションスペースを使いたい。最適な機能はどれですか。",
     "choices": [
       "Chatter グループ（公開／非公開）を作成して部署メンバーを招待する",
@@ -8465,7 +8148,6 @@
   },
   {
     "id": 320,
-    "url": "claude-generated",
     "question": "Chatter で「未承認」のグループ参加申請をフィルタしたい。グループ参加方法の設定として正しいものを2つ選びなさい。",
     "choices": [
       "参加に承認が必要（プライベートで申請制）",
@@ -8491,7 +8173,6 @@
   },
   {
     "id": 321,
-    "url": "claude-generated",
     "question": "NTO社で「カスタム通知タイプ」を作りたいシナリオはどれですか。",
     "choices": [
       "特定のフロー実行完了時に、デスクトップとモバイル両方に通知を送りたい",
@@ -8516,7 +8197,6 @@
   },
   {
     "id": 322,
-    "url": "claude-generated",
     "question": "カスタム通知タイプ(Custom Notification Type)から通知を実際に送るには、どの仕組みが必要ですか。",
     "choices": [
       "フローまたは Apex の「カスタム通知を送信」アクションから呼び出す",
@@ -8541,7 +8221,6 @@
   },
   {
     "id": 323,
-    "url": "claude-generated",
     "question": "Universal Containers社で、ユーザーが「Salesforce モバイルアプリでホーム画面に商談を出したい」と要望しています。最も適切な対応はどれですか。",
     "choices": [
       "モバイル用 Lightning ページを作成し、対象プロファイル/フォームファクタに割り当てる",
@@ -8566,7 +8245,6 @@
   },
   {
     "id": 324,
-    "url": "claude-generated",
     "question": "DreamHouse社で、活動キャプチャの対象範囲を「組織全体ではなく特定のユーザーグループのみ」にしたい。最適な方法はどれですか。",
     "choices": [
       "EAC で「構成」を分けて設定し、特定ユーザーやプロファイルにのみ割り当てる",
@@ -8591,7 +8269,6 @@
   },
   {
     "id": 325,
-    "url": "claude-generated",
     "question": "Cloud Kicks社のセールスが「ファイルを商談に添付しているが、別商談からも見たい」と相談されました。Salesforce で対応する標準機能はどれですか。",
     "choices": [
       "Salesforce Files で同じファイルを複数レコードに「リンク」する",
@@ -8616,7 +8293,6 @@
   },
   {
     "id": 326,
-    "url": "claude-generated",
     "question": "「Salesforce Files」と旧「添付ファイル(Attachments)」の主な違いを2つ選びなさい。",
     "choices": [
       "Files は複数レコードへの共有・バージョン管理に対応",
@@ -8642,7 +8318,6 @@
   },
   {
     "id": 327,
-    "url": "claude-generated",
     "question": "AW Computing社のマネージャーは、「自分のチームのカレンダーを1画面で見たい」と相談されました。最適な機能はどれですか。",
     "choices": [
       "カレンダーで「他のユーザーのカレンダーを追加」して並べて表示する",
@@ -8667,7 +8342,6 @@
   },
   {
     "id": 328,
-    "url": "claude-generated",
     "question": "Salesforce で「個人設定」からユーザーが変更できるものとして正しいものを2つ選びなさい。",
     "choices": [
       "タイムゾーンとロケール",
@@ -8693,7 +8367,6 @@
   },
   {
     "id": 329,
-    "url": "claude-generated",
     "question": "Universal Containers社で、ToDoの所有者を「複数ユーザーが共同で管理できる」状態にしたい。Salesforce で対応する方法はどれですか。",
     "choices": [
       "公開グループ(Public Group)またはキュー(Queue)に ToDo を割り当てる",
@@ -8718,7 +8391,6 @@
   },
   {
     "id": 330,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、ユーザーが「自分宛て通知」をオフにできる場所を聞かれました。設定箇所として正しいものはどれですか。",
     "choices": [
       "個人設定 → 「メール通知」「アプリ内通知」「モバイル通知」",
@@ -8743,7 +8415,6 @@
   },
   {
     "id": 331,
-    "url": "claude-generated",
     "question": "Cloud Kicks社のセールスが「Outlook の予定を Salesforce のカレンダーに同期したい」と相談されました。Lightning Sync が廃止予定であるため、現代の推奨手段はどれですか。",
     "choices": [
       "Einstein Activity Capture (EAC) で予定の同期を有効化する",
@@ -8769,7 +8440,6 @@
   },
   {
     "id": 332,
-    "url": "claude-generated",
     "question": "Universal Containers社の管理者は、「グローバルなクイックアクション(Global Action)」と「オブジェクト固有アクション」の使い分けを聞かれました。グローバルアクションが向くシナリオはどれですか。",
     "choices": [
       "ホームページや任意のレコードページから新規ケース作成を素早く開始したい",
@@ -8794,7 +8464,6 @@
   },
   {
     "id": 333,
-    "url": "claude-generated",
     "question": "DreamHouse社で「カスタム通知タイプ」を構成する場所はどこですか。",
     "choices": [
       "Setup → カスタム通知",
@@ -8819,7 +8488,6 @@
   },
   {
     "id": 334,
-    "url": "claude-generated",
     "question": "Cloud Kicks社のサポートマネージャーが、「Chatter で投稿があったらメールでも通知してほしい」と要望しています。ユーザー個人で設定する場所はどれですか。",
     "choices": [
       "個人設定 → 「Chatter メール通知」",
@@ -8844,7 +8512,6 @@
   },
   {
     "id": 335,
-    "url": "claude-generated",
     "question": "Universal Containers社で、Agentforce を有効化して自社の顧客対応を自動化したい。最初に管理者がやるべき手順はどれですか。",
     "choices": [
       "Agentforce を組織で有効化し、必要なライセンス・権限セットを割り当てる",
@@ -8869,7 +8536,6 @@
   },
   {
     "id": 336,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、Prompt Builder で「商談要約を1段落でまとめる」プロンプトテンプレートを作りたい。テンプレートのタイプとして適切なものはどれですか。",
     "choices": [
       "フィールド生成テンプレート(Field Generation Prompt Template)",
@@ -8894,7 +8560,6 @@
   },
   {
     "id": 337,
-    "url": "claude-generated",
     "question": "Prompt Builder でテンプレートに「Salesforce のレコード/データ」を文脈として与える機能の名称はどれですか。",
     "choices": [
       "グラウンディング(Grounding)",
@@ -8919,7 +8584,6 @@
   },
   {
     "id": 338,
-    "url": "claude-generated",
     "question": "Agentforce で「Atlas Reasoning Engine」が担う役割として正しいものはどれですか。",
     "choices": [
       "ユーザーの要求を分析し、最適なトピック/アクションを選択して実行を計画する",
@@ -8944,7 +8608,6 @@
   },
   {
     "id": 339,
-    "url": "claude-generated",
     "question": "AW Computing社で、Agentforce のエージェントが「顧客の個人情報を生成 LLM に渡してしまう」のを防ぎたい。仕組みはどれですか。",
     "choices": [
       "Einstein Trust Layer のデータマスキング機能を活用する",
@@ -8969,7 +8632,6 @@
   },
   {
     "id": 340,
-    "url": "claude-generated",
     "question": "Agentforce のサービスエージェント(Service Agent)とセールスコーチ(Sales Coach)の違いとして正しいものはどれですか。",
     "choices": [
       "サービスエージェントは顧客対応の自動化、セールスコーチは商談中のセラピー(コーチング)",
@@ -8994,7 +8656,6 @@
   },
   {
     "id": 341,
-    "url": "claude-generated",
     "question": "NTO社の管理者が、Agentforce のエージェントを「リリース前に自分でテストしたい」場合に使う機能はどれですか。",
     "choices": [
       "Agent Builder の「会話プレビュー(Conversation Preview)」",
@@ -9019,7 +8680,6 @@
   },
   {
     "id": 342,
-    "url": "claude-generated",
     "question": "Agentforce で、エージェントが実行できる「アクション」を新規追加したい場合、選択肢として正しくないものはどれですか。",
     "choices": [
       "Apex クラスを Invocable Method として登録",
@@ -9044,7 +8704,6 @@
   },
   {
     "id": 343,
-    "url": "claude-generated",
     "question": "Universal Containers社で、Agentforce のエージェントに「ナレッジ記事を文脈として与えて回答精度を上げたい」場合、最も適切な手段はどれですか。",
     "choices": [
       "Retriever を構成して Knowledge をプロンプトテンプレートに紐付ける",
@@ -9069,7 +8728,6 @@
   },
   {
     "id": 344,
-    "url": "claude-generated",
     "question": "Agentforce で利用される LLM(大規模言語モデル)について正しいものはどれですか。",
     "choices": [
       "プロンプトテンプレートやエージェント設定でモデルを切り替えできる場合がある",
@@ -9094,7 +8752,6 @@
   },
   {
     "id": 345,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、「外部システムが Salesforce にアクセスする」のを許可したい。最も適切な設定はどれですか。",
     "choices": [
       "接続アプリ(Connected App)を作成し、OAuth スコープと認証フローを構成する",
@@ -9120,7 +8777,6 @@
   },
   {
     "id": 346,
-    "url": "claude-generated",
     "question": "接続アプリ(Connected App)に必要な OAuth 設定項目として正しいものを2つ選びなさい。",
     "choices": [
       "コールバックURL",
@@ -9146,7 +8802,6 @@
   },
   {
     "id": 347,
-    "url": "claude-generated",
     "question": "Universal Containers社で、組織で設定変更があった時に「誰がいつ何を変えたか」を確認したい。使う機能はどれですか。",
     "choices": [
       "Setup Audit Trail（過去 180 日間）",
@@ -9171,7 +8826,6 @@
   },
   {
     "id": 348,
-    "url": "claude-generated",
     "question": "Setup Audit Trail で 180 日を超えた履歴を保持したい場合、推奨アプローチはどれですか。",
     "choices": [
       "定期的にCSVエクスポートして組織外に保管する",
@@ -9196,7 +8850,6 @@
   },
   {
     "id": 349,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、本番組織でテスト前のリリース前検証のため Full Sandbox を作りたい。Full Sandbox の特性として正しいものを2つ選びなさい。",
     "choices": [
       "メタデータと全データを本番組織からコピーする",
@@ -9224,7 +8877,6 @@
   {
     "id": 350,
     "expFig": "sandbox-types",
-    "url": "claude-generated",
     "question": "AW Computing社で、設定変更の差分検証のため Developer Pro と Partial Copy のどちらを使うべきか相談されました。Partial Copy が向くシナリオはどれですか。",
     "choices": [
       "少量の本番データを使った UAT・トレーニング・サンプル動作検証",
@@ -9249,7 +8901,6 @@
   },
   {
     "id": 351,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、ユーザーのパスワードポリシーを「90日で期限切れ」「複雑さ＝英数字+記号必須」にしたい。設定場所はどこですか。",
     "choices": [
       "プロファイル → パスワードポリシー",
@@ -9274,7 +8925,6 @@
   },
   {
     "id": 352,
-    "url": "claude-generated",
     "question": "Universal Containers社では「特定の対象画面（レポートのエクスポート等）でMFA確認を求める」設定を行いたい。使う機能はどれですか。",
     "choices": [
       "セッション設定の「高保証セッション(High Assurance Session)」を要求する",
@@ -9299,7 +8949,6 @@
   },
   {
     "id": 353,
-    "url": "claude-generated",
     "question": "DreamHouse社のセキュリティ要件で「特定IPアドレス範囲外のログインは追加認証を求める」を構成したい。設定箇所はどれですか。",
     "choices": [
       "セッション設定の「信頼済みIP範囲」",
@@ -9324,7 +8973,6 @@
   },
   {
     "id": 354,
-    "url": "claude-generated",
     "question": "プロファイルの「ログインIPアドレス範囲」と セッション設定の「信頼済みIP範囲」の違いとして正しいものはどれですか。",
     "choices": [
       "プロファイルは範囲外を完全ブロック、信頼済みIP範囲は範囲外で追加認証を要求するだけで通行は許可",
@@ -9348,7 +8996,6 @@
   },
   {
     "id": 355,
-    "url": "claude-generated",
     "question": "NTO社で、サンドボックスからの戻り（リリース）に変更セットを使う運用です。本番組織でテスト結果が失敗する場合の標準対処はどれですか。",
     "choices": [
       "変更セットを「検証(Validate)」モードで実行してエラー詳細を確認し、原因を修正してから再デプロイ",
@@ -9373,7 +9020,6 @@
   },
   {
     "id": 356,
-    "url": "claude-generated",
     "question": "AW Computing社で「メニュー名や項目ラベルを多言語化したい」要件があります。Salesforce で使う標準機能はどれですか。",
     "choices": [
       "翻訳ワークベンチ(Translation Workbench)",
@@ -9398,7 +9044,6 @@
   },
   {
     "id": 357,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の管理者は、Outbound メッセージや Apex の Email サービスから送信されるメール送信元を「mail.cloudkicks.com」にしたい。設定すべきものはどれですか。",
     "choices": [
       "組織のメールアドレス → 「組織全体のアドレス(Org-wide Email Address)」を構成する",
@@ -9423,7 +9068,6 @@
   },
   {
     "id": 358,
-    "url": "claude-generated",
     "question": "Universal Containers社では「ユーザーを凍結したらすぐにライセンスを再利用したい」と聞かれました。正しい説明はどれですか。",
     "choices": [
       "凍結はライセンスを解放しないため、別ユーザーに再利用したい場合は無効化が必要",
@@ -9449,7 +9093,6 @@
   },
   {
     "id": 359,
-    "url": "claude-generated",
     "question": "DreamHouse社で、特定の部門だけが共通の「カスタムタブ」を見える状態にしたい。設定する箇所はどれですか。",
     "choices": [
       "プロファイル → タブ設定 → 「デフォルト表示/デフォルト非表示/タブを非表示」を構成",
@@ -9474,7 +9117,6 @@
   },
   {
     "id": 360,
-    "url": "claude-generated",
     "question": "NTO社の管理者は、特定アプリ内でのみ特定タブが表示されるようにしたい。最も適した設定はどれですか。",
     "choices": [
       "Lightning アプリケーションマネージャで対象アプリのナビゲーション項目を構成する",
@@ -9499,7 +9141,6 @@
   },
   {
     "id": 361,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、ユーザーグループに「特定ロールおよびその下位の全ユーザー」を含めたい。設定方法はどれですか。",
     "choices": [
       "公開グループで「ロールおよび下位(Roles and Subordinates)」を選択する",
@@ -9524,7 +9165,6 @@
   },
   {
     "id": 362,
-    "url": "claude-generated",
     "question": "Universal Containers社で、組織全体に MFA を強制した。一部のサービスアカウント（外部システム用）を MFA から除外する方法はどれですか。",
     "choices": [
       "権限セットで「MFA 免除(Bypass MFA)」を付与する",
@@ -9549,7 +9189,6 @@
   },
   {
     "id": 363,
-    "url": "claude-generated",
     "question": "AW Computing社で、本番組織からサンドボックスに変更セットを送るために必要な前提として正しいものはどれですか。",
     "choices": [
       "本番組織とサンドボックス間の「リリース接続(Deployment Connection)」が承認されていること",
@@ -9574,7 +9213,6 @@
   },
   {
     "id": 364,
-    "url": "claude-generated",
     "question": "DreamHouse社の管理者は、サンドボックスで開発したフローを本番に反映する流れを聞かれました。正しい順序はどれですか。",
     "choices": [
       "サンドボックスで開発→アウトバウンド変更セットでフローを送信→本番でインバウンド変更セットを検証→リリース",
@@ -9599,7 +9237,6 @@
   },
   {
     "id": 365,
-    "url": "claude-generated",
     "question": "Universal Containers社で、商談の金額が 10,000 ドル以上の場合に承認プロセスを起動したい。最初に管理者がすべきことはどれですか。",
     "choices": [
       "承認プロセスの「エントリ条件」で「金額 ≥ 10,000」を指定して新規承認プロセスを作成する",
@@ -9625,7 +9262,6 @@
   },
   {
     "id": 366,
-    "url": "claude-generated",
     "question": "NTO社の承認プロセスで「金額が 10,000 ドル未満ならマネージャー、それ以上ならディレクター」のように動的にルートを変える方法はどれですか。",
     "choices": [
       "承認ステップに「エントリ条件」と「次のステップへ」分岐を設定する",
@@ -9651,7 +9287,6 @@
   },
   {
     "id": 367,
-    "url": "claude-generated",
     "question": "Cloud Kicks社の承認プロセスで、申請から承認までの間「申請者がレコードを編集できないようにロックする」設定はできますか。",
     "choices": [
       "できる。承認プロセスの設定で「申請時にレコードをロック」を有効化する",
@@ -9677,7 +9312,6 @@
   },
   {
     "id": 368,
-    "url": "claude-generated",
     "question": "AW Computing社で、Apex の代わりに「ノーコードで他のレコードを作成・更新する自動化」を実装する標準手段はどれですか。",
     "choices": [
       "保存後レコードトリガフローを使う",
@@ -9702,7 +9336,6 @@
   },
   {
     "id": 369,
-    "url": "claude-generated",
     "question": "Universal Containers社で、フローが「外部APIを呼ぶ」処理を含む。失敗した場合に管理者へメール通知＋カスタムオブジェクトにログ保存したい。設計はどれですか。",
     "choices": [
       "外部呼出要素にフォールトパスを追加し、ログ保存とメール通知を実装する",
@@ -9727,7 +9360,6 @@
   },
   {
     "id": 370,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で「ワークフロールールの項目自動更新」をフローに移行する場合、第一選択はどれですか。",
     "choices": [
       "保存前レコードトリガフロー",
@@ -9752,7 +9384,6 @@
   },
   {
     "id": 371,
-    "url": "claude-generated",
     "question": "NTO社のサポートマネージャーは、ケースを地域別にユーザーグループに振り分けたい。最適な機能はどれですか。",
     "choices": [
       "割り当てルール(Assignment Rule)で地域条件を構成しキューに振り分ける",
@@ -9777,7 +9408,6 @@
   },
   {
     "id": 372,
-    "url": "claude-generated",
     "question": "Universal Containers社で、フローの設定値（割引閾値・税率など）をハードコードしたくない。Salesforce で推奨される方法はどれですか。",
     "choices": [
       "カスタムメタデータ型に設定値を保存し、フローから「レコードを取得」で読み込む",
@@ -9802,7 +9432,6 @@
   },
   {
     "id": 373,
-    "url": "claude-generated",
     "question": "AW Computing社で、フローのパフォーマンスを上げたい。ループ内で「レコードを取得」していることが判明した場合、どう改善しますか。",
     "choices": [
       "ループ前に1回だけGetしてコレクションに保存し、ループ内ではメモリから参照する",
@@ -9828,7 +9457,6 @@
   },
   {
     "id": 374,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、特定の条件でレコードを保存させたくない要件があります。「金額が 0 のまま完了ステータスにできない」のようなチェックを構成する機能はどれですか。",
     "choices": [
       "入力規則(Validation Rule)",
@@ -9853,7 +9481,6 @@
   },
   {
     "id": 375,
-    "url": "claude-generated",
     "question": "Universal Containers社の管理者は、「特定の条件でアラートメールを送信したい」要件があります。新規実装の第一選択はどれですか。",
     "choices": [
       "保存後レコードトリガフローでメールアラートを送信",
@@ -9878,7 +9505,6 @@
   },
   {
     "id": 376,
-    "url": "claude-generated",
     "question": "NTO社で「実行順序」を理解したい。保存前フロー、入力規則、保存後フロー、承認プロセスのうち最も早く動くのはどれですか。",
     "choices": [
       "保存前フロー（システム検証の直後、入力規則の前）",
@@ -9904,7 +9530,6 @@
   },
   {
     "id": 377,
-    "url": "claude-generated",
     "question": "AW Computing社で、フローで「子レコードを一括作成」したい。安全なバルク化パターンは2つ選びなさい。",
     "choices": [
       "子レコードをコレクション変数に追加してから「レコードを作成」要素で一括作成",
@@ -9930,7 +9555,6 @@
   },
   {
     "id": 378,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、フロー実行が承認プロセスより前に終わってほしい。実行順序の理解として正しいものはどれですか。",
     "choices": [
       "保存後フローは承認プロセスより先に実行される",
@@ -9955,7 +9579,6 @@
   },
   {
     "id": 379,
-    "url": "claude-generated",
     "question": "Universal Containers社で、複雑な数式や履歴管理を含む処理を Apex で実装する必要があるかどうかを判断したい。Apex に切り替えるべき条件はどれですか。",
     "choices": [
       "フローでは表現できない複雑なロジック、ガバナ制限超え、外部 API の細粒度制御が必要な場合",
@@ -9980,7 +9603,6 @@
   },
   {
     "id": 380,
-    "url": "claude-generated",
     "question": "Universal Containers社で、商談に複数のセールスが関わる「チーム制」を導入したい。Salesforce の標準機能はどれですか。",
     "choices": [
       "商談チーム(Opportunity Team)を有効化し、メンバーに役割と権限を構成する",
@@ -10005,7 +9627,6 @@
   },
   {
     "id": 381,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、商品「シューズ A」と「シューズ B」の価格を市場別に切り替えたい。最適な機能はどれですか。",
     "choices": [
       "価格表(Price Book)を市場別に作成し、商品エントリで価格を構成する",
@@ -10030,7 +9651,6 @@
   },
   {
     "id": 382,
-    "url": "claude-generated",
     "question": "AW Computing社で、取引先の親子関係を構成し、子会社の業績を親会社で集計したい。Salesforce で使う機能はどれですか。",
     "choices": [
       "取引先階層(Account Hierarchy)を構成し、レポートで階層集計する",
@@ -10055,7 +9675,6 @@
   },
   {
     "id": 383,
-    "url": "claude-generated",
     "question": "NTO社のセールスチームは「商談中の情報を1画面で集約したい」と要望しています。Salesforce で適した UI はどれですか。",
     "choices": [
       "Lightning Sales Console アプリケーション",
@@ -10080,7 +9699,6 @@
   },
   {
     "id": 384,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で「商談ステージごとに次に行うべきタスク」を表示したい。標準機能はどれですか。",
     "choices": [
       "パス(Path)で各ステージにキー項目とガイダンスを構成する",
@@ -10106,7 +9724,6 @@
   },
   {
     "id": 385,
-    "url": "claude-generated",
     "question": "Universal Containers社のサポートチームは「FAQをエージェントが共有/管理したい」と要望しています。Salesforce で適切な機能はどれですか。",
     "choices": [
       "Salesforce Knowledge を有効化して記事タイプ・公開フローを構成する",
@@ -10131,7 +9748,6 @@
   },
   {
     "id": 386,
-    "url": "claude-generated",
     "question": "Cloud Kicks社で、サポートエージェントへの「チャット/ケース/メール」の振り分けを自動化したい。最適な機能はどれですか。",
     "choices": [
       "オムニチャネル(Omni-Channel)で複数チャネルのルーティングを構成する",
@@ -10156,7 +9772,6 @@
   },
   {
     "id": 387,
-    "url": "claude-generated",
     "question": "AW Computing社のサポートエージェントが「ケースクローズ時に毎回同じ作業（コメント追加、ステータス変更、メール送信）をする」と相談されました。最適な機能はどれですか。",
     "choices": [
       "マクロ(Macro)で連続操作を保存し、ワンクリック実行できるようにする",
@@ -10180,7 +9795,6 @@
   },
   {
     "id": 388,
-    "url": "claude-generated",
     "question": "NTO社のサポートマネージャーは「同時に4件までケースを担当」のように、エージェントの作業負荷を制限したい。Salesforce で使う機能はどれですか。",
     "choices": [
       "オムニチャネルのエージェントワーク設定（能力スコア/最大容量）",
@@ -10205,7 +9819,6 @@
   },
   {
     "id": 389,
-    "url": "claude-generated",
     "question": "Universal Containers社で、エージェント向けに「ケース対応中に必要な情報を1画面で表示」したい。最適なUIはどれですか。",
     "choices": [
       "Lightning Service Console アプリケーション",
@@ -10230,7 +9843,6 @@
   },
   {
     "id": 391,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "営業マネージャーは、複数のダッシュボードを含むダッシュボードフォルダへのURLを受け取りました。しかし、営業マネージャーがそのURLをクリックすると、「アクセスしようとしたレコードが見つかりません」というメッセージが表示されます。これはなぜでしょうか？",
     "choices": [
       "営業マネージャーに適切な権限が設定されていません。",
@@ -10257,7 +9869,6 @@
   },
   {
     "id": 392,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Agentforce がグラウンディングチェックを実行する際、ソース情報、トピックの指示、スコープが検証されます。エージェントはグラウンディングチェック中にどのような追加情報を確認しますか？",
     "choices": [
       "互換性のないデータ型",
@@ -10284,7 +9895,6 @@
   },
   {
     "id": 393,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Ursa Major Solar のプラットフォーム管理者は、タスクとイベントに事前入力された件名を追加したいと考えています。\nタスクの件名は「現場訪問のスケジュール設定」と「契約書の送信」、イベントの件名は「現場訪問」と「同行」です。この要件を満たすには、管理者はどのように設定すればよいでしょうか？",
     "choices": [
       "グローバル アクション「新しいイベント」および「新しいタスク」の定義済みフィールド値に新しい値を追加します。",
@@ -10311,7 +9921,6 @@
   },
   {
     "id": 395,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユニバーサルコンテナーズの営業チームは、すべての取引を一度に確認し、営業ステージの進捗状況を追跡し、商談を迅速に進めることができる、商談パイプラインを視覚的に管理できる方法を求めています。これらの要件を満たすために、プラットフォーム管理者はどの機能を推奨すべきでしょうか？",
     "choices": [
       "チャート コンポーネントとステージ ベースのグループ化を使用して商談レポートを設定します。",
@@ -10338,7 +9947,6 @@
   },
   {
     "id": 396,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicksのプラットフォーム管理者は、営業オペレーション責任者から、複数の基準に基づいて特定のチームリーダーが商談を検証するプロセスを作成するよう依頼を受けました。管理者が基準リストを分析したところ、リクエストをルーティングする適切な担当者を特定できる基準セットが30組あることが判明しました。管理者はこの依頼をどのように満たすべきでしょうか？",
     "choices": [
       "適切なリーダーに送信するための電子メール テンプレートを表示するボタンを商談に作成します。",
@@ -10365,7 +9973,6 @@
   },
   {
     "id": 398,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "アカウントレコードページにアクティビティタイムラインが表示されません。プラットフォーム管理者はこれを修正するにはどうすればよいですか？",
     "choices": [
       "標準アクティビティコンポーネントを取引先 Lightning レコードページに追加します。",
@@ -10391,7 +9998,6 @@
   },
   {
     "id": 399,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "承認プロセスで、キューが承認者として選択されるとどうなりますか?",
     "choices": [
       "レコードが承認される前に、キューのメンバー全員の承認が必要です。",
@@ -10417,7 +10023,6 @@
   },
   {
     "id": 401,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "承認プロセスのどのコンポーネントが、承認のチェーンを定義し、どのレコードを進めることができるかを決定し、承認リクエストを割り当てる場所を指定しますか?",
     "choices": [
       "プロセス定義の詳細",
@@ -10444,7 +10049,6 @@
   },
   {
     "id": 402,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicksは、Salesforceにドキュメント結合ソリューションを実装したいと考えている新しい営業担当役員を採用しました。プラットフォーム管理者はこのソリューションをどのように実装すべきでしょうか？",
     "choices": [
       "AppExchange からソリューションをダウンロードします。",
@@ -10470,7 +10074,6 @@
   },
   {
     "id": 403,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks には組織を管理する管理者チームがあります。会社側は、一部のリーダーシップユーザーに管理者と同様に「すべて変更」権限を付与することを依頼しています。管理者チームはこれをどのように実現すればよいでしょうか？",
     "choices": [
       "標準のプラットフォーム ユーザー プロファイルをリーダーシップ ユーザーに割り当て、すべての変更アクセス権限を編集します。",
@@ -10497,7 +10100,6 @@
   },
   {
     "id": 404,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Agentforce に特に適したタスクはどれですか?",
     "choices": [
       "単一ステップの定義済みプロセス",
@@ -10524,7 +10126,6 @@
   },
   {
     "id": 405,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks のマーケティングユーザーは、リードソース項目に「Web」「ウェブサイト」「オンライン」といった一貫性のない値を入力する傾向にあります。データ品質を確保するため、プラットフォーム管理者はこれらのレコードを標準化する必要があります。管理者は、これらの一貫性のないリードソース値をクリーンアップするためにどのフローを使用すべきでしょうか？",
     "choices": [
       "セグメントトリガーフロー",
@@ -10551,7 +10152,6 @@
   },
   {
     "id": 406,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、新規ユーザーグループに「最小限のアクセス」というSalesforceプロファイルに基づいたカスタムプロファイルと、既存の権限セットをいくつか割り当てました。しかし、ユーザーがログインしてもLightningインターフェースが表示されません。管理者は、ユーザーにLightningインターフェースへのアクセス権限を付与するために、どのようなアクションを実行する必要がありますか？",
     "choices": [
       "ユーザー アクセス ポリシーの拡張インターフェイスを有効にします。",
@@ -10578,7 +10178,6 @@
   },
   {
     "id": 407,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "エージェント ループ内のタスクがすべて不満足な場合、エージェントが実行する次のステップは何ですか。",
     "choices": [
       "注意事項付きで可能な限り最善の回答を提供します",
@@ -10605,7 +10204,6 @@
   },
   {
     "id": 408,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks のプラットフォーム管理者は、データプライバシー要件の範囲を満たすために、各ユーザーの財務記録のみがレポートに表示されるようにする必要があります。管理者はどのようにしてこれを達成すべきでしょうか？",
     "choices": [
       "それぞれのオブジェクトに対して共有モデルをパブリック読み取り/書き込みとして設定します。",
@@ -10632,7 +10230,6 @@
   },
   {
     "id": 409,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、特定の条件を満たす商談が成立した際に営業チームに承認プロセスを設定する必要があります。管理者は、適切なレコードがプロセスに含まれていることをどのように確認すればよいでしょうか？",
     "choices": [
       "特定のエントリ基準を追加します。",
@@ -10659,7 +10256,6 @@
   },
   {
     "id": 410,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicksは、セールスサイクルで合意されたサービスレベルに基づいたサポートをすべての顧客に提供したいと考えています。このサポートモデルには、ゴールド、シルバー、ブロンズの3つの階層があります。顧客になったすべての顧客のアカウントにこのサポートが確実に適用されるようにするには、プラットフォーム管理者はどのような設定を行うべきでしょうか？",
     "choices": [
       "権限を割り当てるフロー",
@@ -10686,7 +10282,6 @@
   },
   {
     "id": 411,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユニバーサルコンテナーズは、複数の役割が顧客アカウントで連携するコラボレーティブセールスを導入したいと考えています。営業担当者は担当アカウントへのフルアクセスを必要とし、カスタマーサポート担当者とセールスエンジニアは担当アカウントに関連する商談やケースへのアクセスを必要とします。営業マネージャーは、同じチームメンバーを複数のアカウントに自動的に追加することで、プロセスを効率化したいと考えています。この要件を満たすために、プラットフォーム管理者はどの機能を設定する必要がありますか？",
     "choices": [
       "さまざまなチーム ロールに対して指定されたアクセス レベルを持つデフォルトのアカウント チームを設定します。",
@@ -10712,7 +10307,6 @@
   },
   {
     "id": 412,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者がケース エスカレーション ルールを使用して実行する必要がある 2 つのアクションはどれですか。",
     "choices": [
       "電子メール通知を送信します。",
@@ -10740,7 +10334,6 @@
   },
   {
     "id": 413,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Ursa Major Solar（UMS）は、Salesforce内で機密性の高い記録について議論できる場を設けたいと考えています。UMSは新規メンバーの追加は可能にしたいものの、非メンバーがフォーラムの情報を閲覧できないようにしたいと考えています。\nこれを実現するために、プラットフォーム管理者は何を構成する必要がありますか?",
     "choices": [
       "Chatter非公開グループ",
@@ -10766,7 +10359,6 @@
   },
   {
     "id": 414,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "コールセンターのサービス担当者には、担当デスクが割り当てられていません。担当者は空いているデスクに座り、そのデスクにあるコンピュータを使用してSalesforceにアクセスします。プラットフォーム管理者は、担当者が別のコンピュータでログインするたびに認証する必要がないように、ログインプロセスを効率化するよう依頼されています。この依頼を実現するために、管理者はどの機能を使用すべきでしょうか？",
     "choices": [
       "カスタムプロファイル",
@@ -10793,7 +10385,6 @@
   },
   {
     "id": 415,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Ursa Major SolarはSalesforceモバイルアプリの導入を計画しており、ユーザーに最初に表示したい情報は「重要な商談」レポートです。これを実現するために、プラットフォーム管理者はどのような設定を行うべきでしょうか？",
     "choices": [
       "Salesforce モバイル アプリにレポート タブを追加します。",
@@ -10820,7 +10411,6 @@
   },
   {
     "id": 416,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicksは、従業員の福利厚生に関する質問に対応するために従業員エージェントを導入しました。プラットフォーム管理者は、CEOの個人健康保険や福利厚生に関するスタッフからの質問にエージェントが回答するのを防ぐにはどうすればよいでしょうか？",
     "choices": [
       "エージェントを従業員データに割り当てるための割り当てルールを構成します。",
@@ -10847,7 +10437,6 @@
   },
   {
     "id": 418,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks の経営陣は、ケースがオープンになっている期間を把握するだけでなく、ケースが各チームでどれくらいの期間滞留しているかを把握したいと考えています。プラットフォーム管理者がケースの滞留時間を追跡し、関連するレポートを提供できるツールはどれですか？",
     "choices": [
       "営業時間付きエスカレーションルール",
@@ -10873,7 +10462,6 @@
   },
   {
     "id": 420,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "営業組織における Agentforce の使用例とは何ですか?",
     "choices": [
       "コールドコールの生成",
@@ -10900,7 +10488,6 @@
   },
   {
     "id": 423,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユニバーサルコンテナのプラットフォーム管理者は、不正な侵入者が組織に侵入するリスクを最小限に抑えるため、ユーザーのログインアクセスを特定の時間帯と特定のIPアドレスに制限するよう依頼されています。これを実現するには、管理者はどの設定を変更する必要がありますか？",
     "choices": [
       "会社設定",
@@ -10927,7 +10514,6 @@
   },
   {
     "id": 425,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicksは、営業チームの全員が担当する取引先や商談に重要なデータを入力していないことを懸念しています。また、重要な情報が変更されてもSalesforceに反映されないことも懸念しています。プラットフォーム管理者は、データの品質とレコードの完全性をより深く理解したいと考えています。そのためには、管理者は何をすべきでしょうか？",
     "choices": [
       "データ品質とレコードの完全性ソリューションについては、AppExchange をご覧ください。",
@@ -10953,7 +10539,6 @@
   },
   {
     "id": 426,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者が組織を強化するために AppExchange で見つけることができる 2 つのソリューションはどれですか?",
     "choices": [
       "コンポーネント",
@@ -10980,7 +10565,6 @@
   },
   {
     "id": 428,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、自動採番のデータ型をテキストフィールドに変更するよう依頼されました。フィールドを変更する前に、管理者は何に注意すべきでしょうか？",
     "choices": [
       "既存のフィールド値は変更されません。",
@@ -11006,7 +10590,6 @@
   },
   {
     "id": 429,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、Salesforceモバイルアプリのユーザー向けナビゲーションメニューをカスタマイズしたいと考えています。組織では、モバイル向けのLightningアプリをまだ実装していません。Mobile Onlyアプリのナビゲーションに関する正しい記述はどれですか？",
     "choices": [
       "Lightning ページと Visualforce ページは、最初にタブを作成しなくても、Mobile Only ナビゲーション メニューに自動的に表示されます。",
@@ -11033,7 +10616,6 @@
   },
   {
     "id": 431,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユニバーサルコンテナーズは、ケースが適切な担当者に適切なタイミングで確実にルーティングされるようにしたいと考えていますが、サポート組織は拡大しています。追加のサポートを依頼したり、管理チームに頼ったりすることなく、人員を異動させ、担当する業務を調整したいと考えています。業務の割り当てを自社で管理できるツールはどれでしょうか？",
     "choices": [
       "大文字と小文字の割り当てルール",
@@ -11059,7 +10641,6 @@
   },
   {
     "id": 433,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "複数のアクションを持つエージェントを開発中です。これらのアクションはそれぞれ異なるデータベースから情報を取得します。プラットフォーム管理者はこれらのアクションに「GetCustomerInfo」、「GetOrderDetails」、「GetShippingStatus」という名前を付けました。これらの名前を改善するために、管理者はどのようなベストプラクティスに従うべきでしょうか？",
     "choices": [
       "すべての動詞を削除し、CustomerInfo、OrderDetails、ShippingStatus などの名詞のみを使用します。",
@@ -11086,7 +10667,6 @@
   },
   {
     "id": 435,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks のプラットフォーム管理者は、必要な変更を加えるために、複数のダッシュボードを含む共有フォルダから 1 つのダッシュボードを一時的に削除する必要があります。管理者はどのようにすればこの操作を実行できますか？",
     "choices": [
       "共有フォルダーへの表示アクセスを削除します。",
@@ -11112,7 +10692,6 @@
   },
   {
     "id": 437,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "営業担当者は通常、担当アカウントごとに複数のオープン商談を抱えています。レポートでオープン商談に関連付けられたアカウントの総数を取得するには、プラットフォーム管理者はどのツールを営業担当者に推奨すべきでしょうか？",
     "choices": [
       "バケット列",
@@ -11138,7 +10717,6 @@
   },
   {
     "id": 439,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "営業担当副社長は、役割階層の様々な階層に属する個人が所有するレコードについてレポートを作成する必要があります。組織全体のデフォルト設定は「非公開」です。これを実現するには、プラットフォーム管理者はどのように設定すればよいでしょうか？",
     "choices": [
       "フィールドレベルのセキュリティ",
@@ -11165,7 +10743,6 @@
   },
   {
     "id": 440,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Agentforceはサポートチームにケースをエスカレーションしていますが、サポートチームからは状況が把握できておらず、顧客に全てをもう一度説明してもらう必要があるという苦情が出ています。この問題の原因として最も可能性が高いのは、どの設定の問題でしょうか？",
     "choices": [
       "サポート チーム メンバーに Agentforce ユーザー権限セットがありません。",
@@ -11192,7 +10769,6 @@
   },
   {
     "id": 441,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者が、事前定義された基準に基づいてレビューと意思決定を行うために、特定のユーザーへのレコードのルーティングを自動化できる Salesforce 機能はどれですか。",
     "choices": [
       "割り当てルール",
@@ -11219,7 +10795,6 @@
   },
   {
     "id": 443,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、ダッシュボード上でユーザーに個別のデータビューをどのように提供すればよいでしょうか?",
     "choices": [
       "ダッシュボード フィルターを追加して、ダッシュボード ビューを変更します。",
@@ -11245,7 +10820,6 @@
   },
   {
     "id": 445,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、新しいエージェント用のプロンプトテンプレートを設計しています。このエージェントの目的は、簡潔で段階的な手順を提供することで、サービス担当者が技術的な問題を解決できるように支援することです。効果的なプロンプトを作成するためのベストプラクティスに基づいて、管理者はこのプロンプトを作成する際にどのようなアプローチを採用すべきでしょうか？",
     "choices": [
       "すべての主要なトラブルシューティング シナリオをカバーするために、複数のネストされた条件を含む詳細なプロンプトを記述します。",
@@ -11272,7 +10846,6 @@
   },
   {
     "id": 446,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユニバーサルコンテナーズは、適切な関係管理を実現するために、販売機会に関わるすべての関係者を追跡したいと考えています。営業担当者は、意思決定権を持つ人物、購買プロセスに影響を与える人物、そして各取引の主な連絡担当者を特定する必要があります。この要件を満たすために、プラットフォーム管理者はどの機能を設定する必要がありますか？",
     "choices": [
       "内部および外部の関係者を追跡できるように商談チームのメンバーを構成します。",
@@ -11298,7 +10871,6 @@
   },
   {
     "id": 447,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者がエージェントに新しいトピックを追加しています。トピックの指示に関するベストプラクティスは何ですか？",
     "choices": [
       "エージェントが最大限の柔軟性で推論できるよう、指示を汎用的に記述します。",
@@ -11325,7 +10897,6 @@
   },
   {
     "id": 448,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユニバーサルコンテナーズのプラットフォーム管理者は、退職したユーザーを非アクティブ化しようとしていますが、それができません。管理者がこのユーザーを非アクティブ化できないのはなぜでしょうか？",
     "choices": [
       "ユーザーはダッシュボードの実行ユーザーです。",
@@ -11350,7 +10921,6 @@
   },
   {
     "id": 449,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks のプラットフォーム管理者は、財務チームから、一定額を超える成立商談について、商談が完全に成立したとみなされる前に、正確性を確認するよう依頼を受けました。担当の財務チームメンバーと営業担当マネージャーの両方が、まずマネージャーが承認を行い、その後財務チームメンバーが承認する必要があり、商談ごとに最大 3 人が承認する必要があります。管理者はこの依頼にどのように対応すべきでしょうか。",
     "choices": [
       "商談がクローズされるたびに実行される画面フローを作成します。",
@@ -11377,7 +10947,6 @@
   },
   {
     "id": 453,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud KicksのCFOは、10万ドルを超える商談が自動的に送信されるようにし、成約前にレコードにサインオフできるようにしたいと考えています。この要件を満たすために、プラットフォーム管理者はどの機能を使用すべきでしょうか？",
     "choices": [
       "承認申請ボタン",
@@ -11404,7 +10973,6 @@
   },
   {
     "id": 454,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "リスト ビューとカンバン ビューの最新の更新を使用して、営業チームが取引の優先順位を決定できるようにする機能はどれですか。",
     "choices": [
       "ビッグディールアラート",
@@ -11430,7 +10998,6 @@
   },
   {
     "id": 456,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "プラットフォーム管理者は、eコマースサポートチームを支援するエージェントを構築しています。このエージェントは、システム内の顧客の配送先住所を変更する「updateShippingAddress」というアクションを呼び出す必要があります。ベストプラクティスによれば、管理者は「updateShippingAddress」アクションにどのアクション命令セットを使用すべきでしょうか？",
     "choices": [
       "「配送情報を更新するにはこれを使用してください。システム内で顧客の住所を変更する場合に使用されます。」",
@@ -11457,7 +11024,6 @@
   },
   {
     "id": 457,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Cloud Kicks のプラットフォーム管理者が、Salesforce でジュニア管理者を代理管理者として設定しました。プラットフォーム管理者は代理管理者に関してどのような点に留意すべきでしょうか？",
     "choices": [
       "委任された管理者はユーザーのロックを解除できますが、パスワードをリセットすることはできません。",
@@ -11484,7 +11050,6 @@
   },
   {
     "id": 458,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "ユーザーから、新しいLightningアカウントレコードページの読み込みが非常に遅いという報告があります。プラットフォーム管理者は、パフォーマンスの問題の原因を特定するためにどの機能を使用すべきでしょうか？",
     "choices": [
       "Lightning Analytics",
@@ -11510,7 +11075,6 @@
   },
   {
     "id": 459,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "Northern Trail Outfitters（NTO）は、新規連絡先を保存する前に検証することを希望しています。ユーザーがLeadSource選択リストの値を「その他」に選択した場合、NTOはSource__cというカスタムテキスト項目にも値を入力したいと考えています。この要件を満たすには、プラットフォーム管理者はどのような検証ルールを設定する必要がありますか？",
     "choices": [
       "AND(LeadSource = 'Other', Source__c = '')",
@@ -11536,7 +11100,6 @@
   },
   {
     "id": 461,
-    "url": "https://www.jpnshiken.com/shiken/Salesforce.ADM-201-JPN.v2026-02-09.q72.html",
     "question": "承認プロセスを設定するときに、送信された承認リクエストを取り消して、関連付けられているレコードのロックを解除するために、プラットフォーム管理者はどのアクションを構成する必要がありますか？",
     "choices": [
       "最終拒否アクション",
