@@ -107,6 +107,16 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 - `client` = 各クイズページ：進捗を同期。ログイン強制しない。未ログイン時はホームへ誘導。`window.SFQ_HOME_URL='../../index.html'`
 - 明示指定が無ければ `__setStore` の有無で自動判定
 
+### メール通知（任意・EmailJS / 2026-07-30 追加）
+
+- 利用申請・停止解除の申請・利用者からのDM が発生したとき、管理者のメールへ通知する。設定は `firebase-config.js` の `window.SFQ_EMAILJS = {serviceId, templateId, publicKey}`（**空なら完全に無効＝既存動作に影響なし**。設定手順はそのファイルのコメントに記載）
+- 送信は「操作した利用者のブラウザ」から EmailJS の REST API を直接叩く＝**サーバ不要・Blaze プラン不要**。宛先（To）は EmailJS 側のテンプレートに固定するため、公開キーが露出しても他人へメールを送る踏み台にはならない
+- `notifyAdminMail(kind, info, cb)` が唯一の送信口。`kind` は `apply`／`unblock`／`dm`／`test`。通常は fire-and-forget（失敗しても申請やDMの保存は成功させる）。DM のみ端末ローカルで5分に1通へ間引く（`mailThrottled`）
+- 管理者ビューのダッシュボードに「✉️ メール通知（🟢有効/🟡未設定）＋テスト送信」。テスト送信だけは HTTP 結果を受け取って成否を表示する
+- 取りこぼし（利用者の回線や拡張機能で `api.emailjs.com` が塞がれた1件）が問題になる場合は、`notifyAdminMail` の中身だけを Cloud Functions（Blaze 必須）や GitHub Actions 定期実行に差し替えればよい（呼び出し側は不変）
+- ⚠️ DM の通知には本文の先頭120字を含める（EmailJS を経由する）。不要なら呼び出しから `detail` を外す
+- 判定は純粋関数 `mailEnabled` / `mailParams` / `mailThrottled`（`tools/test-cloud-sync.js` で検証）
+
 ### 管理者ビュー
 
 - 管理者ID = `admin` (`SFQ_ADMIN_IDS=["admin"]`)
