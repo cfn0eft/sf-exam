@@ -88,11 +88,14 @@
          // 書き込み: 管理者は全権。本人は「自分の access を承認に書き換えられない」制約付きで許可。
          //  → access（利用承認フラグ）を付与/停止できるのは管理者だけ。本人は進捗や
          //     フィードバックを保存できるが、access は据え置き or 自分で 'pending' にするだけ可。
+         //  → ただし停止中(blocked)からは 'pending' にも上げられない（自分で停止を解除できない）。
+         //     停止中の人が出す「解除の申請」は access を据え置いて req だけ書くので下の3行目で通る。
          allow write: if request.auth != null && (
              isAdmin() ||
              (request.auth.uid == uid && (
                  !('access' in request.resource.data) ||                                   // access を含めない通常保存
-                 request.resource.data.access == 'pending' ||                              // 自分で承認待ちにするのは可
+                 (request.resource.data.access == 'pending' &&                              // 自分で承認待ちにするのは可
+                    (resource == null || resource.data.access != 'blocked')) ||             //   ただし停止中からは不可
                  (resource != null && request.resource.data.access == resource.data.access) // 既存の access を維持
              ))
          );
@@ -111,6 +114,7 @@
 
    - これで、本人以外は他人の進捗を読めません。**管理者（`admin@sfquiz.local`）だけは全員分を閲覧・リセット・削除でき、利用承認（access）の付与/停止もできます。**
    - **重要（アクセス承認制）**: `access` フィールドは **管理者しか `'approved'` にできません**。一般ユーザーは自分で承認状態を書き換えられないため、ここを上記ルールにしないと「誰でも自分を承認」できてしまい無意味になります。新規登録者は既定で `'pending'`（承認待ち＝全面ロック）になり、管理者ビューの「✅ 承認」を押すと利用できるようになります。
+   - **停止（blocked）からの自力復帰を防ぐ**: 停止中の人も「解除の申請」を出せますが、その申請は `access` を書き換えず `req` だけ書きます。ルールの `request.resource.data.access == 'pending'` に `resource.data.access != 'blocked'` の条件が付いているのは、**停止中の人が自分で `pending` に戻る（＝停止の印を消して申請待ちの列に並び直す）のを防ぐ**ためです。既存プロジェクトでこの条件が入っていない場合は、上のルールを貼り直してください（アプリ側は新旧どちらのルールでも動きます）。
    - 管理者IDを `admin` 以外にしたい／複数にしたい場合は、上の `"admin@sfquiz.local"` の行をそのIDのメール（例 `"daiki@sfquiz.local"`）に変更（カンマ区切りで複数可）し、**`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせて**ください。
 
 ## ステップ 6: GitHub Pages に反映する
