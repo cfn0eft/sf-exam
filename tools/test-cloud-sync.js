@@ -172,5 +172,45 @@ t('maintShouldBlock: メンテ中でなければ誰も転送しない', () => {
   eq(T.maintShouldBlock(null, false, false), false, '設定なしも転送しない');
 });
 
+/* ---- 休眠アカウントの承認失効（30日アクセスなし） ---- */
+const DAY = 86400000;
+const D31 = NOW - 31 * DAY, D10 = NOW - 10 * DAY;
+
+t('accessExpired: 承認済みで31日アクセスなしは失効', () => {
+  eq(T.INACTIVE_DAYS, 30, '既定は30日');
+  eq(T.accessExpired({ access: 'approved', lastSeen: D31, lastLogin: D31 }, NOW), true);
+  eq(T.inactiveDaysOf({ lastSeen: D31 }, NOW), 31, '経過日数');
+});
+
+t('accessExpired: 10日前のアクセスなら失効しない', () => {
+  eq(T.accessExpired({ access: 'approved', lastSeen: D10, lastLogin: D31 }, NOW), false, '新しい方(lastSeen)を採用');
+});
+
+t('accessExpired: 起点は lastSeen / lastLogin / approvedAt の最も新しいもの', () => {
+  // ログインは31日前でも、開いたままアクセスが続いていれば失効させない
+  eq(T.accessExpired({ access: 'approved', lastLogin: D31, lastSeen: NOW - DAY }, NOW), false, 'lastSeen が新しい');
+  // 再承認直後は lastSeen/lastLogin が古くても失効させない（承認日から数え直す）
+  eq(T.accessExpired({ access: 'approved', lastSeen: D31, lastLogin: D31, approvedAt: NOW - DAY }, NOW), false, 'approvedAt が新しい');
+  eq(T.accessExpired({ access: 'approved', lastSeen: D31, approvedAt: D31 }, NOW), true, 'すべて古ければ失効');
+});
+
+t('accessExpired: 承認済み以外・記録なしは対象外', () => {
+  eq(T.accessExpired({ access: 'pending', lastSeen: D31 }, NOW), false, '承認待ちは対象外');
+  eq(T.accessExpired({ access: 'blocked', lastSeen: D31 }, NOW), false, '停止中は対象外');
+  eq(T.accessExpired({ access: 'approved' }, NOW), false, '記録なし＝起点が無いので失効させない');
+  eq(T.accessExpired(null, NOW), false);
+});
+
+t('cachedApprovalValid: オフライン素通しの控えは30日で失効する', () => {
+  eq(T.cachedApprovalValid('u1', NOW), false, '控えが無ければ素通しさせない');
+  T.cacheApproval('u1');                                   // 現在時刻で控える
+  ok(T.cachedApprovalValid('u1', Date.now()), '直後は有効');
+  ok(!T.cachedApprovalValid('u1', Date.now() + 31 * DAY), '31日後は無効');
+  sandbox.localStorage.setItem('sfq_access_u2', 'approved'); // 旧形式（日時なし）は後方互換で素通し
+  ok(T.cachedApprovalValid('u2', NOW), '旧形式は素通し');
+  sandbox.localStorage.setItem('sfq_access_u3', '{壊れたJSON');
+  eq(T.cachedApprovalValid('u3', NOW), false, '壊れた控えは無効');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
