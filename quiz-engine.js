@@ -85,7 +85,7 @@ window.__getStore=function(){return store;};
 window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(store.acqLock==null)store.acqLock=0; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; if(!store.lessons||typeof store.lessons!=='object')store.lessons={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
 function getH(id){return store.hist[id]||{c:0,w:0};}
-function recH(id,ok,low){
+function recH(id,ok,low,opts){
   if(!store.hist[id])store.hist[id]={c:0,w:0};
   if(ok){store.hist[id].c++;store.streak=(store.streak||0)+1;}
   else{store.hist[id].w++;store.streak=0;}
@@ -95,6 +95,9 @@ function recH(id,ok,low){
   bumpDaily();
   store.xp=(store.xp||0)+(ok?(low?6:10):3);   // #12 XP（正解10/自信なし正解6/不正解も努力3）
   try{snapReadiness();}catch(e){}              // #17 合格確度スナップショット
+  // 模試採点など一括記録では opts.defer=true で保存/バッジ/ミッション判定を抑止し、呼び出し側でループ後に1回だけ実行する
+  // （60問模試で save() を60回→1回にし、採点ボタン押下時のフリーズを解消）
+  if(opts&&opts.defer)return;
   save();
   if(typeof checkBadges==='function')checkBadges();
   try{maybeGoalCheer();}catch(e){}             // #15 デイリーゴール達成のお祝い
@@ -611,7 +614,7 @@ function openSummary(ci,ev){
     // Exam point hint
     if(t.examPoints&&t.examPoints.length){
       const hint=document.createElement('div');hint.className='sum-sep';
-      hint.textContent='⚡ '+escH(t.examPoints[0].replace(/\*\*/g,'').slice(0,50));
+      hint.textContent='⚡ '+t.examPoints[0].replace(/\*\*/g,'').slice(0,50);   // textContent は自動でエスケープする（escH 不要・二重エスケープ回避）
       body.insertBefore(hint,row);
     }
   });
@@ -738,7 +741,7 @@ function renderTextbook(){
   });
   renderChapNav();
 }
-function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 /* ===== 図解（インラインSVG・テーマ追従） =====
  * 図データは figures.js（window.SFQ_FIGURES）が唯一の出典。キーは "<slug>/<name>"。
@@ -939,7 +942,7 @@ function showTD(ci,ti){
   const posEl=document.getElementById('td-pos');
   if(prevBtn)prevBtn.disabled=ti===0;
   if(nextBtn)nextBtn.disabled=ti===total-1;
-  if(posEl)posEl.textContent=escH(CHDATA[ci].chapter.replace(/^第\d+章[:：]\s*/,''))+'  '+(ti+1)+'/'+total;
+  if(posEl)posEl.textContent=CHDATA[ci].chapter.replace(/^第\d+章[:：]\s*/,'')+'  '+(ti+1)+'/'+total;   // textContent は自動エスケープ（escH 不要）
   refreshTDMark();
   document.getElementById('tb-list').style.display='none';
   document.getElementById('td-view').classList.add('on');
@@ -1659,11 +1662,14 @@ function renderEQ(){
   order.forEach(oi=>{
     const ch=q.choices[oi],on=saved.includes(oi);
     const item=document.createElement('div');item.className='choice'+(on?' sel':'');item.dataset.oi=oi;
+    // キーボード/スクリーンリーダー対応（学習モードと同じ role=button + aria-pressed。選択状態も反映）
+    item.setAttribute('role','button');item.setAttribute('aria-pressed',on?'true':'false');item.tabIndex=0;
     const mark=document.createElement('div');mark.className='cmark';
     mark.textContent=on?(isM?'☑':'●'):(isM?'□':'○');
     const span=document.createElement('span');span.textContent=ch;
     item.appendChild(mark);item.appendChild(span);
     item.addEventListener('click',()=>selEChoice(oi,isM));
+    item.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();selEChoice(oi,isM);}});
     cel.appendChild(item);
   });
   document.getElementById('e-prev').disabled=eCur===0;
@@ -1775,7 +1781,7 @@ function finishExam(){
     const isOk=arrEq(sel.slice().sort(),q.answers.slice().sort());
     if(isOk)ok++;
     const c=domainOf(q.id);if(!byd[c])byd[c]={c:0,t:0};byd[c].t++;if(isOk)byd[c].c++;
-    recH(q.id,isOk);
+    recH(q.id,isOk,false,{defer:true});   // 保存/バッジ/ミッションはループ後に1回だけ（下の save()/checkBadges()/checkMissions()）
   });
   const pct=Math.round(ok/eN*100),pass=pct>=PASS;
   const secsUsed=eTimed?(eBudget-Math.max(0,eSecs)):Math.max(0,eSecs);   // 使用した試験時間（秒）
@@ -1786,6 +1792,7 @@ function finishExam(){
   store.xp=(store.xp||0)+30+(pass?100:0);   // #12 模試完了+合格ボーナス
   save();
   checkBadges();
+  try{maybeGoalCheer();}catch(e){}   // 採点でデイリーゴール到達時のお祝い（recH の defer で各問からは抑止済み）
   try{checkMissions();}catch(e){}
   if(pass)try{celebrate();}catch(e){}
   document.getElementById('e-area').style.display='none';
