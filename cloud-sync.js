@@ -417,6 +417,7 @@
       '.sfqc-acc-access.pend{background:#fef9c3;color:#854d0e}' +
       '.sfqc-acc-access.block{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-acc-access.maint{background:#ffedd5;color:#9a3412}' +
+      '.sfqc-acc-access.none{background:#e2e8f0;color:#475569}' +   /* 未申請（本人の操作待ち＝管理者は待つだけ） */
       '.sfqc-act-approve{background:#dcfce7;color:#15803d}' +
       '.sfqc-act-block{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-act-maint{background:#ffedd5;color:#9a3412}' +
@@ -654,9 +655,14 @@
       // 30日以上アクセスがなく承認が失効した状態（まだ再申請していない）
       if (t) t.textContent = '⏳ 利用承認が失効しました';
       if (s) s.innerHTML = INACTIVE_DAYS + '日以上ご利用がなかったため、利用承認が解除されました。<br>下のフォームにお名前を入れて、もう一度「利用を申請」してください（学習の進捗は残っています）。';
+    } else if (info.applied) {
+      // 申請済み＝あとは管理者の承認を待つだけ
+      if (t) t.textContent = '⏳ 承認をお待ちください';
+      if (s) s.innerHTML = 'ご利用の申請を受け付けています。<br>管理者が承認するとご利用いただけます（承認されたら「再確認」）。';
     } else {
-      if (t) t.textContent = '⏳ 承認待ちです';
-      if (s) s.innerHTML = '下のフォームにお名前を入れて「利用を申請」してください。<br>管理者の承認後にご利用いただけます（承認されたら「再確認」）。';
+      // まだ申請していない＝本人の操作が必要
+      if (t) t.textContent = '✋ 利用の申請をしてください';
+      if (s) s.innerHTML = 'ご利用には管理者の承認が必要です。<br>下のフォームにお名前を入れて「利用を申請」してください。';
     }
     if (form) form.style.display = showForm ? '' : 'none';
     if (showForm && nameIn) {
@@ -2120,7 +2126,7 @@
   var adminCert = 'all';     // 資格フィルタ
   var adminActivity = 'all'; // 'all'|'week'|'dormant'
   var adminPass = false;     // 合格者のみ
-  var adminAccess = 'all';   // 'all'|'approved'|'pending'|'blocked'（アクセス状態フィルタ）
+  var adminAccess = 'all';   // 'all'|'approved'|'applied'|'noreq'|'blocked'（アクセス状態フィルタ・accessStateOf と対応）
   var adminMaintOk = false;  // true＝メンテ中も利用可（maintOk）のアカウントだけに絞る
   var adminPendingCount = 0; // 承認待ち件数（バッジ通知用）
   var adminTab = 'users';    // 管理者ビューのタブ：'users'|'dash'|'msg'（ダッシュボードとDMを分離）
@@ -2554,7 +2560,7 @@
     if (adminActivity === 'week') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) <= 6; });
     else if (adminActivity === 'dormant') list = list.filter(function (u) { return admDaysAgo(u.agg.lastStudyDate) >= 30; });
     if (adminPass) list = list.filter(function (u) { return u.agg.examPassed > 0; });
-    if (adminAccess !== 'all') list = list.filter(function (u) { return (u.access || 'pending') === adminAccess; });
+    if (adminAccess !== 'all') list = list.filter(function (u) { return accessStateOf(u) === adminAccess; });
     if (adminMaintOk) list = list.filter(function (u) { return !!u.maintOk; });
     list.sort(function (a, b) {
       if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
@@ -2569,6 +2575,26 @@
   // 「新規申請」は実際に申請ボタンを押した人（req あり）かつ未承認のみを対象にする。
   // 既存の未ログイン/未申請アカウントは含めない（＝勝手に申請扱いにしない）。
   function isApplicant(u) { return (u.access || 'pending') !== 'approved' && u.req && u.req.ts; }
+
+  /* 承認待ちを2つに分けて表示する（「自分が承認すべきか」が一目で分かるように）:
+       'applied' … 本人が申請済み＝管理者の承認を待っている（要対応）
+       'noreq'   … まだ申請していない＝本人の操作を待っている（管理者は待つだけ）
+     accessStateOf は絞り込み・チップ・件数で共通に使う唯一の判定。 */
+  function accessStateOf(u) {
+    var acc = (u && u.access) || 'pending';
+    if (acc === 'approved' || acc === 'blocked') return acc;
+    return (u && u.req && u.req.ts) ? 'applied' : 'noreq';
+  }
+  var ACCESS_CHIP = {
+    approved: ['ok', '✅ 承認済み', '利用できます'],
+    blocked:  ['block', '🚫 停止中', '管理者が停止しました'],
+    applied:  ['pend', '📩 承認待ち（申請あり）', '本人が申請済み＝あなたの承認を待っています'],
+    noreq:    ['none', '✋ 未申請', 'まだ本人が利用申請をしていません（承認しても構いません）']
+  };
+  function accessChipHTML(u) {
+    var m = ACCESS_CHIP[accessStateOf(u)] || ACCESS_CHIP.noreq;
+    return '<span class="sfqc-acc-access ' + m[0] + '" title="' + esc(m[2]) + '">' + m[1] + '</span>';
+  }
   function applicationsSectionHTML() {
     var apps = adminUsers.filter(isApplicant);
     apps.sort(function (a, b) { return (b.req.ts || 0) - (a.req.ts || 0); }); // 申請の新しい順
@@ -2576,8 +2602,8 @@
       '<span class="sfqc-fb-count">' + apps.length + '件</span></div>';
     if (!apps.length) {
       adminSelApps = {};
-      return head + '<div class="sfqc-empty" style="padding:14px">新規の利用申請はありません。<br>' +
-        '<small>未申請の承認待ちアカウントは、下の一覧「アクセス: 承認待ち」で確認・承認できます。</small></div>' +
+      return head + '<div class="sfqc-empty" style="padding:14px">あなたの承認を待っている申請はありません。<br>' +
+        '<small>まだ申請していないアカウントは、下の一覧の「✋ 未申請」で確認できます（そのまま承認することもできます）。</small></div>' +
         '<div class="sfqc-divider"></div>';
     }
     // 選択状態は現存する申請者だけに絞る（消えた申請の取り残し防止）
@@ -2592,9 +2618,7 @@
       '</div>';
     var cards = apps.map(function (u) {
       var isBlock = (u.access === 'blocked');
-      var stateChip = isBlock
-        ? '<span class="sfqc-acc-access block">🚫 停止中</span>'
-        : '<span class="sfqc-acc-access pend">⏳ 承認待ち</span>';
+      var stateChip = accessChipHTML(u);   // この節は全員「申請あり」なので 📩 承認待ち（申請あり）になる
       var reqChip = '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>';
       // 休眠で承認が失効した「再申請」かを区別できるようにする（新規登録の申請と混ざらないように）
       var expChip = u.expiredAt ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効 ' + esc(fmtDate(u.expiredAt)) + '</span>' : '';
@@ -2657,6 +2681,9 @@
           '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
           '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
         '</div>';
+      // アクセス状態ごとの件数（チップに出す＝「あと何件承認すればいいか」が一目で分かる）
+      var accessCounts = { approved: 0, applied: 0, noreq: 0, blocked: 0 };
+      adminUsers.forEach(function (u) { var k = accessStateOf(u); if (accessCounts[k] != null) accessCounts[k]++; });
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
           '<span class="sfqc-sort-label">資格:</span>' + certChips +
           '<span class="sfqc-sort-label">状態:</span>' +
@@ -2664,9 +2691,10 @@
           '<button class="sfqc-fchip' + (adminActivity === 'dormant' ? ' on' : '') + '" data-act="dormant">休眠30日+</button>' +
           '<button class="sfqc-fchip' + (adminPass ? ' on' : '') + '" data-pass="1">合格者</button>' +
           '<span class="sfqc-sort-label">アクセス:</span>' +
-          '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">承認済み</button>' +
-          '<button class="sfqc-fchip' + (adminAccess === 'pending' ? ' on' : '') + '" data-access="pending">承認待ち</button>' +
-          '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">停止中</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'approved' ? ' on' : '') + '" data-access="approved">✅ 承認済み ' + accessCounts.approved + '</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'applied' ? ' on' : '') + '" data-access="applied" title="本人が申請済み＝あなたの承認を待っています">📩 承認待ち（申請あり） ' + accessCounts.applied + '</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'noreq' ? ' on' : '') + '" data-access="noreq" title="まだ本人が利用申請をしていません">✋ 未申請 ' + accessCounts.noreq + '</button>' +
+          '<button class="sfqc-fchip' + (adminAccess === 'blocked' ? ' on' : '') + '" data-access="blocked">🚫 停止中 ' + accessCounts.blocked + '</button>' +
           '<button class="sfqc-fchip' + (adminMaintOk ? ' on' : '') + '" data-maintok="1" title="メンテナンス中でも利用できるアカウントだけを表示">🛠 メンテ許可</button>' +
         '</div>';
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
@@ -2708,9 +2736,10 @@
         var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
         var dago = admDaysAgo(a.lastStudyDate);
         var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
-        var accMap = { approved: ['ok', '✅ 承認済み'], pending: ['pend', '⏳ 承認待ち'], blocked: ['block', '🚫 停止中'] };
-        var am = accMap[u.access] || accMap.pending;
-        var accChip = '<span class="sfqc-acc-access ' + am[0] + '">' + am[1] + '</span>';
+        var accChip = accessChipHTML(u);   // ✅承認済み / 📩承認待ち（申請あり） / ✋未申請 / 🚫停止中
+        // 申請日は行にも出す（いつからあなたの承認を待っているかが分かる）
+        var reqAtChip = (accessStateOf(u) === 'applied')
+          ? '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>' : '';
         var accBtn = (u.access === 'approved')
           ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
           : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
@@ -2726,7 +2755,7 @@
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + maintChip + expChipRow +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + reqAtChip + maintChip + expChipRow +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
@@ -3570,6 +3599,7 @@
   window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
     maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
     accessExpired: accessExpired, inactiveDaysOf: inactiveDaysOf, cacheApproval: cacheApproval, cachedApprovalValid: cachedApprovalValid,
+    accessStateOf: accessStateOf, isApplicant: isApplicant,
     INACTIVE_DAYS: INACTIVE_DAYS };
 
   /* ---------------- 初期化 ---------------- */

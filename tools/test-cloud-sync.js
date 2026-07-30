@@ -212,5 +212,25 @@ t('cachedApprovalValid: オフライン素通しの控えは30日で失効する
   eq(T.cachedApprovalValid('u3', NOW), false, '壊れた控えは無効');
 });
 
+/* ---- 承認待ちの内訳（申請あり＝管理者の承認待ち / 未申請＝本人の操作待ち） ---- */
+t('accessStateOf: 申請あり(applied)と未申請(noreq)を区別する', () => {
+  eq(T.accessStateOf({ access: 'pending', req: { name: 'A', ts: NOW } }), 'applied', '申請済み＝あなたの承認待ち');
+  eq(T.accessStateOf({ access: 'pending' }), 'noreq', 'req なし＝未申請');
+  eq(T.accessStateOf({ access: 'pending', req: { name: 'A' } }), 'noreq', 'ts の無い req は申請とみなさない');
+  eq(T.accessStateOf({ access: 'pending', name: '名前だけある' }), 'noreq', '名前があっても申請ではない');
+  eq(T.accessStateOf({}), 'noreq', 'access 未設定は未申請扱い');
+});
+
+t('accessStateOf: 承認済み・停止中はそのまま返す', () => {
+  eq(T.accessStateOf({ access: 'approved' }), 'approved');
+  eq(T.accessStateOf({ access: 'blocked', req: { name: 'A', ts: NOW } }), 'blocked', '停止中は申請より優先');
+});
+
+t('isApplicant: 通知バッジの母数は「未承認かつ申請あり」', () => {
+  ok(T.isApplicant({ access: 'pending', req: { name: 'A', ts: NOW } }), '申請ありは対象');
+  ok(!T.isApplicant({ access: 'pending' }), '未申請は対象外');
+  ok(!T.isApplicant({ access: 'approved', req: { name: 'A', ts: NOW } }), '承認済みは対象外');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
