@@ -5,13 +5,11 @@
 
 ## 試験の正誤に関わる疑い（データは触らずここに記録）
 
-- 対象: certifications/experience-cloud/data/questions.json #85 と #116（どちらも source=jpnshiken）
-  現状: ほぼ同一の設問（Experience Cloud サイトの Google アナリティクスで管理者がレポートできる項目）なのに正解集合が食い違う。
-    - #85 正解: 「Salesforce オブジェクト別のページビュー」「検索アクティビティ」「ユーザーログイン履歴」
-    - #116 正解: 「検索アクティビティ」「ユーザーのログイン履歴に関する項目」「『サポートへのお問い合わせ』ページのアクティビティ」
-  疑問点: 少なくとも片方の正解が誤り。共通は「検索アクティビティ」「ログイン履歴」の2つで、3つ目（オブジェクト別ページビュー ↔ サポートページのアクティビティ）が矛盾。
-  対応案: 公式で正しい方に寄せて片方を修正、または重複として1問へ統合（LOOP.md により自動修正はしない＝だいきの確認後）。
-  出典案: help.salesforce.com「Track Community Activity with Reports and Dashboards」/「Google Analytics for Experience Cloud」系ページで裏取りが必要。
+- ✅ 解決済み（2026-07-30）: certifications/experience-cloud/data/questions.json #85 と #116（重複＋正解矛盾）
+  経緯: ほぼ同一の設問（Experience Cloud の Google アナリティクスで管理者がレポートできる項目・同一の5選択肢）で正解集合が食い違っていた。
+  裏取り: Salesforce 公式（「Track Your Salesforce Sites with Google Analytics」/「Track User Engagement with Google Analytics 4」）は、追跡対象として「Salesforce オブジェクト別のページビュー」「検索アクティビティ」「ログイン（ユーザー ID/種別）」を明記。
+    → #85 の正解が公式どおり。#116 は正しい「オブジェクト別ページビュー」を落として「サポートへのお問い合わせページのアクティビティ」（公式に無い）を正解にしており、解説も「オブジェクト別ページビューは追跡不可」と公式に反する記述だった。
+  対応: 重複かつ誤答の #116 を削除し、公式に正しい #85 を残した（experience-cloud 132→131問）。LP の CERTS meta も 131問へ更新。
 
 ## 高リスク領域で要判断（認証/Firestore/ブループリント比率/storageKey 等）
 
