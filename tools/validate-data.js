@@ -274,8 +274,15 @@ function validateVersions() {
   if (nums.size > 1) {
     err('?v= の版数が混在: ' + [...nums].join(', '));
     [...versions].forEach((v) => info('     ' + v));
+    return;
+  }
+  const assetV = [...nums][0];
+  // 3点セット＝CACHE 文字列・SHELL の ?v=・各HTMLの ?v= がすべて一致すること。
+  // 以前は ?v= 同士の一致しか見ておらず、CACHE だけがドリフトしていても素通りしていた（実際に v132 対 ?v=130 が緑になっていた）。
+  if (cm[1] !== assetV) {
+    err('CACHE(sf-exam-v' + cm[1] + ') とアセット ?v=' + assetV + ' の版数が不一致（tools/bump-version.js で3点セットを揃える）');
   } else {
-    info('  CACHE=v' + cm[1] + ' / アセット ?v=' + [...nums][0] + ' … 整合OK');
+    info('  CACHE=v' + cm[1] + ' / アセット ?v=' + assetV + ' … 整合OK');
   }
 }
 

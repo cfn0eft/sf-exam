@@ -252,12 +252,17 @@ t('mailParams: 種類ごとの件名と本文パラメータ', () => {
   eq(T.mailParams('unknown', {}).subject, 'お知らせ', '未知の種類でも落ちない');
 });
 
-t('mailThrottled: DMは5分に1通・申請は毎回通す', () => {
+t('mailThrottled: test以外は5分に1通・testは毎回通す', () => {
   storage.delete('sfq_mailed_dm');
-  eq(T.mailThrottled('apply', Date.now()), false, '申請は throttle しない');
-  eq(T.mailThrottled('apply', Date.now()), false, '申請は連続でも通す');
-  eq(T.mailThrottled('dm', Date.now()), false, 'DMの1通目は通る');
-  eq(T.mailThrottled('dm', Date.now()), true, '直後の2通目は抑止');
+  storage.delete('sfq_mailed_apply');
+  var now = Date.now();
+  eq(T.mailThrottled('apply', now), false, '申請の1通目は通る');
+  eq(T.mailThrottled('apply', now + 1000), true, '直後の連投は抑止（DoS対策）');
+  eq(T.mailThrottled('apply', now + 6 * 60000), false, '5分経過後は再び通る');
+  eq(T.mailThrottled('dm', now), false, 'DMの1通目は通る');
+  eq(T.mailThrottled('dm', now + 1000), true, '直後の2通目は抑止');
+  eq(T.mailThrottled('test', now), false, '管理者のテスト送信は throttle しない');
+  eq(T.mailThrottled('test', now + 1000), false, 'テスト送信は連続でも通す');
 });
 
 t('idOf: 内部メールから表示用ログインIDを取り出す', () => {

@@ -807,7 +807,19 @@
   }
   function emptyStore() { return { bm: [], hist: {}, streak: 0, vm: {}, tbm: {} }; }
   function toastSafe(t) { try { if (typeof window.toast === 'function') window.toast(t); } catch (e) {} }
-  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  // 管理者ビューに表示する外部由来URL(フィードバックの url/ref 等)を http(s)/相対のみに絞る。
+  // esc() で属性脱出は防げるが javascript: 等のスキームは別途弾く必要がある。不正は空文字を返す。
+  function safeUrl(u) {
+    try { var p = new URL(String(u == null ? '' : u), self.location ? self.location.href : 'https://x/'); return /^https?:$/.test(p.protocol) ? p.href : ''; }
+    catch (e) { return ''; }
+  }
+  // CSV セル用: RFC4180 の引用に加え、先頭が =+-@ 等だと Excel/Sheets が数式として実行するため先頭に ' を付けて無害化する。
+  function csvCell(x) {
+    var v = String(x == null ? '' : x);
+    if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+    return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
   function friendlyErr(code) {
     var m = {
       'auth/invalid-email': 'IDは半角英数字で入力してください。',
@@ -963,9 +975,11 @@
     return c;
   }
   function mailEnabled() { return !!mailCfg(); }
-  // 送信間隔の制御（端末ローカル。申請系は頻度が低いので throttle しない）
+  // 送信間隔の制御（端末ローカル）。test（管理者のテスト送信）以外は全種類を throttle する。
+  // 以前は dm だけが対象で apply/unblock は無制限だったため、停止中ユーザーが「解除申請」を連打すると
+  // 管理者メールへ無制限に飛ばせた（通知チャネルへの DoS）。申請自体の Firestore 保存は throttle と無関係に成功する。
   function mailThrottled(kind, now) {
-    if (kind !== 'dm') return false;
+    if (kind === 'test') return false;
     var k = 'sfq_mailed_' + kind, prev = 0;
     try { prev = parseInt(localStorage.getItem(k) || '0', 10) || 0; } catch (e) {}
     if (prev && (now - prev) < MAIL_THROTTLE_MS) return true;
@@ -1600,9 +1614,10 @@
     // 楽観的に即描画
     lastChat = (lastChat || []).concat([rec]); renderChatMsgs();
     var ref = db.collection(COLLECTION).doc(chatUid);
-    ref.update('chat', FV.arrayUnion(rec)).catch(function () {
-      return ref.set({ chat: [rec] }, { merge: true });
-    }).then(function () {
+    // set(merge)+arrayUnion なら doc が無ければ作成・あれば追記を1回で行える。
+    // 以前は update 失敗時に set({chat:[rec]}) へフォールバックしており、一時的な失敗(権限/通信)でも
+    // チャット履歴全体を最新1件に潰していた。arrayUnion は既存配列を壊さない。
+    ref.set({ chat: FV.arrayUnion(rec) }, { merge: true }).then(function () {
       if (chatMode === 'admin') { try { logAdmin('チャット', (chatName || '') + '：' + rec.msg.slice(0, 20)); } catch (e) {} }
       // 利用者からのDMは管理者へメールで知らせる（未設定なら何もしない・5分に1通まで）
       else notifyAdminMail('dm', { name: currentName || '', id: idOf(currentEmail), detail: rec.msg.slice(0, 120), at: fmtDateTime(rec.ts) });
@@ -2189,7 +2204,8 @@
   function num(v) { var n = parseInt(v, 10); return isFinite(n) ? n : 0; }
   function uidKey(base) { return base + '_' + ((currentUser && currentUser.uid) || 'anon'); }
 
-  /* ---------------- クラウド保存（デバウンス） ---------------- */
+  /* ---------------- クラウド保存（デバウンス＋失敗時リトライ） ---------------- */
+  var saveRetry = 0;   // 連続保存失敗回数（指数バックオフ用）
   window.__cloudSave = function () {
     if (!currentUser || !db) return;
     if (accessLocked) return; // 停止/承認待ち中はクラウドへ書き込まない
@@ -2201,8 +2217,17 @@
       var st = window.__getStore ? window.__getStore() : null;
       if (!st) { cloudDirty = false; return; }
       saveCertStore(currentUser.uid, st)
-        .then(function () { cloudDirty = false; setStatus('保存済み'); })
-        .catch(function () { cloudDirty = false; setStatus('オフライン'); });
+        .then(function () { cloudDirty = false; saveRetry = 0; setStatus('保存済み'); })
+        .catch(function () {
+          // 保存失敗時は cloudDirty を保持したまま指数バックオフで再送する。
+          // 以前はここで cloudDirty=false に落としており、未保存のローカル進捗が次のサーバ snapshot で
+          // 古い値に上書きされて「目の前で解答が巻き戻る」事故になっていた（しかもリトライも無かった）。
+          // cloudDirty=true のままにすることで ownDocUnsub の上書きガードが効き続け、進捗が守られる。
+          saveRetry = Math.min(saveRetry + 1, 6);
+          setStatus('オフライン（自動で再試行します）');
+          if (saveTimer) clearTimeout(saveTimer);
+          saveTimer = setTimeout(window.__cloudSave, Math.min(30000, 800 * Math.pow(2, saveRetry)));
+        });
     }, 800);
   };
 
@@ -3583,10 +3608,12 @@
       if (fb.qid && fb.cert === CERT_KEY && typeof window.jumpQ === 'function') {
         openLink = '<button class="sfqc-fb-open" data-openq="' + esc(String(fb.qid)) + '">🔎 Q' + esc(String(fb.qid)) + ' を開く</button>';
       } else if (fb.url) {
-        openLink = '<a class="sfqc-fb-open" href="' + esc(fb.url) + '" target="_blank" rel="noopener">🔗 報告ページ' + (fb.qid ? '（Q' + esc(String(fb.qid)) + '）' : '') + 'を開く</a>';
+        var fbUrlSafe = safeUrl(fb.url);
+        if (fbUrlSafe) openLink = '<a class="sfqc-fb-open" href="' + esc(fbUrlSafe) + '" target="_blank" rel="noopener">🔗 報告ページ' + (fb.qid ? '（Q' + esc(String(fb.qid)) + '）' : '') + 'を開く</a>';
       }
-      var links = (openLink || fb.ref)
-        ? '<div class="sfqc-fb-ref">' + openLink + (fb.ref ? (openLink ? ' ・ ' : '') + '<a href="' + esc(fb.ref) + '" target="_blank" rel="noopener">参照リンク</a>' : '') + '</div>'
+      var fbRefSafe = fb.ref ? safeUrl(fb.ref) : '';
+      var links = (openLink || fbRefSafe)
+        ? '<div class="sfqc-fb-ref">' + openLink + (fbRefSafe ? (openLink ? ' ・ ' : '') + '<a href="' + esc(fbRefSafe) + '" target="_blank" rel="noopener">参照リンク</a>' : '') + '</div>'
         : '';
       return '<div class="sfqc-fb-item">' +
         '<div class="sfqc-fb-top">' +
@@ -3659,7 +3686,7 @@
     var lines = [head.join(',')];
     feedbackRows().forEach(function (r) {
       var row = [r.date, r.name, r.uid, r.cert, r.qid, r.category, r.message, r.question, r.ref, r.ver, r.ua, r.url];
-      lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+      lines.push(row.map(csvCell).join(','));
     });
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
     dlBlob(blob, 'sfquiz-feedback-' + new Date().toISOString().slice(0, 10) + '.csv');
@@ -3689,7 +3716,7 @@
     var lines = [head.join(',')];
     rows.forEach(function (r) {
       var row = [r.cert, r.qid, r.question, r.answers, r.correct, r.rate, r.flag];
-      lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+      lines.push(row.map(csvCell).join(','));
     });
     dlBlob(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' }),
       'sfquiz-qrates-' + cert + '-' + stamp + '.csv');
@@ -3721,7 +3748,7 @@
           s.tbmDone, s.tbmBm, s.notes,
           s.daysActive, Math.round((s.studySec || 0) / 60), s.lastStudyDate, s.examDate, s.goal
         ];
-        lines.push(row.map(function (x) { var v = String(x == null ? '' : x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','));
+        lines.push(row.map(csvCell).join(','));
       });
     });
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
