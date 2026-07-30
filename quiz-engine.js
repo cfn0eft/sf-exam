@@ -614,7 +614,7 @@ function openSummary(ci,ev){
     // Exam point hint
     if(t.examPoints&&t.examPoints.length){
       const hint=document.createElement('div');hint.className='sum-sep';
-      hint.textContent='⚡ '+escH(t.examPoints[0].replace(/\*\*/g,'').slice(0,50));
+      hint.textContent='⚡ '+t.examPoints[0].replace(/\*\*/g,'').slice(0,50);   // textContent は自動でエスケープする（escH 不要・二重エスケープ回避）
       body.insertBefore(hint,row);
     }
   });
@@ -942,7 +942,7 @@ function showTD(ci,ti){
   const posEl=document.getElementById('td-pos');
   if(prevBtn)prevBtn.disabled=ti===0;
   if(nextBtn)nextBtn.disabled=ti===total-1;
-  if(posEl)posEl.textContent=escH(CHDATA[ci].chapter.replace(/^第\d+章[:：]\s*/,''))+'  '+(ti+1)+'/'+total;
+  if(posEl)posEl.textContent=CHDATA[ci].chapter.replace(/^第\d+章[:：]\s*/,'')+'  '+(ti+1)+'/'+total;   // textContent は自動エスケープ（escH 不要）
   refreshTDMark();
   document.getElementById('tb-list').style.display='none';
   document.getElementById('td-view').classList.add('on');
