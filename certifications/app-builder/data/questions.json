@@ -2,7 +2,6 @@
   {
     "id": 3,
     "expFig": "declarative-vs-code",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice3",
     "question": "Universal Containers社は、今後30日以内にどれだけの商談が終了するかを追跡するために、取引先に項目が必要です。何を使用すればよいでしょうか。",
     "choices": [
       "ワークフロールール",
@@ -30,7 +29,6 @@
   },
   {
     "id": 17,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice17",
     "question": "Assignmentというカスタムオブジェクトは、階層を使用してアクセス権を付与する非公開の共有設定です。ロール階層はスペシャリスト→マネージャー→ディレクター（最上位）です。マネージャーロールのユーザーが新しいAssignmentレコードを作成した場合、誰がこのレコードを参照できますか。",
     "choices": [
       "レコード所有者とその階層のディレクター",
@@ -56,7 +54,6 @@
   },
   {
     "id": 1,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice1",
     "question": "アプリケーションビルダーが、データモデルを視覚的に確認するためにスキーマビルダーを開きました。この画面でできる操作はどれですか。2つ選びなさい。",
     "choices": [
       "ページレイアウトを新しいウィンドウで表示する",
@@ -83,7 +80,6 @@
   },
   {
     "id": 2,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice2",
     "question": "カスタムレポートタイプを作成する際に、アプリケーションビルダーが考慮することはどれですか。",
     "choices": [
       "主従関係の従オブジェクトは、カスタムレポートタイプのセカンダリオブジェクトとして追加できません。",
@@ -108,7 +104,6 @@
   },
   {
     "id": 4,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice4",
     "question": "現在、本番環境にインストールされている未管理パッケージをアップグレードするには、どのような手順を実行すればよいですか。",
     "choices": [
       "現在のバージョンをアンインストールし、新しいバージョンをインストールする。",
@@ -133,7 +128,6 @@
   },
   {
     "id": 8,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice8",
     "question": "DreamHouse Realty社（DR）は、取引先責任者の[発信禁止(DoNotCall)]チェックボックスがオンになった場合、電話番号が削除されるようにするポリシーを定めています。アプリケーションビルダーはどの自動化ツールを推奨すべきですか。",
     "choices": [
       "承認プロセス",
@@ -159,7 +153,6 @@
   },
   {
     "id": 22,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice22",
     "question": "組織全体のデフォルトを超えてレコードアクセスを拡張できる機能はどれですか。2つ選びなさい。",
     "choices": [
       "条件に基づく共有ルール",
@@ -186,7 +179,6 @@
   },
   {
     "id": 6,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice6",
     "question": "アプリケーションビルダーは、取引先責任者レコードで「優先連絡方法」を直接特定する方法をユーザーに提供する必要があります。ユーザーは[電話番号]と[メール]のどちらかを優先連絡方法として選択する必要があります。要件を実現するために利用するデータ型はどれですか。",
     "choices": [
       "数式",
@@ -211,7 +203,6 @@
   },
   {
     "id": 5,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice5",
     "question": "Universal Containers社は、取引先の詳細ページに、関連するすべての商談をフェーズごとのグラフで表示したいと考えています。この要件を満たすために、アプリケーションビルダーが取引先ページレイアウトに追加するべきレポートの種類はどれですか。",
     "choices": [
       "取引先オブジェクトに基づくサマリーレポート",
@@ -239,7 +230,6 @@
   },
   {
     "id": 10,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice10",
     "question": "AW Computing社の採用チームは、ジョブ応募のカスタムオブジェクトで候補者の内定承諾（Job_Accepted__c）と採用日（Hire_Date__c）を記録しています。内定承諾後に採用日を入力できるが、一度入力した後は編集できないようにする必要があります。この要件を満たす入力規則の数式はどれですか。",
     "choices": [
       "ISBLANK(Job_Accepted__c) || NOT(ISCHANGED(Hire_Date__c))",
@@ -265,7 +255,6 @@
   },
   {
     "id": 42,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice42",
     "question": "Universal Containers社は、プロジェクトというカスタムオブジェクトを使用して、部門別に社内プロジェクトを管理します。プロジェクトの各部門の従業員だけが、その部門のすべてのプロジェクトレコードへの閲覧アクセス権を持つ必要があります。従業員が職務を変更して別の部門に移動した場合、その従業員は元の部門内のプロジェクトにアクセスできなくなります。組織全体のプロジェクトのデフォルトが「非公開」に設定されていると仮定した場合、これらの要件を満たす選択肢はどれですか。2つ選びなさい。",
     "choices": [
       "プロジェクトの部門を使用して条件に基づく共有ルールを作成し、プロファイルごとにユーザーにアクセス権を付与する。",
@@ -292,7 +281,6 @@
   },
   {
     "id": 9,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice9",
     "question": "Cloud Kicks社では各出荷に対して出荷日が記録されています。配車担当者は、出荷が行われた日時（日付と時刻）のより詳細な情報を必要としています。アプリケーションビルダーは現在の日付型項目を日付/時間型項目に変更しようとしています。既存データに関して注意すべき点はどれですか。",
     "choices": [
       "変更は即時に反映される。",
@@ -320,7 +308,6 @@
   },
   {
     "id": 11,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice11",
     "question": "レコードトリガーフローAの項目更新がフローBを起動し、フローBの項目更新がフローAを起動する設計になっています。この相互更新で起こり得る結果として最も適切なものはどれですか。",
     "choices": [
       "更新が相互にトリガーし合って再帰ループとなり、トランザクションのガバナ制限（DML処理回数やCPU時間の上限）に抵触してエラーになる可能性が高い。",
@@ -346,7 +333,6 @@
   },
   {
     "id": 20,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice20",
     "question": "未管理パッケージを使用する際の主な考慮事項はどれですか。2つ選びなさい。",
     "choices": [
       "未管理パッケージを作成した人が、インストールされているコンポーネントを変更またはアップグレードできます。",
@@ -372,7 +358,6 @@
   },
   {
     "id": 7,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice7",
     "question": "Visualforceページをページレイアウトに埋め込む場合に当てはまる記述はどれですか。2つ選びなさい。",
     "choices": [
       "ページレイアウトのVisualforceページには幅と高さの属性があります。",
@@ -398,7 +383,6 @@
   },
   {
     "id": 47,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice47",
     "question": "Universal Containers社では、すべての従業員がReviewというカスタムオブジェクトを使用してリーダーシップに関するレビューを提出することができます。これらのレビューは、人事部門とレビューを提出した従業員だけが見ることができます。レビューへのアクセスを適切に制御するために、アプリケーションビルダーが取るべき手順はどれですか。3つ選びなさい。",
     "choices": [
       "Reviewオブジェクトの[参照]権限を人事部以外のユーザープロファイルから削除する。",
@@ -427,7 +411,6 @@
   },
   {
     "id": 12,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice12",
     "question": "Cloud Kicks社では新規商談の承認プロセスを設定し、最初の申請に基づいてさまざまなアクションを実行したいと考えています。承認プロセスでアプリケーションビルダーが使用できる自動アクションの種別はどれですか。3つ選びなさい。",
     "choices": [
       "フローの開始",
@@ -457,7 +440,6 @@
   },
   {
     "id": 16,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice16",
     "question": "Northern Trail Outfitters社は、主従関係にある2つのカスタムオブジェクトを使用しています。従レコードの所有者および共有アクセスを決定する要因は何ですか。",
     "choices": [
       "主オブジェクトの設定で、デフォルトの所有者が設定される。",
@@ -483,7 +465,6 @@
   },
   {
     "id": 50,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice50",
     "question": "新しいカスタムオブジェクトが共有設定にて「非公開」で作成されました。企業は、状況に応じて個別のレコードを特定の人またはグループと共有したいと考えています。企業のユーザーが個々のレコードを手動で共有するためのオプションはどれですか。3つ選びなさい。",
     "choices": [
       "権限セット",
@@ -512,7 +493,6 @@
   },
   {
     "id": 13,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice13",
     "question": "Universal Containers社のアプリケーションビルダーは、フェーズがClosed Wonに設定されているときに金額項目が確実に入力されるよう要求されました。この要件を満たすには何を使用できますか。",
     "choices": [
       "ワークフロールール",
@@ -541,7 +521,6 @@
   {
     "id": 18,
     "expFig": "relationships",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice18",
     "question": "Northern Trail Outfitters社は、取引先とカスタムオブジェクトParkの主従関係を参照関係に変更しようとしていますが、変更できません。この原因として考えられるものはどれですか。",
     "choices": [
       "取引先がParkオブジェクトのフロープロセスに含まれている。",
@@ -567,7 +546,6 @@
   },
   {
     "id": 19,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice19",
     "question": "アプリケーションビルダーが新しいレポートタイプを作成しましたが、ユーザーが新規レポート作成時に[レポートタイプ]一覧から選択できません。この問題の原因として考えられるのはどれですか。2つ選びなさい。",
     "choices": [
       "レポートタイプのステータスが[開発中]になっている。",
@@ -594,7 +572,6 @@
   },
   {
     "id": 14,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice14",
     "question": "商談オブジェクトに設定できるルールはどれですか。2つ選びなさい。",
     "choices": [
       "エスカレーションルール",
@@ -621,7 +598,6 @@
   },
   {
     "id": 71,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice71",
     "question": "Universal Containers社は、取引先および商談に対して非公開の共有モデルを採用しており、テリトリー管理を使用してレコードへのアクセスを付与しています。条件：営業担当Aは、商談レコードを営業担当Bと手動で共有しました。営業担当Bは、その取引先のテリトリーに所属していないにもかかわらず、取引先レコードにアクセスできます。営業担当Cは、商談レコードにも取引先レコードにもアクセスできません。この情報に基づいて、なぜ営業担当Bは商談に関連する取引先を参照できるのでしょうか。",
     "choices": [
       "取引先も手動で共有された。",
@@ -647,7 +623,6 @@
   },
   {
     "id": 27,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice27",
     "question": "Universal Containers社は、ケースのオープン日時(CreatedDate)からの経過日数に応じて、ケースレコードに異なるテキスト(フォローアップ要など)を表示したいと考えています。何を使用すればよいですか。",
     "choices": [
       "ケースプロセス",
@@ -675,7 +650,6 @@
   },
   {
     "id": 24,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice24",
     "question": "Sandbox テンプレートを使用できるのは、どのサンドボックスタイプですか。",
     "choices": [
       "Developer Pro Sandbox",
@@ -702,7 +676,6 @@
   },
   {
     "id": 21,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice21",
     "question": "UVC社のアプリケーションビルダーは、取引先に関連付けられた関連リストでユーザーが新規レコードを作成できないようにするため、標準ボタンの上書きを検討しています。標準ボタンを上書きする前に考慮すべき点はどれですか。2つ選びなさい。",
     "choices": [
       "標準ボタンは、ルックアップダイアログ、リストビュー、検索結果レイアウトで変更できる。",
@@ -729,7 +702,6 @@
   },
   {
     "id": 15,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice15",
     "question": "Cloud Kicks社のCFOは、30%以上の割引が適用された大口の店舗販売契約については、契約を成立させる前に承認する必要があります。この要件に対応するために使用すべき機能はどれですか。",
     "choices": [
       "承認プロセス",
@@ -755,7 +727,6 @@
   },
   {
     "id": 77,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice77",
     "question": "Universal Containers社では、取引先の組織の共有設定が[公開/参照・更新可能]に設定されています。顧客コミュニティサイトの訪問者は、すべての取引先レコードが表示できると報告しています。コミュニティユーザーが自分の取引先のみを表示できるようにするには、アプリケーションビルダーはどのように取引先の共有を設定すべきでしょうか。",
     "choices": [
       "外部取引先用の権限セットを定義する。",
@@ -781,7 +752,6 @@
   },
   {
     "id": 30,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice30",
     "question": "主従関係についての正しい説明はどれですか。3つ選びなさい。",
     "choices": [
       "主オブジェクトに積み上げ集計項目が存在しない場合、主従関係を参照関係に変換できます。",
@@ -810,7 +780,6 @@
   },
   {
     "id": 25,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice25",
     "question": "Universal Containers社の営業担当者は商談ごとに複数の見積書を作成します。拒否された見積書を削除するために、アプリケーションビルダーが推奨すべき自動化ツールはどれですか。",
     "choices": [
       "フロー",
@@ -838,7 +807,6 @@
   },
   {
     "id": 23,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice23",
     "question": "カスタムボタンはどこに配置できますか。3つ選びなさい。",
     "choices": [
       "関連リスト",
@@ -867,7 +835,6 @@
   },
   {
     "id": 80,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice80",
     "question": "Universal Containers社は、商談の共有モデルを非公開に設定しており、地域ごとの構造のためこの設定を変更することはできません。新たに営業オペレーションチームが設立され、このチームはすべての商談データの分析を行う必要があり、メンバー全員がすべての商談に対して参照および編集権限を持つ必要があります。この要件を満たすために、アプリケーションビルダーが取るべき推奨ソリューションはどれですか。2つ選びなさい。",
     "choices": [
       "営業オペレーションチームの各ユーザーと、すべての商談の手動共有を追加する。",
@@ -894,7 +861,6 @@
   },
   {
     "id": 26,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice26",
     "question": "Universal Containers社の営業担当副社長は、営業担当者にすべての取引先を表示するアクセス権を付与しつつ、自分が所有する取引先でのみ新しい商談を作成できるようにしたいと考えています。この要件はどのように満たせますか。",
     "choices": [
       "商談の組織全体のデフォルトの共有を[非公開]に設定し、共有を再計算する。",
@@ -920,7 +886,6 @@
   },
   {
     "id": 35,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice35",
     "question": "Universal Containers社は遠隔地の建設住所にコンテナを配送するため、顧客から場所の座標（緯度・経度）を取得したいと考えています。アプリケーションビルダーはどのタイプの項目を使用すべきですか。",
     "choices": [
       "外部参照関係",
@@ -948,7 +913,6 @@
   },
   {
     "id": 32,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice32",
     "question": "Ursa Major Solar社の開発用Sandboxは次のメジャーSalesforceバージョンにアップグレード済みですが、本番環境はまだ現行バージョンです。変更セットのデプロイを計画する際に考慮すべきことはどれですか。",
     "choices": [
       "次のバージョンでのみ利用可能な機能が含まれている場合、デプロイは失敗する。",
@@ -974,7 +938,6 @@
   },
   {
     "id": 102,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice102",
     "question": "取引先のカスタム項目には、顧客の財務情報を追跡するための項目があります。この項目へのアクセスは財務チームのメンバーのみに制限されています。しかし、特別な事情により、カスタマーサービスプロファイルが割り当てられている、特定のカスタマーサービス担当者が、この項目を参照のみで閲覧できるようにする必要があります。この要件を満たすために、推奨される解決策はどれですか。",
     "choices": [
       "項目レベルセキュリティでこの項目を参照のみ許可する権限セットを作成し、該当の担当者に割り当てる。",
@@ -1000,7 +963,6 @@
   },
   {
     "id": 34,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice34",
     "question": "すべての取引先責任者の郵送先郵便番号が、関連する取引先の発送先郵便番号と一致するようにしたいと要求されました。入力規則でどのように実施すればよいですか。",
     "choices": [
       "不等価演算子を使用して入力規則を作成する。",
@@ -1026,7 +988,6 @@
   },
   {
     "id": 28,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice28",
     "question": "事業部長がページレイアウトにグラフを追加したいと考えています。これを実現するために、ソースレポートとして使用できるレポート形式はどれですか。2つ選びなさい。",
     "choices": [
       "グラフ付きマトリックス形式",
@@ -1053,7 +1014,6 @@
   },
   {
     "id": 37,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice37",
     "question": "レコードタイプを使って選択リストの値を制御する場合、どの記述が正しいですか。2つ選びなさい。",
     "choices": [
       "マスター選択リストから値が削除された場合、その値が割り当てられたレコードは変更されませんが、削除された値はそれ以降利用できなくなる。",
@@ -1080,7 +1040,6 @@
   },
   {
     "id": 36,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice36",
     "question": "項目自動更新によって項目が変更された後、ワークフロールールが再評価された場合、どのような動作が発生する可能性がありますか。2つ選びなさい。",
     "choices": [
       "ワークフロールールは、より多くのワークフロールールが再評価されるトリガーとなる。",
@@ -1107,7 +1066,6 @@
   },
   {
     "id": 105,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice105",
     "question": "アプリケーションビルダーは、設定された組織全体のデフォルトを超えてレコードアクセスを拡張するよう求められました。この要件を満たす機能はどれですか。2つ選びなさい。",
     "choices": [
       "共有ルール",
@@ -1134,7 +1092,6 @@
   },
   {
     "id": 39,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice39",
     "question": "営業担当副社長から、すべての商談レコードに取引先の情報を表示するよう要求されました。この要件を満たすために推奨されるソリューションは何ですか。",
     "choices": [
       "積み上げ集計項目",
@@ -1160,7 +1117,6 @@
   },
   {
     "id": 29,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice29",
     "question": "ダッシュボードを削除する際の正しい記述はどれですか。",
     "choices": [
       "ダッシュボードを削除すると、その中のコンポーネントも削除されます。コンポーネントで使用されているカスタムレポートは削除されません。",
@@ -1186,7 +1142,6 @@
   },
   {
     "id": 38,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice38",
     "question": "Universal Containers社は、新規ユーザーに特定の権限セットを自動的に割り当てたいと考えています。この要件を満たす方法はどれですか。2つ選びなさい。",
     "choices": [
       "ユーザーオブジェクトでワークフロールールを作成し、権限セットを割り当てる。",
@@ -1213,7 +1168,6 @@
   },
   {
     "id": 41,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice41",
     "question": "取引先、注文、および出荷をリアルタイムで同期するために、開発者は外部システムとsalesforceの間にカスタムインタフェースを構築しました。パフォーマンステストと負荷テストを完了するには、どのサンドボックス環境を使用するのが推奨されますか。",
     "choices": [
       "Developer Sandbox",
@@ -1240,7 +1194,6 @@
   },
   {
     "id": 112,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice112",
     "question": "Universal Containers社では、Salesforce内で顧客と連携したいと考えており、[Chatter 設定]の[顧客の招待を許可]を有効にすることにしました。Chatterグループに招待された場合、顧客にはどのような権限が付与されますか。",
     "choices": [
       "自分が取引先責任者である取引先への@メンションする権限",
@@ -1266,7 +1219,6 @@
   },
   {
     "id": 43,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice43",
     "question": "Universal Containers社のCRMマネージャーは、データの整合性を高めるために、カスタムのテキスト項目を選択リストに変換するよう依頼しました。項目のデータ型を変更する前に考慮すべき点はどれですか。2つ選びなさい。",
     "choices": [
       "項目のデータ型を変更すると、既存の項目履歴が削除される。",
@@ -1295,7 +1247,6 @@
   },
   {
     "id": 49,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice49",
     "question": "DreamHouse Realty社(DR)は、商談が[Qualification]のフェーズに進む前に、Expected_Close_Date__c項目が必ず入力されていることを保証したいと考えています。アプリケーションビルダーはこの要件をどのように解決すればよいでしょうか。",
     "choices": [
       "レコードタイプ",
@@ -1321,7 +1272,6 @@
   },
   {
     "id": 122,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice122",
     "question": "Cloud Kicks社では、ある営業担当者が「自分の担当する取引先責任者が他のユーザーに表示されない」と報告しています。この問題をトラブルシューティングする方法として、アプリケーションビルダーは何を確認すべきですか。3つ選びなさい。",
     "choices": [
       "すべてのレコードに対してユーザーにアクセスを付与する取引先の共有ルールを作成する。",
@@ -1350,7 +1300,6 @@
   },
   {
     "id": 31,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice31",
     "question": "Universal Containers社のユーザーは、取引先レコードのChatterフィードから取引先責任者レコードをすばやく作成できる必要があります。アプリケーションビルダーはどのように機能を有効にすべきですか。",
     "choices": [
       "取引先責任者にカスタムの「レコードの作成」アクションを作成する。",
@@ -1378,7 +1327,6 @@
   },
   {
     "id": 65,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice65",
     "question": "Universal Containers社は、顧客との契約に契約オブジェクトを使用しています。営業マネージャーは、契約書の承認を行う必要があり、10,000ドルを超える契約書についてはディレクターの承認が必要です。すべての契約が正しく承認ルートを通過し、承認プロセス中に営業担当者がレコードを変更できないようにするには、アプリケーションビルダーはどのオプションを使用すべきですか。2つ選びなさい。",
     "choices": [
       "契約オブジェクトに、各営業マネージャーのための承認ステップを個別に設定し、承認者を[ディレクター]にする。",
@@ -1407,7 +1355,6 @@
   {
     "id": 45,
     "expFig": "rollup-summary",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice45",
     "question": "Ursa Major Solar社では、カスタムオブジェクトGalaxy__cとカスタムオブジェクトStar__cの間に参照関係があります。アプリケーションビルダーは、各Galaxy__cレコードに関連するStar__cレコードの総数をカウントする積み上げ集計項目を作成したいと考えています。現在の設定がこの要件の実現にどのような影響を与えるか、正しいものを選択してください。",
     "choices": [
       "Galaxy__cオブジェクトに数式項目を作成することで積み上げ集計を実現できる。",
@@ -1433,7 +1380,6 @@
   },
   {
     "id": 126,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice126",
     "question": "Universal Containers社は、M&Aチームが新しいプロジェクトの可能性について協力するために、Chatter グループを使用したいと考えています。このグループは、メンバー以外が見たり参加したりできないようにし、招待制でアクセスできるようにします。アプリケーションビルダーが推奨すべき Chatter グループタイプはどれですか。",
     "choices": [
       "顧客を含むグループ",
@@ -1459,7 +1405,6 @@
   },
   {
     "id": 59,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice59",
     "question": "Cloud Kicks社は最近、リリース管理戦略にアプリケーションライフサイクル管理プロセスを導入しました。バグ修正と単純な変更を扱うカテゴリーはどれですか。",
     "choices": [
       "マイナー",
@@ -1485,7 +1430,6 @@
   },
   {
     "id": 66,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice66",
     "question": "Universal Containers社は、Projectsというカスタムオブジェクトを使用しています。マネージャーがProjectsを割り当てる際、「見積時間」というカスタム項目に値を設定します。一度設定された後、ユーザーはこの値を減らすことはできますが、増やすことはできないようにする必要があります。アプリケーションビルダーはどの設定を行うべきでしょうか。",
     "choices": [
       "カスタム項目のデフォルト値として数式を作成する。",
@@ -1511,7 +1455,6 @@
   },
   {
     "id": 33,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice33",
     "question": "Salesforceにおいて作成できるカスタムタブはどれですか。3つ選びなさい。",
     "choices": [
       "カスタムオブジェクトタブ",
@@ -1540,7 +1483,6 @@
   },
   {
     "id": 46,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice46",
     "question": "Universal Containers社は、ヨーロッパで使用されていたレガシーシステムから販売業務を移行しています。商談を適切な国の通貨でインポートする必要があります。これらの要件を満たすために、アプリケーションビルダーはどのステップを構成すべきでしょうか。2つ選びなさい。",
     "choices": [
       "インポートファイルのすべての通貨項目に通貨ISOコードを含める。",
@@ -1567,7 +1509,6 @@
   },
   {
     "id": 181,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice181",
     "question": "Ursa Major Solar社のサービスコーディネーター(SC)は、特定の地域の技術者が所有する作業指示(WorkOrder)を最終確認し、請求書提出前に承認を行います。作業指示をクローズする前に、SCは誤って追加されたデータの修正や添付ファイルの削除を行う必要があります。また、SCは技術者が所有する関連レコードにもアクセスできる必要があります。データモデルが非公開である場合、この要件を満たすための適切なソリューションはどれですか。",
     "choices": [
       "SCをレビュー対象となる技術者のロール階層の上位に配置する。",
@@ -1593,7 +1534,6 @@
   },
   {
     "id": 69,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice69",
     "question": "アプリケーションビルダーは、業種項目の長さが6文字を超える場合にエラーを投げる、取引先側の入力規則を作成します。別のアプリケーションビルダーは、住所(請求先)項目がSan Franciscoに設定されるたびに、業種項目をTechnologyに設定する項目更新のワークフロールールを作成します。次に営業担当者が住所(請求先)項目がSan Franciscoの取引先を保存すると、何が起こりますか。",
     "choices": [
       "レコードは保存されず、入力規則のエラーメッセージが表示されます。",
@@ -1619,7 +1559,6 @@
   },
   {
     "id": 48,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice48",
     "question": "アプリケーションビルダーは、タスクの期日(DueDate__c)から2か月後の延滞日(OverdueDate__c)を表示する必要があります。どのアプローチを取るべきですか。",
     "choices": [
       "プロセスビルダーを使用し、延滞日を[期日+((365/12)*2)]に設定する。",
@@ -1645,7 +1584,6 @@
   },
   {
     "id": 40,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice40",
     "question": "ページレイアウトに追加されたレポートグラフをフィルター処理するために使用できる項目の種類は何ですか。",
     "choices": [
       "数式項目",
@@ -1671,7 +1609,6 @@
   },
   {
     "id": 70,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice70",
     "question": "Cloud Kicks社(CK)は、Salesforceで靴の在庫を管理しています。注文のステータスが「有効」に変更されると、その注文された靴の在庫が減少します。その時点で、CK社のWebサイト上にあるSOAP Web サービスを呼び出し、正しい在庫数がWebサイトに表示されるようにする必要があります。靴の在庫が変更された際にCK社のWebサービスと連携するために、アプリケーションビルダーは何を使用すべきですか。",
     "choices": [
       "保存後のレコードトリガーフロー",
@@ -1698,7 +1635,6 @@
   },
   {
     "id": 185,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice185",
     "question": "Universal Containers社には、時給と月給の2種類の応募者がおり、それぞれに異なるレコードタイプがあります。人事部の全メンバーがすべての応募者レコードを参照できる必要がありますが、採用マネージャーと人事部長のみが月給応募者のレコードを作成できるようにする必要があります。この要件を満たすために、アプリケーションビルダーは何を推奨すべきでしょうか。",
     "choices": [
       "組織全体の共有設定を[非公開]に更新し、採用マネージャーのロールに対する共有ルールを作成する。",
@@ -1724,7 +1660,6 @@
   },
   {
     "id": 82,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice82",
     "question": "アプリケーションビルダーは、自動起動されたフローの新バージョンをアクティブな状態で本番環境にデプロイし、新機能をすぐにユーザーが利用できるようにしたいと考えています。デプロイを計画する際、アプリケーションビルダーは何を考慮すべきでしょうか。",
     "choices": [
       "フローを呼び出すプロセスビルダーをデプロイに含める。",
@@ -1750,7 +1685,6 @@
   },
   {
     "id": 51,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice51",
     "question": "Universal Containers社は、コンテナがカスタムオブジェクトで購入されると、設置情報を追跡したいと考えています。営業担当者は、商談に関連するすべての設置情報を可視化する必要があります。この新しいオブジェクトは、商談にどのような関係を持つべきですか。",
     "choices": [
       "主従関係",
@@ -1776,7 +1710,6 @@
   },
   {
     "id": 85,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice85",
     "question": "Cloud Kicks社は年間契約モデルを採用しています。営業担当者が商談の[フェーズ]を[成立(Closed Won)]に変更した際に、更新用の新しい商談が自動的に作成される必要があります。さらに、契約チームはSalesforceの外部で業務を行っているため、成約済みの取引について通知を受け取り、契約プロセスを開始できるようにする必要があります。この要件を満たすために、どの自動化ソリューションを使用すべきですか。",
     "choices": [
       "アウトバウンドメッセージ",
@@ -1802,7 +1735,6 @@
   },
   {
     "id": 204,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice204",
     "question": "オブジェクトのアクセス権はどのように制御できますか。2つ選びなさい。",
     "choices": [
       "権限セット",
@@ -1830,7 +1762,6 @@
   },
   {
     "id": 44,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice44",
     "question": "Ursa Major Solar社は、営業コンソールのユーザーがより快適に操作できる環境を提供したいと考えています。特に、最もよく使用するコンポーネントに常にアクセスできるようにし、現在作業しているページを離れることなく利用できるようにしたいという要件があります。この要件を満たすために、どのソリューションを使用すべきでしょうか。",
     "choices": [
       "ホームページ",
@@ -1856,7 +1787,6 @@
   },
   {
     "id": 90,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice90",
     "question": "商談の完了予定日が30日以上延期された場合、マネージャーの承認が必要です。承認プロセスは設定されていますが、営業担当者が承認の申請を忘れることが頻繁にあります。アプリケーションビルダーは、これらの商談が確実に承認プロセスに提出されるようにするにはどうすればよいですか。",
     "choices": [
       "承認プロセスの[入力条件の指定]を[条件が一致する]に変更し、初回の送信時にレコードをロックする。",
@@ -1882,7 +1812,6 @@
   },
   {
     "id": 52,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice52",
     "question": "Cloud Kicks社(CK)は、60,000件以上の新規取引先を迅速に挿入したいと考えています。CK社のデータモデルに基づいたテンプレートを使用して、リストを作成済みです。この作業を行うために、どのツールを使用すべきでしょうか。",
     "choices": [
       "データインポートウィザード",
@@ -1910,7 +1839,6 @@
   },
   {
     "id": 209,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice209",
     "question": "Universal Containers社は、レビューというカスタムオブジェクトを使用して、候補者プロセス中に面接官によって生成された情報を取得します。レビューレコードは、関連するカスタム候補者レコードにアクセスできるすべてのユーザーが見ることができます。人事担当副社長は、レビューのコメント項目を人事部以外のすべての人に非公開にしたいと考えています。アプリケーションビルダーはどのようにこの要件を満たす必要がありますか。",
     "choices": [
       "人事部ユーザー用にコメント項目があるページレイアウトを作成し、その他のユーザー用に項目がないページレイアウトを作成する。",
@@ -1936,7 +1864,6 @@
   },
   {
     "id": 93,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice93",
     "question": "Universal Containers社では、需要の増加による業務への影響が予想されています。経営陣は既存顧客に連絡を取る予定であり、取引先および親取引先ごとの未解決のケース数を確認したいと考えています。取引先ページに未解決のケース数を表示するために、アプリケーションビルダーはどの機能を使用すべきでしょうか。",
     "choices": [
       "フロー",
@@ -1962,7 +1889,6 @@
   },
   {
     "id": 54,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice54",
     "question": "Universal Containers社は、多くの顧客が同じまたは類似した会社名を持つ顧客ベースを持っています。エンドユーザーの検索エクスペリエンスを向上させるために設定すべき機能はどれですか。2つ選びなさい。",
     "choices": [
       "取引先検索レイアウトの検索フィルターを更新する。",
@@ -1991,7 +1917,6 @@
   },
   {
     "id": 53,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice53",
     "question": "Universal Containers社は、取引先オブジェクトでAccount_Region__cというカスタムの選択リストを使用しています。営業担当副社長は、この項目の値を商談で表示するよう求めています。アプリケーションビルダーはこのソリューションをどのように作成すればよいですか。",
     "choices": [
       "項目履歴管理",
@@ -2017,7 +1942,6 @@
   },
   {
     "id": 87,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice87",
     "question": "Northern Trail Outfitters社のアプリケーションビルダーが、プロジェクト管理アプリのフローをいくつか再構成するために、取引先、プロジェクト、プロジェクトマイルストーンのSandbox テンプレートを作成しました。アプリケーションビルダーはどのタイプのテスト環境を作成すべきでしょうか。",
     "choices": [
       "Developer Sandbox",
@@ -2044,7 +1968,6 @@
   },
   {
     "id": 222,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice222",
     "question": "Universal Containers社(UC社)は、カスタムオブジェクト[インターンシップ]と[応募]を使用するアプリケーションプロセスを導入しました。[インターンシップ]の組織全体のデフォルトは[非公開]に設定されており、[応募]との間に主従関係があります([インターンシップ]が主、[応募]が従)。人事部のVPは、採用担当者に[応募]への編集アクセス権を与えたいと考えています。アプリケーションビルダーはどのように適切なアクセスを設定すべきですか。",
     "choices": [
       "[応募]オブジェクトの組織全体のデフォルトを[公開/参照・更新可能]に設定する。",
@@ -2070,7 +1993,6 @@
   },
   {
     "id": 100,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice100",
     "question": "Universal Containers社は、顧客が公開ウェブサイトからケースを作成できるようにしたいと考えています。ウェブサイト訪問者にこの機能を提供するために、アプリケーションビルダーは何を使用すべきですか。",
     "choices": [
       "Web-to-ケース",
@@ -2096,7 +2018,6 @@
   },
   {
     "id": 58,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice58",
     "question": "Universal Containers社は、取引先に関連する商談レコードの作成プロセスを改善したいと考えています。取引先の情報を基に自動入力できる項目もあれば、ユーザーの入力が必要な項目もあります。この要件を満たすために、アプリケーションビルダーはどの設定を行うべきでしょうか。",
     "choices": [
       "商談の更新をトリガーとするプロセスビルダー",
@@ -2125,7 +2046,6 @@
   {
     "id": 55,
     "expFig": "declarative-vs-code",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice55",
     "question": "Cloud Kicks社は、標準オブジェクトの子オブジェクトから集計を計算するという新しい要件を受けました。チームは宣言的に解決する方法を希望しています。アプリケーションビルダーが評価すべき考慮事項はどれですか。 2つ選びなさい。",
     "choices": [
       "主従関係に変換する前に、すべてのレコードの参照関係項目に値が必要である。",
@@ -2154,7 +2074,6 @@
   },
   {
     "id": 103,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice103",
     "question": "Cloud Kicks社は、取引先に関連するオープンケースの数とクローズケースの数を要約し、カスタマーサポートの利用率が高いか、中程度か、低いかを示したいと考えています。2つの数値項目が作成されました：NUM_Open_Cases__c と NUM_Closed_Cases__c です。これらのビジネス要件を満たす自動化ソリューションはどれか。2つ選びなさい。",
     "choices": [
       "ワークフロールール",
@@ -2181,7 +2100,6 @@
   },
   {
     "id": 226,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice226",
     "question": "Universal Containers社は、営業担当者を評価するために、数値スコアと役員コメントを含むカスタムオブジェクトを使用しています。同社は、営業担当者とそのマネージャーおよび役員のみが担当者の評価レコードを閲覧できるようにしたいと考えています。ただし、担当者自身は、自分のレビューにおける役員コメント項目を閲覧できないようにする必要があります。この要件をどのように満たすことができますか。",
     "choices": [
       "[非公開]の共有モデルを使用して、階層を利用してレコードアクセスを付与し、レコードタイプと項目レベルセキュリティで項目アクセスを管理する。",
@@ -2207,7 +2125,6 @@
   },
   {
     "id": 89,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice89",
     "question": "アプリケーションビルダーは、変更セットを使用してSandboxから本番環境へ新しいアプリをデプロイしようとしています。このプロセスにおいて考慮すべき点はどれですか。2つ選びなさい。",
     "choices": [
       "Salesforce Connectは自動的に環境間のリンクを確立する。",
@@ -2234,7 +2151,6 @@
   },
   {
     "id": 107,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice107",
     "question": "Cloud Kicks社の経営チームは頻繁に出張しており、移動中にChatterを通じてチームからのリクエストを承認したいと考えています。アプリケーションビルダーは、この機能をどこで有効にすればよいですか。",
     "choices": [
       "Chatter 設定",
@@ -2260,7 +2176,6 @@
   },
   {
     "id": 56,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice56",
     "question": "外部オブジェクトで定義できるリレーションはどれですか。2つ選びなさい。",
     "choices": [
       "組織間参照関係",
@@ -2287,7 +2202,6 @@
   },
   {
     "id": 239,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice239",
     "question": "AW Computing社では、商談のデフォルトの共有設定を[非公開]に設定しています。サービス契約(Service Agreement)の種別を持つ商談が作成された際に、サービスマネージャーロールの全ユーザーがその商談を参照できるようにする必要があります。この要件を満たすために、AW Computing社はどのツールを使用すべきですか。",
     "choices": [
       "所有者に基づく共有ルール",
@@ -2314,7 +2228,6 @@
   {
     "id": 61,
     "expFig": "app-builder-regions",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice61",
     "question": "Universal Containers社のアプリケーションビルダーは、カスタムオブジェクトのレコードページにChatterフィードを追加するよう依頼されました。アプリケーションビルダーはどの方法を使用すべきでしょうか。",
     "choices": [
       "標準の関連リストコンポーネントを追加する。",
@@ -2342,7 +2255,6 @@
   },
   {
     "id": 114,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice114",
     "question": "Cloud Kicks社(CK)の営業担当者は、成約前に注文のレビューが必要な場合に承認の提出を忘れてしまいます。CKは、商談を成約の最終確認として、承認を自動的に送信して、手作業による送信をなくしたいと考えています。どの機能がビジネス要件を満たすでしょうか。2つ選びなさい。",
     "choices": [
       "Apex",
@@ -2370,7 +2282,6 @@
   },
   {
     "id": 57,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice57",
     "question": "Universal Containers社は、取引先レコードで使用しているカスタム選択リスト項目’Account Region’の値が、この地域が関連するすべての取引先責任者レコードに表示されることを望んでいます。また、取引先でこの項目の値が変更された場合に同期したいと考えています。アプリケーションビルダーはどのようにこの要件を満たす必要がありますか。",
     "choices": [
       "取引先責任者オブジェクトに’Account Region’という選択リスト項目を作成し、取引先の’Account Region’項目が変更された場合、この選択リスト項目を更新するワークフロールールを作成する。",
@@ -2396,7 +2307,6 @@
   },
   {
     "id": 252,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice252",
     "question": "Ursa Solar Major社では、Outer Planetsプロファイルを持つユーザーのみが、Solar SystemオブジェクトのJupiter項目を参照できるようにする必要があります。この要件を満たすために、アプリケーションビルダーはどの方法を使用すべきですか。",
     "choices": [
       "従来の暗号化",
@@ -2422,7 +2332,6 @@
   },
   {
     "id": 129,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice129",
     "question": "Universal Containers社(UC)には、商談オブジェクトに20種類のワークフロールールがあります。すべての項目の更新が適切に処理されるように、UCでは[項目変更後にワークフロールールを再評価する]のチェックボックスをオンにしています。最近、新しいワークフローを追加した後、ワークフローの制限に関するエラーを受け取ったという報告がユーザーからありました。この問題に対処するために、アプリケーションビルダーは何を見直すべきでしょうか。",
     "choices": [
       "オブジェクトあたりのワークフロールール数制限",
@@ -2448,7 +2357,6 @@
   },
   {
     "id": 62,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice62",
     "question": "Universal Containers社は、最新の広告購入に対する投資収益率を把握したいと考えています。現在、すべてのオブジェクトに非公開セキュリティモデルを使用しています。アプリケーションビルダーは何を推奨すべきでしょうか。",
     "choices": [
       "取引先階層と積み上げ集計項目を利用する。",
@@ -2474,7 +2382,6 @@
   },
   {
     "id": 60,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice60",
     "question": "Universal Containers社は、Componentというカスタムオブジェクトを作成し、販売された商品の詳細を取得しました。アプリケーションビルダーは、ComponentをProductの関連リストとして表示するために、どのようなアプローチを取るべきですか。",
     "choices": [
       "ProductにComponentへの主従関係を作成し、ProductページレイアウトにComponent関連リストを追加する。",
@@ -2500,7 +2407,6 @@
   },
   {
     "id": 255,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice255",
     "question": "Universal Containers社では、現在、取引先はすべてのユーザーが参照できますが、更新は所有者のみが可能となっています。経営陣は、一部の取引先を「VIP取引先」として指定し、VIP取引先は所有者のみが参照できるようにしたいと考えています。この要件を満たすために、アプリケーションビルダーはどのアクションを実行すべきですか。2つ選びなさい。",
     "choices": [
       "共有ルールを実装する。",
@@ -2527,7 +2433,6 @@
   },
   {
     "id": 132,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice132",
     "question": "Cloud Kicks社は、マーケティングロールを持たないユーザーが取引先責任者の[Retail Opt In]という選択リスト項目の値を\"Yes\"に更新できないようにしたいと考えています。アプリケーションビルダーが他のユーザーによるこの更新を防ぐために使用する入力規則はどれですか。",
     "choices": [
       "AND($UserRole.Name = 'Marketing', ISPICKVAL(Retail_Opt_In__c, \"Yes\"))",
@@ -2553,7 +2458,6 @@
   },
   {
     "id": 95,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice95",
     "question": "アプリケーションビルダーは、Developer Sandboxで変更セットを作成し、ユーザー受け入れテスト(UAT)のためにレポートをデプロイしました。しかし、レポートを実行してもデータが表示されません。考えられる原因はどれですか。",
     "choices": [
       "レポートはSalesforce DXを使用してデプロイする必要がある。",
@@ -2580,7 +2484,6 @@
   {
     "id": 63,
     "expFig": "app-builder-regions",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice63",
     "question": "アプリケーションビルダーが新しいLightningレコードページのテンプレートを選択する際に考慮すべきことは何ですか。",
     "choices": [
       "テンプレートは初回保存後に変更することができない。",
@@ -2606,7 +2509,6 @@
   },
   {
     "id": 64,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice64",
     "question": "Universal Containers社(UC)は、取引先の所在地をカスタムテキスト項目[Zip Code]で管理しており、注文の際には米国のZIP+4コードの適切なフォーマットを入力するための入力規則を設定しています。注文(Order)で、親取引先(Account)のZIPコードの最初の5桁のみを表示する数式を作成する場合、どの数式を使用すべきですか。",
     "choices": [
       "TEXT(Account.Zip_Code__c, 5)",
@@ -2632,7 +2534,6 @@
   },
   {
     "id": 261,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice261",
     "question": "Universal Containers社では、取引先オブジェクトの組織の共有設定が[非公開]に設定されています。マーケティングチームが取引先の所有者ですが、営業チームが所有する取引先も閲覧できるようにする必要があります。ただし、営業チームとマーケティングチームはロール階層の異なる分岐に属しています。マーケティングチームが営業チームの取引先を閲覧できるようにするには、どの機能を使用すべきでしょうか。",
     "choices": [
       "公開グループ",
@@ -2658,7 +2559,6 @@
   },
   {
     "id": 141,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice141",
     "question": "Universal Containers社のアプリケーションビルダーは、ワークフロールールやプロセスビルダーを可能な限りレコードトリガーフローに置き換えることを任務としています。プロジェクト開始前にアプリケーションビルダーが知っておくべき重要な考慮事項は何ですか。2つ選びなさい。",
     "choices": [
       "Apexには、フローとは異なるSOQLクエリ制限がある。",
@@ -2685,7 +2585,6 @@
   },
   {
     "id": 145,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice145",
     "question": "Universal Containers社は、ユーザーからのデータが正しく入力されるようにし、重要な項目が必ず入力されるようにしたいと考えています。この要件を満たすために、アプリケーションビルダーは何を推奨すべきですか。",
     "choices": [
       "重要な項目の形式をチェックする数式項目を作成する。",
@@ -2711,7 +2610,6 @@
   },
   {
     "id": 262,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice262",
     "question": "Universal Containers社では、取引先の共有設定が[非公開]に設定されています。ユーザーAとユーザーBはそれぞれ自身が所有する取引先を持っています。ある日、ユーザーCが所有する新しい取引先レコードの情報をメールで受け取り、ユーザーAとユーザーBの両方がそのレコードを確認するよう求められました。しかし、ユーザーAはレコードを開いて閲覧できたものの、ユーザーBは「アクセス権が不足しています」というエラーを受け取りました。ユーザーAとユーザーBは、ロール階層内で同じロールに属しています。ユーザーAがアクセスでき、ユーザーBがアクセスできない理由として考えられるものはどれですか。3つ選びなさい。",
     "choices": [
       "ユーザーAは、ユーザーCと同じ取引先チームに属している。",
@@ -2740,7 +2638,6 @@
   },
   {
     "id": 67,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice67",
     "question": "Ursa Major Solar社は、親オブジェクトGalaxyの[Type]項目を、子オブジェクトStarのレコード上に表示したいと考えています。しかし、アプリケーションビルダーは「選択リスト項目は、特定の関数でのみサポートされます。」というエラーを受け取っています。この要件を満たすために、どの数式を使用すべきですか。",
     "choices": [
       "TEXT(Galaxy__r.Type__c)",
@@ -2766,7 +2663,6 @@
   },
   {
     "id": 72,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice72",
     "question": "アプリケーションビルダーは、ユーザーが新規商談を作成するときに表示される項目の量を制限したいと考えています。ユーザーが必須項目を入力して保存すると、商談の種別項目に関連する追加項目を含む完全なレコードページが利用可能になります。これはどのように実現できますか。",
     "choices": [
       "必須項目が入力されたら、共有ルールを使用して新しい項目をユーザーと共有する。",
@@ -2792,7 +2688,6 @@
   },
   {
     "id": 117,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice117",
     "question": "DreamHouse Realty社(DR)は、Cloud Kicks社を買収した後、Sandboxの活用戦略を見直しています。SalesforceのCOE(センターオブエクセレンス)はすでにPartial Copy SandboxとFull Sandboxを利用しており、それぞれ独自のスケジュールで更新しています。チームが拡大し、各メンバーが小規模プロジェクトをSandboxで開始した後、大規模な共同テスト環境に統合する必要がありますが、コストを抑えたいと考えています。各チームメンバーが使用すべきSandboxの種類はどれですか。",
     "choices": [
       "Full Sandbox",
@@ -2819,7 +2714,6 @@
   },
   {
     "id": 147,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice147",
     "question": "Universal Containers社の財務マネージャーは、新規顧客を獲得するたびに新規取引通知メールを受け取りたいと考えています。営業マネージャーは、トップクラスの顧客でない限り、新規顧客にオンボーディングするよう知らせるタスクを受け取りたいと考えています。これらすべての要望に対応するために、アプリケーションビルダーが使用すべき自動化ツールはどれでしょうか。",
     "choices": [
       "Apex",
@@ -2845,7 +2739,6 @@
   },
   {
     "id": 275,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice275",
     "question": "Ursa Major Solar社(UMS)では、現在取引先オブジェクトに対して[公開/参照のみ]共有モデルを使用しています。UMS社は、より制限のある共有モデルに移行したいと考えていますが、営業チームには引き続き「Salesレコードタイプ」のすべての取引先レコードへのアクセスを許可したいと考えています。この変更を実装するために、アプリケーションビルダーが実施すべき対応として適切なものはどれですか。2つ選びなさい。",
     "choices": [
       "営業プロファイルを更新する。",
@@ -2873,7 +2766,6 @@
   {
     "id": 68,
     "expFig": "relationships",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice68",
     "question": "Universal Containers(UC)社は、カスタムの請求書(Invoice)オブジェクトと請求書明細(Invoice Line Item)オブジェクトを使用しています。請求書明細オブジェクトは、請求書オブジェクトに対して参照関係を持っています。UC社は、この参照関係を主従関係に変更したいと考えていますが、変更ができません。この関係の変換を妨げている可能性がある理由として正しいものはどれですか。2つ選びなさい。",
     "choices": [
       "請求書明細オブジェクトには、すでに2つの主従関係が存在している。",
@@ -2900,7 +2792,6 @@
   },
   {
     "id": 74,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice74",
     "question": "アプリケーションビルダーが自分の組織で利用可能なカスタムLightningコンポーネントのリストを確認できる場所はどこですか。2つ選びなさい。",
     "choices": [
       "[設定]の[Visualforce コンポーネント]",
@@ -2927,7 +2818,6 @@
   },
   {
     "id": 150,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice150",
     "question": "営業担当者が取引先を承認に提出する際、Universal Containers社は、追加の質問に回答するポップアップウィンドウを表示し、追加のレコード項目を入力できるようにしたいと考えています。この要件を実現するために、アプリケーションビルダーは何を使用すべきですか。",
     "choices": [
       "プロセスビルダー と フロー",
@@ -2953,7 +2843,6 @@
   },
   {
     "id": 277,
-    "url": "claude-generated",
     "question": "プロファイルと権限セットの違いに関する説明として正しいものを2つ選びなさい。",
     "choices": [
       "1ユーザーには1つのプロファイルしか割り当てられない",
@@ -2980,7 +2869,6 @@
   },
   {
     "id": 73,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice73",
     "question": "Cloud Kicks社のアプリケーションビルダーが、スキーマビルダーでカスタムオブジェクトと関連項目を作成しました。ユーザーが新しいオブジェクトと項目にアクセスできるようにするために、アプリケーションビルダーは次にどのような手順を踏むべきですか。",
     "choices": [
       "オブジェクトと項目のレポートを許可する。",
@@ -3008,7 +2896,6 @@
   },
   {
     "id": 157,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice157",
     "question": "アプリケーションビルダーは、リードから変換された取引先のいくつかに、取引先の入力規則でチェックされるはずの情報が不足していることに気付きました。この問題の原因として考えられるのは何ですか。",
     "choices": [
       "リードの入力規則は、リードが変換される際には適用されない。",
@@ -3034,7 +2921,6 @@
   },
   {
     "id": 134,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice134",
     "question": "アプリケーションビルダーがカスタムソリューションを必要とし、コミュニティの利用を検討しています。アップデートのしやすさを第一に考えています。アプリケーションビルダーは何を考慮すべきでしょうか。",
     "choices": [
       "AppExchangeからの未管理パッケージ",
@@ -3060,7 +2946,6 @@
   },
   {
     "id": 76,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice76",
     "question": "アプリケーションビルダーは、取引先にカスタムの[同期]ボタンを作成し、Lightning Web コンポーネントを呼び出して外部システムと接続したいと考えています。このアクションは、カスタム項目[ステータス]が[同期準備完了]に設定されている場合にのみ利用可能にする必要があります。この機能を取引先のレコードページに追加するために、どの機能を使用すべきでしょうか。",
     "choices": [
       "AppExchange製品",
@@ -3086,7 +2971,6 @@
   },
   {
     "id": 278,
-    "url": "claude-generated",
     "question": "新しいユーザーを作成するときの「プロファイル」の扱いに関する説明として正しいものはどれですか。",
     "choices": [
       "1ユーザーに1プロファイルを必ず指定する。複数同時には付けられない",
@@ -3111,7 +2995,6 @@
   },
   {
     "id": 175,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice175",
     "question": "ケースの割り当てルールについて正しいものはどれですか。3つ選びなさい。",
     "choices": [
       "ケースをキューに割り当てることができます。",
@@ -3140,7 +3023,6 @@
   },
   {
     "id": 75,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice75",
     "question": "クロスオブジェクト数式は何を参照できますか。",
     "choices": [
       "親レコードの値のみ",
@@ -3166,7 +3048,6 @@
   },
   {
     "id": 279,
-    "url": "claude-generated",
     "question": "権限セットグループを導入する主なメリットはどれですか。",
     "choices": [
       "職務に必要な複数の権限セットを束ねて、1回の割り当てでユーザーに付与できる",
@@ -3191,7 +3072,6 @@
   },
   {
     "id": 183,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice183",
     "question": "Universal Containers社は、ビジネスロジックを標準化したいと考えています。ワークフローの順序が毎回同じであることを保証する必要があります。これを達成するためにどの機能を使用すればよいでしょうか。2つ選びなさい。",
     "choices": [
       "Apexトリガー",
@@ -3218,7 +3098,6 @@
   },
   {
     "id": 78,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice78",
     "question": "Universal Containers社(UC社)は、3つの別々のカスタムオブジェクトに[Status]という選択リストを作成しました。UC社は、各オブジェクト間でこの項目の値のリストを共有する必要があります。アプリケーションビルダーはどの機能を使用するとよいでしょうか。",
     "choices": [
       "項目自動更新",
@@ -3244,7 +3123,6 @@
   },
   {
     "id": 81,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice81",
     "question": "Universal Containers社は、履歴書の有無に関わらず、求人応募を表示するレポートを作成したいと考えています。アプリケーションビルダーがカスタムレポートタイプを作成する際に考慮すべき点はどれですか。",
     "choices": [
       "カスタムオブジェクトまたは外部オブジェクトが削除されても、レポートタイプとレポートは残るが、レポート実行時にエラーが発生する。",
@@ -3270,7 +3148,6 @@
   },
   {
     "id": 186,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice186",
     "question": "コールセンターのカスタマーサービス担当者が、顧客から情報を収集する際に、一連の質問プロンプトを使用できるようにしたいと考えています。これを実現するために、アプリケーションビルダーは何を使用すべきですか。",
     "choices": [
       "承認プロセス",
@@ -3296,7 +3173,6 @@
   },
   {
     "id": 280,
-    "url": "claude-generated",
     "question": "「特定のIPアドレス範囲からのログインだけを許可したい」要件を満たすには、どこで設定するのが正しいですか。",
     "choices": [
       "プロファイルの「ログインIPアドレス範囲」",
@@ -3321,7 +3197,6 @@
   },
   {
     "id": 79,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice79",
     "question": "Universal Containers社は、ウェブ、展示会、パートナーの3つの異なるソースからリードを生成します。収集される情報の中には、すべてのソースに適用可能なものもありますが、リードの種類ごとに固有の情報もあります。これらの要件を満たすために、アプリケーションビルダーは何を構成すべきでしょうか。",
     "choices": [
       "関連項目を含む独自のページレイアウトを持つ3つのリードレコードタイプを作成する。",
@@ -3347,7 +3222,6 @@
   },
   {
     "id": 139,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice139",
     "question": "アプリケーションビルダーが、Sandbox環境から本番環境に変更セットをデプロイしましたが、デプロイに長い遅延が発生しています。この遅延の原因として考えられるのはどれですか。",
     "choices": [
       "変更セットに連動項目が含まれている。",
@@ -3373,7 +3247,6 @@
   },
   {
     "id": 86,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice86",
     "question": "DreamHouse Realty社(DR)では、カスタムオブジェクトHouse__cのAsking_Price__c項目やReal_Estate_Agent__c項目などの特定の項目の値が変更された際に、Chatter上で目立つように表示する必要があります。アプリケーションビルダーは、どのChatter機能を利用すべきでしょうか。",
     "choices": [
       "感謝",
@@ -3399,7 +3272,6 @@
   },
   {
     "id": 189,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice189",
     "question": "Cloud Kicks社の従業員が、自分の上司に対して商談の承認申請を提出しました。申請後に従業員が[説明]項目を編集しようとした場合、どうなりますか。",
     "choices": [
       "ユーザーは[説明]項目のみ編集することができる。",
@@ -3425,7 +3297,6 @@
   },
   {
     "id": 281,
-    "url": "claude-generated",
     "question": "ミュート権限セット(Muting Permission Set)を使う典型シーンはどれですか。",
     "choices": [
       "権限セットグループに含めて、そのグループに付随する特定権限だけを打ち消したい時",
@@ -3450,7 +3321,6 @@
   },
   {
     "id": 83,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice83",
     "question": "Cloud Kicks社は、ビジネスプロセス全体を見直し、Manager Notes項目をロングテキストエリア項目からテキストエリア項目に変更しようとしています。目的は、マネージャーのコメントを255文字以内に収めるよう促すことです。ただし、Manager Notes項目には255文字を超える既存の情報が含まれています。アプリケーションビルダーが既存のロングテキストエリア項目をテキストエリア項目に変換しようとした場合、既存の情報はどうなりますか。",
     "choices": [
       "既存の情報は最初の255文字のみが保持される。",
@@ -3478,7 +3348,6 @@
   },
   {
     "id": 195,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice195",
     "question": "アプリケーションビルダーは、3日以上開いているケースを自動的に次の階層に割り当てるために、どのような機能を使用すればよいですか。",
     "choices": [
       "ケースの割り当てルール",
@@ -3504,7 +3373,6 @@
   },
   {
     "id": 88,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice88",
     "question": "Universal Containers社は、モバイルアプリとデスクトップの両方をサポートするLightningレコードページを使用しています。アプリケーションビルダーはAppExchangeからカスタムLightningコンポーネントをダウンロードしましたが、ユーザーがモバイルデバイスでコンポーネントを表示できません。考えられる原因はどれですか。",
     "choices": [
       "レコードページのテンプレートがモバイルデバイスをサポートしていない。",
@@ -3530,7 +3398,6 @@
   },
   {
     "id": 282,
-    "url": "claude-generated",
     "question": "オブジェクトのOWD（組織の共有設定）の標準的な選択肢として、最も制限的なものはどれですか。",
     "choices": [
       "非公開(Private)",
@@ -3555,7 +3422,6 @@
   },
   {
     "id": 196,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice196",
     "question": "Cloud Kicks社(CK)では、営業担当者が案件成立(商談が「Closed Won」)時のデータ入力を一貫して行っていないという問題があります。またCK社は、商品を完了予定日(CloseDate)から2週間以内に出荷することを義務付けています。商談オブジェクト上のカスタム項目「出荷予定日(Scheduled_Ship_Date__c)」には、この出荷日が記録されます。アプリケーションビルダーは、商談を「Closed Won (獲得済み)」に設定する前に、この項目が適切に入力されていることをどのように確認すべきでしょうか。",
     "choices": [
       "A: ISPICKVAL ( StageName, \"Closed Won\" ) && ( Scheduled_Ship_Date__c - CloseDate ) > 14",
@@ -3581,7 +3447,6 @@
   },
   {
     "id": 84,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice84",
     "question": "DreamHouse Realty社は、外部システムからSalesforceに物件レコードをインポートしたいと考えています。アプリケーションビルダーは、外部システムの物件IDを格納するために外部ID項目を使用します。外部IDとして使用できる項目のデータ型はどれですか。2つ選びなさい。",
     "choices": [
       "数値項目",
@@ -3609,7 +3474,6 @@
   {
     "id": 148,
     "expFig": "deployment",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice148",
     "question": "Universal Containers社では、Sandboxのリリーススケジュールと要件が複雑なため、環境間の移行には可能な限り変更セットの使用が推奨されています。アプリケーションビルダーが変更セットを使用して移行できる一般的な項目はどれですか。3つ選びなさい。",
     "choices": [
       "カスタム項目",
@@ -3640,7 +3504,6 @@
   },
   {
     "id": 283,
-    "url": "claude-generated",
     "question": "共有ルール（Sharing Rules）に関する説明として正しいものはどれですか。",
     "choices": [
       "OWDが制限的なオブジェクトに対し、公開グループやロールに対してアクセスを拡張する",
@@ -3665,7 +3528,6 @@
   },
   {
     "id": 199,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice199",
     "question": "Universal Containers社では、営業担当者が商談を削除する前に上司の許可を得ることを望んでいます。これらの要件を満たすために、何を使用すればよいですか。",
     "choices": [
       "時間ベースのアクションを使用した承認プロセス",
@@ -3691,7 +3553,6 @@
   },
   {
     "id": 92,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice92",
     "question": "Universal Containers社のマネージャーは、親取引先レコードから素早く子取引先を作成し、取引先階層を形成する方法を求めています。ユーザーが子取引先を迅速に作成できるように、親取引先の情報を基に5つの項目を自動入力したいと考えています。アプリケーションビルダーは、どの方法を推奨すべきですか。",
     "choices": [
       "カスタムグローバルクイックアクション",
@@ -3717,7 +3578,6 @@
   },
   {
     "id": 91,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice91",
     "question": "DreamHouse Realty社(DR)は、多くの販売物件を保有しており、各Property__cレコードに関連するOffer__cレコードの中で、最高金額を特定したいと考えています。この要件を満たすために、アプリケーションビルダーはどのソリューションを使用すべきですか。",
     "choices": [
       "ロングテキストエリア",
@@ -3743,7 +3603,6 @@
   },
   {
     "id": 208,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice208",
     "question": "入力規則のユースケースはどれですか。",
     "choices": [
       "郵便番号が正しい形式で入力されていることを確認する。",
@@ -3769,7 +3628,6 @@
   },
   {
     "id": 284,
-    "url": "claude-generated",
     "question": "レコード詳細ページに「共有」ボタンが表示される条件として正しいものを2つ選びなさい。",
     "choices": [
       "対象オブジェクトのOWDが「非公開」または「公開/参照のみ」になっている",
@@ -3795,7 +3653,6 @@
   },
   {
     "id": 96,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice96",
     "question": "Cloud Kicks社には、Platinum、Diamond、Bronzeの3種類のカスタマーサポートプロセスがあります。アプリケーションビルダーは、ケースオブジェクトに対して各プロセスごとに異なるレコードタイプを作成しました。カスタマーサポートチームがBronzeレコードタイプのケースを作成できないようにするには、どうすればよいですか。",
     "choices": [
       "ケースの組織の共有設定のデフォルトを非公開に更新する。",
@@ -3821,7 +3678,6 @@
   },
   {
     "id": 94,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice94",
     "question": "Universal Containers社は、取引先に関連する契約を表示しているときに、ユーザーが価格ガイドラインのドキュメントにアクセスできるようにしたいと考えています。このドキュメントへの簡単なアクセスを作成するために、アプリケーションビルダーはどの機能を使用すべきでしょうか。",
     "choices": [
       "取引先オブジェクトのクイックアクション",
@@ -3847,7 +3703,6 @@
   },
   {
     "id": 214,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice214",
     "question": "Universal Containers社はSalesforceを使用して出張申請を管理しています。管理者がメールで出張依頼を承認できるようにしたいと考えています。メールによる承認応答について正しいものはありますか。",
     "choices": [
       "承認者は「API の有効化」のシステム権限が必要です。",
@@ -3873,7 +3728,6 @@
   },
   {
     "id": 155,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice155",
     "question": "Universal Containers社の開発者は、Sandbox環境でコードをテストしたいと考えています。コードが正しく動作することを確認するために、Sandboxには少なくとも500MBのデータが必要です。また、3日ごとのスプリント終了後にSandboxを更新する必要があります。アプリケーションビルダーはどのようなSandboxを開発者に提供すべきでしょうか。",
     "choices": [
       "Partial Copy Sandbox",
@@ -3901,7 +3755,6 @@
   },
   {
     "id": 285,
-    "url": "claude-generated",
     "question": "OWDが「非公開」のオブジェクトでレコードアクセスを拡張する正規の手段として正しいものを2つ選びなさい。",
     "choices": [
       "条件ベース／所有者ベースの共有ルール",
@@ -3928,7 +3781,6 @@
   {
     "id": 97,
     "expFig": "rollup-summary",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice97",
     "question": "Cloud Kicks社は過去5年間の販売データを持っており、顧客が最初に購入した日を追跡したいと考えています。この要件を満たすために、アプリケーションビルダーはどのように積み上げ集計を使用すべきですか。",
     "choices": [
       "商談の[完了予定日]を使用し、[成立フラグ(IsWon=TRUE)]の条件を適用して、[最小値(MIN)]を取得する新しい積み上げ集計項目[初回注文日]を作成する。",
@@ -3954,7 +3806,6 @@
   },
   {
     "id": 216,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice216",
     "question": "Cloud Kicks社(CK)は、すべての配送情報をShipments__cというカスタムオブジェクトで管理しています。CKのアプリケーションビルダーは、部門メンバーがすべての[翌日配送]を承認できるようにするための承認プロセスを作成する任務を負っています。アプリケーションビルダーは承認リクエストをどこにルートすべきですか。",
     "choices": [
       "階層項目",
@@ -3980,7 +3831,6 @@
   },
   {
     "id": 99,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice99",
     "question": "DreamHouse Realty社のアプリケーションビルダーは、2つの異なるオブジェクトからのデータを関連する参照項目を通じて含むカスタムオブジェクトを作成しました。この新しいカスタムオブジェクトに対して、「あるデータを持つ / 持たない」レポートを作成するには何が必要ですか。",
     "choices": [
       "行レベルの数式",
@@ -4006,7 +3856,6 @@
   },
   {
     "id": 286,
-    "url": "claude-generated",
     "question": "取引先チーム(Account Team)と手動共有の主な違いはどれですか。",
     "choices": [
       "取引先チームは取引先＋関連商談／ケース／取引先責任者へのアクセスをまとめて構成できるが、手動共有は単一レコードのみ対象",
@@ -4031,7 +3880,6 @@
   },
   {
     "id": 237,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice237",
     "question": "Universal Containers社は、アプリケーションビルダーに対し、取引先の種別(Type)が[Past-Customer]に変更された際に、直接関連する取引先責任者のステータス(Status__c)を[ReMarket]に更新するように求めました。このタスクを達成するために、アプリケーションビルダーはどの自動化機能を使用すべきですか。",
     "choices": [
       "画面フロー",
@@ -4057,7 +3905,6 @@
   },
   {
     "id": 98,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice98",
     "question": "アプリケーションビルダーは、取引先に数式項目を作成し、関連する取引先責任者のデータを含めたいと考えています。しかし、数式エディターでその関係を見つけることができません。この問題の原因となる数式の制限はどれですか。",
     "choices": [
       "子レコードの項目を参照できない。",
@@ -4083,7 +3930,6 @@
   },
   {
     "id": 287,
-    "url": "claude-generated",
     "question": "レコードレベルセキュリティでアクセスが決定される順序として正しいものはどれですか。",
     "choices": [
       "OWD → ロール階層 → 共有ルール → 手動共有／チーム",
@@ -4109,7 +3955,6 @@
   },
   {
     "id": 169,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice169",
     "question": "本番組織には、機密情報を含むカスタムオブジェクトがあります。データレコードを含み、すべての機密オブジェクトを除外し、週に1回更新できるサンドボックスが必要です。これらの要件を満たすために、アプリケーションビルダーはどのような手順を取るべきですか。",
     "choices": [
       "Full Sandboxを作成し、Sandbox テンプレートを使用する。",
@@ -4136,7 +3981,6 @@
   },
   {
     "id": 241,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice241",
     "question": "DreamHouse Realty社(DR)のサービスマネージャーは、ケース管理の改善を求めています。具体的には、ケースの[状況]を以前のステータスに戻せないようにすることと、特定の条件を満たした場合に特定の項目を必須にすることを徹底する必要があります。この要件を満たすために、アプリケーションビルダーはどのソリューションを実装すべきですか。",
     "choices": [
       "ワークフロールール",
@@ -4162,7 +4006,6 @@
   },
   {
     "id": 104,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice104",
     "question": "Universal Containers社では、商談販売プロセスの各フェーズで異なる項目を入力する必要があります。この要件を満たすために、アプリケーションビルダーはどのような構成手順を使用すればよいですか。",
     "choices": [
       "各フェーズごとにレコードタイプとページレイアウトを定義する。",
@@ -4188,7 +4031,6 @@
   },
   {
     "id": 101,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice101",
     "question": "サービスマネージャーは、オープンケースの経過日数に応じた色のコード要件をアプリケーションビルダーに提供しました。新しいケースは緑色のフラグ、1日経過したケースは黄色のフラグ、3日経過したケースは赤色のフラグを表示します。アプリケーションビルダーはこの要件をどのように実装すればよいですか。",
     "choices": [
       "Lightning Web コンポーネント",
@@ -4214,7 +4056,6 @@
   },
   {
     "id": 288,
-    "url": "claude-generated",
     "question": "ロール階層の主な役割として正しいものはどれですか。",
     "choices": [
       "上位ロールのユーザーが下位ロールのユーザー所有レコードを参照できるようにする",
@@ -4239,7 +4080,6 @@
   },
   {
     "id": 242,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice242",
     "question": "AW Computing社のアプリケーションビルダーは、ケースが再オープンされた回数を追跡するよう求められました。この要件を満たすために、アプリケーションビルダーはどのソリューションを使用すべきですか。",
     "choices": [
       "スケジュールトリガーフロー",
@@ -4265,7 +4105,6 @@
   },
   {
     "id": 108,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice108",
     "question": "Northern Trail Outfitters社の営業部長は、取引先責任者がマーケティングコミュニケーションを送信してから何日経過したかを追跡する数式項目をアプリケーションビルダーに作成してほしいと考えています。部長は全体の単位にしか興味がありません。差分を計算するために日付を返すには、数式項目でどの関数を使用すべきですか。",
     "choices": [
       "DATEVALUE()",
@@ -4292,7 +4131,6 @@
   {
     "id": 106,
     "expFig": "page-assignment",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice106",
     "question": "Lightning アプリケーションビルダーを使用してLightning ページにアクセス権を割り当てる際に利用可能なオプションはどれですか。3つ選びなさい。",
     "choices": [
       "プロファイルと権限セット",
@@ -4321,7 +4159,6 @@
   },
   {
     "id": 244,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice244",
     "question": "Ursa Major Solar社のサービス部門では、設置、修理、保守など、さまざまな種類のサービスリクエストを受け付けています。サービスマネージャーは、契約条件を満たしているかを判断するために、納入商品(Asset)に対して最後に保守が行われた日を確認する必要があります。しかし、納入商品に関連する作業指示(WorkOrder)が多数ある場合、最後の保守日を特定するのが困難です。そのため、保守作業の作業指示が完了した際に、納入商品レコード上の項目が自動的に更新されるようにしたいと考えています。この要件を満たすために、アプリケーションビルダーはどのツールを推奨すべきですか。",
     "choices": [
       "Visualforce",
@@ -4347,7 +4184,6 @@
   },
   {
     "id": 289,
-    "url": "claude-generated",
     "question": "公開グループ(Public Group)のメンバーとして指定できるものを2つ選びなさい。",
     "choices": [
       "ロール（およびその下位）",
@@ -4373,7 +4209,6 @@
   },
   {
     "id": 171,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice171",
     "question": "Universal Containers社は、本番データのサブセット5GB未満に対してコードをテストしたいと考えています。さらに、このサンドボックスを毎週末に更新したいと考えています。この要件を満たすために、使用すべきSandboxの種類はどれですか。",
     "choices": [
       "Developer Pro Sandbox",
@@ -4402,7 +4237,6 @@
   },
   {
     "id": 109,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice109",
     "question": "Universal Containers社は、1つ以上の事業分野を持つリードをフラグ付けする必要があります。そのため、リードレコードにこれらを記録する項目を追加する必要があります。この項目を報告する必要はありません。適切な項目のデータ型は何ですか。",
     "choices": [
       "ラジオボタン (複数選択)",
@@ -4428,7 +4262,6 @@
   },
   {
     "id": 245,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice245",
     "question": "Universal Containers社は、商談オブジェクトにカスタムのチェックボックス数式項目を作成したいと考えています。この数式は、以下の条件が満たされた場合にtrueと評価される必要があります。 ・フェーズ(StageName)が[Negotiation/Review]に設定されている ・完了予定日(CloseDate)が1週間以内である この要件を満たす数式はどれですか。",
     "choices": [
       "AND(StageName = 'Negotiation/Review', CloseDate - 7 < TODAY())",
@@ -4454,7 +4287,6 @@
   },
   {
     "id": 290,
-    "url": "claude-generated",
     "question": "公開グループ作成時に「ロールおよび下位（Roles and Subordinates）」を選ぶ目的はどれですか。",
     "choices": [
       "上位ロールとその傘下すべてを1つのグループとして共有ルール等に使えるようにするため",
@@ -4479,7 +4311,6 @@
   },
   {
     "id": 111,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice111",
     "question": "Universal Containers社は、単一の取引先責任者のLightningレコードページを使用しています。あるコンポーネントがページ上で多くのスペースを占めていますが、マーケティングプロファイルのユーザーには不要です。この問題を解決するために、アプリケーションビルダーはどの機能を使用すべきですか。",
     "choices": [
       "AppExchange",
@@ -4505,7 +4336,6 @@
   },
   {
     "id": 246,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice246",
     "question": "Universal Containers社は、Sales_Organization__c と Pricing_Tier__c という2つのカスタム選択リスト項目を使用しています。Sales_Organization__c の値が[Canada]の場合、Pricing_Tier__cを必須にするために、アプリケーションビルダーはどの入力規則を使用すべきですか。",
     "choices": [
       "AND(ISPICKVAL(Sales_Organization__c, 'Canada'), ISBLANK(TEXT(Pricing_Tier__c)))",
@@ -4531,7 +4361,6 @@
   },
   {
     "id": 110,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice110",
     "question": "Cloud Kicks社(CK)は、サプライヤーとのパートナーシップが終了した場合、SupplierレコードとすべてのSupplierItem__cレコードを同時に削除したいと考えています。この要件を満たすために、アプリケーションビルダーはどのようなソリューションを使用すればよいですか。",
     "choices": [
       "多対多",
@@ -4557,7 +4386,6 @@
   },
   {
     "id": 291,
-    "url": "claude-generated",
     "question": "公開グループとキューの違いとして正しいものはどれですか。",
     "choices": [
       "キューはレコードを「所有」できるが、公開グループは所有者になれない",
@@ -4582,7 +4410,6 @@
   },
   {
     "id": 247,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice247",
     "question": "Universal Containers社は、営業担当者が商談で20%から30%の値引きを行った場合に、営業マネージャーが商談レコードページから迅速に承認を行えるようにしたいと考えています。この要件を満たすために、どの機能を使用すべきですか。2つ選びなさい。",
     "choices": [
       "入力規則",
@@ -4609,7 +4436,6 @@
   },
   {
     "id": 113,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice113",
     "question": "取引先のLightningレコードページにおいて、ユーザーは関連リストに10項目を表示し、並び替えやテキストの折り返しができるようにする必要があります。アプリケーションビルダーが関連リストのLightningコンポーネントに選択すべき関連リスト種別はどれですか。",
     "choices": [
       "リストビュー",
@@ -4635,7 +4461,6 @@
   },
   {
     "id": 118,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice118",
     "question": "アプリケーションビルダーは、クライアントページに主要業績指標(KPI)を追加するよう求められています。各取引先ごとに、未完了の商談の数と成立した商談の数の合計をそれぞれ表示したいと考えています。これらの新しい積み上げ集計項目を作成するには、アプリケーションビルダーはどこに行くべきですか。",
     "choices": [
       "商談オブジェクト",
@@ -4661,7 +4486,6 @@
   },
   {
     "id": 180,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice180",
     "question": "Universal Containers社は、既存のSandboxで新機能を試験的に使用しており、テスト中に外部へのメール送信を防止したいと考えています。要件を満たすために、アプリケーションビルダーは何をすべきですか。",
     "choices": [
       "[送信]で[メールを送信するためのアクセス権]を[アクセス権限なし]に設定する。",
@@ -4689,7 +4513,6 @@
   },
   {
     "id": 292,
-    "url": "claude-generated",
     "question": "項目レベルセキュリティ(FLS)を設定できる場所として正しいものを2つ選びなさい。",
     "choices": [
       "プロファイル",
@@ -4715,7 +4538,6 @@
   },
   {
     "id": 256,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice256",
     "question": "商談が成立すると、四半期ごとの営業コンペティションのリーダーボードに追加される前に、所有者のマネージャーによる承認が必要です。四半期の最終日に商談が成立しましたが、マネージャーは休暇中です。すべての適切な商談が承認され、リーダーボードが最新の状態になるようにするためには、どの対応が推奨されますか。",
     "choices": [
       "マネージャーのアシスタントに承認リクエストを転送する。",
@@ -4741,7 +4563,6 @@
   },
   {
     "id": 115,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice115",
     "question": "アプリケーションビルダーがAppExchangeからコンポーネントをダウンロードしましたが、Lightning ホームページに追加できません。アプリケーションビルダーがカスタムコンポーネントを追加できない原因として考えられるものはどれですか。2つ選びなさい。",
     "choices": [
       "[Lightning アプリケーションビルダー]を使用してページにカスタムコンポーネントを追加するには、開発者権限が必要である。",
@@ -4768,7 +4589,6 @@
   },
   {
     "id": 119,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice119",
     "question": "アプリケーションビルダーが Testimonial__cというカスタムオブジェクトを作成し、Testimonial__cレコードを送信者の取引先責任者レコードと取引先レコードの両方に関連付けたいと考えています。取引先が削除された場合、Testimonial__cも削除される必要があります。一方で、取引先責任者が削除されても、取引先が残っている場合は、Testimonial__cも残す必要があります。これを実現するにはどうすればよいですか。",
     "choices": [
       "Testimonial__cから取引先への参照関係と、Testimonial__cから取引先責任者への主従関係を作成する。",
@@ -4794,7 +4614,6 @@
   },
   {
     "id": 258,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice258",
     "question": "マーケティングディレクターは、昨年無料で提供された自動車部品が多すぎることを懸念しています。すべての無料部品がマーケティングディレクターの承認を受けるようにするには、どの機能を使用すべきでしょうか。",
     "choices": [
       "Slack投稿",
@@ -4820,7 +4639,6 @@
   },
   {
     "id": 293,
-    "url": "claude-generated",
     "question": "あるユーザーのプロファイルでは項目が「参照のみ」、追加の権限セットでは「参照／編集可」になっています。最終的な項目アクセスはどうなりますか。",
     "choices": [
       "参照／編集可（より緩い方が採用される）",
@@ -4845,7 +4663,6 @@
   },
   {
     "id": 206,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice206",
     "question": "Universal Containers社(UC)は、4週間以内にカスタムコンポーネントを作成しなければならないという、急ぎの要件を抱えています。しかし、UC社の開発者たちはその開発に必要なスキルをまだ十分に習得しておらず、追加のトレーニングが必要な状況です。さらに、すでに対応すべき案件が山積みで、今後数か月分の作業が詰まっている状態です。この要件を満たすために、アプリケーションビルダーが提案すべき方法はどれですか。",
     "choices": [
       "Lightningレコードページを構築する。",
@@ -4873,7 +4690,6 @@
   },
   {
     "id": 273,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice273",
     "question": "Universal Containers社のデータマネージャーは、取引先責任者レコードのデータ整合性の欠如について不満を抱いています。営業担当者が[地域]項目を入力していないことが原因です。データマネージャーは、[顧客ステータス]項目が[高優先]に設定されている取引先に関連付けられた取引先責任者に対してのみ、[地域]項目が入力されるようにしたいと考えています。この要件を満たすために、アプリケーションビルダーは何をすべきですか。",
     "choices": [
       "取引先責任者の[地域]項目を必須にする。",
@@ -4899,7 +4715,6 @@
   },
   {
     "id": 120,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice120",
     "question": "Universal Containers社は、データ入力プロセスを効率化するために、項目同士を連動させたいと考えています。具体的には、制御項目の値に応じて、連動項目に表示される選択肢を制御したいと考えています。この要件をサポートする考慮事項として正しいものはどれですか。3つ選びなさい。",
     "choices": [
       "複数選択リストは、連動選択リストにはできるが、制御項目にはできない。",
@@ -4928,7 +4743,6 @@
   },
   {
     "id": 294,
-    "url": "claude-generated",
     "question": "FLSで「参照不可」にした項目を、レポート／リストビューの列や絞り込み条件に使えますか。",
     "choices": [
       "使えない。列にも条件にも表示されない",
@@ -4953,7 +4767,6 @@
   },
   {
     "id": 116,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice116",
     "question": "アプリケーションビルダーは、カスタムLightningアプリケーションを作成し、Universal Containers社の社内ユーザーが利用できるようにしたいと考えています。このタスクを達成するために必要な手順はどれですか。2つ選びなさい。",
     "choices": [
       "アプリケーション用のカスタムタブを作成する。",
@@ -4980,7 +4793,6 @@
   },
   {
     "id": 315,
-    "url": "claude-generated",
     "question": "Flow Builderの「割り当て(Assignment)」要素の主な役割はどれですか。",
     "choices": [
       "変数やレコード変数の項目に値を設定／更新する",
@@ -5005,7 +4817,6 @@
   },
   {
     "id": 123,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice123",
     "question": "Ursa Major Solar社では、ユーザーが写真やリンクを含む詳細な説明を書くことができる Planetオブジェクトに Planet Detailsという新しい項目が必要です。この要件を満たすために、アプリケーションビルダーはどのデータ型を利用すべきでしょうか。",
     "choices": [
       "ロングテキストエリア",
@@ -5031,7 +4842,6 @@
   },
   {
     "id": 295,
-    "url": "claude-generated",
     "question": "FLSとページレイアウトの違いとして正しいものを2つ選びなさい。",
     "choices": [
       "FLSは項目のアクセス（参照／編集）を制御し、ページレイアウトは画面配置や必須属性を制御する",
@@ -5057,7 +4867,6 @@
   },
   {
     "id": 316,
-    "url": "claude-generated",
     "question": "「決定(Decision)」要素で使えるアウトカム条件として正しいものを2つ選びなさい。",
     "choices": [
       "数値変数の値が指定値より大きいか",
@@ -5083,7 +4892,6 @@
   },
   {
     "id": 121,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice121",
     "question": "Universal Containers社の営業マネージャーは、営業担当者が収集する情報を標準化したいと考えています。営業担当者は、商談レコードのセールスプロセスの各フェーズにおいて、推奨される行動や販売戦略、また完了すべき重要な項目を把握したいと考えています。この機能を提供するために、アプリケーションビルダーはどの機能を使用するべきですか。",
     "choices": [
       "ワークフロールール",
@@ -5109,7 +4917,6 @@
   },
   {
     "id": 124,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice124",
     "question": "Universal Containers社は、新しいカスタムオブジェクト[請求書(Invoice)]を作成しました。このオブジェクトには、請求書番号項目が含まれています。この請求書オブジェクトを使用する前に、外部システムから現在の請求書番号を保持したまま請求書を移行する必要があります。移行後、Salesforceが正式なシステムとなり、Salesforceで作成される新しい請求書には一意の請求書番号が必要です。アプリケーションビルダーは請求書番号項目をどのように設定するべきですか。",
     "choices": [
       "テキスト項目を作成し、移行後に自動採番項目に変更する。",
@@ -5135,7 +4942,6 @@
   },
   {
     "id": 296,
-    "url": "claude-generated",
     "question": "ユーザーを「凍結(Freeze)」する操作の効果として正しいものはどれですか。",
     "choices": [
       "即座にログインを止められるが、ライセンスは消費したまま",
@@ -5160,7 +4966,6 @@
   },
   {
     "id": 317,
-    "url": "claude-generated",
     "question": "「ループ(Loop)」要素の主な用途はどれですか。",
     "choices": [
       "レコードコレクションの各要素に対して同じ処理を順に行いたい時",
@@ -5185,7 +4990,6 @@
   },
   {
     "id": 207,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice207",
     "question": "Universal Containers社は、サービスの提供にドローン配送を追加する予定です。開発者は、本番環境へのデプロイ前にコードを作成し、テストを完了し、変更セットを準備しました。ただし、デプロイが実行されるタイミングで、開発者は休暇中です。スムーズな本番環境へのデプロイを確実にするために、アプリケーションビルダーは何をすべきでしょうか。",
     "choices": [
       "送信変更セットを検証する。",
@@ -5211,7 +5015,6 @@
   },
   {
     "id": 127,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice127",
     "question": "Cloud Kicks社(CK)は、Lightning Experienceに移行し、迅速な営業サイクルをサポートするために、グローバルな従業員間でChatterを活用し始めました。CK社はChatterを気に入っていますが、コアチームメンバーからのフィードバックを収集し、誰が対応可能かを把握することに苦労しています。この問題を解決するために、CK社はChatterのどの機能を活用すべきですか。2つ選びなさい。",
     "choices": [
       "不在通知",
@@ -5238,7 +5041,6 @@
   },
   {
     "id": 125,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice125",
     "question": "Universal Containers社(UC)は、大量のデータを保有しており、データストレージの上限に近づいています。計画されている解決策として、過去のデータをアーカイブし、Salesforce内のデータストレージを削減することが検討されています。ただし、UC社はアーカイブされた情報に対してレポート、クエリ、参照を引き続き使用したいと考えています。この要件を満たすために、どのオプションを選択すべきですか。2つ選びなさい。",
     "choices": [
       "カスタムオブジェクト",
@@ -5265,7 +5067,6 @@
   },
   {
     "id": 297,
-    "url": "claude-generated",
     "question": "ユーザーを「無効化(Deactivate)」した後、そのユーザーが所有していたレコードの扱いはどうなりますか。",
     "choices": [
       "所有者はそのまま残り、レポートや一覧でも引き続き表示される",
@@ -5290,7 +5091,6 @@
   },
   {
     "id": 318,
-    "url": "claude-generated",
     "question": "「レコードを取得(Get Records)」要素で並び順を指定する意義はどれですか。",
     "choices": [
       "「最初のレコードのみを保存」と組み合わせて、最新／最古のレコードを安定して取得できる",
@@ -5315,7 +5115,6 @@
   },
   {
     "id": 319,
-    "url": "claude-generated",
     "question": "フローのガバナ制限について、SOQL制限とDML制限のカウントとして正しいものはどれですか。",
     "choices": [
       "「レコードを取得」はSOQL、「作成／更新／削除」はDMLでそれぞれ別カウント",
@@ -5341,7 +5140,6 @@
   },
   {
     "id": 298,
-    "url": "claude-generated",
     "question": "Salesforceでユーザーレコード自体を完全に削除できますか。",
     "choices": [
       "削除はできない。最大の措置は無効化",
@@ -5366,7 +5164,6 @@
   },
   {
     "id": 128,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice128",
     "question": "商談オブジェクトの標準項目の中で、直接設定できるものはどれですか。3つ選びなさい。",
     "choices": [
       "売上予測分類",
@@ -5394,7 +5191,6 @@
   },
   {
     "id": 135,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice135",
     "question": "アプリケーションビルダーは、各状況(New,Working,Closed)ごとのサポートケースの数を優先度(Critical,High,Medium,Low)で比較するレポートを作成したいと考えています。このレポートを作成するために、どのソリューションを使用すべきですか。",
     "choices": [
       "フィルター",
@@ -5420,7 +5216,6 @@
   },
   {
     "id": 218,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice218",
     "question": "Universal Containers社は、大規模な変更セットをDeveloper Sandboxからテスト用のDeveloper Pro Sandboxにデプロイしました。テスト後、変更セット内のいくつかのコンポーネントを変更する必要がありました。 アプリケーションビルダーは、新しい変更をDeveloper Pro Sandboxに移動するにはどうすればよいですか。",
     "choices": [
       "テスト用のSandboxを更新し、変更セットを再デプロイする。",
@@ -5447,7 +5242,6 @@
   {
     "id": 320,
     "expFig": "record-triggered-flow",
-    "url": "claude-generated",
     "question": "保存前(Before-Save)レコードトリガフローで実行できる代表的な処理はどれですか。",
     "choices": [
       "同じレコード自身の項目を更新する（DML不要）",
@@ -5472,7 +5266,6 @@
   },
   {
     "id": 299,
-    "url": "claude-generated",
     "question": "退職したユーザーのライセンスをすぐ別のユーザーに使い回したい場合、どの操作を行いますか。",
     "choices": [
       "無効化（ライセンスが解放される）",
@@ -5497,7 +5290,6 @@
   },
   {
     "id": 130,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice130",
     "question": "Universal Containers社(UC)は、取引先オブジェクトにSupport Levelというカスタム選択リスト項目があります。UC社は、すべてのケースレコードにSupport Levelのリアルタイム値を表示したいと考えています。アプリケーションビルダーは、この要件をどのように実装すべきですか。",
     "choices": [
       "ケースオブジェクトに、TEXT関数を使用した数式項目を作成する。",
@@ -5523,7 +5315,6 @@
   },
   {
     "id": 137,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice137",
     "question": "Universal Containers社の営業担当者は、モバイル端末でSalesforceを利用しています。彼らは、新しい取引先責任者を迅速に追加し、後で必要な追加情報を入力する方法を求めています。アプリケーションビルダーはどのような機能を推奨すればよいでしょうか。",
     "choices": [
       "モバイルメニューをカスタマイズして、取引先責任者をメニューの一番上に移動する。",
@@ -5550,7 +5341,6 @@
   {
     "id": 321,
     "expFig": "record-triggered-flow",
-    "url": "claude-generated",
     "question": "保存後(After-Save)レコードトリガフローで可能だが、保存前フローでは制限される処理を2つ選びなさい。",
     "choices": [
       "他オブジェクトのレコードを作成／更新する",
@@ -5576,7 +5366,6 @@
   },
   {
     "id": 300,
-    "url": "claude-generated",
     "question": "プロファイルの「ログインIPアドレス範囲」を設定した場合、範囲外IPからのログインはどう扱われますか。",
     "choices": [
       "完全にブロックされる（追加認証では通過させない）",
@@ -5601,7 +5390,6 @@
   },
   {
     "id": 131,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice131",
     "question": "Universal Containers社は、いくつかの大規模な顧客が自社製品をディーラーを通じて販売しています。各顧客およびディーラーには、Universal Containers社と直接やり取りする担当者が個別におり、それぞれ別々に請求されます。アプリケーションビルダーはこれらの要件をどのように実装すべきですか。",
     "choices": [
       "単一の取引先レコードを作成し、それぞれの担当者を取引先責任者として追加し、カスタムディーラーオブジェクトを作成する。",
@@ -5627,7 +5415,6 @@
   },
   {
     "id": 322,
-    "url": "claude-generated",
     "question": "「作成または更新時」に起動するレコードトリガフローで、新規レコード作成時に ISCHANGED(field) はどう評価されますか。",
     "choices": [
       "以前の値が存在しないため、常に FALSE と評価される",
@@ -5652,7 +5439,6 @@
   },
   {
     "id": 230,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice230",
     "question": "Universal Containers社は、プロファイル設定や権限セットを含めずに変更セットを使用してカスタムタブを本番環境にデプロイしました。この場合、カスタムタブの表示設定はどうなりますか。",
     "choices": [
       "カスタムタブはすべてのユーザーに対してデフォルトでオフになる。",
@@ -5678,7 +5464,6 @@
   },
   {
     "id": 138,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice138",
     "question": "ユーザーがリストビューでインライン編集を使用できません。簡単なチェックで、ユーザーには適切な権限が割り当てられているため、インライン編集を実行できるはずであることが確認されました。アプリケーションビルダーが確認すべき条件はどれですか。2つ選びなさい。",
     "choices": [
       "リストビューに複数のレコードタイプが含まれているかどうか",
@@ -5705,7 +5490,6 @@
   },
   {
     "id": 301,
-    "url": "claude-generated",
     "question": "ユーザーがログインできる曜日・時間帯を制限したい場合、どこで設定しますか。",
     "choices": [
       "プロファイルの「ログイン時間」",
@@ -5730,7 +5514,6 @@
   },
   {
     "id": 323,
-    "url": "claude-generated",
     "question": "同じオブジェクト・同じトリガ条件のレコードトリガフローが複数有効な場合、実行順序の保証はどうなりますか。",
     "choices": [
       "デフォルトでは保証されず、明示したい場合はフロー設定の「トリガ順序(Trigger Order)」値で指定する",
@@ -5755,7 +5538,6 @@
   },
   {
     "id": 133,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice133",
     "question": "カスタムオブジェクトを作成する際のスキーマビルダーの制限は何ですか。",
     "choices": [
       "項目とリレーションシップは作成できますが、キャンバスからページレイアウトに項目を追加することはできません。",
@@ -5781,7 +5563,6 @@
   },
   {
     "id": 302,
-    "url": "claude-generated",
     "question": "SSO（シングルサインオン）でログインするユーザーに対して、プロファイルの「ログインIPアドレス範囲」は適用されますか。",
     "choices": [
       "適用される。SSOでもプロファイルのIP範囲外からはログインできない",
@@ -5807,7 +5588,6 @@
   {
     "id": 324,
     "expFig": "flow-types",
-    "url": "claude-generated",
     "question": "画面フロー(Screen Flow)を起動できる場所として正しいものを2つ選びなさい。",
     "choices": [
       "オブジェクト固有／グローバルのクイックアクション",
@@ -5833,7 +5613,6 @@
   },
   {
     "id": 136,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice136",
     "question": "Universal Containers社(UC)は、200万件以上の納入商品(Asset)情報を外部システムで管理しています。UC社はSalesforceのリアルタイムデータでこれらの納入商品にアクセスする必要がありますが、データストレージの限界に近づいています。この要件を満たすために、アプリケーションビルダーはどの機能を推奨すべきですか。",
     "choices": [
       "データローダー",
@@ -5860,7 +5639,6 @@
   },
   {
     "id": 140,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice140",
     "question": "AW Computing社の営業担当者が、Chatterフィードをスクロールしても目的の情報を見つけることができません。重要な取引先および商談レコードからの投稿のみを表示するために、フィルターをどのように活用すればよいですか。",
     "choices": [
       "Chatterグループを作成する。",
@@ -5886,7 +5664,6 @@
   },
   {
     "id": 325,
-    "url": "claude-generated",
     "question": "画面フローの画面要素で入力項目を必須にする方法として最も適切なものはどれですか。",
     "choices": [
       "画面要素の項目プロパティで「必須」をオンにする",
@@ -5911,7 +5688,6 @@
   },
   {
     "id": 303,
-    "url": "claude-generated",
     "question": "AppExchangeから管理パッケージ(Managed Package)をインストールした場合、Apexクラスやコンポーネントを編集できますか。",
     "choices": [
       "編集できない。ISVが管理しコードはロックされている",
@@ -5936,7 +5712,6 @@
   },
   {
     "id": 142,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice142",
     "question": "Universal Containers社は、Salesforceの商談データを財務データベースのレコードと照合したいと考えています。Salesforceの商談レコードと財務データベースのレコードの間に間接参照関係を設定するには、何が必要ですか。",
     "choices": [
       "外部ID",
@@ -5962,7 +5737,6 @@
   },
   {
     "id": 233,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice233",
     "question": "アプリケーションビルダーは、Sandboxで複数のカスタム項目、ページレイアウト、レポートを作成し、それらを変更セットに追加しました。しかし、本番環境にデプロイした際、レポートはデプロイされませんでした。アプリケーションビルダーはどのように対応すべきですか。",
     "choices": [
       "レポートを[未整理公開レポート]フォルダーに移動し、新しい変更セットに追加する。",
@@ -5988,7 +5762,6 @@
   },
   {
     "id": 143,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice143",
     "question": "サービスマネージャーは、チームが一貫してケースの優先度を入力するようにしたいと考えています。これを実現するために、アプリケーションビルダーはどの機能を使用するとよいでしょうか。",
     "choices": [
       "アプリケーション内ガイダンス",
@@ -6015,7 +5788,6 @@
   {
     "id": 326,
     "expFig": "flow-types",
-    "url": "claude-generated",
     "question": "画面フローとレコードトリガフローを組み合わせる場合の典型パターンはどれですか。",
     "choices": [
       "画面フローでユーザー入力→保存→保存後レコードトリガフローで追加処理を行う",
@@ -6040,7 +5812,6 @@
   },
   {
     "id": 304,
-    "url": "claude-generated",
     "question": "AppExchangeから無料アプリをインストールするユーザーに必要となる主な権限はどれですか。",
     "choices": [
       "「AppExchangeパッケージのダウンロード」権限",
@@ -6065,7 +5836,6 @@
   },
   {
     "id": 144,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice144",
     "question": "Universal Containers社では、データをExcelにエクスポートする際に、各商談レコードを一意に扱えるよう、18桁のレコードIDが必要です。アプリケーションビルダーがこの新しい項目を作成するために使用すべき数式はどれですか。",
     "choices": [
       "TEXT(Id)",
@@ -6091,7 +5861,6 @@
   },
   {
     "id": 327,
-    "url": "claude-generated",
     "question": "スケジュールトリガフローの定義で指定する必須／オプション項目の組み合わせとして正しいものはどれですか。",
     "choices": [
       "開始日時（必須）／繰り返し頻度（必須）／対象レコード条件（オプション）",
@@ -6116,7 +5885,6 @@
   },
   {
     "id": 146,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice146",
     "question": "Cloud Kicks社(CK)は、Salesforce内で顧客の取引先との交流やコラボレーションを開始し、様々なトピックについて議論したいと考えています。CKは、このような会話を全社員に見てもらいたいと考えています。Chatterのどの機能がCKのビジネスニーズを満たすでしょうか。2つ選びなさい。",
     "choices": [
       "Chatterアクションを使用して、完了するタスクを作成する。",
@@ -6143,7 +5911,6 @@
   },
   {
     "id": 305,
-    "url": "claude-generated",
     "question": "管理パッケージのアップグレードに関する説明として正しいものはどれですか。",
     "choices": [
       "ISVが新バージョンを公開すると、インストール先組織でアップグレード操作を実行できる",
@@ -6168,7 +5935,6 @@
   },
   {
     "id": 328,
-    "url": "claude-generated",
     "question": "スケジュールトリガフローと自律フロー（Autolaunched Flow）の主な違いはどれですか。",
     "choices": [
       "スケジュールは時刻起動、自律はApex／REST／サブフローからの呼び出し起動",
@@ -6193,7 +5959,6 @@
   },
   {
     "id": 149,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice149",
     "question": "Ursa Major Solar社は、標準の取引先責任者とカスタムオブジェクトSolar Projectの間にリレーションを作成したいと考えています。取引先責任者は複数のSolar Projectに関連付けることができ、1つのSolar Projectには複数の取引先責任者を関連付けることが可能である必要があります。この要件を満たすために、アプリケーションビルダーはデータモデルをどのように構成すべきですか。",
     "choices": [
       "取引先責任者に1つの主従関係と、Solar Projectに1つの主従関係を作成する。",
@@ -6219,7 +5984,6 @@
   },
   {
     "id": 260,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice260",
     "question": "適切に管理パッケージをインストールすると、顧客やパートナーによるカスタマイズとの競合を防ぐことができます。 パッケージを設定するために使用すべき機能はどれですか。",
     "choices": [
       "説明",
@@ -6245,7 +6009,6 @@
   },
   {
     "id": 306,
-    "url": "claude-generated",
     "question": "レコードタイプを利用できる最低エディションはどれですか。",
     "choices": [
       "Professional Edition",
@@ -6270,7 +6033,6 @@
   },
   {
     "id": 329,
-    "url": "claude-generated",
     "question": "サブフロー(Subflow)要素を使う典型的なメリットはどれですか。",
     "choices": [
       "共通ロジックを別フローに切り出し、複数の親フローから再利用してメンテナンスを楽にする",
@@ -6295,7 +6057,6 @@
   },
   {
     "id": 151,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice151",
     "question": "Ursa Major Solar社は、増加する需要に対応するため営業チームの増員を進めています。この新しい営業担当者の短期間の立ち上げ支援の一環として、マネージャーは、各セールスプロセスの場面で営業担当者が必要に応じて簡単にヘルプを参照できるよう、ヘルプガイドを提供したいと考えています。アプリケーションビルダーが推奨すべきソリューションはどれですか。",
     "choices": [
       "フロー",
@@ -6321,7 +6082,6 @@
   },
   {
     "id": 153,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice153",
     "question": "Ursa Major Solar社(UMS)は、銀河ベンダーを管理するカスタムオブジェクトを使用しています。このオブジェクトには、銀河ベンダーの所在地を表す4つのカスタム項目 Street(Street__c)、City(City__c)、Planet(Planet__c)、Galaxy(Galaxy__c) があります。UMS社の経営陣は、これらの項目を2行に連結した1つの数式項目で表示したいと考えています。この要件を満たす数式はどれですか。",
     "choices": [
       "A: Street & BR() & City & \", \" & Planet & \" \" & Galaxy",
@@ -6347,7 +6107,6 @@
   },
   {
     "id": 330,
-    "url": "claude-generated",
     "question": "自律フロー(Autolaunched Flow)を呼び出せる場所として正しいものを2つ選びなさい。",
     "choices": [
       "Apex の Flow.Interview を使ったコード",
@@ -6373,7 +6132,6 @@
   },
   {
     "id": 307,
-    "url": "claude-generated",
     "question": "Enterprise Editionで作成できるカスタムオブジェクト数の上限としてもっとも近いものはどれですか。",
     "choices": [
       "200個",
@@ -6398,7 +6156,6 @@
   },
   {
     "id": 156,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice156",
     "question": "スキーマビルダーの機能はどれですか。2つ選びなさい。",
     "choices": [
       "標準オブジェクトとカスタムオブジェクトの説明を更新する。",
@@ -6426,7 +6183,6 @@
   {
     "id": 152,
     "expFig": "page-assignment",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice152",
     "question": "あるコンポーネントを Salesforce モバイルアプリでのみ表示し、デスクトップでは非表示にしたいと考えています。アプリケーションビルダーは Lightning アプリケーションビルダーでどのように設定すべきですか。",
     "choices": [
       "コンポーネントの表示条件（コンポーネントの公開）で、フォームファクタが「電話」のときだけ表示するよう設定する。",
@@ -6452,7 +6208,6 @@
   },
   {
     "id": 331,
-    "url": "claude-generated",
     "question": "承認プロセスで使える「自動アクション」として正しいものを2つ選びなさい。",
     "choices": [
       "項目の自動更新",
@@ -6479,7 +6234,6 @@
   },
   {
     "id": 266,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice266",
     "question": "DreamHouse Realty社(DHR)は最近、Salesforce Classicを使用しているCloud Kicks社(CK)を買収しました。DHR社はCK社のSalesforce組織をそのまま保持しますが、Lightning Experienceへ移行する予定です。アプリケーションビルダーは、このプロジェクトやLightning Experienceへの全体的な移行を支援するための事前構築済みリソースをどこで見つけることができますか。",
     "choices": [
       "データインポートウィザード",
@@ -6505,7 +6259,6 @@
   },
   {
     "id": 308,
-    "url": "claude-generated",
     "question": "Developer Editionの特徴として正しいものを2つ選びなさい。",
     "choices": [
       "無料で利用できる",
@@ -6531,7 +6284,6 @@
   },
   {
     "id": 158,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice158",
     "question": "連結オブジェクトには、プライマリとセカンダリの2つの主従関係があります。関連するマスターレコードが両方とも削除された場合、連結オブジェクトレコードはどうなりますか。",
     "choices": [
       "連結オブジェクトレコードは永久に削除され、復元できません。",
@@ -6557,7 +6309,6 @@
   },
   {
     "id": 332,
-    "url": "claude-generated",
     "question": "承認プロセスでレコードロック中、一般ユーザーが行えない操作として正しいものを2つ選びなさい。",
     "choices": [
       "ロック対象項目の編集",
@@ -6584,7 +6335,6 @@
   },
   {
     "id": 309,
-    "url": "claude-generated",
     "question": "項目履歴管理を有効にできる項目の数の上限として正しいものはどれですか（1オブジェクトあたり）。",
     "choices": [
       "20項目",
@@ -6609,7 +6359,6 @@
   },
   {
     "id": 154,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice154",
     "question": "Ursa Major Solar社のアプリケーションビルダーは、主オブジェクトGalaxy__cと子オブジェクトStar__cの間に主従関係を作成しました。ユーザーがGalaxy__cとStar__cの関連データをレポートしたい場合、この関係を作成することでどのような影響がありますか。",
     "choices": [
       "Star__cが関連するGalaxy__cレポートタイプが自動的に作成される。",
@@ -6636,7 +6385,6 @@
   {
     "id": 333,
     "expFig": "declarative-vs-code",
-    "url": "claude-generated",
     "question": "金額や部門で承認ルートを変える「動的な承認ルート」を宣言的に実装する方法はどれですか。",
     "choices": [
       "承認プロセスのステップに「エントリ条件」と「次のステップへ」分岐を構成する",
@@ -6661,7 +6409,6 @@
   },
   {
     "id": 159,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice159",
     "question": "アプリケーションビルダーは、特定のオブジェクト上の項目を集計計算し、その結果を反映させることで、ユーザーエクスペリエンスを向上させたいと考えています。この目的を達成するために積み上げ集計項目で使用できる項目のデータ型はどれですか。3つ選びなさい。",
     "choices": [
       "チェックボックス",
@@ -6690,7 +6437,6 @@
   },
   {
     "id": 310,
-    "url": "claude-generated",
     "question": "標準の項目履歴管理で履歴データが保持される期間として正しいものはどれですか。",
     "choices": [
       "最大18ヶ月（一部エディションで最大24ヶ月）",
@@ -6716,7 +6462,6 @@
   {
     "id": 427,
     "expFig": "deployment",
-    "url": "claude-generated",
     "question": "アウトバウンド変更セット(Outbound Change Set)を送るために、組織間で必要な準備はどれですか。",
     "choices": [
       "送信元と受信先で「リリース接続(Deployment Connection)」を承認し合う",
@@ -6741,7 +6486,6 @@
   },
   {
     "id": 334,
-    "url": "claude-generated",
     "question": "ISPICKVAL(field, \"value\") を使う場面として正しいものはどれですか。",
     "choices": [
       "選択リスト項目の値が指定した文字列と等しいかを判定したい時",
@@ -6766,7 +6510,6 @@
   },
   {
     "id": 163,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice163",
     "question": "レポート作成スナップショットを設定するためのソースレポートとして使用できるレポート形式はどれですか。2つ選びなさい。",
     "choices": [
       "サマリー形式",
@@ -6793,7 +6536,6 @@
   },
   {
     "id": 160,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice160",
     "question": "Universal Containers社の研修チームは、カスタムの研修オブジェクトを使用して、顧客の研修状況を追跡しています。アプリケーションビルダーは、研修オブジェクトと関連する受講者レコードの間にリレーションシップを作成する必要があります。研修オブジェクトに受講者の参照関係を作成する場合、どの記述が正しいですか。2つ選びなさい。",
     "choices": [
       "研修レコードでは、受講者の参照関係を任意に設定することができます。",
@@ -6820,7 +6562,6 @@
   },
   {
     "id": 311,
-    "url": "claude-generated",
     "question": "項目履歴管理を有効化する画面はどこですか。",
     "choices": [
       "オブジェクトマネージャ → 対象オブジェクト → 「項目とリレーション」→ 「履歴管理を設定」",
@@ -6845,7 +6586,6 @@
   },
   {
     "id": 335,
-    "url": "claude-generated",
     "question": "ISBLANK と ISNULL の使い分けに関する説明として正しいものはどれですか。",
     "choices": [
       "ISBLANK はテキストにも数値にも使えるが、ISNULL はテキスト項目では常に FALSE を返す",
@@ -6870,7 +6610,6 @@
   },
   {
     "id": 161,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice161",
     "question": "Cloud Kicks社は、Salesforceの導入を効率的に進めながら、スプレッドシートへの依存を減らしたいと考えています。アプリケーションビルダーは、全員が共有しているスプレッドシートをSalesforceに追加するよう求められています。オブジェクトと項目を作成し、同時にデータを挿入する必要があります。この要件を満たすために、どのツールを使用すべきですか。",
     "choices": [
       "データローダー",
@@ -6896,7 +6635,6 @@
   },
   {
     "id": 165,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice165",
     "question": "DreamHouse Realty社の評価チームは、Salesforceモバイルアプリを活用したいと考えています。モバイル体験を最適化するために、アプリケーションビルダーが行うべきことはどれですか。3つ選びなさい。",
     "choices": [
       "最も重要な項目をコンパクトレイアウトに配置して、すぐに見つけられるようにする。",
@@ -6926,7 +6664,6 @@
   },
   {
     "id": 336,
-    "url": "claude-generated",
     "question": "ISCHANGED を入力規則で使うときの注意点として正しいものはどれですか。",
     "choices": [
       "新規レコード作成時は常に FALSE を返すため、新規時も判定したいときは ISNEW() と OR する",
@@ -6951,7 +6688,6 @@
   },
   {
     "id": 312,
-    "url": "claude-generated",
     "question": "Lightningアプリの「コンソールアプリ」と「標準アプリ」の主な違いはどれですか。",
     "choices": [
       "コンソールはタブ／サブタブで複数レコードを同時に開ける、標準は1レコード1タブ",
@@ -6976,7 +6712,6 @@
   },
   {
     "id": 428,
-    "url": "claude-generated",
     "question": "変更セットに含めることができないものとして正しいものはどれですか。",
     "choices": [
       "レコードデータ(取引先などの実データ)",
@@ -7001,7 +6736,6 @@
   },
   {
     "id": 162,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice162",
     "question": "Universal Containers社でリードの重複管理が実装されましたが、重複したリードがまだ作成されているようです。リードの組織の共有設定は非公開に設定されています。重複するリードが作成されるのを防ぐのに役立つ方法はどれですか。 2つ選びなさい。",
     "choices": [
       "リードの一致ルールでレコード作成時にブロックするように設定する。",
@@ -7028,7 +6762,6 @@
   },
   {
     "id": 337,
-    "url": "claude-generated",
     "question": "ワークフロールールの「項目自動更新」をフローに置き換える場合、第一選択肢として正しいものはどれですか。",
     "choices": [
       "保存前(Before-Save)レコードトリガフロー",
@@ -7054,7 +6787,6 @@
   },
   {
     "id": 313,
-    "url": "claude-generated",
     "question": "アプリランチャーに並ぶアプリの順序を変える方法として正しいものはどれですか。",
     "choices": [
       "ユーザー自身がドラッグ＆ドロップで好きな順序に並び替える",
@@ -7079,7 +6811,6 @@
   },
   {
     "id": 170,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice170",
     "question": "Salesforceモバイルアプリをブランディング用にカスタマイズする場合、どの設定を使用できますか。3つ選びなさい。",
     "choices": [
       "アクションバーの色",
@@ -7109,7 +6840,6 @@
   {
     "id": 338,
     "expFig": "record-triggered-flow",
-    "url": "claude-generated",
     "question": "レコード保存時、保存前(Before-Save)レコードトリガフローと入力規則の実行順序はどちらが先ですか。",
     "choices": [
       "保存前フローが先。入力規則は保存前フローで更新された値に対して走る",
@@ -7134,7 +6864,6 @@
   },
   {
     "id": 164,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice164",
     "question": "Universal Containers社は、商談と、Detailed_Sales__cというカスタムオブジェクトを利用しています。同社は、選択リストの[状況]項目が[Active]に設定されているDetailed_Sales__cレコードのみを対象として、売上指標を商談に積み上げ集計したいと考えています。この要件を満たすために、アプリケーションビルダーが推奨すべき方法はどれですか。",
     "choices": [
       "主オブジェクトと従オブジェクトの間に主従関係を作成し、[状況]項目で絞り込む積み上げ集計項目を作成する。",
@@ -7160,7 +6889,6 @@
   },
   {
     "id": 314,
-    "url": "claude-generated",
     "question": "ユーティリティバー(Utility Bar)を構成する場所はどこですか。",
     "choices": [
       "Lightning アプリケーションマネージャ → 対象 Lightning アプリ",
@@ -7185,7 +6913,6 @@
   },
   {
     "id": 339,
-    "url": "claude-generated",
     "question": "実行順序において、承認プロセスの初期化（申請受付）はどの段階で発生しますか。",
     "choices": [
       "保存後の自動化処理（保存後フロー・割り当てルール等）が終わった後、DBコミット直前",
@@ -7211,7 +6938,6 @@
   },
   {
     "id": 173,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice173",
     "question": "ビジネスユーザーが、Salesforceモバイルアプリのレコードのフィードから、レコードのステータスを編集し、カスタム期日項目を入力する簡単な方法を求めています。この場合、どのような方法が考えられますか。",
     "choices": [
       "カスタムクイックアクセスリンク",
@@ -7237,7 +6963,6 @@
   },
   {
     "id": 166,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice166",
     "question": "Universal Containers社は、1000件のレコードをSalesforceにインポートしようとしています。インポート中に重複レコードが作成されないようにするにはどうすればよいでしょうか。",
     "choices": [
       "すべてのカスタムオブジェクトをインポートした後、重複チェックレポートを実行し、レコードをCSVファイルにエクスポートし、大量削除を実行して重複を削除します。",
@@ -7263,7 +6988,6 @@
   },
   {
     "id": 429,
-    "url": "claude-generated",
     "question": "変更セットの「コンポーネントを表示(View/Add Components)」で「参照解決(View/Add Dependencies)」を実行する目的はどれですか。",
     "choices": [
       "選択したコンポーネントが依存する他コンポーネントを自動検出して追加候補にする",
@@ -7288,7 +7012,6 @@
   },
   {
     "id": 340,
-    "url": "claude-generated",
     "question": "Salesforceで「リード」と「取引先責任者」の主な違いはどれですか。",
     "choices": [
       "リードは見込み客で、商談化していない人物を管理する",
@@ -7313,7 +7036,6 @@
   },
   {
     "id": 379,
-    "url": "claude-generated",
     "question": "Flow Builderで「割り当て(Assignment)」要素を使い、変数Aに値Xを「追加(Add)」する操作をした。Aが数値変数だった場合の挙動はどれですか。",
     "choices": [
       "A = A + X として加算される",
@@ -7338,7 +7060,6 @@
   },
   {
     "id": 174,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice174",
     "question": "Universal Insurance社では、30日以上未解決のクレームをレポートで強調表示したいと考えています。そのためにはどのような機能を使用するとよいでしょうか。",
     "choices": [
       "条件付き強調表示",
@@ -7364,7 +7085,6 @@
   },
   {
     "id": 167,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice167",
     "question": "Universal Containers社は、消費者向けと商談向けのビジネス要件を分けています。営業チームは両方の商談を扱います。アプリケーションビルダーは、商談オブジェクトに2つのレコードタイプを作成しました。どのアクションを実行できますか。2つ選びなさい。",
     "choices": [
       "セールスプロセスごとに個別の商談フェーズを作成します。",
@@ -7391,7 +7111,6 @@
   },
   {
     "id": 380,
-    "url": "claude-generated",
     "question": "Flow Builderで「決定(Decision)」要素のアウトカム(Outcome)を複数定義した場合、どのアウトカムが実行されますか。",
     "choices": [
       "最初に条件を満たしたアウトカムのみ",
@@ -7416,7 +7135,6 @@
   },
   {
     "id": 341,
-    "url": "claude-generated",
     "question": "リード変換で標準的に作成されるレコードを2つ選びなさい。",
     "choices": [
       "商談",
@@ -7443,7 +7161,6 @@
   },
   {
     "id": 430,
-    "url": "claude-generated",
     "question": "受信側で変更セットを「検証(Validate)」する目的はどれですか。",
     "choices": [
       "実際にデプロイせずに、エラーなく適用できるかを事前チェックする",
@@ -7468,7 +7185,6 @@
   },
   {
     "id": 381,
-    "url": "claude-generated",
     "question": "Flow Builderの「ループ(Loop)」要素を使う際に必要な変数はどれですか。",
     "choices": [
       "処理対象のレコードコレクション変数",
@@ -7493,7 +7209,6 @@
   },
   {
     "id": 168,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice168",
     "question": "Universal Containers社(UC)は、5,000件のリードレコードのいくつかの項目のデータを削除したいと考えています。UCは、データを削除する必要がある選択されたレコードIDと項目をCSVファイルにエクスポートしました。これらの要件を満たすために、アプリケーションビルダーが提案すべき手順はどれですか。2つ選びなさい。",
     "choices": [
       "正しいレコードタイプを選択する。",
@@ -7520,7 +7235,6 @@
   },
   {
     "id": 342,
-    "url": "claude-generated",
     "question": "「個人取引先(Person Account)」を有効化した場合の動作として正しいものはどれですか。",
     "choices": [
       "1度有効化すると無効化できない",
@@ -7545,7 +7259,6 @@
   },
   {
     "id": 176,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice176",
     "question": "Universal Containers社は、初めてSalesforceを設定しました。 経営陣は、営業チームとマーケティングチームがSalesforceモバイルアプリで異なるナビゲーションメニューを持つことを望んでいます。 この要件を満たすために、アプリケーションビルダーにはどのような方法がありますか。",
     "choices": [
       "営業と販売のプロファイルを作成し、異なるオブジェクトへの読み取りアクセスを確保する。",
@@ -7571,7 +7284,6 @@
   },
   {
     "id": 382,
-    "url": "claude-generated",
     "question": "Flow Builderで「レコードを取得(Get Records)」要素のフィルタとして「条件なし」「すべてのレコードを取得」を設定した。バルク処理で何か注意点はありますか。",
     "choices": [
       "SOQLクエリの行数制限に達する可能性があり、フィルタや上限の指定が推奨される",
@@ -7596,7 +7308,6 @@
   },
   {
     "id": 172,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice172",
     "question": "Universal Containers社は、カスタムの選択リスト項目で、ユーザーのグループごとに異なる値を表示したいと考えています。何を構成する必要がありますか。",
     "choices": [
       "ページレイアウト",
@@ -7622,7 +7333,6 @@
   },
   {
     "id": 343,
-    "url": "claude-generated",
     "question": "商談ステージで「成立フラグ(IsClosed/IsWon)」を制御する仕組みはどれですか。",
     "choices": [
       "ステージごとに「商談を終了するか」「成立か」のフラグを設定する",
@@ -7648,7 +7358,6 @@
   },
   {
     "id": 383,
-    "url": "claude-generated",
     "question": "Flow Builderの「Apexアクション」要素を呼び出すとき、呼ぶことができるApexメソッドの条件はどれですか。",
     "choices": [
       "@InvocableMethod アノテーションが付いていて、staticメソッドであること",
@@ -7673,7 +7382,6 @@
   },
   {
     "id": 178,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice178",
     "question": "Universal Containers社はAppExchangeでLightningコンポーネントを購入しました。これらのコンポーネントは、どの分野で利用できますか。2つ選びなさい。",
     "choices": [
       "Lightning アプリケーション",
@@ -7700,7 +7408,6 @@
   },
   {
     "id": 177,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice177",
     "question": "Cool Air Conditioners社はService Cloudをケース管理に使用していましたが、フィールドサービスを使用することを検討しています。彼らは、フィールドサービスの活動と技術者への割り当てを追跡したいと考えています。これらの要件を満たすために推奨されるソリューションは何ですか。1つ選びなさい。",
     "choices": [
       "Service Cloudの設定を拡張して、フィールドサービスのケースを扱えるようにする。",
@@ -7726,7 +7433,6 @@
   },
   {
     "id": 344,
-    "url": "claude-generated",
     "question": "ケースの「自動応答ルール」と「割り当てルール」の違いとして正しいものはどれですか。",
     "choices": [
       "自動応答はメール送信、割り当てはレコード所有者の決定",
@@ -7752,7 +7458,6 @@
   },
   {
     "id": 384,
-    "url": "claude-generated",
     "question": "画面フローで「コレクション選択画面コンポーネント(Data Table)」を使うときの主な用途はどれですか。",
     "choices": [
       "レコードのリストを表示してユーザーに選択させる",
@@ -7778,7 +7483,6 @@
   {
     "id": 431,
     "expFig": "deployment",
-    "url": "claude-generated",
     "question": "本番に変更セットをリリース(Deploy)する時、Apexテストの実行はどう扱われますか。",
     "choices": [
       "既定でローカル組織のApexテストを実行し、カバレッジ75%以上を満たす必要がある",
@@ -7803,7 +7507,6 @@
   },
   {
     "id": 179,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice179",
     "question": "Northern Trail Outfitters社は、カスタムオブジェクトを使用して旅行申請を追跡しています。レンジャーは、旅行申請が承認されるたびに、レコード上に自動的に投稿が作成されるようにしたいと考えています。この要件を満たすために使用すべき機能はどれですか。",
     "choices": [
       "承認プロセス",
@@ -7829,7 +7532,6 @@
   },
   {
     "id": 184,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice184",
     "question": "キャンペーンメンバーはどのオブジェクトに関連付けることができますか。2つ選びなさい。",
     "choices": [
       "商談",
@@ -7856,7 +7558,6 @@
   },
   {
     "id": 345,
-    "url": "claude-generated",
     "question": "標準オブジェクトの「キャンペーン」とそのメンバーに関する説明として正しいものはどれですか。",
     "choices": [
       "1リード/取引先責任者は複数のキャンペーンメンバーになれる",
@@ -7881,7 +7582,6 @@
   },
   {
     "id": 385,
-    "url": "claude-generated",
     "question": "Flow Builderの「Pause(一時停止)」要素を使うべき場面はどれですか。",
     "choices": [
       "一定時間/特定日時/プラットフォームイベントまで処理を待ちたい時",
@@ -7906,7 +7606,6 @@
   },
   {
     "id": 386,
-    "url": "claude-generated",
     "question": "Flow Builderの「フォールトパス(Fault Path)」を設定する目的はどれですか。",
     "choices": [
       "エラー時の代替経路を作り、エラーハンドリングを宣言的に行う",
@@ -7931,7 +7630,6 @@
   },
   {
     "id": 346,
-    "url": "claude-generated",
     "question": "Lightning Experienceでサポートされず、Salesforce Classicでのみサポートされている機能はどれですか。",
     "choices": [
       "S-Control",
@@ -7956,7 +7654,6 @@
   },
   {
     "id": 187,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice187",
     "question": "項目のデータ型の変換について、次のうち正しいものはどれですか。2つ選びなさい。",
     "choices": [
       "自動採番からテキストへの変換時に、データが失われる可能性があります。",
@@ -7983,7 +7680,6 @@
   },
   {
     "id": 182,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice182",
     "question": "ソーシャル取引先、取引先責任者、リードについて正しいことは何ですか。",
     "choices": [
       "ソーシャル取引先、取引先責任者、リードの機能を使用するには、Salesforceでユーザーに別の機能ライセンスを割り当てる必要があります。",
@@ -8009,7 +7705,6 @@
   },
   {
     "id": 432,
-    "url": "claude-generated",
     "question": "変更セットでデプロイしたコンポーネントをロールバックしたい時、Salesforceの標準的なやり方はどれですか。",
     "choices": [
       "元の状態を含む変更セットを別途作って再デプロイする",
@@ -8034,7 +7729,6 @@
   },
   {
     "id": 387,
-    "url": "claude-generated",
     "question": "数式項目で「テキストとして連結」したい場合に使う演算子はどれですか。",
     "choices": [
       "& または +",
@@ -8059,7 +7753,6 @@
   },
   {
     "id": 347,
-    "url": "claude-generated",
     "question": "Lightning ExperienceとSalesforce Classicでの「アプリ」の違いとして正しいものを2つ選びなさい。",
     "choices": [
       "Lightning ExperienceはLightningアプリ、Classicは「カスタムアプリ」と呼ぶ",
@@ -8085,7 +7778,6 @@
   },
   {
     "id": 192,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice192",
     "question": "Cloud Kicks社(CK)は、商談が成立した後、取引先の所有者とは別にカスタマーサービスマネージャー(CSM)を担当者として割り当てたいと考えています。また、CSMがどの取引先に割り当てられているかを簡単に追跡・レポートできる新しい項目を追加したいと考えています。この要件を満たすために、アプリケーションビルダーはどのソリューションを使用すべきですか。",
     "choices": [
       "複数選択リスト項目",
@@ -8111,7 +7803,6 @@
   },
   {
     "id": 188,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice188",
     "question": "表形式、サマリー、マトリックスのレポートを結合レポートに変換する場合、正しいのはどれですか。3つ選びなさい。",
     "choices": [
       "クロス条件は結合レポートではサポートされていません。",
@@ -8140,7 +7831,6 @@
   },
   {
     "id": 388,
-    "url": "claude-generated",
     "question": "数式項目で「IF(条件, 真の値, 偽の値)」を多段にしたい時、推奨される関数はどれですか。",
     "choices": [
       "CASE関数で値判定を簡潔にする",
@@ -8165,7 +7855,6 @@
   },
   {
     "id": 348,
-    "url": "claude-generated",
     "question": "Lightning Experienceでカスタムボタン(JavaScriptボタン)を作成しようとするとどうなりますか。",
     "choices": [
       "Lightning Experienceでは動作しないため、クイックアクション/フローで代替する",
@@ -8190,7 +7879,6 @@
   },
   {
     "id": 194,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice194",
     "question": "Universal Containers社の顧客サービスチームは、顧客のプロジェクトを追跡するためにカスタムプロジェクトオブジェクトを使用しています。アプリケーションビルダーは、プロジェクトオブジェクトと関連する顧客の取引先レコードの間にリレーションシップを作成する必要があります。取引先とプロジェクトの両方に、非公開の共有モデルが導入されています。プロジェクトオブジェクトに取引先の参照関係を作成する場合、どの記述が正しいですか。2つ選びなさい。",
     "choices": [
       "プロジェクトレコードの取引先参照関係は、任意で作成することができます。",
@@ -8217,7 +7905,6 @@
   },
   {
     "id": 389,
-    "url": "claude-generated",
     "question": "数式関数の「TEXT()」と「VALUE()」の役割の組み合わせとして正しいものはどれですか。",
     "choices": [
       "TEXT()=値をテキストに変換、VALUE()=テキストを数値に変換",
@@ -8242,7 +7929,6 @@
   },
   {
     "id": 433,
-    "url": "claude-generated",
     "question": "第2世代パッケージ(2GP)で「unlocked」と「managed」の違いとして正しいものはどれですか。",
     "choices": [
       "unlockedはインストール先で編集可能、managedはコードがロックされる",
@@ -8267,7 +7953,6 @@
   },
   {
     "id": 190,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice190",
     "question": "Lightning アプリケーションビルダーで利用可能な標準コンポーネントタイプはどれですか。3つ選びなさい。",
     "choices": [
       "プレーンテキスト",
@@ -8296,7 +7981,6 @@
   },
   {
     "id": 349,
-    "url": "claude-generated",
     "question": "AppExchangeのアプリで「無料試用版(Free Trial)」と「フル版」の違いに関する説明として正しいものはどれですか。",
     "choices": [
       "試用版は期間限定で機能制限がある場合がある",
@@ -8321,7 +8005,6 @@
   },
   {
     "id": 390,
-    "url": "claude-generated",
     "question": "「TODAY()」と「NOW()」の戻り値の型として正しいものはどれですか。",
     "choices": [
       "TODAY()=日付型(Date)、NOW()=日付/時刻型(DateTime)",
@@ -8346,7 +8029,6 @@
   },
   {
     "id": 197,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice197",
     "question": "Cloud Kicks社(CK)は、在庫に対する注文を追跡し、注文リクエストを確実に処理できるようにしたいと考えています。CK社は、在庫(Inventory)オブジェクトと注文(Order)オブジェクトの多対多の関係を実現するために、連結オブジェクト(Request Inventory)を作成しました。ユーザーがRequest Inventoryレコードを表示できるようにするために、アプリケーションビルダーは何を設定する必要がありますか。",
     "choices": [
       "最初の主オブジェクトに対してApexベースの共有を適用する。",
@@ -8372,7 +8054,6 @@
   },
   {
     "id": 350,
-    "url": "claude-generated",
     "question": "管理パッケージで「組織の名前空間プレフィックス」が必要になるのはどの場合ですか。",
     "choices": [
       "パッケージをアップグレード可能な管理パッケージとしてリリースする時",
@@ -8397,7 +8078,6 @@
   },
   {
     "id": 391,
-    "url": "claude-generated",
     "question": "数式で「IMAGE(画像URL, alt)」関数を使う場面はどれですか。",
     "choices": [
       "レコード詳細やレポートに条件付き画像(信号機・チェック等)を表示する",
@@ -8422,7 +8102,6 @@
   },
   {
     "id": 200,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice200",
     "question": "レコードタイプを設定する場合、アプリケーションビルダーはページレイアウトの選択リスト項目の使用可能な値を設定できます。商談レコードタイプで直接設定できる商談の標準項目はどれですか。2つ選びなさい。",
     "choices": [
       "リードソース",
@@ -8449,7 +8128,6 @@
   },
   {
     "id": 191,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice191",
     "question": "アプリケーションビルダーが他のSalesforceユーザーとお気に入りを共有する方法はどれですか。",
     "choices": [
       "お気に入りドロップダウンメニューでリンクを共有する。",
@@ -8475,7 +8153,6 @@
   },
   {
     "id": 392,
-    "url": "claude-generated",
     "question": "「AND(条件1, 条件2, ...)」と「条件1 && 条件2」の違いとして正しいものはどれですか。",
     "choices": [
       "機能的に同じで好みで使い分け可能",
@@ -8500,7 +8177,6 @@
   },
   {
     "id": 351,
-    "url": "claude-generated",
     "question": "AppExchangeの「セキュリティレビュー(Security Review)」に関する説明として正しいものはどれですか。",
     "choices": [
       "AppExchangeに掲載するためにISVが受ける必須の審査プロセス",
@@ -8525,7 +8201,6 @@
   },
   {
     "id": 202,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice202",
     "question": "データ型の変換時にデータが失われる可能性があるパターンは次のうちどれですか。3つ選びなさい。",
     "choices": [
       "日付型から日付/時間型",
@@ -8553,7 +8228,6 @@
   },
   {
     "id": 434,
-    "url": "claude-generated",
     "question": "2GP管理パッケージのリリースに必要な前提として正しいものを2つ選びなさい。",
     "choices": [
       "Dev Hubの有効化",
@@ -8579,7 +8253,6 @@
   },
   {
     "id": 193,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice193",
     "question": "Cloud Kicks社のユーザーから、タイムカードのカスタムページレイアウトには項目が多すぎるというフィードバックがありました。いくつかの項目は、他の項目の値が入力されている場合にのみ必要です。この問題を解決するために、アプリケーションビルダーは何を構成すればよいでしょうか。",
     "choices": [
       "ページレイアウトを分ける",
@@ -8605,7 +8278,6 @@
   },
   {
     "id": 393,
-    "url": "claude-generated",
     "question": "「BLANKVALUE(field, replacement)」関数の用途はどれですか。",
     "choices": [
       "フィールドがブランクなら代替値を返す",
@@ -8630,7 +8302,6 @@
   },
   {
     "id": 352,
-    "url": "claude-generated",
     "question": "Salesforceの「多通貨(Multiple Currencies)」を有効化した場合の挙動として正しいものはどれですか。",
     "choices": [
       "1度有効化すると無効化はSalesforceサポート経由でしかできない",
@@ -8655,7 +8326,6 @@
   },
   {
     "id": 203,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice203",
     "question": "積み上げ集計項目について正しいものはどれですか。",
     "choices": [
       "積み上げ集計項目は、一連のレコードのSUM、MIN、MAX、AVGを計算するために使用できます。",
@@ -8681,7 +8351,6 @@
   },
   {
     "id": 394,
-    "url": "claude-generated",
     "question": "「PRIORVALUE(field)」関数を使える場所はどれですか。",
     "choices": [
       "入力規則やワークフロー/フローのトリガ条件で「変更前の値」を取得する",
@@ -8706,7 +8375,6 @@
   },
   {
     "id": 198,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice198",
     "question": "コンパクトレイアウトについて正しいことは何ですか。2つ選びなさい。",
     "choices": [
       "コンパクトレイアウトは異なるレコードタイプに割り当てることができます。",
@@ -8733,7 +8401,6 @@
   },
   {
     "id": 353,
-    "url": "claude-generated",
     "question": "Advanced Currency Management(高度な通貨管理)を有効にすると何ができるようになりますか。",
     "choices": [
       "日付ごとに異なる為替レートを履歴として保持して商談に適用できる",
@@ -8758,7 +8425,6 @@
   },
   {
     "id": 395,
-    "url": "claude-generated",
     "question": "1トランザクションあたりのフローのSOQLクエリ上限の説明として正しいものはどれですか。",
     "choices": [
       "フローも他の処理と合わせて 100 SOQL/トランザクションのプラットフォーム制限を共有する",
@@ -8784,7 +8450,6 @@
   },
   {
     "id": 210,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice210",
     "question": "Universal Containers社は、営業担当者が主要な指標をより簡単に把握できるようにするため、Salesforceのデータモデルを変更することを提案しています。この提案では、取引先オブジェクトに関連する3つのカスタムオブジェクトがあります。1つは主従関係で、残りの2つは主従関係ではありません。各オブジェクトには、取引先オブジェクトに集約したい15個の項目が含まれています。この提案を進めるにあたり、考慮すべき事項は何ですか。2つ選びなさい。",
     "choices": [
       "オブジェクトは20個のオブジェクト参照を持つことができる。",
@@ -8811,7 +8476,6 @@
   },
   {
     "id": 435,
-    "url": "claude-generated",
     "question": "1GP管理パッケージ(従来の管理パッケージ)を維持しつつ、2GPに移行する標準的な経路はどれですか。",
     "choices": [
       "1GPメタデータを2GPプロジェクトに取り込み、段階的に2GPでリリースに切り替える",
@@ -8836,7 +8500,6 @@
   },
   {
     "id": 354,
-    "url": "claude-generated",
     "question": "Salesforceで翻訳ワークベンチ(Translation Workbench)を使う目的はどれですか。",
     "choices": [
       "カスタム項目やピックリスト値などのラベルを多言語に翻訳する",
@@ -8861,7 +8524,6 @@
   },
   {
     "id": 396,
-    "url": "claude-generated",
     "question": "フロー内でループの中に「レコードを更新(Update Records)」を置くと何が問題ですか。",
     "choices": [
       "1回あたりのDMLが回数分発生し、DML回数上限(150回/トランザクション)に達するリスクがある",
@@ -8888,7 +8550,6 @@
   },
   {
     "id": 201,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice201",
     "question": "取引先責任者のカスタム作成アクションを作成する場合、どの記述が正しいですか。2つ選びなさい。",
     "choices": [
       "作成アクションでは項目要件を無視します。",
@@ -8915,7 +8576,6 @@
   },
   {
     "id": 211,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice211",
     "question": "あるアプリケーションビルダーが、Salesforceにデータを読み込んでいます。新しいレコードを旧システムと紐づけるために、取引先オブジェクト上に旧システムのIDを追跡する項目を使用します。今後のデータ読み込み時には、このIDを使ってレコードをUpsertします。この要件を満たすために、どの項目属性を選択するべきですか。2つ選びなさい。",
     "choices": [
       "外部 ID",
@@ -8942,7 +8602,6 @@
   },
   {
     "id": 397,
-    "url": "claude-generated",
     "question": "フローで作成・更新するレコードを「バルク化(まとめて処理)」したい場合の推奨パターンはどれですか。",
     "choices": [
       "ループでコレクション変数に追加し、ループ後に1回でDML実行する",
@@ -8968,7 +8627,6 @@
   },
   {
     "id": 355,
-    "url": "claude-generated",
     "question": "Chatterグループの「公開グループ」と「非公開グループ」の主な違いはどれですか。",
     "choices": [
       "公開はメンバー以外も閲覧/投稿できる、非公開はメンバーのみ",
@@ -8993,7 +8651,6 @@
   },
   {
     "id": 213,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice213",
     "question": "間接参照関係項目は、外部オブジェクトでのみ作成できます。",
     "choices": [
       "真",
@@ -9017,7 +8674,6 @@
   },
   {
     "id": 205,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice205",
     "question": "Northern Trail Outfitters社は、Salesforce内の7,000件の取引先責任者に対して、定期的にメールを一斉配信したいと考えています。しかし、Salesforceの一括メール送信機能には、1日に送信できるメール数に制限があることに気付きました。この場合、アプリケーションビルダーが取るべき対応はどれですか。",
     "choices": [
       "Salesforce社に、1日の最大メール送信数を増やすよう要求する。",
@@ -9043,7 +8699,6 @@
   },
   {
     "id": 398,
-    "url": "claude-generated",
     "question": "フロー実行で同期(同じトランザクション)と非同期(別トランザクション)になる典型例はどれですか。",
     "choices": [
       "保存後フローの「非同期パス」は別トランザクションで実行される",
@@ -9068,7 +8723,6 @@
   },
   {
     "id": 436,
-    "url": "claude-generated",
     "question": "未管理パッケージ(Unmanaged Package)が向いている用途として正しいものはどれですか。",
     "choices": [
       "教材や開始テンプレートを配布したい場合(編集前提)",
@@ -9093,7 +8747,6 @@
   },
   {
     "id": 356,
-    "url": "claude-generated",
     "question": "Chatterの「ハッシュタグ」と「メンション」の用途として正しいものはどれですか。",
     "choices": [
       "ハッシュタグはトピック分類、メンションは個人/グループへの通知",
@@ -9119,7 +8772,6 @@
   {
     "id": 215,
     "expFig": "relationships",
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice215",
     "question": "Universal Containers社には、請求書という連結オブジェクトがあり、取引先とのプライマリ主従関係と、注文とのセカンダリ主従関係があります。アプリケーションビルダーは、プライマリの主従関係を参照関係に変更する要件があります。注文とのセカンダリの主従関係はどうなりますか。",
     "choices": [
       "セカンダリの主従関係のリレーションを再確立する必要がある。",
@@ -9145,7 +8797,6 @@
   },
   {
     "id": 399,
-    "url": "claude-generated",
     "question": "Migrate to Flowツールで変換できる対象として正しいものを2つ選びなさい。",
     "choices": [
       "ワークフロールール",
@@ -9171,7 +8822,6 @@
   },
   {
     "id": 212,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice212",
     "question": "営業マネージャーは、取引先レコードを見て、関連するすべての未決済の商談、終了/成立した商談、および未決済のケースのグラフを表示したいと考えています。この要件を満たすために、取引先ページレイアウトにいくつのレポートグラフを追加すればよいでしょうか。",
     "choices": [
       "3",
@@ -9197,7 +8847,6 @@
   },
   {
     "id": 357,
-    "url": "claude-generated",
     "question": "Chatterの「フィード追跡(Feed Tracking)」を有効化したフィールドに変更があった場合、何が起こりますか。",
     "choices": [
       "対象レコードのChatterフィードに自動投稿される",
@@ -9222,7 +8871,6 @@
   },
   {
     "id": 400,
-    "url": "claude-generated",
     "question": "ワークフロールールの「項目自動更新」を保存前レコードトリガフローに移行した場合、どんな利点がありますか。",
     "choices": [
       "DMLを伴わない更新で高速、同一レコードの値を直接書き換えできる",
@@ -9248,7 +8896,6 @@
   },
   {
     "id": 217,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice217",
     "question": "Cloud Kicks(CK)社は、顧客に発行したギフトカードを追跡するためにカスタムの子オブジェクトを設定したいと考えています。重要な要件として、取引先ごとに開かれたギフトカードの総数と発行されたギフトカードの総数を追跡する必要があります。また、一度作成されたギフトカードは他の取引先に移動できないようにする必要があります。 ギフトカードオブジェクトには、この要件をサポートするためにどのデータ型の項目を作成すべきですか。",
     "choices": [
       "主従関係",
@@ -9274,7 +8921,6 @@
   },
   {
     "id": 358,
-    "url": "claude-generated",
     "question": "「ToDo(Task)」と「行動(Event)」の主な違いはどれですか。",
     "choices": [
       "ToDoは期日のみ、行動は開始/終了の時刻を持つ",
@@ -9300,7 +8946,6 @@
   },
   {
     "id": 437,
-    "url": "claude-generated",
     "question": "パッケージインストール時に「インストールするユーザー」を選ぶ画面では何を決めますか。",
     "choices": [
       "どのプロファイルに対してパッケージの権限を有効にするか",
@@ -9325,7 +8970,6 @@
   },
   {
     "id": 401,
-    "url": "claude-generated",
     "question": "ワークフローの「時間ベース(Time-Dependent)」アクションをフローで実現する方法として推奨されるものはどれですか。",
     "choices": [
       "スケジュールトリガフロー、または保存後フローの「スケジュール済みパス」",
@@ -9350,7 +8994,6 @@
   },
   {
     "id": 220,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice220",
     "question": "Universal Containers社は、商談オブジェクトに[新規タスク]というカスタムアクションを作成しました。このアクションは、モバイルおよびLightningアクションセクションのすべてのページレイアウトに追加されています。アクションを表示するために、アプリケーションビルダーがレイアウトに追加すべきLightningコンポーネントはどれですか。",
     "choices": [
       "関連レコード",
@@ -9376,7 +9019,6 @@
   },
   {
     "id": 219,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice219",
     "question": "スキーマビルダーを使用して項目を作成する際の制限の1つは何ですか。",
     "choices": [
       "数式項目を作成できない。",
@@ -9402,7 +9044,6 @@
   },
   {
     "id": 359,
-    "url": "claude-generated",
     "question": "活動(ToDo/行動)の「名前」と「関連先」項目の組み合わせで正しいものはどれですか。",
     "choices": [
       "「名前」=人物(リード/取引先責任者)、「関連先」=オブジェクト(商談/取引先など)",
@@ -9428,7 +9069,6 @@
   },
   {
     "id": 402,
-    "url": "claude-generated",
     "question": "Migrate to Flowツールでワークフローを変換した場合、元のワークフローはどうなりますか。",
     "choices": [
       "元のワークフローは無効化されず残るため、明示的に無効化する必要がある",
@@ -9453,7 +9093,6 @@
   },
   {
     "id": 221,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice221",
     "question": "Ursa Major Solar社(UMS社)は、顧客の苦情を追跡するために標準オブジェクトのケースを使用しており、既知の問題を表すカスタムオブジェクトIssue__cと、既知の問題を顧客の苦情に関連付ける結合オブジェクトCase_Issue__cを使用しています。UMS社は定期的に、監査を実施し、監査ユーザーがCase_Issue__cレコードを閲覧する必要があります。UMS社のユーザーがCase_Issue__cレコードにアクセスできるようにするには、どのようなアクセスレベルを設定する必要がありますか。",
     "choices": [
       "Issue__cおよびCase_Issue__cに対する[参照]アクセス",
@@ -9479,7 +9118,6 @@
   },
   {
     "id": 223,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice223",
     "question": "アプリケーションビルダーは、カスタムコンポーネントをユーティリティバーで使用できるようにしたいと考えていますが、そのコンポーネントが利用できません。コンポーネントにはどのタグを付けるべきですか。",
     "choices": [
       "レコードページでの使用向け",
@@ -9505,7 +9143,6 @@
   },
   {
     "id": 403,
-    "url": "claude-generated",
     "question": "Process Builderからフローに移行する第一推奨はどれですか。",
     "choices": [
       "Migrate to Flow ツールで保存後レコードトリガフローに変換する",
@@ -9530,7 +9167,6 @@
   },
   {
     "id": 360,
-    "url": "claude-generated",
     "question": "ToDoや行動に「メール送信」「電話通話」のサブタイプを設定したい場合、どの機能を使いますか。",
     "choices": [
       "ToDoのタイプ選択リスト(活動タイプ)を設定する",
@@ -9555,7 +9191,6 @@
   },
   {
     "id": 438,
-    "url": "claude-generated",
     "question": "Salesforce CLI(sf/sfdx) で組織にメタデータをデプロイするコマンドの代表例はどれですか。",
     "choices": [
       "sf project deploy start",
@@ -9580,7 +9215,6 @@
   },
   {
     "id": 224,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice224",
     "question": "Ursa Major Solar社は、GalaxyとStarの間のリレーションシップを参照関係から主従関係に変更し、各GalaxyレコードにStarレコードの積み上げ集計数を追加できるようにしたいと考えています。どの考慮事項を確認する必要がありますか。2つ選びなさい。",
     "choices": [
       "Starレコードは、すべてのGalaxy項目に既存の値を持っている必要がある。",
@@ -9607,7 +9241,6 @@
   },
   {
     "id": 404,
-    "url": "claude-generated",
     "question": "プロセスビルダーの「即時アクション」と「スケジュール済みアクション」をフローで再現する場合、どう設計しますか。",
     "choices": [
       "即時=保存後フローの即時要素、スケジュール済み=スケジュール済みパス要素で表現する",
@@ -9632,7 +9265,6 @@
   },
   {
     "id": 361,
-    "url": "claude-generated",
     "question": "「Salesforce Files」と旧「添付ファイル(Attachments)」の主な違いはどれですか。",
     "choices": [
       "Filesは複数レコードへの共有・バージョン管理・プレビューに対応する",
@@ -9657,7 +9289,6 @@
   },
   {
     "id": 227,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice227",
     "question": "アプリケーションビルダーは、モバイルユーザー向けにリード、取引先責任者、取引先から[メールを送信]のオプションを追加したいと考えています。これを実現するためにグローバルアクションを使用する利点は何ですか。",
     "choices": [
       "グローバルアクションは、アクションがページ、フィード、Chatterグループであれば、どこでもアクセスできる。",
@@ -9683,7 +9314,6 @@
   },
   {
     "id": 405,
-    "url": "claude-generated",
     "question": "プロセスビルダーから移行したフローの動作を本番に適用する前に、推奨されるテスト方法はどれですか。",
     "choices": [
       "サンドボックスで新旧両方を有効化したサイドバイサイドテスト",
@@ -9708,7 +9338,6 @@
   },
   {
     "id": 225,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice225",
     "question": "Cloud Kicksチームの新しいアプリケーションビルダーは、データモデル内のリレーションシップに慣れようとしています。アプリケーションビルダーに、すべてのリレーションシップを包括的に表示する機能はどれですか。",
     "choices": [
       "スキーマビルダー",
@@ -9734,7 +9363,6 @@
   },
   {
     "id": 362,
-    "url": "claude-generated",
     "question": "Salesforce Filesのストレージ消費に関する記述として正しいものはどれですか。",
     "choices": [
       "「ファイルストレージ」枠を消費し、「データストレージ」とは別枠",
@@ -9759,7 +9387,6 @@
   },
   {
     "id": 406,
-    "url": "claude-generated",
     "question": "プロセスビルダーで「子レコードを更新」していた処理をフローで作る場合、どの要素を使いますか。",
     "choices": [
       "「レコードを更新」要素を保存後フローで使う",
@@ -9784,7 +9411,6 @@
   },
   {
     "id": 229,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice229",
     "question": "アプリケーションビルダーがケースのLightningレコードページを変更し、ページレイアウトに[新規メール]ボタンを追加しました。しかし、ユーザーがレイアウト上で新しいアイテムを見ることができません。ユーザーがケースのLightningレコードページでアイテムを表示できない可能性のある理由はどれですか。2つ選びなさい。",
     "choices": [
       "ページレイアウトにケースフィードコンポーネントが含まれている。",
@@ -9811,7 +9437,6 @@
   },
   {
     "id": 228,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice228",
     "question": "DreamHouse Realty社(DR)は、地方自治体と提携して助成住宅に進出しています。DRはSales Cloudを使用しており、商談オブジェクトに[項目履歴管理]を有効にしています。情報要件の増加に伴い、アプリ開発チームは、ロングテキストエリア項目をリッチテキスト項目に変更し、最大1,000文字とより良い記述を可能にしようとしています。チームが考慮すべきことはどれですか。2つ選びなさい。",
     "choices": [
       "リッチテキスト項目の値は、長さに関係なくレポートに完全に表示される。",
@@ -9838,7 +9463,6 @@
   },
   {
     "id": 439,
-    "url": "claude-generated",
     "question": "Metadata API でメタデータをエクスポートする時に使うファイルはどれですか。",
     "choices": [
       "package.xml(取得対象を列挙)",
@@ -9863,7 +9487,6 @@
   },
   {
     "id": 363,
-    "url": "claude-generated",
     "question": "Lightning Experienceでレコードに添付された「メモ(旧Notes)」と「新メモ(Enhanced Notes)」の違いとして正しいものはどれですか。",
     "choices": [
       "新メモはリッチテキスト・複数レコード共有・自動保存に対応する",
@@ -9888,7 +9511,6 @@
   },
   {
     "id": 407,
-    "url": "claude-generated",
     "question": "Apexトリガで「バルクトリガ(bulk-safe)」と呼ばれる設計の原則はどれですか。",
     "choices": [
       "Trigger.new をループしながら個別にSOQLやDMLを書かない",
@@ -9913,7 +9535,6 @@
   },
   {
     "id": 235,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice235",
     "question": "Universal Containers社は、100以上の項目を持つカスタムオブジェクトを使用しています。アプリケーションビルダーは、Lightningページ上で項目を別々のタブに分けて表示したいと考えています。この要件を満たすために最も適したLightningコンポーネントはどれですか。",
     "choices": [
       "強調表示パネル",
@@ -9939,7 +9560,6 @@
   },
   {
     "id": 231,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice231",
     "question": "Universal Containers社(UC)では、取引先オブジェクトに複数の選択リスト項目があり、ビジネス要件の変更に応じて値が頻繁に更新されています。これにより、多くの非アクティブな選択リスト値が蓄積し、システムのパフォーマンスやユーザーエクスペリエンスに影響を与えています。この問題を解決するために、アプリケーションビルダーはどのような対応を取るべきですか。",
     "choices": [
       "選択リストの設定で、既存の選択リストに上限を設定する。",
@@ -9965,7 +9585,6 @@
   },
   {
     "id": 408,
-    "url": "claude-generated",
     "question": "200レコードを1度に挿入したい場合、Apexで実装する典型的なパターンはどれですか。",
     "choices": [
       "List<Object> を作って単一の insert を呼ぶ",
@@ -9990,7 +9609,6 @@
   },
   {
     "id": 364,
-    "url": "claude-generated",
     "question": "「グローバルアクション」と「オブジェクト固有アクション」の主な違いはどれですか。",
     "choices": [
       "グローバルはどのページからも起動可、オブジェクト固有は対象オブジェクトのレコードページから起動",
@@ -10015,7 +9633,6 @@
   },
   {
     "id": 440,
-    "url": "claude-generated",
     "question": "Salesforce DXでの開発フローとして正しいものはどれですか。",
     "choices": [
       "Dev Hub→Scratch Org作成→ローカル開発→ソースを組織にpush→テスト→パッケージ化",
@@ -10040,7 +9657,6 @@
   },
   {
     "id": 409,
-    "url": "claude-generated",
     "question": "フローの「レコードを取得」をループの中に置くとどうなりますか。",
     "choices": [
       "SOQL呼び出し回数がループ回数分だけ消費される(ガバナ制限に達するリスク)",
@@ -10065,7 +9681,6 @@
   },
   {
     "id": 232,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice232",
     "question": "アプリケーションビルダーは、既存のカスタムオブジェクトBoxから取引先への参照関係を追加しました。このとき、自動的に作成されるレポートタイプはどれですか。",
     "choices": [
       "Boxが関連する、および関連しない取引先",
@@ -10091,7 +9706,6 @@
   },
   {
     "id": 365,
-    "url": "claude-generated",
     "question": "クイックアクションで起動できる処理を2つ選びなさい。",
     "choices": [
       "新規レコード作成",
@@ -10117,7 +9731,6 @@
   },
   {
     "id": 240,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice240",
     "question": "Cloud Kicks社(CK)は、取引先レコードページで顧客のサポートレベルを管理しています。CK社は、関連する取引先がプラチナレベルの顧客である場合、ケースレコードページにテキスト通知を表示したいと考えています。この要件を満たすために、アプリケーションビルダーはどの方法を使用すべきですか。",
     "choices": [
       "ケースのLightningページにリッチテキストエリアを追加し、取引先のサポートレベルがプラチナの場合にのみ表示されるようにコンポーネントの可視性を設定する。",
@@ -10143,7 +9756,6 @@
   },
   {
     "id": 410,
-    "url": "claude-generated",
     "question": "保存後フローの「非同期パス(Run Asynchronously)」を使う代表的なメリットはどれですか。",
     "choices": [
       "外部API呼び出しなどの長時間処理を別トランザクションに切り出せて、ロック競合や同期制限を回避できる",
@@ -10168,7 +9780,6 @@
   },
   {
     "id": 234,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice234",
     "question": "Cloud Kicks社は、各シューズカタログに対して販売されたシューズのサブスクリプション数を追跡したいと考えています。Subscription__cオブジェクトとShoe__cオブジェクトの間には、すでに主従関係が存在しています。アプリケーションビルダーはどの種類の項目を作成すべきですか。",
     "choices": [
       "積み上げ集計項目",
@@ -10194,7 +9805,6 @@
   },
   {
     "id": 366,
-    "url": "claude-generated",
     "question": "オブジェクト固有のクイックアクションを画面に表示するには何が必要ですか。",
     "choices": [
       "対象オブジェクトのページレイアウトに「Salesforce Mobile および Lightning Experience のアクション」セクションでアクションを追加する",
@@ -10219,7 +9829,6 @@
   },
   {
     "id": 411,
-    "url": "claude-generated",
     "question": "フォールトパスを明示的に設定しなかった場合、エラー発生時にユーザーは何を見ますか。",
     "choices": [
       "デフォルトのエラーメッセージ画面(管理者宛にメール通知も飛ぶ)",
@@ -10244,7 +9853,6 @@
   },
   {
     "id": 243,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice243",
     "question": "アプリケーションビルダーがオブジェクト固有の[レコードを作成]カスタムアクションを定義する際に利用できるオプションはどれですか。2つ選びなさい。",
     "choices": [
       "ターゲットオブジェクトの項目値を事前に定義する。",
@@ -10271,7 +9879,6 @@
   },
   {
     "id": 236,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice236",
     "question": "営業チームは毎朝、マーケティングチームから約800件のリードリストを受け取ります。マーケティングチームは、これらのリードがすでにパイプラインに存在するかどうかを把握していないため、毎朝リスト全体を送信しています。重複を防ぎながら、これらのリードをSalesforceにインポートするには、どのツールを使用すべきですか。",
     "choices": [
       "Dataloader.io",
@@ -10297,7 +9904,6 @@
   },
   {
     "id": 367,
-    "url": "claude-generated",
     "question": "「すべての項目を変更」権限を持つユーザーは何ができますか。",
     "choices": [
       "項目レベルセキュリティをバイパスして、参照不可項目も含めて編集できる",
@@ -10322,7 +9928,6 @@
   },
   {
     "id": 412,
-    "url": "claude-generated",
     "question": "フォールトパスから取得できる「$Flow.FaultMessage」変数の用途はどれですか。",
     "choices": [
       "エラーメッセージを取得して画面表示やログに使う",
@@ -10347,7 +9952,6 @@
   },
   {
     "id": 441,
-    "url": "claude-generated",
     "question": "Salesforce CLIで認証を行うコマンドはどれですか。",
     "choices": [
       "sf org login web",
@@ -10372,7 +9976,6 @@
   },
   {
     "id": 251,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice251",
     "question": "DreamHouse Realty社(DR)のブローカーは、Salesforceモバイルアプリをスマートフォンで使用する際に問題を抱えています。取引先責任者レコードの重要な項目をすぐに確認できるようにしたいのですが、画面が小さいため、現在はページをスクロールしなければ情報を確認できません。DR社のアプリケーションビルダーは、Salesforceモバイルアプリでこれらの重要な項目を画面上部に表示するために、どの機能を使用すべきですか。",
     "choices": [
       "コンパクトレイアウト",
@@ -10398,7 +10001,6 @@
   },
   {
     "id": 238,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice238",
     "question": "Universal Containers社のマーケティングチームは、Salesforceに400件のリードをアップロードしたいと考えています。チームは重複レコードの作成を防ぐ必要があります。この要件を満たすために取るべきアクションはどれですか。2つ選びなさい。",
     "choices": [
       "リードの一致ルールと対応する重複ルールを活用し、新規作成される重複リードをブロックする。",
@@ -10425,7 +10027,6 @@
   },
   {
     "id": 368,
-    "url": "claude-generated",
     "question": "「すべてのデータを変更」権限を持つユーザーが取得できる挙動はどれですか。",
     "choices": [
       "OWDをバイパスして全レコードを参照・編集・削除できる",
@@ -10450,7 +10051,6 @@
   },
   {
     "id": 413,
-    "url": "claude-generated",
     "question": "「DMLでフィールドが必須なのに空でエラー」が発生する典型的な対処はどれですか。",
     "choices": [
       "フォールトパスで原因を捕捉し、対象レコードと項目をログ保存する",
@@ -10475,7 +10075,6 @@
   },
   {
     "id": 414,
-    "url": "claude-generated",
     "question": "フローの「割り当て」要素で式エラー(例：null参照)が発生した時、フォールトパスは発火しますか。",
     "choices": [
       "はい、割り当て要素もエラーパスを持ち、式エラーで発火する",
@@ -10500,7 +10099,6 @@
   },
   {
     "id": 369,
-    "url": "claude-generated",
     "question": "「APIの有効化」権限の役割はどれですか。",
     "choices": [
       "ユーザーがREST/SOAP APIでSalesforceに接続できるようにする",
@@ -10525,7 +10123,6 @@
   },
   {
     "id": 248,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice248",
     "question": "Dream House Realty社は、経験豊富な不動産エージェントと新しい不動産エージェントをペアにするメンターシッププログラムを運営しています。各経験豊富な不動産エージェントは1人または複数の新しい不動産エージェントを指導することができ、新しい不動産エージェントは1人の特定の経験豊富な不動産エージェントのもとで試用期間中に働く必要があります。この要件を満たすために、アプリケーションビルダーはどのリレーションを設定すべきですか。",
     "choices": [
       "多対多関係",
@@ -10551,7 +10148,6 @@
   },
   {
     "id": 253,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice253",
     "question": "Cloud Kicks社は、商談の承認プロセスを実装しています。$50,000を超える商談は、[成立 (Closed Won)]とマークされる前に、マネージャーの承認が必要です。Salesforceモバイルアプリで、マネージャーが承認リクエストに対応するために利用できる配信方法はどれですか。2つ選びなさい。",
     "choices": [
       "ホーム画面",
@@ -10578,7 +10174,6 @@
   },
   {
     "id": 442,
-    "url": "claude-generated",
     "question": "Scratch Org の主な特徴を2つ選びなさい。",
     "choices": [
       "短命の使い捨て組織",
@@ -10604,7 +10199,6 @@
   },
   {
     "id": 415,
-    "url": "claude-generated",
     "question": "フローのPause要素で「リソース時間ベース(Resource-Based Time)」とは何ですか。",
     "choices": [
       "特定の日付/時刻項目を基準に、その前後N日で待機する",
@@ -10629,7 +10223,6 @@
   },
   {
     "id": 370,
-    "url": "claude-generated",
     "question": "プロファイルのパスワードポリシーで設定できる項目を2つ選びなさい。",
     "choices": [
       "パスワードの有効期間(何日で失効するか)",
@@ -10655,7 +10248,6 @@
   },
   {
     "id": 249,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice249",
     "question": "Universal Containers社は、取引先の設置商品を追跡するために[納入商品]オブジェクトを使用しています。新しく作成された[納入商品在庫]オブジェクトに、納入商品の詳細情報を記録する必要があります。[納入商品]に[納入商品在庫]を関連リストとして表示するには、アプリケーションビルダーはどの方法を取るべきですか。",
     "choices": [
       "[納入商品]に積み上げ集計項目を作成し、[納入商品在庫]の関連リストを[納入商品]のページレイアウトに追加する。",
@@ -10681,7 +10273,6 @@
   },
   {
     "id": 257,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice257",
     "question": "Universal Containers社の業務ユーザーは、商談レコードから直接取引先を更新したいと考えています。業務ユーザーがこれらの編集を行えるようにするために、アプリケーションビルダーは何を作成すべきですか。",
     "choices": [
       "関連レコードコンポーネントを使用した更新レコードアクション",
@@ -10707,7 +10298,6 @@
   },
   {
     "id": 416,
-    "url": "claude-generated",
     "question": "保存後レコードトリガフローの「スケジュール済みパス」と Pause 要素の使い分けとして適切なものはどれですか。",
     "choices": [
       "スケジュール済みパス=保存時から N時間/日後に時刻ベースで実行、Pause=画面/自律フロー内で複雑な待機を表現",
@@ -10732,7 +10322,6 @@
   },
   {
     "id": 371,
-    "url": "claude-generated",
     "question": "Salesforceのパスワードを忘れたユーザーが自分でリセットする機能を有効化するためにはどうしますか。",
     "choices": [
       "プロファイルの「パスワード入力エラー時のユーザーロックアウト」と「パスワード再設定の質問」を構成する",
@@ -10757,7 +10346,6 @@
   },
   {
     "id": 250,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice250",
     "question": "Cloud Kicks社は、[関心]というカスタムオブジェクトを作成し、[取引先]オブジェクトと[取引先関心]という連結オブジェクトを介して関連付けています。[関心]オブジェクトへの参照権限を持たないユーザーが[取引先]および関連する[取引先関心]レコードを参照しようとした場合、どのような影響がありますか。",
     "choices": [
       "ユーザーは、[取引先関心]レコードを表示でき、[関心]レコードに対して参照アクセスを持つ。",
@@ -10784,7 +10372,6 @@
   {
     "id": 417,
     "expFig": "flow-types",
-    "url": "claude-generated",
     "question": "フローでプラットフォームイベント(Platform Event)を待つにはどうしますか。",
     "choices": [
       "Pause要素で「プラットフォームイベント」を選択して条件を設定する",
@@ -10809,7 +10396,6 @@
   },
   {
     "id": 443,
-    "url": "claude-generated",
     "question": "Scratch Orgで本番組織の「形状(機能ライセンス等)」を再現したい場合に使う仕組みはどれですか。",
     "choices": [
       "Org Shape(組織形状)を本番からスナップショットして Scratch Org 定義に使う",
@@ -10834,7 +10420,6 @@
   },
   {
     "id": 259,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice259",
     "question": "Ursa Major Solar社では、Celestial Bodiesカスタムオブジェクトに対して単一のLightningレコードページがあります。ただし、アプリケーションビルダーは特定のLightningコンポーネントをモバイルアプリユーザーのみに制限したいと考えています。この要件を満たすために、Lightningアプリケーションビルダーのどの機能を使用すべきでしょうか。",
     "choices": [
       "Chatterフィード",
@@ -10860,7 +10445,6 @@
   },
   {
     "id": 372,
-    "url": "claude-generated",
     "question": "「ログイン履歴(Login History)」で確認できる情報を2つ選びなさい。",
     "choices": [
       "ログイン元のIPアドレス",
@@ -10886,7 +10470,6 @@
   },
   {
     "id": 418,
-    "url": "claude-generated",
     "question": "フローからカスタムメタデータ型(Custom Metadata Type)を読み込むには何を使いますか。",
     "choices": [
       "「レコードを取得」要素でカスタムメタデータをクエリする",
@@ -10911,7 +10494,6 @@
   },
   {
     "id": 254,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice254",
     "question": "カスタムオブジェクトに新しい項目を作成する予定です。しかし、アプリケーションビルダーはこの項目が既存のカスタムレポートタイプに自動で表示されないようにしたいと考えています。この要件を満たすために、カスタム項目の設定でどのような操作をすべきですか。",
     "choices": [
       "すべてのページレイアウトから新しい項目を削除する。",
@@ -10937,7 +10519,6 @@
   },
   {
     "id": 373,
-    "url": "claude-generated",
     "question": "ログイン履歴の保持期間として正しいものはどれですか。",
     "choices": [
       "過去6ヶ月分",
@@ -10962,7 +10543,6 @@
   },
   {
     "id": 419,
-    "url": "claude-generated",
     "question": "フローで「カスタムメタデータ型を使った設定値」を活用する典型シナリオはどれですか。",
     "choices": [
       "承認しきい値や閾値テーブルをハードコードせずメタデータで持つ",
@@ -10987,7 +10567,6 @@
   },
   {
     "id": 264,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice264",
     "question": "アプリケーションビルダーは、カスタムオブジェクトと10個の項目を作成したいと考えています。1つの場所からオブジェクト、項目、リレーションを迅速に作成するには、どの機能を使用すべきですか。",
     "choices": [
       "スキーマビルダー",
@@ -11013,7 +10592,6 @@
   },
   {
     "id": 263,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice263",
     "question": "DreamHouse Realty社は、住宅の内覧が予定されているときに、Lightningレコードページ上に天気予報マップのコンポーネントを表示したいと考えています。この要件を満たすには、アプリケーションビルダーはどのように対応すべきですか。",
     "choices": [
       "コンポーネントの表示を設定",
@@ -11039,7 +10617,6 @@
   },
   {
     "id": 420,
-    "url": "claude-generated",
     "question": "カスタムメタデータ型でフローの設定値を更新した場合、リリースの扱いはどうなりますか。",
     "choices": [
       "パッケージ/変更セットで本番環境にデプロイできる",
@@ -11064,7 +10641,6 @@
   },
   {
     "id": 374,
-    "url": "claude-generated",
     "question": "Setup Audit Trail(設定変更履歴)で確認できる情報はどれですか。",
     "choices": [
       "過去180日間の設定変更操作(誰が・何を・いつ)",
@@ -11089,7 +10665,6 @@
   },
   {
     "id": 267,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice267",
     "question": "数式項目が積み上げ集計項目から参照できなくなる要因として適切なものはどれですか。2つ選びなさい。",
     "choices": [
       "数式項目で参照されている項目を更新する、オブジェクトをまたぐワークフロー",
@@ -11116,7 +10691,6 @@
   },
   {
     "id": 444,
-    "url": "claude-generated",
     "question": "本番リリース前の標準的な検証フローとして適切なものはどれですか。",
     "choices": [
       "Developer Sandbox→Partial/Full Sandbox→本番、で段階的に検証する",
@@ -11141,7 +10715,6 @@
   },
   {
     "id": 265,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice265",
     "question": "アプリケーションビルダーが、既存のアプリケーションを編集してユーティリティバーにコンポーネントを追加するには、どこで行えますか。",
     "choices": [
       "アプリケーションメニュー",
@@ -11167,7 +10740,6 @@
   },
   {
     "id": 421,
-    "url": "claude-generated",
     "question": "リードの「割り当てルール(Assignment Rule)」が起動する典型的なタイミングはどれですか。",
     "choices": [
       "リード作成時/更新時に条件で所有者を自動決定する",
@@ -11192,7 +10764,6 @@
   },
   {
     "id": 375,
-    "url": "claude-generated",
     "question": "180日を超えてSetup Audit Trailを保管したい場合の対応として正しいものはどれですか。",
     "choices": [
       "定期的にCSVをダウンロードして組織外に保管する",
@@ -11217,7 +10788,6 @@
   },
   {
     "id": 268,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice268",
     "question": "Cloud Kicks社の営業マネージャーは、営業チームが名刺から得た情報を手作業で入力する時間を減らし、現場での営業活動にもっと時間を割けるようにしたいと考えています。この目的を達成しつつ、データ品質を損なわないために、アプリケーションビルダーはどのように対応すべきですか。",
     "choices": [
       "データ入力を自動化するAppExchange上のデータ強化製品を調査・評価する。",
@@ -11243,7 +10813,6 @@
   },
   {
     "id": 422,
-    "url": "claude-generated",
     "question": "ケースの「エスカレーションルール(Escalation Rule)」と「割り当てルール」の違いはどれですか。",
     "choices": [
       "エスカレーションは時間経過で対応されない場合に再割当/通知、割り当ては作成時の所有者決定",
@@ -11268,7 +10837,6 @@
   },
   {
     "id": 271,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice271",
     "question": "未管理パッケージの一部であるApplicantオブジェクトに新しい項目が追加されました。採用担当者が「応募者の有無にかかわらずポジションを表示するレポート」を実行したところ、その新しい項目が列として追加できないことに気付きました。この問題をトラブルシューティングするために、アプリケーションビルダーはどのように対応すべきですか。",
     "choices": [
       "項目レベルセキュリティを調整して、レポートタイプに含める。",
@@ -11294,7 +10862,6 @@
   },
   {
     "id": 376,
-    "url": "claude-generated",
     "question": "Salesforceの多要素認証(MFA)の現在の方針として正しいものはどれですか。",
     "choices": [
       "原則、すべてのユーザーに必須(契約条項で義務化)",
@@ -11319,7 +10886,6 @@
   },
   {
     "id": 423,
-    "url": "claude-generated",
     "question": "ケースの自動応答ルール(Auto-Response Rule)が動く典型タイミングはどれですか。",
     "choices": [
       "Web-to-Case/Email-to-Caseでケースが作成された時に初回応答メールを送信",
@@ -11344,7 +10910,6 @@
   },
   {
     "id": 269,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice269",
     "question": "Ursa Major Solar(UMS)社では、新しい従業員の採用を検討しています。UMS社は、同じ応募者(Applicant__c)が複数の募集ポジション(Open_Position__c)に1つの応募書類(Application__c)で応募できるようにしたいと考えています。この要件を満たすために、アプリケーションビルダーはどのような構成を推奨すべきですか。",
     "choices": [
       "Open_Position__cからApplication__cへの主従関係を作成する。",
@@ -11370,7 +10935,6 @@
   },
   {
     "id": 445,
-    "url": "claude-generated",
     "question": "リリース時に「テスト失敗→ロールバック」を機械化したい場合の典型的なアプローチはどれですか。",
     "choices": [
       "CI/CDパイプラインで sf project deploy validate を使い、合格時のみ本番デプロイをトリガする",
@@ -11395,7 +10959,6 @@
   },
   {
     "id": 377,
-    "url": "claude-generated",
     "question": "Salesforceの「セッション設定」で構成できる項目を2つ選びなさい。",
     "choices": [
       "セッションのタイムアウト時間",
@@ -11421,7 +10984,6 @@
   },
   {
     "id": 424,
-    "url": "claude-generated",
     "question": "割り当てルール内のエントリの評価順序として正しいものはどれですか。",
     "choices": [
       "上から順に評価し、最初にマッチした条件で所有者を決定する",
@@ -11446,7 +11008,6 @@
   },
   {
     "id": 272,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice272",
     "question": "Lightning Object Creatorを使用して新しいオブジェクト、その項目、そしてすべてのデータを作成・挿入した後、アプリケーションビルダーはLightningレコードページの設定を行う必要があります。ページレイアウトに含まれるすべての項目を表示するために、Lightningレコードページに追加すべきコンポーネントはどれですか。",
     "choices": [
       "強調表示パネル",
@@ -11472,7 +11033,6 @@
   },
   {
     "id": 270,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice270",
     "question": "AW Computing社では、サービスプラン用にカスタムオブジェクトを使用しています。1つのサービスプランは1人の取引先責任者にのみ関連付ける必要があります。サポートマネージャーは、間違った取引先責任者が関連付けられている場合、担当者がその取引先責任者を変更できないことに気付きました。アプリケーションビルダーは、ユーザーがその項目に正しいアクセス権を持っており、サービスプランに関連する入力規則が存在しないことをすでに確認しています。この問題の原因として考えられるのはどれですか。",
     "choices": [
       "[参照のみ]ラジオボタン(主レコードの「参照」以上のアクセス権を持つユーザーに対して、関連する従レコードの作成、編集、削除を許可します。)が選択されている。",
@@ -11498,7 +11058,6 @@
   },
   {
     "id": 425,
-    "url": "claude-generated",
     "question": "サブフローを呼ぶ親フローと子フローで「変数の受け渡し」を行う方法はどれですか。",
     "choices": [
       "子フローの変数を「入力使用可」「出力使用可」にして親から渡し/受け取る",
@@ -11523,7 +11082,6 @@
   },
   {
     "id": 378,
-    "url": "claude-generated",
     "question": "「高保証(High Assurance)セッションを必要とする」をクリックパス系の機能で設定するとどうなりますか。",
     "choices": [
       "対象機能を使う時にMFAなど追加認証を要求できる",
@@ -11548,7 +11106,6 @@
   },
   {
     "id": 276,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice276",
     "question": "Northern Trail Outfitters(NTO)社は、Salesforceにカスタムオブジェクト「Trail(小道)」および「Park(公園)」を作成して、それぞれの小道と公園を管理しています。NTO社は、ある公園に紐づく小道の総数を、公園レコード上で確認できるようにしたいと考えています。なお、コードは一切書きたくありません。この要件を満たすために、アプリケーションビルダーが実施すべき対応として適切なものはどれですか。2つ選びなさい。",
     "choices": [
       "公園オブジェクトと小道オブジェクトの間に主従関係を作成する。",
@@ -11575,7 +11132,6 @@
   },
   {
     "id": 274,
-    "url": "https://tysonblog-whitelabel.com/salesforce-app-builder-practice274",
     "question": "Ursa Major Solar社のサービスエージェントは、よりコンパクトなケースの表示を求めています。さらに、ケースのLightningレコードページのケースページレイアウトから、関連する取引先責任者および取引先のレコードを編集できるようにしたいと考えています。この要件を満たすために、アプリケーションビルダーが使用すべきコンポーネントはどれですか。2つ選びなさい。",
     "choices": [
       "パス",
@@ -11602,7 +11158,6 @@
   },
   {
     "id": 426,
-    "url": "claude-generated",
     "question": "親フローからサブフローを呼ぶ際、トランザクションは新規になりますか。",
     "choices": [
       "ならない。同じトランザクションで実行され、ガバナ制限は親と合算される",
