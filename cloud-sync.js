@@ -623,7 +623,8 @@
   function showOverlay() { if (elOverlay) elOverlay.classList.add('show'); }
   function hideOverlay() { if (elOverlay) elOverlay.classList.remove('show'); }
   // 未承認/停止中の利用者を全面ロック（state: 'pending'|'blocked'|'error'）
-  // info.reqName = 既に申請済みの名前（あれば入力欄に復元）
+  // info.reqName = 入力欄に復元する名前 / info.applied = すでに利用申請済み（req あり）
+  // info.expired = 休眠（30日アクセスなし）で承認が失効した状態
   function showLock(state, info) {
     if (!elLock) return;
     showChatFab(false); // 未承認/停止中はチャットを出さない
@@ -649,6 +650,10 @@
     } else if (state === 'adminonly') {
       if (t) t.textContent = '🔒 この資格は管理者専用です';
       if (s) s.innerHTML = 'この資格は現在、管理者のみご利用いただけます。<br>ホームに戻って他の資格をご利用ください。';
+    } else if (info.expired && !info.applied) {
+      // 30日以上アクセスがなく承認が失効した状態（まだ再申請していない）
+      if (t) t.textContent = '⏳ 利用承認が失効しました';
+      if (s) s.innerHTML = INACTIVE_DAYS + '日以上ご利用がなかったため、利用承認が解除されました。<br>下のフォームにお名前を入れて、もう一度「利用を申請」してください（学習の進捗は残っています）。';
     } else {
       if (t) t.textContent = '⏳ 承認待ちです';
       if (s) s.innerHTML = '下のフォームにお名前を入れて「利用を申請」してください。<br>管理者の承認後にご利用いただけます（承認されたら「再確認」）。';
@@ -658,7 +663,7 @@
       // 申請済みの名前 > ログインID から復元（ユーザーは上書き可）
       if (!nameIn.value) nameIn.value = info.reqName || currentName || '';
       if (lockMsg) {
-        if (info.reqName) { lockMsg.textContent = '申請済みです（内容を更新して再申請もできます）。'; lockMsg.className = 'sfqc-msg ok'; }
+        if (info.applied) { lockMsg.textContent = '申請済みです（内容を更新して再申請もできます）。'; lockMsg.className = 'sfqc-msg ok'; }
         else { lockMsg.textContent = ''; lockMsg.className = 'sfqc-msg'; }
       }
     }
@@ -904,6 +909,64 @@
     auth.signOut();
   }
 
+  /* ---------------- 休眠アカウントの承認失効（30日アクセスなし） ----------------
+     ・承認済み（access==='approved'）でも 30日以上アクセスがなければ、ログイン時に
+       自分で access を 'pending' に戻し（Firestore ルールで本人に許可済み）、そのまま
+       ログアウトする。次のログインで承認待ちロック＝再申請が必要になる。
+     ・進捗（stores）は消さない。管理者が再承認すればそのまま続けられる。
+     ・起点は lastSeen（在席ハートビート）・lastLogin・approvedAt（管理者が承認した日時）の
+       最も新しいもの。ログインしたまま毎日使っている人（Auth セッションは無期限持続）を
+       誤って失効させないため lastLogin だけでは判定せず、また承認直後の再失効を防ぐため
+       approvedAt も起点に含める（＝再承認で30日の猶予がリセットされる）。
+     ・管理者は対象外。管理者ビューの「🧹 承認を一括解除」でまとめて棚卸しもできる。 */
+  var INACTIVE_DAYS = 30;                          // これ以上アクセスがないと承認が失効する
+  var INACTIVE_MS = INACTIVE_DAYS * 86400000;
+  var expiredNotice = false;                       // 失効ログアウト直後にログインフォームへ出す案内
+
+  function lastActiveAt(data) {
+    if (!data) return 0;
+    return Math.max(data.lastSeen || 0, data.lastLogin || 0, data.approvedAt || 0);
+  }
+  // 承認を失効させるべきか（純粋関数・テストから検証する）
+  function accessExpired(data, now) {
+    if (!data || data.access !== 'approved') return false; // 承認済みだけが対象
+    var t = lastActiveAt(data);
+    if (!t) return false;                                  // 記録なし＝起点が無いので失効させない
+    return (now - t) > INACTIVE_MS;
+  }
+  function inactiveDaysOf(data, now) {
+    var t = lastActiveAt(data);
+    return t ? Math.floor((now - t) / 86400000) : 0;
+  }
+  // 失効させる本体：本人 doc を pending に戻し（req も消して「新しい申請」にする）→ ログアウト
+  function expireOwnAccess(uid, data) {
+    var now = Date.now();
+    try { localStorage.removeItem('sfq_access_' + uid); } catch (e) {}
+    expiredNotice = true;
+    var payload = { access: 'pending', expiredAt: now, expiredDays: inactiveDaysOf(data, now), updated: now };
+    try { payload.req = firebase.firestore.FieldValue.delete(); } catch (e) {}
+    // 書込を待ってからサインアウトする（サインアウト後は自 doc に書けない）
+    db.collection(COLLECTION).doc(uid).set(payload, { merge: true })
+      .catch(function () {})
+      .then(function () { doLogout(); });
+  }
+
+  // 承認済みをローカルに控える（オフライン再ログイン用）。日時つき＝オフラインのまま
+  // 無期限に素通りできないようにする（旧形式の素の 'approved' は後方互換で素通し）。
+  function cacheApproval(uid) {
+    try { localStorage.setItem('sfq_access_' + uid, JSON.stringify({ v: 'approved', ts: Date.now() })); } catch (e) {}
+  }
+  function cachedApprovalValid(uid, now) {
+    var raw = '';
+    try { raw = localStorage.getItem('sfq_access_' + uid) || ''; } catch (e) {}
+    if (!raw) return false;
+    if (raw === 'approved') return true;      // 旧形式（日時なし）。次のオンラインログインで新形式へ移行される
+    try {
+      var o = JSON.parse(raw);
+      return !!(o && o.v === 'approved' && o.ts && (now - o.ts) <= INACTIVE_MS);
+    } catch (e) { return false; }
+  }
+
   /* ---------------- ログイン後の同期 ---------------- */
   function docPayload(store) { return { store: store, name: currentName, email: currentEmail, updated: Date.now() }; }
 
@@ -942,6 +1005,8 @@
       // 未設定/'pending'/'blocked' は全面ロック（承認は管理者ビューから付与）。
       if (!isAdmin) {
         var acc = data.access;
+        // 30日以上アクセスがない承認済みアカウントは、承認を失効させてログアウト（次回は再申請が必要）
+        if (accessExpired(data, Date.now())) { expireOwnAccess(user.uid, data); return; }
         if (acc !== 'approved') {
           try { localStorage.removeItem('sfq_access_' + user.uid); } catch (e) {}
           // 初回サインアップ等で doc が無ければ「承認待ち」doc を作り、管理者ビューに可視化する
@@ -951,7 +1016,8 @@
               { merge: true }
             ).catch(function () {});
           }
-          showLock(acc || 'pending', { reqName: (data.req && data.req.name) || data.name || '' });
+          showLock(acc || 'pending', { reqName: (data.req && data.req.name) || data.name || '',
+            applied: !!(data.req && data.req.ts), expired: !!data.expiredAt });
           return;
         }
       }
@@ -968,7 +1034,7 @@
       publishProgress(data); // 資格のロック解除（直列進行）の状態を全ページへ通知
       if (isAdmin) watchAdminPending(); // 管理者は承認待ち件数をライブ購読で通知バッジに反映
       // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
-      try { localStorage.setItem('sfq_access_' + user.uid, 'approved'); } catch (e) {}
+      cacheApproval(user.uid);
       recordLogin(user.uid, data);     // ログイン日時を記録（履歴つき）
       startPresence(user.uid);         // 在席ハートビート開始（管理者が「現在オンライン」を確認できる）
       if (!isAdmin) startUserMessaging(user.uid); // お知らせ＋チャットのリアルタイム購読を開始
@@ -1010,11 +1076,8 @@
       // 管理者専用の資格は、オフラインでも管理者以外をロックする。
       if (window.SFQ_ADMIN_ONLY && !isAdmin) { showLock('adminonly'); return; }
       // 読込失敗（オフライン等）。承認を確認できないので、過去に承認済みの端末のみ素通しする。
-      if (!isAdmin) {
-        var cached = '';
-        try { cached = localStorage.getItem('sfq_access_' + user.uid) || ''; } catch (e) {}
-        if (cached !== 'approved') { showLock('error'); return; }
-      }
+      // ただし控えが古い（30日以上オンラインで確認できていない）場合は素通しさせない。
+      if (!isAdmin && !cachedApprovalValid(user.uid, Date.now())) { showLock('error'); return; }
       hideLock();
       if (!window.__setStore) { setStatus(''); hideOverlay(); return; }
       hideOverlay(); setStatus('オフライン'); toastSafe('オフライン: ローカルの進捗を表示中');
@@ -1160,7 +1223,8 @@
     stopUserMessaging();  // チャット/お知らせ購読を停止
     stopPresence();       // 在席ハートビートを停止
     showLock(acc === 'blocked' ? 'blocked' : (acc || 'pending'),
-      { reqName: (d && d.req && d.req.name) || (d && d.name) || currentName || '' });
+      { reqName: (d && d.req && d.req.name) || (d && d.name) || currentName || '',
+        applied: !!(d && d.req && d.req.ts), expired: !!(d && d.expiredAt) });
   }
 
   // 承認済みの一般利用者がログインしたら、リアルタイム購読とチャットUIを開始
@@ -2354,7 +2418,7 @@
       }
       // 管理者自身の doc から操作ログを取り込む（#4）
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2532,11 +2596,13 @@
         ? '<span class="sfqc-acc-access block">🚫 停止中</span>'
         : '<span class="sfqc-acc-access pend">⏳ 承認待ち</span>';
       var reqChip = '<span class="sfqc-acc-access pend">📝 申請 ' + esc(fmtDate(u.req.ts)) + '</span>';
+      // 休眠で承認が失効した「再申請」かを区別できるようにする（新規登録の申請と混ざらないように）
+      var expChip = u.expiredAt ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効 ' + esc(fmtDate(u.expiredAt)) + '</span>' : '';
       var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
       return '<div class="sfqc-app-item' + (isBlock ? ' is-block' : '') + '">' +
           '<div class="sfqc-app-info">' +
             '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-app-sel" data-sel-uid="' + esc(u.uid) + '"' + (adminSelApps[u.uid] ? ' checked' : '') + '></label>' +
-            '<span class="sfqc-app-name">👤 ' + esc(u.name) + '</span>' + emailLabel + stateChip + reqChip +
+            '<span class="sfqc-app-name">👤 ' + esc(u.name) + '</span>' + emailLabel + stateChip + reqChip + expChip +
           '</div>' +
           '<div class="sfqc-app-actions">' +
             '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>' +
@@ -2608,6 +2674,15 @@
           sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
         '</div>';
 
+      // 休眠アカウントの棚卸し（30日以上アクセスがない承認済み → 承認を一括解除＝再申請が必要に）
+      var nowSweep = Date.now();
+      var expTargets = adminUsers.filter(function (u) { return accessExpired(u, nowSweep); });
+      html += '<div class="sfqc-app-bulk">' +
+          '<span style="font-weight:700">🧹 休眠アカウント</span>' +
+          '<span class="sfqc-count">' + INACTIVE_DAYS + '日以上アクセスなしの承認済み ' + expTargets.length + ' 人</span>' +
+          '<button class="sfqc-mini sfqc-danger" id="sfqc-expire-sweep"' + (expTargets.length ? '' : ' disabled') + '>承認を一括解除</button>' +
+        '</div>';
+
       // 一括操作バー（表示中ユーザーから選択 → 一括お知らせ/停止/リセット）
       var present = {}; list.forEach(function (u) { present[u.uid] = 1; });
       Object.keys(adminSelUsers).forEach(function (k) { if (!present[k]) delete adminSelUsers[k]; });
@@ -2640,6 +2715,9 @@
           : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
         // メンテ中も利用できるアカウント（maintOk）。チップで可視化し、ボタンでその場で切替
         var maintChip = u.maintOk ? '<span class="sfqc-acc-access maint" title="メンテナンス中でもログイン・学習できます">🛠 メンテ中も可</span>' : '';
+        // 休眠で承認が失効したアカウント（再承認するまで pending）
+        var expChipRow = (u.expiredAt && u.access !== 'approved')
+          ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効</span>' : '';
         var maintBtn = '<button class="sfqc-act-maint' + (u.maintOk ? ' on' : '') + '" data-mok-uid="' + esc(u.uid) + '" data-mok-name="' + esc(u.name) + '" data-mok-state="' + (u.maintOk ? '0' : '1') + '" title="メンテナンス中でも利用できるアカウントにする">' +
           (u.maintOk ? '🛠 メンテ許可を解除' : '🛠 メンテ許可') + '</button>';
         html +=
@@ -2647,7 +2725,7 @@
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + maintChip +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + maintChip + expChipRow +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
@@ -2787,6 +2865,7 @@
     var uselAll = document.getElementById('sfqc-usel-all');
     if (uselAll) uselAll.addEventListener('change', function () { adminSelUsers = {}; if (uselAll.checked) filterSortUsers().forEach(function (u) { adminSelUsers[u.uid] = 1; }); renderAdmin(); });
     var ubN = document.getElementById('sfqc-ubulk-notice'); if (ubN) ubN.addEventListener('click', bulkNotice);
+    var exSweep = document.getElementById('sfqc-expire-sweep'); if (exSweep) exSweep.addEventListener('click', sweepExpiredAccess);
     var ubMOn = document.getElementById('sfqc-ubulk-mokon'); if (ubMOn) ubMOn.addEventListener('click', function () { bulkMaintOk(true); });
     var ubMOff = document.getElementById('sfqc-ubulk-mokoff'); if (ubMOff) ubMOff.addEventListener('click', function () { bulkMaintOk(false); });
     var ubB = document.getElementById('sfqc-ubulk-block'); if (ubB) ubB.addEventListener('click', bulkBlock);
@@ -2953,9 +3032,13 @@
     if (!isAdmin || !db) return;
     var verb = state === 'approved' ? '承認' : '停止';
     if (!confirm('「' + name + '」を' + verb + 'します。よろしいですか？')) return;
-    db.collection(COLLECTION).doc(uid).set({ access: state, updated: Date.now() }, { merge: true })
+    var ts = Date.now();
+    // 承認時は approvedAt を打つ＝休眠失効（30日）の猶予がここから数え直しになる
+    var rec = { access: state, updated: ts };
+    if (state === 'approved') rec.approvedAt = ts;
+    db.collection(COLLECTION).doc(uid).set(rec, { merge: true })
       .then(function () {
-        var u = findUser(uid); if (u) { u.access = state; u.updated = Date.now(); }
+        var u = findUser(uid); if (u) { u.access = state; u.updated = ts; if (state === 'approved') u.approvedAt = ts; }
         if (state === 'approved') delete adminSelApps[uid];
         logAdmin(verb, name);
         toastSafe('「' + name + '」を' + verb + 'しました'); renderAdmin();
@@ -2979,6 +3062,35 @@
         toastSafe('「' + name + '」のメンテ許可を' + (on ? '付与' : '解除') + 'しました'); renderAdmin();
       })
       .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
+  }
+
+  // 休眠（30日以上アクセスなし）の承認済みアカウントを、まとめて承認待ちに戻す。
+  // 本人の次回ログイン時は「承認が失効しました」ロック＝再申請が必要。進捗は消さない。
+  function sweepExpiredAccess() {
+    if (!isAdmin || !db) return;
+    var now = Date.now();
+    var targets = adminUsers.filter(function (u) { return accessExpired(u, now); });
+    if (!targets.length) { toastSafe('対象のアカウントはありません'); return; }
+    if (!confirm(INACTIVE_DAYS + '日以上アクセスがない承認済みアカウント ' + targets.length + ' 件の承認を解除します。\n' +
+      '本人は次回ログイン時に再申請が必要になります（学習の進捗は消えません）。よろしいですか？')) return;
+    var ps = targets.map(function (u) {
+      var payload = { access: 'pending', expiredAt: now, expiredDays: inactiveDaysOf(u, now), updated: now };
+      try { payload.req = firebase.firestore.FieldValue.delete(); } catch (e) {}
+      return db.collection(COLLECTION).doc(u.uid).set(payload, { merge: true })
+        .then(function () { return { uid: u.uid, ok: true }; })
+        .catch(function () { return { uid: u.uid, ok: false }; });
+    });
+    Promise.all(ps).then(function (res) {
+      var done = 0;
+      res.forEach(function (r) {
+        if (!r.ok) return;
+        done++;
+        var u = findUser(r.uid); if (u) { u.access = 'pending'; u.req = null; u.updated = now; }
+      });
+      logAdmin('休眠承認解除', done + '件');
+      toastSafe(done + ' 件の承認を解除しました' + (done < targets.length ? '（' + (targets.length - done) + '件失敗）' : ''));
+      renderAdmin();
+    });
   }
 
   // 選択したアカウントのメンテ許可をまとめて付与/解除
@@ -3007,7 +3119,7 @@
     if (!confirm(uids.length + ' 件の申請をまとめて承認します。よろしいですか？')) return;
     var ts = Date.now();
     var ps = uids.map(function (uid) {
-      return db.collection(COLLECTION).doc(uid).set({ access: 'approved', updated: ts }, { merge: true })
+      return db.collection(COLLECTION).doc(uid).set({ access: 'approved', approvedAt: ts, updated: ts }, { merge: true })
         .then(function () { return { uid: uid, ok: true }; })
         .catch(function () { return { uid: uid, ok: false }; });
     });
@@ -3016,7 +3128,7 @@
       res.forEach(function (r) {
         if (!r.ok) return;
         done++;
-        var u = findUser(r.uid); if (u) { u.access = 'approved'; u.updated = ts; }
+        var u = findUser(r.uid); if (u) { u.access = 'approved'; u.approvedAt = ts; u.updated = ts; }
         delete adminSelApps[r.uid];
       });
       logAdmin('一括承認', done + '件');
@@ -3425,7 +3537,9 @@
 
   // テスト用フック：純粋な集計ロジックだけを公開（本番動作には影響しない）。tools/test-cloud-sync.js が参照。
   window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
-    maintStatus: maintStatus, maintShouldBlock: maintShouldBlock };
+    maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
+    accessExpired: accessExpired, inactiveDaysOf: inactiveDaysOf, cacheApproval: cacheApproval, cachedApprovalValid: cachedApprovalValid,
+    INACTIVE_DAYS: INACTIVE_DAYS };
 
   /* ---------------- 初期化 ---------------- */
   function init() {
@@ -3489,6 +3603,11 @@
         stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
         hideLock(); showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
+        // 休眠による自動ログアウト直後は、なぜ切れたのかをログインフォームに出す
+        if (expiredNotice) {
+          expiredNotice = false;
+          setMsg(INACTIVE_DAYS + '日以上ご利用がなかったため、自動的にログアウトしました。ログインのうえ、もう一度利用を申請してください。', 'err');
+        }
       }
     });
   }
