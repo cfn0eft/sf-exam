@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=131"></script>
+<script src="maintenance.js?v=132"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -168,11 +168,11 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
 <!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有。renderCerts より先に読む -->
-<script src="progression.js?v=131"></script>
+<script src="progression.js?v=132"></script>
 <script>
   /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
      meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
-     現状: sf-admin=437問/94用語, app-builder=445問/83用語, developer=499問/75用語, agentforce=138問/26用語, sales-cloud=200問/67用語, service-cloud=120問/75用語, experience-cloud=132問/63用語, sharing-visibility=81問/54用語。 */
+     現状: sf-admin=437問/94用語, app-builder=445問/83用語, developer=499問/75用語, agentforce=138問/26用語, sales-cloud=200問/67用語, service-cloud=120問/75用語, experience-cloud=131問/63用語, sharing-visibility=81問/54用語。 */
   const CERTS = [
     { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
       desc:'2025/12改訂の公式8分野（Agentforce 8%対応）。学習・試験・SRS・教科書・用語帳・統計をフル搭載。',
@@ -194,7 +194,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
       meta:['120問','75用語','合格67%'] },
     { slug:'experience-cloud', storageKey:'sfqexp_v1', icon:'🌐', title:'Salesforce 認定<br>Experience Cloud コンサルタント',
       desc:'サイト構築・共有・ゲストユーザー・認証/SSO・ブランド・テンプレートを網羅。公式8分野に対応。',
-      meta:['132問','63用語','合格62%'] },
+      meta:['131問','63用語','合格62%'] },
     { slug:'sharing-visibility', storageKey:'sfqsva_v1', icon:'🔐', title:'Salesforce 認定<br>Sharing and Visibility アーキテクト',
       desc:'権限・OWD・ロール階層・共有ルール・レコードアクセス・大規模データの可視性設計を網羅。公式4分野に対応。',
       meta:['81問','54用語','合格67%'] },
@@ -271,8 +271,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=131"></script>
-<script src="cloud-sync.js?v=131"></script>
+<script src="changelog.js?v=132"></script>
+<script src="cloud-sync.js?v=132"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
