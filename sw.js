@@ -2,25 +2,32 @@
  * 役割: アプリシェルをキャッシュしてオフラインでも学習できるようにする。
  * 方針:
  *   - HTML(ナビゲーション) = ネットワーク優先（最新の ?v= を必ず読ませる。オフライン時のみキャッシュ）
- *   - その他の同一オリジン(?v= 付きJS/CSS・データJSON 等) = キャッシュ優先＋裏で更新
+ *   - その他の同一オリジン(?v= 付きJS/CSS) = キャッシュ優先＋裏で更新（アプリシェルキャッシュ）
+ *   - 学習データ(data/*.json) = キャッシュ優先＋裏で更新（別キャッシュ DATA_CACHE。訪問した資格だけ貯まる）
  *   - クロスオリジン(Firebase等) = ネットワーク優先
- * 更新時は CACHE のバージョン文字列を上げると古いキャッシュを破棄する。
+ * 更新時は CACHE のバージョン文字列を上げると古いシェルキャッシュを破棄する。
+ * ※ 学習データは DATA_CACHE に分離しているため、CACHE 版数を上げても消えない（＝毎リリースで
+ *    全資格ぶんを再ダウンロードさせない）。訪問した資格の questions.json 等はランタイムで貯まる。
  * ※ HTML をネットワーク優先にすることで、ハードリロード(Ctrl+Shift+R)なしで更新が反映される。
  */
-const CACHE = 'sf-exam-v132';
+const CACHE = 'sf-exam-v131';
+const DATA_CACHE = 'sf-exam-data-v1';
+// プリキャッシュはアプリシェル（LP＋各資格シェル＋JS/CSS/icons）のみに限定する。
+// 学習データ(questions.json 等・全8資格で生6MB超)はここに含めない＝LPを開いただけのユーザーに
+// まだ選んでもいない資格のデータを配らない。各資格ページを開いた時に fetch ハンドラが DATA_CACHE へ貯める。
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=130',
+  './maintenance.js?v=131',
   './manifest.webmanifest',
-  './quiz.css?v=130',
-  './quiz-engine.js?v=130',
-  './changelog.js?v=130',
-  './figures.js?v=130',
-  './progression.js?v=130',
+  './quiz.css?v=131',
+  './quiz-engine.js?v=131',
+  './changelog.js?v=131',
+  './figures.js?v=131',
+  './progression.js?v=131',
   './firebase-config.js',
-  './cloud-sync.js?v=130',
+  './cloud-sync.js?v=131',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   './certifications/developer/index.html',
@@ -29,65 +36,6 @@ const SHELL = [
   './certifications/service-cloud/index.html',
   './certifications/experience-cloud/index.html',
   './certifications/sharing-visibility/index.html',
-  // 未公開（いずれ公開）の資格はプリキャッシュしない＝全員には配布しない。公開時に RELEASED 入りと合わせてここへ追加する。
-  // 2026-07-30: 全8資格が RELEASED 入り＝未公開の資格は無し。
-  // 学習データ：初回訪問からオフラインで学べるようプリキャッシュ（allSettledなので失敗してもinstallは継続）
-  './certifications/sf-admin/data/questions.json',
-  './certifications/sf-admin/data/domains.json',
-  './certifications/sf-admin/data/vocab.json',
-  './certifications/sf-admin/data/navmap.json',
-  './certifications/sf-admin/data/cram.json',
-  './certifications/sf-admin/data/compare.json',
-  './certifications/sf-admin/data/lessons.json',
-  './certifications/app-builder/data/questions.json',
-  './certifications/app-builder/data/domains.json',
-  './certifications/app-builder/data/vocab.json',
-  './certifications/app-builder/data/navmap.json',
-  './certifications/app-builder/data/cram.json',
-  './certifications/app-builder/data/compare.json',
-  './certifications/app-builder/data/lessons.json',
-  './certifications/developer/data/questions.json',
-  './certifications/developer/data/domains.json',
-  './certifications/developer/data/vocab.json',
-  './certifications/developer/data/navmap.json',
-  './certifications/developer/data/cram.json',
-  './certifications/developer/data/compare.json',
-  './certifications/developer/data/lessons.json',
-  './certifications/agentforce/data/questions.json',
-  './certifications/agentforce/data/domains.json',
-  './certifications/agentforce/data/vocab.json',
-  './certifications/agentforce/data/navmap.json',
-  './certifications/agentforce/data/cram.json',
-  './certifications/agentforce/data/compare.json',
-  './certifications/agentforce/data/lessons.json',
-  './certifications/sales-cloud/data/questions.json',
-  './certifications/sales-cloud/data/domains.json',
-  './certifications/sales-cloud/data/vocab.json',
-  './certifications/sales-cloud/data/navmap.json',
-  './certifications/sales-cloud/data/cram.json',
-  './certifications/sales-cloud/data/compare.json',
-  './certifications/sales-cloud/data/lessons.json',
-  './certifications/service-cloud/data/questions.json',
-  './certifications/service-cloud/data/domains.json',
-  './certifications/service-cloud/data/vocab.json',
-  './certifications/service-cloud/data/navmap.json',
-  './certifications/service-cloud/data/cram.json',
-  './certifications/service-cloud/data/compare.json',
-  './certifications/service-cloud/data/lessons.json',
-  './certifications/experience-cloud/data/questions.json',
-  './certifications/experience-cloud/data/domains.json',
-  './certifications/experience-cloud/data/vocab.json',
-  './certifications/experience-cloud/data/navmap.json',
-  './certifications/experience-cloud/data/cram.json',
-  './certifications/experience-cloud/data/compare.json',
-  './certifications/experience-cloud/data/lessons.json',
-  './certifications/sharing-visibility/data/questions.json',
-  './certifications/sharing-visibility/data/domains.json',
-  './certifications/sharing-visibility/data/vocab.json',
-  './certifications/sharing-visibility/data/navmap.json',
-  './certifications/sharing-visibility/data/cram.json',
-  './certifications/sharing-visibility/data/compare.json',
-  './certifications/sharing-visibility/data/lessons.json',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -103,10 +51,26 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      // シェルの旧版だけ破棄。DATA_CACHE（学習データ）は版数バンプでも残す。
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== DATA_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
+
+// 学習データ(data/*.json)か判定
+function isData(url) {
+  return url.origin === self.location.origin && /\/data\/[^/]+\.json$/.test(url.pathname);
+}
+
+// 同一オリジン用: 正常応答のみキャッシュ（404/5xx やエラーページを永続化しない）
+function cacheable(r) {
+  return r && r.ok && (r.type === 'basic' || r.type === 'cors' || r.type === 'default');
+}
+// クロスオリジン用: Firebase CDN の <script src> は no-cors の opaque 応答(status0/ok=false)になるが、
+// これをキャッシュしないとオフラインで SDK を読めなくなる。opaque は中身を検査できないので許容する。
+function cacheableCross(r) {
+  return r && (r.ok || r.type === 'opaque');
+}
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
@@ -118,8 +82,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) {
     e.respondWith(
       fetch(req).then((r) => {
-        const cp = r.clone();
-        caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {});
+        if (cacheableCross(r)) { const cp = r.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {})); }
         return r;
       }).catch(() => caches.match(req))
     );
@@ -135,23 +98,44 @@ self.addEventListener('fetch', (e) => {
   if (isHTML) {
     e.respondWith(
       fetch(req).then((r) => {
-        const cp = r.clone();
-        caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {});
+        if (cacheable(r)) { const cp = r.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {})); }
         return r;
-      }).catch(() => caches.match(req).then((c) => c || caches.match('./index.html')))
+      }).catch(() => caches.match(req).then((c) => {
+        if (c) return c;
+        // 末尾スラッシュのディレクトリURL(/certifications/xxx/)は index.html を明示的に探す
+        if (url.pathname.endsWith('/')) {
+          return caches.match(url.pathname + 'index.html').then((ci) => ci || caches.match('./index.html'));
+        }
+        return caches.match('./index.html');
+      }))
     );
     return;
   }
 
-  // その他の同一オリジン(?v= 付きJS/CSS・データJSON 等): キャッシュ優先＋裏でネットワーク更新（stale-while-revalidate）
+  // 学習データ(data/*.json): キャッシュ優先＋裏で更新。別キャッシュ DATA_CACHE に貯める。
+  if (isData(url)) {
+    e.respondWith(
+      caches.match(req).then((cached) => {
+        const net = fetch(req).then((r) => {
+          if (cacheable(r)) { const cp = r.clone(); caches.open(DATA_CACHE).then((c) => c.put(req, cp)).catch(() => {}); }
+          return r;
+        }).catch(() => cached);
+        if (cached) { e.waitUntil(net.catch(() => {})); return cached; }
+        return net;
+      })
+    );
+    return;
+  }
+
+  // その他の同一オリジン(?v= 付きJS/CSS 等): キャッシュ優先＋裏でネットワーク更新（stale-while-revalidate）
   e.respondWith(
     caches.match(req).then((cached) => {
       const net = fetch(req).then((r) => {
-        const cp = r.clone();
-        caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {});
+        if (cacheable(r)) { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {}); }
         return r;
       }).catch(() => cached);
-      return cached || net;
+      if (cached) { e.waitUntil(net.catch(() => {})); return cached; }
+      return net;
     })
   );
 });
