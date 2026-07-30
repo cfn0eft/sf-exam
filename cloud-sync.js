@@ -712,6 +712,9 @@
           lockMsg.textContent = isBlocked ? '解除の申請を受け付けました。管理者の対応をお待ちください。' : '申請を受け付けました。承認をお待ちください。';
           lockMsg.className = 'sfqc-msg ok';
         }
+        // 管理者へメールで知らせる（未設定なら何もしない）
+        notifyAdminMail(isBlocked ? 'unblock' : 'apply',
+          { name: nm, id: idOf(currentEmail), at: fmtDateTime(Date.now()) });
       })
       .catch(function (e) {
         if (lockMsg) { lockMsg.textContent = '申請に失敗しました（' + (e && e.code || 'error') + '）。'; lockMsg.className = 'sfqc-msg err'; }
@@ -796,6 +799,8 @@
 
   /* ---------------- ヘルパー ---------------- */
   function idToEmail(id) { var c = sanitizeId(id); return c ? c + '@' + LOGIN_DOMAIN : ''; }
+  // 内部メール（ID@sfquiz.local）から表示用のログインIDへ戻す
+  function idOf(email) { return String(email || '').split('@')[0]; }
   function configOk() {
     return !!(CFG && CFG.apiKey && CFG.apiKey.indexOf('ここに') < 0 &&
               CFG.apiKey !== 'YOUR_API_KEY' && CFG.projectId && CFG.projectId.indexOf('ここに') < 0);
@@ -929,6 +934,90 @@
     if (window.__setStore) window.__setStore(emptyStore());
     if (window.__refreshUI) window.__refreshUI();
     auth.signOut();
+  }
+
+  /* ---------------- 管理者へのメール通知（EmailJS・任意機能） ----------------
+     利用申請・解除申請・利用者からのDM が発生したとき、管理者のメールアドレスへ
+     お知らせを送る。送信は「その操作をした利用者のブラウザ」から EmailJS の REST API を
+     直接叩く（サーバ不要・Firebase の Blaze プラン不要）。
+
+     設定は firebase-config.js の window.SFQ_EMAILJS。**未設定なら何もしない**ので、
+     設定しないままでも既存の動作には一切影響しない。
+     ・宛先（To）は EmailJS 側のテンプレートに固定する＝この JS からは宛先を指定できない
+       （公開キーが露出しても、他人へメールを送る踏み台にはならない）。
+     ・送信は fire-and-forget。失敗しても申請やDMの保存には影響させない。
+     ・注意: DM は本文の抜粋（120字）を通知に含めるため、その文字列は EmailJS を経由する。
+     取りこぼし（回線や拡張機能でブロックされた1件）が問題になる場合は、この関数の中身だけを
+     Cloud Functions / GitHub Actions 方式に差し替えればよい（呼び出し側は変えない）。 */
+  var MAIL_KINDS = {
+    apply:   '📩 利用申請がありました',
+    unblock: '📩 停止解除の申請がありました',
+    dm:      '💬 利用者からメッセージが届きました',
+    test:    '✅ メール通知のテストです'
+  };
+  var MAIL_THROTTLE_MS = 5 * 60000;   // 同じ種類の通知は5分に1回まで（DMの連投でメールが溢れないように）
+
+  function mailCfg() {
+    var c = window.SFQ_EMAILJS;
+    if (!c || !c.serviceId || !c.templateId || !c.publicKey) return null;  // 未設定＝無効
+    return c;
+  }
+  function mailEnabled() { return !!mailCfg(); }
+  // 送信間隔の制御（端末ローカル。申請系は頻度が低いので throttle しない）
+  function mailThrottled(kind, now) {
+    if (kind !== 'dm') return false;
+    var k = 'sfq_mailed_' + kind, prev = 0;
+    try { prev = parseInt(localStorage.getItem(k) || '0', 10) || 0; } catch (e) {}
+    if (prev && (now - prev) < MAIL_THROTTLE_MS) return true;
+    try { localStorage.setItem(k, String(now)); } catch (e) {}
+    return false;
+  }
+  // EmailJS へ渡す template_params を組む（純粋関数・テストから検証する）
+  function mailParams(kind, info) {
+    info = info || {};
+    return {
+      subject: MAIL_KINDS[kind] || 'お知らせ',
+      kind: kind,
+      user_name: info.name || '(名前未入力)',
+      user_id: info.id || '',
+      detail: info.detail || '',
+      at: info.at || '',
+      site: (typeof location !== 'undefined' && location.origin) ? location.origin : ''
+    };
+  }
+  // cb(ok, err) は任意（管理者ビューの「テスト送信」だけが結果を受け取る）。
+  // 通常の通知は fire-and-forget＝失敗しても利用者の操作は止めない。
+  function notifyAdminMail(kind, info, cb) {
+    var c = mailCfg();
+    if (!c) { if (cb) cb(false, 'メール通知が未設定です（firebase-config.js の SFQ_EMAILJS）'); return; }
+    if (mailThrottled(kind, Date.now())) { if (cb) cb(false, '送信間隔の制限中'); return; }
+    var body = {
+      service_id: c.serviceId, template_id: c.templateId, user_id: c.publicKey,
+      template_params: mailParams(kind, info)
+    };
+    try {
+      fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      }).then(function (r) {
+        if (!cb) return;
+        if (r.ok) { cb(true, ''); return; }
+        r.text().then(function (tx) { cb(false, 'HTTP ' + r.status + ' ' + (tx || '').slice(0, 100)); },
+                      function () { cb(false, 'HTTP ' + r.status); });
+      }).catch(function (e) { if (cb) cb(false, (e && e.message) || '送信できませんでした'); });
+    } catch (e) { if (cb) cb(false, (e && e.message) || '送信できませんでした'); }
+  }
+  // 管理者ビューからのテスト送信（設定が正しいか確かめる用）
+  function sendMailTest() {
+    if (!isAdmin) return;
+    toastSafe('テストメールを送信中…');
+    notifyAdminMail('test', {
+      name: currentName || 'admin', id: idOf(currentEmail), at: fmtDateTime(Date.now()),
+      detail: 'これはメール通知の設定確認用のテスト送信です。'
+    }, function (ok, err) {
+      if (ok) toastSafe('送信しました。受信箱を確認してください');
+      else alert('テスト送信に失敗しました:\n' + err + '\n\nEmailJS の Service ID / Template ID / Public Key と、' +
+        'Allowed origins の設定を確認してください。');
+    });
   }
 
   /* ---------------- 休眠アカウントの承認失効（30日アクセスなし） ----------------
@@ -1515,6 +1604,8 @@
       return ref.set({ chat: [rec] }, { merge: true });
     }).then(function () {
       if (chatMode === 'admin') { try { logAdmin('チャット', (chatName || '') + '：' + rec.msg.slice(0, 20)); } catch (e) {} }
+      // 利用者からのDMは管理者へメールで知らせる（未設定なら何もしない・5分に1通まで）
+      else notifyAdminMail('dm', { name: currentName || '', id: idOf(currentEmail), detail: rec.msg.slice(0, 120), at: fmtDateTime(rec.ts) });
     }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
   }
 
@@ -1764,7 +1855,19 @@
     html += '<div class="sfqc-bc-meta"><span>🛠 メンテ中も利用可：<b>' + exempts.length + '</b> 人' +
         (exempts.length ? '（' + esc(exempts.slice(0, 5).map(function (u) { return u.name || u.uid; }).join('・')) + (exempts.length > 5 ? ' ほか' : '') + '）' : '') +
       '</span><span style="color:#64748b">ユーザータブの「🛠 メンテ許可」で切替</span></div>';
-    return html + '</div>';
+    return html + '</div>' + mailSectionHTML();
+  }
+  // 管理者：メール通知の状態＋テスト送信（ダッシュボードタブ）
+  function mailSectionHTML() {
+    var on = mailEnabled();
+    return '<div class="sfqc-sec">✉️ メール通知</div><div class="sfqc-bc-card">' +
+      '<div class="sfqc-bc-meta">' +
+        '<span style="font-weight:700;color:' + (on ? '#15803d' : '#b45309') + '">' + (on ? '🟢 有効' : '🟡 未設定') + '</span>' +
+        '<button class="sfqc-mini" id="sfqc-mailtest"' + (on ? '' : ' disabled') + '>✉️ テスト送信</button>' +
+      '</div>' +
+      '<div class="sfqc-bc-msg">利用申請・停止解除の申請・利用者からのDM を管理者のメールへ知らせます。' +
+        (on ? 'DMの通知は5分に1通までにまとめます。' : '有効にするには <b>firebase-config.js</b> の <b>SFQ_EMAILJS</b>（Service ID / Template ID / Public Key）を設定してください（手順はそのファイルのコメント）。') +
+      '</div></div>';
   }
   function toggleFullStop() {
     if (!isAdmin || !db) return;
@@ -2826,6 +2929,7 @@
     var maintQ = document.getElementById('sfqc-maint-queue'); if (maintQ) maintQ.addEventListener('click', openQueueList);
     var maintEditR = document.getElementById('sfqc-maint-edit-recur'); if (maintEditR) maintEditR.addEventListener('click', openRecurringEditor);
     var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
+    var mailTestBtn = document.getElementById('sfqc-mailtest'); if (mailTestBtn) mailTestBtn.addEventListener('click', sendMailTest);
     // メッセージタブ：DM絞り込み
     var dmIn = document.getElementById('sfqc-dm-q');
     if (dmIn) {
@@ -3633,6 +3737,7 @@
     maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
     accessExpired: accessExpired, inactiveDaysOf: inactiveDaysOf, cacheApproval: cacheApproval, cachedApprovalValid: cachedApprovalValid,
     accessStateOf: accessStateOf, isApplicant: isApplicant,
+    mailEnabled: mailEnabled, mailParams: mailParams, mailThrottled: mailThrottled, idOf: idOf,
     INACTIVE_DAYS: INACTIVE_DAYS };
 
   /* ---------------- 初期化 ---------------- */

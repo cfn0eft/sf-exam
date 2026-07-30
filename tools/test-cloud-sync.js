@@ -232,5 +232,38 @@ t('isApplicant: 通知バッジの母数は「未承認かつ申請あり」', (
   ok(!T.isApplicant({ access: 'approved', req: { name: 'A', ts: NOW } }), '承認済みは対象外');
 });
 
+/* ---- 管理者へのメール通知（EmailJS・任意機能） ---- */
+t('mailEnabled: 設定が空なら無効（既存動作に影響しない）', () => {
+  sandbox.window.SFQ_EMAILJS = { serviceId: '', templateId: '', publicKey: '' };
+  eq(T.mailEnabled(), false, '空は無効');
+  sandbox.window.SFQ_EMAILJS = { serviceId: 's', templateId: 't', publicKey: '' };
+  eq(T.mailEnabled(), false, '1つでも欠けたら無効');
+  sandbox.window.SFQ_EMAILJS = { serviceId: 's', templateId: 't', publicKey: 'k' };
+  eq(T.mailEnabled(), true, '3つ揃えば有効');
+});
+
+t('mailParams: 種類ごとの件名と本文パラメータ', () => {
+  const p = T.mailParams('apply', { name: '山田太郎', id: 'taro', at: '2026-07-30 10:00' });
+  eq(p.subject, '📩 利用申請がありました');
+  eq(p.user_name, '山田太郎'); eq(p.user_id, 'taro'); eq(p.at, '2026-07-30 10:00');
+  eq(T.mailParams('unblock', {}).subject, '📩 停止解除の申請がありました');
+  eq(T.mailParams('dm', {}).subject, '💬 利用者からメッセージが届きました');
+  eq(T.mailParams('apply', {}).user_name, '(名前未入力)', '名前が無いときの既定');
+  eq(T.mailParams('unknown', {}).subject, 'お知らせ', '未知の種類でも落ちない');
+});
+
+t('mailThrottled: DMは5分に1通・申請は毎回通す', () => {
+  storage.delete('sfq_mailed_dm');
+  eq(T.mailThrottled('apply', Date.now()), false, '申請は throttle しない');
+  eq(T.mailThrottled('apply', Date.now()), false, '申請は連続でも通す');
+  eq(T.mailThrottled('dm', Date.now()), false, 'DMの1通目は通る');
+  eq(T.mailThrottled('dm', Date.now()), true, '直後の2通目は抑止');
+});
+
+t('idOf: 内部メールから表示用ログインIDを取り出す', () => {
+  eq(T.idOf('taro@sfquiz.local'), 'taro');
+  eq(T.idOf(''), ''); eq(T.idOf(null), '');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
