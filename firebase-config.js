@@ -33,6 +33,52 @@ window.SFQ_FIREBASE_CONFIG = {
   measurementId: "G-PQSXG5S47Z"
 };
 
+/* =============================================================
+   メール通知（任意・EmailJS）
+   -------------------------------------------------------------
+   利用申請 / 停止解除の申請 / 利用者からのDM があったとき、管理者の
+   メールアドレスに知らせます。**空のままなら何も送りません**（既存の
+   動作には影響しません）。サーバ不要・Firebase の Blaze プラン不要。
+
+   ▼ 設定手順（5分・無料枠 200通/月）
+    1. https://www.emailjs.com/ で登録（Googleアカウントでログイン可）
+    2. 「Email Services」→ Add New Service → Gmail を選び、受信したい
+       Gmail アカウント（nero.donatu55@gmail.com）を接続
+       → 表示される Service ID をコピー
+    3. 「Email Templates」→ Create New Template
+       ・To Email … nero.donatu55@gmail.com を**直接ここに書く**
+         （宛先はテンプレート側に固定します。下のキーが漏れても他人へ
+           メールを送る踏み台にはなりません）
+       ・Subject … {{subject}}
+       ・Content … 例:
+             {{subject}}
+             お名前: {{user_name}}
+             ログインID: {{user_id}}
+             日時: {{at}}
+             内容: {{detail}}
+             サイト: {{site}}
+       → 保存して Template ID をコピー
+    4. 「Account」→ General → API Keys の **Public Key** をコピー
+       （Private Key は使いません。ブラウザから送るため公開キーだけでOK）
+    5. 下の3つに貼り付けて commit → push
+    6. 任意: EmailJS の Account → Security で「Allowed origins」に
+       https://cfn0eft.github.io を入れておくと、他サイトからの悪用を防げます
+    7. 貼り付けたあとは `node tools/bump-version.js` を1回実行してから push
+       （このファイルは Service Worker がキャッシュするため。実行しない場合は
+         2回目の読み込みから反映されます）
+    8. 反映後、管理者ビューのダッシュボードに「✉️ メール通知 🟢有効」が出ます。
+       「✉️ テスト送信」で実際に届くか確認できます（失敗時は理由を表示）
+
+   ※ DM の通知には本文の先頭120字を含めます（EmailJS を経由します）。
+     含めたくない場合は cloud-sync.js の notifyAdminMail の呼び出しから
+     detail を外してください。
+   ============================================================= */
+window.SFQ_EMAILJS = {
+  serviceId:  "",   // 例: "service_xxxxxxx"
+  templateId: "",   // 例: "template_xxxxxxx"
+  publicKey:  ""    // 例: "AbCdEfGhIjKlMnOp"（Public Key。秘密鍵ではありません）
+};
+
 /* ---- 以下は通常は編集不要です ---- */
 
 // 「ID＋パスワード」方式のため、ID を内部的にメールアドレスへ変換します。
