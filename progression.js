@@ -216,9 +216,11 @@
       actions.innerHTML = homeBtn + reloadBtn;
     } else if (st === 'acquired') {
       var d = (progress().acquired || {})[slug] || '';
+      // d は store.acquiredDate 由来（バックアップ取込・クラウド同期で外部注入されうる）ため必ずエスケープする
+      var dEsc = String(d).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
       ic.textContent = '🎓';
       title.textContent = '取得済みのため学習はロック中です';
-      sub.innerHTML = (d ? '取得日: ' + d + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。';
+      sub.innerHTML = (d ? '取得日: ' + dEsc + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。';
       actions.innerHTML = homeBtn + reloadBtn;
     } else { // locked
       ic.textContent = '🔒';
