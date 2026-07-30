@@ -282,13 +282,28 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     return res;
   }
 
-  var subDone = false;
+  var subDone = false, exemptChecked = false;
   function initFirebase() {
     if (!window.firebase || !window.SFQ_FIREBASE_CONFIG) return;
     try {
       if (!firebase.apps.length) firebase.initializeApp(window.SFQ_FIREBASE_CONFIG);
       var db = firebase.firestore();
-      firebase.auth().onAuthStateChanged(function () { subscribe(db); });
+      firebase.auth().onAuthStateChanged(function (user) { checkExempt(db, user); subscribe(db); });
+    } catch (e) {}
+  }
+
+  /* ---- メンテ中でも利用を許可されたアカウント（progress/{uid}.maintOk）はトップへ戻す ----
+     管理者がメンテ開始後に許可を付けた場合など、この画面に来てしまった人を通すための救済。
+     ※ maintenance.js の MANUAL_MAINTENANCE（手動オーバーライド）中は index.html 側で再転送される
+        （Firebase を見ないため）。その場合はプレビュー合言葉 ?preview= を使う。 */
+  function checkExempt(db, user) {
+    if (exemptChecked || !user) return;
+    exemptChecked = true;
+    try {
+      db.collection('progress').doc(user.uid).get().then(function (doc) {
+        var d = (doc && doc.exists && doc.data()) || {};
+        if (d.maintOk) location.replace('index.html');
+      }).catch(function () {});
     } catch (e) {}
   }
   function subscribe(db) {
