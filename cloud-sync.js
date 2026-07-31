@@ -1013,24 +1013,36 @@
       fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
       }).then(function (r) {
-        if (!cb) return;
-        if (r.ok) { cb(true, ''); return; }
-        r.text().then(function (tx) { cb(false, 'HTTP ' + r.status + ' ' + (tx || '').slice(0, 100)); },
-                      function () { cb(false, 'HTTP ' + r.status); });
-      }).catch(function (e) { if (cb) cb(false, (e && e.message) || '送信できませんでした'); });
+        if (r.ok) { try { console.info('[mail] sent ok:', kind); } catch (e) {} if (cb) cb(true, ''); return; }
+        // 失敗は cb の有無に関わらずコンソールに残す（本番の apply/dm は cb 無し＝従来は無音で失敗していた）
+        r.text().then(function (tx) { try { console.warn('[mail] send failed:', kind, 'HTTP', r.status, (tx || '').slice(0, 200)); } catch (e) {} if (cb) cb(false, 'HTTP ' + r.status + ' ' + (tx || '').slice(0, 100)); },
+                      function () { try { console.warn('[mail] send failed:', kind, 'HTTP', r.status); } catch (e) {} if (cb) cb(false, 'HTTP ' + r.status); });
+      }).catch(function (e) { try { console.warn('[mail] send error:', kind, (e && e.message) || e); } catch (_) {} if (cb) cb(false, (e && e.message) || '送信できませんでした'); });
     } catch (e) { if (cb) cb(false, (e && e.message) || '送信できませんでした'); }
   }
   // 管理者ビューからのテスト送信（設定が正しいか確かめる用）
   function sendMailTest() {
-    if (!isAdmin) return;
+    if (!isAdmin) { alert('管理者アカウントでログインしてから実行してください。'); return; }
     toastSafe('テストメールを送信中…');
+    var origin = (typeof location !== 'undefined' && location.origin) ? location.origin : '';
     notifyAdminMail('test', {
       name: currentName || 'admin', id: idOf(currentEmail), at: fmtDateTime(Date.now()),
       detail: 'これはメール通知の設定確認用のテスト送信です。'
     }, function (ok, err) {
-      if (ok) toastSafe('送信しました。受信箱を確認してください');
-      else alert('テスト送信に失敗しました:\n' + err + '\n\nEmailJS の Service ID / Template ID / Public Key と、' +
-        'Allowed origins の設定を確認してください。');
+      // 結果は必ず alert で出す（LP＝ゲートウェイには toast が無く、成功時に無反応に見えるのを防ぐ）
+      if (ok) {
+        alert('EmailJS はテスト送信を受け付けました（HTTP OK）。\n\n' +
+          '数分待っても届かない場合、原因は EmailJS 側か受信側です。次を確認してください:\n' +
+          '① Gmail の「迷惑メール」「プロモーション」「すべてのメール」を確認\n' +
+          '② EmailJS ダッシュボード → Email History で送信履歴と配信状況を確認\n' +
+          '③ Email Services で Gmail 連携が Connected か（期限切れで切れると「以前は届いたのに来ない」状態になります。再接続してください）\n' +
+          '④ テンプレートの「To Email」が管理者アドレスになっているか');
+      } else {
+        alert('テスト送信に失敗しました:\n' + err + '\n\n確認してください:\n' +
+          '・EmailJS の Service ID / Template ID / Public Key\n' +
+          '・Allowed origins に ' + (origin || 'このサイトのURL') + ' を許可\n' +
+          '・無料枠（200通/月）を超過していないか（EmailJS の Usage）');
+      }
     });
   }
 
