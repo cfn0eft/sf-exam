@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{await loadCertData();}catch(e){console.error('cert data load failed',e);}
   applyCertText();
   try{buildKwFilter();}catch(e){}
+  try{restoreFilters();}catch(e){}   // 前回の出題設定を復元してから絞り込みを適用
   try{applyFilters();}catch(e){}
   try{homeStats();}catch(e){}
   try{renderTextbook();}catch(e){}
@@ -271,10 +272,36 @@ function buildKwFilter(){
   allQ.forEach(q=>(q.keywords||[]).forEach(k=>c[k]=(c[k]||0)+1));
   const sorted=Object.entries(c).sort((a,b)=>b[1]-a[1]);
   const sel=document.getElementById('f-kw');
+  const prev=sel?sel.value:'';   // 再構築で選択が消えないよう現在値を控える（クラウド同期のUI再描画対策）
   sel.innerHTML='<option value="">🏷️ キーワードで絞り込み（全て）</option>';
   sorted.forEach(([k,n])=>{
     const o=document.createElement('option');o.value=k;o.textContent=k+'（'+n+'問）';sel.appendChild(o);
   });
+  if(prev&&Array.prototype.some.call(sel.options,o=>o.value===prev))sel.value=prev;
+}
+// 出題設定（絞り込みチップ）の端末保存＝毎回リセットされないようにする。
+// localStorage '<storageKey>_filters'（端末ローカル・資格ごと。sfq_src / sfq_cshuf と同じ方針＝クラウド同期しない端末設定）。
+// フリーワード検索(f-text)はその場限りの検索なので保存しない（古い検索が復活して0問になる事故を避ける）。
+function filtersKey(){return SKEY+'_filters';}
+function saveFilters(){
+  try{
+    const chk=id=>{const e=document.getElementById(id);return e?!!e.checked:false;};
+    const kwEl=document.getElementById('f-kw');
+    const st={nw:chk('f-new'),wr:chk('f-wrong'),lc:chk('f-lc'),bm:chk('f-bm'),mu:chk('f-multi'),sh:chk('f-shuf'),
+      kw:kwEl?(kwEl.value||''):'',d:{1:!!fDiffSet[1],2:!!fDiffSet[2],3:!!fDiffSet[3]}};
+    localStorage.setItem(filtersKey(),JSON.stringify(st));
+  }catch(e){}
+}
+function restoreFilters(){
+  try{
+    const raw=localStorage.getItem(filtersKey());if(!raw)return;
+    const st=JSON.parse(raw);if(!st||typeof st!=='object')return;
+    const setChk=(id,v)=>{const e=document.getElementById(id);if(e&&typeof v==='boolean')e.checked=v;};
+    setChk('f-new',st.nw);setChk('f-wrong',st.wr);setChk('f-lc',st.lc);setChk('f-bm',st.bm);setChk('f-multi',st.mu);setChk('f-shuf',st.sh);
+    if(st.d)fDiffSet={1:!!st.d[1],2:!!st.d[2],3:!!st.d[3]};
+    const kwEl=document.getElementById('f-kw');   // 保存したキーワードが今の資格の選択肢にある時だけ復元
+    if(kwEl&&st.kw&&Array.prototype.some.call(kwEl.options,o=>o.value===st.kw))kwEl.value=st.kw;
+  }catch(e){}
 }
 
 function applyFilters(){
@@ -326,6 +353,7 @@ function applyFilters(){
   [1,2,3].forEach(function(n){var el=document.getElementById('d'+n+'-count');if(el){var cc=scoped.filter(function(q){return qDiff(q)===n;}).length;el.textContent=cc?' '+cc:'';}});
   const el=document.getElementById('f-count');
   if(el)el.textContent='対象: '+filtQ.length+' 問';
+  saveFilters();   // 出題設定を端末に保存（次回もこの絞り込みで開ける）
 }
 // 出典フィルタの切替（HTMLのchipから呼ばれる）。出典は複数選択でき、各 chip がトグル。'all' で選択解除＝すべて
 function setSrcFilter(v){

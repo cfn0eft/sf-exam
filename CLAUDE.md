@@ -167,7 +167,7 @@ store = {
 
 新フィールドを足すときは `loadStore` 既定・`__setStore` 正規化・`resetAll` の3箇所すべてに追加すること。
 
-クラウド同期しない**ローカル専用キー**（localStorage 直）: `<storageKey>_examstate`（試験の中断・再開）／`<storageKey>_recentexam`（模試の重複回避＝直近2回の出題ID）／`sfq_news_seen`・`sfq_onboarded`・`sfq_fontsize` など端末設定。
+クラウド同期しない**ローカル専用キー**（localStorage 直）: `<storageKey>_examstate`（試験の中断・再開）／`<storageKey>_recentexam`（模試の重複回避＝直近2回の出題ID）／`<storageKey>_filters`（出題設定＝絞り込みチップの記憶。`saveFilters`/`restoreFilters`。フリーワード検索は保存しない）／`sfq_news_seen`・`sfq_onboarded`・`sfq_fontsize`・`sfq_src`・`sfq_cshuf` など端末設定。
 
 ---
 
