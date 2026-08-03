@@ -277,5 +277,28 @@ t('gotoTerm: 用語名から学習ガイドの該当用語へジャンプ（完�
   eq(run('document.getElementById("tb-search").value'), '___存在しない用語___', '検索ボックスへフォールバック');
 });
 
+t('saveFilters/restoreFilters: 出題設定（絞り込み）が端末に保存・復元される', () => {
+  // 設定をセット（チェックボックス＋難易度）
+  byId('f-new').checked = true;
+  byId('f-wrong').checked = false;
+  byId('f-multi').checked = true;
+  run('fDiffSet={1:false,2:true,3:false}');
+  run('saveFilters()');
+  const raw = run("localStorage.getItem(SKEY+'_filters')");
+  ok(raw && raw.indexOf('"nw":true') >= 0, '保存JSONに未回答フラグ');
+  ok(raw.indexOf('"mu":true') >= 0, '保存JSONに複数選択フラグ');
+  // リセットしてから復元
+  byId('f-new').checked = false;
+  byId('f-multi').checked = false;
+  run('fDiffSet={1:false,2:false,3:false}');
+  run('restoreFilters()');
+  eq(byId('f-new').checked, true, '未回答チェックが復元');
+  eq(byId('f-multi').checked, true, '複数選択チェックが復元');
+  eq(byId('f-wrong').checked, false, '間違えたチェックは false のまま');
+  eq(run('fDiffSet[2]'), true, '難易度(標準)が復元');
+  eq(run('fDiffSet[1]'), false, '難易度(易)は false のまま');
+  run("localStorage.removeItem(SKEY+'_filters')");
+});
+
 console.log('\n' + (fail ? '❌ 失敗 ' + fail + '件 / 成功 ' + pass + '件' : '✅ 全 ' + pass + '件成功'));
 process.exit(fail ? 1 : 0);
