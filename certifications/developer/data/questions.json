@@ -11105,16 +11105,18 @@
       "組織にユニットテストコードカバレッジを追加する"
     ],
     "answers": [
-      "デプロイメント後に1回のトランザクションで15,000の非アクティブなアカウントを削除する",
+      "Apex クラスを定期的に実行するようにスケジュールする",
       "すべての連絡先を更新するバッチApexクラスを実行する"
     ],
-    "explanation": "2つ選びます。匿名 Apex はその場限りのコードをクラス/トリガーを作らず実行する用途です。\n□ B：正解。デプロイ後に 1 トランザクションで大量レコードを削除するような臨時操作に使えます。\n□ C：正解。バッチ Apex クラスをその場で起動する用途に使えます。\n□ A：不正解。定期スケジュール実行は System.schedule であり匿名実行のユースケースではありません。\n□ D：不正解。テストカバレッジの付与はテストクラスで行います。\n参考：匿名 Apex",
+    "explanation": "2つ選びます。匿名 Apex は、クラスやトリガーを組織に保存せずにその場でコードを実行する仕組みです。「一度きりの管理操作」と「既存の非同期処理の起動」が典型的な用途です。\n\n□ Apex クラスを定期的に実行するようにスケジュールする：正解です。匿名ブロックから System.schedule('Job', '0 0 * * * ?', new MyScheduler()); を実行すれば、[Apex 定期実行ジョブ] の画面では指定できない cron 式（毎時・分単位など）でもスケジュール登録できます。\n\n□ すべての連絡先を更新するバッチApexクラスを実行する：正解です。Database.executeBatch(new MyBatch()); を匿名実行してバッチ Apex をその場で起動するのは定番の使い方です。\n\n□ デプロイメント後に1回のトランザクションで15,000の非アクティブなアカウントを削除する：不正解です。1 トランザクションで DML 処理できるレコードは 10,000 件までなので、15,000 件をまとめて削除しようとすると「Too many DML rows: 10001」で失敗します。この規模の削除はバッチ Apex に分割させます。\n\n□ 組織にユニットテストコードカバレッジを追加する：不正解です。匿名実行したコードはコードカバー率に一切算入されません。カバー率が増えるのは @isTest のテストクラスを実行したときだけです。\n\n参考：匿名ブロックの実行とガバナ制限（DML 10,000 行）",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm",
     "multi": true,
     "domain": "deploy",
     "keywords": [
       "匿名Apex",
-      "一括処理",
+      "スケジュール",
+      "バッチApex",
+      "ガバナ制限",
       "開発ツール"
     ],
     "source": "jpnshiken",
@@ -11354,11 +11356,11 @@
       "List"
     ],
     "answers": [
-      "Double",
       "sObject",
+      "Integer",
       "List"
     ],
-    "explanation": "3つ選びます。SOQL が返せる型は次のとおりです。\n□ A：正解。集計（COUNT/SUM 等）は Double などの数値を返せます。\n□ C：正解。単一/複数レコードを sObject として返せます。\n□ E：正解。結果は List<sObject> として返せます。\n□ B：不正解。Long を直接は返しません。\n□ D：不正解。集計は Integer でなく Double を返します。\n参考：SOQL の戻り値型",
+    "explanation": "3つ選びます。Apex に埋め込んだ SOQL クエリの結果は「sObject のリスト」「単一の sObject」「count() の件数を受け取る Integer」の3つに代入できます。\n\n□ sObject：正解です。Account a = [SELECT Id FROM Account LIMIT 1]; のように、1 件だけ返るクエリは単一の sObject に代入できます（0 件または複数件だと実行時例外になります）。\n\n□ Integer：正解です。Integer n = [SELECT COUNT() FROM Account]; のように、COUNT() の件数は Integer で受け取ります。\n\n□ List：正解です。List<Account> accs = [SELECT Id FROM Account]; が最も一般的な受け取り方で、0 件のときは空のリストが返ります。\n\n□ Double：不正解です。COUNT() が返すのは Integer です。SUM() や AVG() を使う集計クエリは代入先が AggregateResult（の List）になり、数値は get() で取り出して Decimal などにキャストします。\n\n□ Long：不正解です。SOQL の結果を Long に直接代入することはできません。\n\n参考：SOQL クエリ結果の代入先（list of sObjects / single sObject / Integer）",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql.htm",
     "multi": true,
     "domain": "logic",
@@ -11366,6 +11368,7 @@
       "SOQL",
       "戻り値",
       "sObject",
+      "Integer",
       "List"
     ],
     "source": "jpnshiken",
@@ -11898,20 +11901,22 @@
     "choices": [
       "Test Data Factory クラスを使う。",
       "@isTest(SeeAllData=true) アノテーションを使う。",
-      "Test.loadData() メソッドを使う。",
+      "静的リソースの CSV を Test.loadData() で読み込む。",
       "クラス宣言で without sharing を使う。"
     ],
     "answers": [
       "Test Data Factory クラスを使う。",
-      "@isTest(SeeAllData=true) アノテーションを使う。"
+      "静的リソースの CSV を Test.loadData() で読み込む。"
     ],
-    "explanation": "2つ選びます。テスト実行時にレコードを利用可能にする方法です。\n□ A：正解。Test Data Factory クラスでテストレコードをプログラム生成できます（推奨）。\n□ B：正解。@isTest(SeeAllData=true) で既存データを参照できます（依存が生じるため非推奨）。\n□ C：不正解。Test.loadData は静的リソースからの読込で、設問の選択肢表記は誤りです。\n□ D：不正解。without sharing はデータ可用性の解ではありません。\n参考：テストデータの準備",
+    "explanation": "2つ選びます。Apex テストは既定で組織のデータが見えないため、テスト自身がレコードを用意する必要があります。「テストが自分でデータを作る」方法が正解です。\n\n□ Test Data Factory クラスを使う。：正解です。@isTest を付けた共通のデータ生成クラスを用意すれば、価格設定構造のレコードをプログラムで組み立てられ、どの組織・どのサンドボックスでも同じ前提でテストできます。\n\n□ 静的リソースの CSV を Test.loadData() で読み込む。：正解です。500 件を超える複雑なデータは CSV にして静的リソースに登録し、Test.loadData(Pricing_Structure__c.sObjectType, 'testPricingStructure') で一括投入できます。件数が多くデータ構造が複雑なケースほど有効です。\n\n□ @isTest(SeeAllData=true) アノテーションを使う。：不正解です。組織にある既存データを「見える」ようにするだけで、レコードが存在すること自体は保証しません。組織のデータに依存するテストは、データが変わったり別組織へデプロイしたりすると壊れるため公式にも非推奨です。\n\n□ クラス宣言で without sharing を使う。：不正解です。共有ルールを適用するかどうかの指定であり、レコードが存在しない状態を解決するものではありません。\n\n参考：テストデータの用意（Test Data Factory / Test.loadData と静的リソース）",
     "reference_url": "https://developer.salesforce.com/docs/atlas.ja-jp.apexcode.meta/apexcode/apex_testing_best_practices.htm",
     "multi": true,
     "domain": "deploy",
     "keywords": [
       "Test Data Factory",
       "SeeAllData",
+      "Test.loadData",
+      "静的リソース",
       "テストデータ"
     ],
     "source": "jpnshiken",
