@@ -467,6 +467,46 @@ function validateLanding() {
   info('  ' + n + '資格の meta / CERT_CONFIG を実数と照合');
 }
 
+/* ---- 模試が公式ブループリントを再現できるか（在庫の偏りを検出） ----
+ * 模試は domains.json の weight 比で examN 問を抽出する。ある分野の在庫が
+ * 必要数に満たないと、その不足分は他分野へ回るため公式比率が崩れる
+ * （weight は公式準拠で不可侵なので、是正は「その分野の問題を足す」しかない）。
+ * ここでは是正が必要な資格・分野を可視化する。エラーにはしない（データ作業＝人手）。 */
+function validateBlueprint() {
+  info('\n== 模試のブループリント再現性 ==');
+  fs.readdirSync(path.join(ROOT, 'certifications')).forEach((slug) => {
+    const dir = path.join(ROOT, 'certifications', slug, 'data');
+    if (!fs.existsSync(dir)) return;
+    const shellPath = path.join(ROOT, 'certifications', slug, 'index.html');
+    if (!fs.existsSync(shellPath)) return;
+    const cm = fs.readFileSync(shellPath, 'utf8').match(/window\.CERT_CONFIG\s*=\s*(\{[\s\S]*?\n\s*\};)/);
+    if (!cm) return;
+    let cfg = null;
+    try { cfg = new Function('return ' + cm[1].replace(/;\s*$/, ''))(); } catch (e) { return; }
+    const n = (cfg && cfg.examN) || 60;
+    let qs, dom;
+    try { qs = readJSON(path.join(dir, 'questions.json')); dom = readJSON(path.join(dir, 'domains.json')); }
+    catch (e) { return; }
+    const defs = (dom && dom.domains) || [];
+    const totW = defs.reduce((a, d) => a + (d.weight || 0), 0);
+    if (!defs.length || totW <= 0) return;
+    const stock = {};
+    qs.forEach((q) => { stock[q.domain] = (stock[q.domain] || 0) + 1; });
+    const short = [];
+    let missing = 0;
+    defs.forEach((d) => {
+      const want = Math.round(n * (d.weight || 0) / totW);
+      const have = stock[d.code] || 0;
+      if (have < want) { missing += want - have; short.push(d.code + '(必要' + want + '/在庫' + have + ')'); }
+    });
+    // 出題プールが薄いと毎回ほぼ同じ問題になる（＝模試として機能しにくい）
+    const reuse = qs.length ? Math.round((n / qs.length) * 100) : 100;
+    if (missing) warn(slug + ': 分野の在庫不足で公式比率を再現できない … ' + missing + '問不足 ' + short.join(' '));
+    if (reuse >= 60) warn(slug + ': 模試1回で全問題の約' + reuse + '%を消費（' + qs.length + '問中' + n + '問）＝毎回ほぼ同じ出題になる');
+    if (!missing && reuse < 60) info('  ' + slug + ': OK（' + qs.length + '問 / 1回あたり' + reuse + '%）');
+  });
+}
+
 /* ---- 主要 JS の構文チェック ---- */
 function validateSyntax() {
   info('\n== JS 構文 ==');
@@ -509,6 +549,7 @@ validateVersions();
 validateShell();
 validateManifest();
 validateLanding();
+validateBlueprint();
 validateSyntax();
 validateChangelog();
 

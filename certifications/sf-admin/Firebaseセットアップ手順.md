@@ -65,57 +65,28 @@
 
 各ユーザーは **自分の進捗だけ** 読み書きでき、**管理者（admin）だけは全員分を閲覧・管理** できるようにします。
 
-1. Firestore の「**ルール**」タブを開く。
-2. 内容を **すべて下記に置き換え**、「**公開（Publish）**」をクリック。
+> 📄 **ルールの本体はリポジトリ root の [`firestore.rules`](../../firestore.rules) が唯一の出典です。**
+> 以前はこの手順書のコードブロックだけが出典で、変更履歴が追えませんでした。今後はファイルを直して貼り直してください。
 
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
+1. リポジトリ root の **`firestore.rules` を開き、中身をすべてコピー**する。
+2. Firebase コンソール → Firestore の「**ルール**」タブを開く。
+3. 内容を **すべて貼り付けて置き換え**、「**公開（Publish）**」をクリック。
 
-       // 管理者の判定（このメールでログインした人を管理者とみなす）
-       function isAdmin() {
-         return request.auth != null &&
-           request.auth.token.email in [
-             "admin@sfquiz.local"
-           ];
-       }
-
-       match /progress/{uid} {
-         // 読み取り: 本人 または 管理者
-         allow read:  if request.auth != null && (request.auth.uid == uid || isAdmin());
-
-         // 書き込み: 管理者は全権。本人は「自分の access を承認に書き換えられない」制約付きで許可。
-         //  → access（利用承認フラグ）を付与/停止できるのは管理者だけ。本人は進捗や
-         //     フィードバックを保存できるが、access は据え置き or 自分で 'pending' にするだけ可。
-         //  → ただし停止中(blocked)からは 'pending' にも上げられない（自分で停止を解除できない）。
-         //     停止中の人が出す「解除の申請」は access を据え置いて req だけ書くので下の3行目で通る。
-         allow write: if request.auth != null && (
-             isAdmin() ||
-             (request.auth.uid == uid && (
-                 !('access' in request.resource.data) ||                                   // access を含めない通常保存
-                 (request.resource.data.access == 'pending' &&                              // 自分で承認待ちにするのは可
-                    (resource == null || resource.data.access != 'blocked')) ||             //   ただし停止中からは不可
-                 (resource != null && request.resource.data.access == resource.data.access) // 既存の access を維持
-             ))
-         );
-       }
-
-       // 一斉お知らせ（管理者→全利用者）。全ログインユーザーが読め、書けるのは管理者だけ。
-       // ※ 個別お知らせ・チャットは各自の progress/{uid} 内（notices[]/chat[]）に入るため、
-       //   上の progress ルールだけで動作し、ここは「一斉お知らせ」専用。
-       match /broadcast/{doc} {
-         allow read:  if request.auth != null;
-         allow write: if isAdmin();
-       }
-     }
-   }
-   ```
-
-   - これで、本人以外は他人の進捗を読めません。**管理者（`admin@sfquiz.local`）だけは全員分を閲覧・リセット・削除でき、利用承認（access）の付与/停止もできます。**
+   - これで、本人以外は他人の進捗を読めません。**管理者だけが全員分を閲覧・リセット・削除でき、利用承認（access）の付与/停止もできます。**
    - **重要（アクセス承認制）**: `access` フィールドは **管理者しか `'approved'` にできません**。一般ユーザーは自分で承認状態を書き換えられないため、ここを上記ルールにしないと「誰でも自分を承認」できてしまい無意味になります。新規登録者は既定で `'pending'`（承認待ち＝全面ロック）になり、管理者ビューの「✅ 承認」を押すと利用できるようになります。
-   - **停止（blocked）からの自力復帰を防ぐ**: 停止中の人も「解除の申請」を出せますが、その申請は `access` を書き換えず `req` だけ書きます。ルールの `request.resource.data.access == 'pending'` に `resource.data.access != 'blocked'` の条件が付いているのは、**停止中の人が自分で `pending` に戻る（＝停止の印を消して申請待ちの列に並び直す）のを防ぐ**ためです。既存プロジェクトでこの条件が入っていない場合は、上のルールを貼り直してください（アプリ側は新旧どちらのルールでも動きます）。
-   - 管理者IDを `admin` 以外にしたい／複数にしたい場合は、上の `"admin@sfquiz.local"` の行をそのIDのメール（例 `"daiki@sfquiz.local"`）に変更（カンマ区切りで複数可）し、**`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせて**ください。
+   - **停止（blocked）からの自力復帰を防ぐ**: 停止中の人も「解除の申請」を出せますが、その申請は `access` を書き換えず `req` だけ書きます。ルールの `request.resource.data.access == 'pending'` に `resource.data.access != 'blocked'` の条件が付いているのは、**停止中の人が自分で `pending` に戻る（＝停止の印を消して申請待ちの列に並び直す）のを防ぐ**ためです。
+
+### 2026-08-22 版で強化した3点（既存プロジェクトは貼り直し推奨）
+
+| # | 変更 | 何を防ぐか |
+|---|---|---|
+| 1 | **本人の書込をフィールドのホワイトリスト化**（`selfKeys()`） | 本人が `maintOk`（メンテナンス回避）や `approvedAt`（休眠失効の起点）を自分で書けてしまう穴をふさぐ。`notices`／`fbReplies`／`adminLog` も管理者専用に |
+| 2 | **doc の削除を管理者だけに**（`allow delete`） | 停止中（blocked）の人が自分の doc を消して停止を帳消しにし、「承認待ち」の列へ並び直すのを防ぐ |
+| 3 | **管理者判定に uid を追加**（`adminUids()`） | ログインIDは誰でも自由に登録できるため、メールだけの判定だと管理者IDを先に他人に取られると権限ごと奪われる |
+
+> ⚠️ **#3 は手作業がひとつ必要です。** Firebase コンソール → **Authentication → Users** で管理者アカウントの **ユーザー UID** をコピーし、`firestore.rules` の `adminUids()` に貼ってから公開してください。貼り終えたら `adminEmails()` は `[]` にして構いません（uid だけで判定＝乗っ取り不能）。貼るまではメール判定のフォールバックで従来どおり動きます。
+
+   - 管理者IDを `admin` 以外にしたい／複数にしたい場合は、`adminEmails()` の `'admin@sfquiz.local'` をそのIDのメール（例 `'daiki@sfquiz.local'`）に変更（カンマ区切りで複数可）し、**`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせて**ください。
 
 ## ステップ 6: GitHub Pages に反映する
 

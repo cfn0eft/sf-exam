@@ -1671,19 +1671,62 @@ function startExam(opts){
   document.getElementById('e-area').style.display='block';
   goTo('exam');startTimer();renderEQ();
 }
+/* 模試の分野別出題数を決める（純粋関数・test-engine で検証）。
+ * defs=[{code,weight}] / n=総出題数 / stock={分野コード:在庫数}
+ *  ① 最大剰余法で weight どおりに n を配分する。
+ *     旧実装は分野ごとに独立して Math.round していたため合計が n からずれ、
+ *     最後の picked.slice(0,n) で「配列の末尾＝domains.json の後ろの分野」だけが
+ *     系統的に切り捨てられていた（丸め誤差の不利が特定分野に固定される）。
+ *  ② 在庫が足りない分野は在庫までに丸め、あふれた分は「まだ在庫が残る分野」へ
+ *     weight 比で配り直す。旧実装は不足分を全問題からランダムに補填していたため、
+ *     在庫の多い分野へ寄って公式比率の再現がさらに崩れていた。
+ */
+function examQuota(defs,n,stock){
+  const list=(defs||[]).filter(d=>d&&d.code);
+  const out={};list.forEach(d=>out[d.code]=0);
+  if(!list.length||!(n>0))return out;
+  const totW=list.reduce((s,d)=>s+(d.weight||0),0);
+  if(totW<=0)return out;
+  // ① 最大剰余法（整数部を配ってから、小数部の大きい順に余りを1問ずつ）
+  const rem=[];let sum=0;
+  list.forEach((d,i)=>{
+    const ex=n*(d.weight||0)/totW,fl=Math.floor(ex);
+    out[d.code]=fl;sum+=fl;rem.push({i:i,code:d.code,f:ex-fl,w:d.weight||0});
+  });
+  rem.sort((a,b)=>(b.f-a.f)||(b.w-a.w)||(a.i-b.i));
+  for(let k=0;sum<n&&k<rem.length;k++){out[rem[k].code]++;sum++;}
+  // ② 在庫で頭打ち → あふれた分を在庫の残る分野へ weight 比で再配分
+  const cap=c=>Math.max(0,(stock&&stock[c])||0);
+  let over=0;
+  list.forEach(d=>{const c=cap(d.code);if(out[d.code]>c){over+=out[d.code]-c;out[d.code]=c;}});
+  while(over>0){
+    const room=list.filter(d=>out[d.code]<cap(d.code));
+    if(!room.length)break;                                   // 全分野が在庫切れ＝これ以上は配れない
+    const w=room.reduce((s,d)=>s+(d.weight||0),0)||room.length;
+    let moved=0;
+    room.forEach(d=>{
+      if(over-moved<=0)return;
+      const share=Math.min(cap(d.code)-out[d.code],Math.max(1,Math.round(over*((d.weight||1))/w)),over-moved);
+      out[d.code]+=share;moved+=share;
+    });
+    if(!moved)break;
+    over-=moved;
+  }
+  return out;
+}
 // 公式出題比率（分野の weight）に沿って EXAM_N 問を抽出。不足分は全体から補填。
 function pickWeightedExam(n){
   const universe=scopedQ();
   const byD={};DOMAIN_DEFS.forEach(d=>byD[d.code]=[]);
   universe.forEach(q=>{const c=domainOf(q.id);(byD[c]||(byD[c]=[])).push(q);});
   Object.keys(byD).forEach(c=>byD[c]=freshFirst(byD[c]));   // 直近の模試に出た問題は後回し
-  const totW=DOMAIN_DEFS.reduce((s,d)=>s+d.weight,0);
+  const stock={};Object.keys(byD).forEach(c=>stock[c]=byD[c].length);
+  const quota=examQuota(DOMAIN_DEFS,n,stock);
   const picked=[],used=new Set();
   DOMAIN_DEFS.forEach(d=>{
-    const want=Math.round(n*d.weight/totW);
-    (byD[d.code]||[]).slice(0,want).forEach(q=>{picked.push(q);used.add(q.id);});
+    (byD[d.code]||[]).slice(0,quota[d.code]||0).forEach(q=>{picked.push(q);used.add(q.id);});
   });
-  if(picked.length<n){
+  if(picked.length<n){   // 全分野を配り切ってもなお足りない（＝資格全体の在庫不足）ときだけ素の残りで補填
     const rest=freshFirst(universe.filter(q=>!used.has(q.id)));
     for(const q of rest){if(picked.length>=n)break;picked.push(q);used.add(q.id);}
   }

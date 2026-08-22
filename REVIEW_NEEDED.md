@@ -13,12 +13,21 @@
 
 ## 高リスク領域で要判断（認証/Firestore/ブループリント比率/storageKey 等）
 
-- Firestore セキュリティルールがリポジトリに存在しない（`certifications/sf-admin/Firebaseセットアップ手順.md` のコードブロックが唯一の出典）。
-  現状: 本人書込が `access` 1フィールドしか制限しておらず、`maintOk`（メンテ回避の自己付与）・`lastSeen/approvedAt`（休眠失効の無効化）・`stores.<cert>.acquiredDate`（資格ロック解除）を本人が書ける。admin 判定が改変可能な `token.email`＋未実在ドメインに依存。
-  対応案: `firestore.rules` をリポジトリへコミット→本人書込を許可フィールドのホワイトリスト化→admin 判定を uid/Custom Claims 化→`@firebase/rules-unit-testing` を CI へ。※コンソール操作を伴うため、だいきの承認と手順書更新をセットで。
-  注記: この修正が入るまで、CLAUDE.md／cloud-sync.js の「maintOk の付与は管理者だけ」の記述は現行ルールでは成立していない（要訂正）。
+- ✅ 対応済み（2026-08-22）: Firestore セキュリティルールをリポジトリ管理化（root `firestore.rules`）
+  経緯: 手順書のコードブロックが唯一の出典で差分が追えず、本人書込が `access` 1フィールドしか制限していなかった。
+  対応: ①本人の書込を `selfKeys()` のホワイトリストに限定（`maintOk`＝メンテ回避の自己付与／`approvedAt`＝休眠失効の起点／`notices`／`fbReplies`／`adminLog` を管理者専用に）②`allow delete` を管理者のみに（停止中の人が自 doc を消して blocked を帳消しにする穴をふさぐ）③管理者判定に `adminUids()` を追加。
+  補足: `stores.<cert>.acquiredDate`（資格ロック解除）は**本人が書けるままにした**。アプリに「取得済みにする」ボタンがある正規の自己申告操作で、サーバ側で本人と区別できないため。ロック解除は学習体験の仕掛けであってセキュリティ境界ではない、という整理。
+  🔴 **だいきの手作業が2つ残っています**:
+    1. `firestore.rules` の中身を Firebase コンソール「Firestore → ルール」へ貼って**公開**する（貼るまで穴は開いたまま）。
+    2. Authentication → Users で管理者の **UID** をコピーし、`firestore.rules` の `adminUids()` に貼る（ログインIDは誰でも登録できるため、メール判定だけだと管理者IDを先に取られると権限ごと奪われる）。貼ったら `adminEmails()` は `[]` にしてよい。
+  未対応: `@firebase/rules-unit-testing` による CI 検証（エミュレータが要るので別途）。
 
-- 模試のブループリント再現ずれ（新5資格）。sales-cloud は app 分野だけで模試の約52%（乖離+22pt）、sharing-visibility は81問中60問＝毎回74%が同一。domains.json の weight は LOOP.md 上「不可侵」なので、weight を変えずに「分野別の問題数を足す／再分類する」方向でしか是正できない＝人手データ作業。
+- 模試のブループリント再現ずれ（2026-08-22 に再測定・状況が変わりました）
+  ✅ sales-cloud は解消済み: 200問まで増えた結果、全5分野が必要数を満たし乖離ゼロ（記録当時の「app 分野だけで52%」は当時の在庫不足によるもの）。
+  ✅ エンジン側の是正: `pickWeightedExam` を①最大剰余法（合計が必ず examN・丸め不利が末尾分野に固定されない）②不足分は「在庫の残る分野へウェイト比で再配分」（従来は全問題からランダム補填＝在庫の多い分野へ寄っていた）に変更。weight は不可侵のまま触っていない。
+  🔴 **残るのはデータ作業（人手）**。`node tools/validate-data.js` が毎回警告で可視化します:
+    - service-cloud: `ind`（業界知識）が必要7問に対し在庫4問 … **3問不足**
+    - sharing-visibility: `obj` 必要16/在庫11・`model` 必要11/在庫9 … **7問不足**。加えて81問中60問＝1回の模試で全体の74%を消費＝毎回ほぼ同じ出題になるため、分野を問わず増問が要る
 
 ## 検証レッドで巻き戻した項目
 

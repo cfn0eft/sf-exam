@@ -10,7 +10,7 @@
 ![PWA](https://img.shields.io/badge/PWA-offline_ready-5A0FC8?logo=pwa&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_+_Firestore-FFCA28?logo=firebase&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-deployed-222?logo=github)
-![Questions](https://img.shields.io/badge/総問題数-2052-1f6feb)
+![Questions](https://img.shields.io/badge/総問題数-2051-1f6feb)
 ![No Build](https://img.shields.io/badge/build_step-none-success)
 
 </div>
@@ -109,6 +109,8 @@ sf-exam/
 ├─ figures.js              # 図解データ（全資格共有・インライン SVG）
 ├─ firebase-config.js      # Firebase 設定（任意・ログイン/同期用）
 ├─ cloud-sync.js           # クラウド同期＋アクセス承認＋管理者ビュー（Auth + Firestore）
+├─ progression.js          # 資格のロック解除（直列進行）— LP・全資格ページ共通の判定
+├─ firestore.rules         # Firestore セキュリティルール（唯一の出典・コンソールへ貼る）
 ├─ manifest.webmanifest    # PWA マニフェスト
 ├─ sw.js                   # Service Worker（オフライン対応）
 ├─ tools/                  # 開発ツール（データ検証・エンジンテスト・版数繰り上げ等）
@@ -151,7 +153,7 @@ sf-exam/
 
 | コマンド | 何を検証するか | 実行するタイミング |
 |---|---|---|
-| `node tools/validate-data.js` | 各資格 JSON のスキーマ・ID 重複・分野参照・図解参照、SW のプリキャッシュ対象の実在、`manifest.webmanifest` の必須キーとリンク先、LP の `CERTS[].meta` とデータ実数の一致、キャッシュ版数 3 点セット、JS 構文、changelog 形式 | **データ・図・manifest を編集したら必ず** |
+| `node tools/validate-data.js` | 各資格 JSON のスキーマ・ID 重複・分野参照・図解参照、SW のプリキャッシュ対象の実在、`manifest.webmanifest` の必須キーとリンク先、LP の `CERTS[].meta` とデータ実数の一致、**模試が公式ブループリントを再現できるか（分野別の在庫不足）**、キャッシュ版数 3 点セット、JS 構文、changelog 形式 | **データ・図・manifest を編集したら必ず** |
 | `node tools/test-engine.js` | エンジンの純粋ロジック（SRS・難易度推定・XP/レベル・模試抽出・逆算ペース・store 正規化ほか）。DOM スタブ＋`vm` でエンジンを丸ごと読み込む | **`quiz-engine.js` を編集したら必ず** |
 | `node tools/test-cloud-sync.js` | 同期・アクセス承認・休眠失効・メンテ例外・管理者ビュー集計の判定ロジック | **`cloud-sync.js` を編集したら必ず** |
 | `node tools/bump-version.js` | キャッシュ無効化 3 点セット（`sw.js` の `CACHE` / `SHELL` の `?v=` / 各 HTML の `?v=`）を一括繰り上げ（`--dry` で確認のみ） | **共有 JS/CSS を更新したら必ず** |
@@ -190,7 +192,8 @@ git push origin main
 ```
 
 **クラウド同期（任意）** を使う場合は、`firebase-config.js` に自分の Firebase 設定を貼り、
-Firestore のセキュリティルールを設定します（手順は `certifications/sf-admin/Firebaseセットアップ手順.md`）。
+`firestore.rules` の中身を Firebase コンソールの「Firestore → ルール」へ貼って公開します
+（手順は `certifications/sf-admin/Firebaseセットアップ手順.md`）。
 設定しなくても、進捗はブラウザの `localStorage` にローカル保存されます。
 
 ---
@@ -202,7 +205,7 @@ Firestore のセキュリティルールを設定します（手順は `certific
 - 進捗は `progress/{uid}` に保存し、doc 直下の `access` フラグで利用可否を制御します（`approved`=利用可 / `pending`=承認待ち / `blocked`=停止）。
 - **`approved` のアカウントだけが問題にアクセス可能**。未承認は全面ロック画面になり、**お名前を入力して利用申請**できます（新規登録も既定で承認待ち）。
 - **管理者ID（既定 `admin`）** でログインすると管理者ビューが開き、全アカウントの進捗・統計の閲覧、**承認 / 停止 / 申請の却下 / 完全削除**、新規申請の通知バッジ、フィードバックの集約、CSV/JSON 書き出しができます。
-- `access` を `approved` にできるのは **管理者だけ**（Firestore ルールで本人は自分を承認できないよう制限）。ルールは `certifications/sf-admin/Firebaseセットアップ手順.md` のステップ 5 を参照。
+- `access` を `approved` にできるのは **管理者だけ**（Firestore ルールで本人は自分を承認できないよう制限）。本人が書けるフィールドはホワイトリスト方式で限定され、doc の削除も管理者だけです。ルールの実体は root の `firestore.rules`（貼り方は `certifications/sf-admin/Firebaseセットアップ手順.md` のステップ 5）。
 
 > ⚠️ 問題データ（`questions.json`）は静的公開ファイルのため、この承認制は**体験・UI レベルのアクセス制限**です（URL 直アクセスでのファイル取得までは防ぎません）。
 
