@@ -5,7 +5,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
 - ローカル: `C:\Users\PC_User\sf-exam`
-- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Agentforce Sales コンサル (200問・旧 Sales Cloud コンサル) / Agentforce Service コンサル (120問・旧 Service Cloud コンサル) / Experience Cloud コンサル (131問) / Sharing & Visibility アーキテクト (81問)
+- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Agentforce Sales コンサル (200問・旧 Sales Cloud コンサル) / Agentforce Service コンサル (123問・旧 Service Cloud コンサル) / Experience Cloud コンサル (131問) / Sharing & Visibility アーキテクト (132問)
 
 ---
 
@@ -33,7 +33,7 @@ sf-exam/
     └── {slug}/
         ├── index.html    # 薄いシェル（共通DOM雛形＋CERT_CONFIG＋engine読込）
         └── data/
-            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig/expFig（figures.js図名）／diff（難易度1=易2=標準3=難）／case+scenario（ケーススタディ束ね）。解説は解答後に全文をまとめて表示
+            ├── questions.json   # 各問 domain・multi 内蔵に正規化。任意で fig/expFig（figures.js図名）／diff（難易度1=易2=標準3=難）／case+scenario（ケーススタディ束ね）／origin（論点の出どころ＝対策サイトのホスト名 or 'official-docs'。保守用メタデータでUI非表示）。解説は解答後に全文をまとめて表示
             ├── domains.json     # {domains:[{code,name,weight,emoji}], map?}
             ├── vocab.json       # 章配列 {chapter,terms:[{title,jaName,enName,definition,examPoints[],questions[]}]}（用語に任意で fig）
             ├── navmap.json      # [{title,content}] 設定マップ
@@ -254,6 +254,19 @@ git push origin main
   - 既知コード: 管理者 `ADM-201` / App Builder `CRT-403` / Developer I `CRT-450` / Sales Cloud `CRT-251` / Service Cloud `CRT-261` / Experience(Community) Cloud `CRT-271`。Agentforce・Sharing & Visibility は公式コードが無いため空。
 - **`pass`（合格ライン）・`examN`・`examMin` は公式試験ガイド準拠**。公式PDFは bot 対策で取得不可(403)のため、focusonforce / Salesforce Ben など公式ガイド転載値で裏取りする。既知の合格ライン: Admin 65 / App Builder 63 / Developer 68 / Agentforce 73 / Sales Cloud 69 / Service Cloud 67 / Experience Cloud 62 / Sharing & Visibility 67（時間はコンサル/Specialist=105分・アーキテクト=120分、採点対象は全資格60問）。
 - **LP（ルート `index.html`）の `CERTS[].meta` の問題数・用語数・合格%は、データ実数および shell の `pass` と一致させる**（資格を増問したら meta も更新）。
+
+### 対策サイトの扱いと `origin` タグ（2026-08-22 追加）
+
+- 対策サイト（examtopics / validexamdumps / salesforceexams / quizlet / focusonforce 等）は **「どの論点が頻出か」を知る手がかりとしてのみ**使う。**問題文・選択肢の文章はコピーせず、公式ドキュメントから起こす**。
+  - 理由は実務上のもの: このリポジトリの履歴が示すとおり、ダンプ由来の問題は**正解が誤っていることが多く**（#539/#523/#572・#232・#154・#414/#492/#382 等を公式仕様へ修正済み）、転載を増やすほど後から手戻りが出る。加えて、実際の試験問題そのものの再配布は受験規約違反にあたる。
+- 論点の出どころは各問の **`origin`** に残す（例 `"examtopics.com"`／公式ドキュメントから直接見つけたなら `"official-docs"`）。`source`（tyson/gen/jpnshiken＝出典フィルタ用）とは**別軸**で、UI には出さない保守用メタデータ。
+- `reference_url` は**実際に取得して正解の根拠を確認できたページ**にする。⚠️ `help.salesforce.com` と `www.salesforce.com` は bot 対策で取得不可（403）なので、新規問題の裏取り先には使えない。取得できるのは `developer.salesforce.com`（Apex 開発者ガイド／Apex リファレンス／DRAES／LDV ベストプラクティス／制限ルール・スコープルール開発者ガイド）・`trailhead.salesforce.com`・`architect.salesforce.com`。
+- ⭐ **403 を迂回して公式原文を読む方法（2026-08-22 発見・裏取りの主力にできる）**:
+  `https://resources.docs.salesforce.com/latest/latest/{en-us|ja-jp}/sfdc/pdf/{guide}.pdf` は **200 で取得できる**（`object_reference` 22MB 等）。`pdftotext -layout`（Git Bash 同梱・`/mingw64/bin/pdftotext`）で全文検索すれば、help.salesforce.com にしか無い内容も原文で確認できる。
+  - `en-us` は**仕様の確定**に使う。例: `DefaultCaseAccess` の有効値は `None/Read/Edit/ReadEditTransfer` で **`ControlledByParent` は無い**（＝ケースに「親レコードに連動」は設定できない）。`DefaultContactAccess` にはある。
+  - `ja-jp` は**日本語UI用語の確定**に使う。実際に「親レコードに連動」「Apex 共有の再適用」「セッションの有効化が必要」「ディビジョン」「高ボリュームポータルユーザ」などの誤表記をこれで潰した。
+  - ⚠️ 全ガイドが揃っているわけではない（`apexcode.pdf` は 404）。無いものは `developer.salesforce.com` の HTML を使う。
+  - ⚠️ `developer.salesforce.com/docs/get_document_content/...` 形式の URL は**生 JSON が返るうえ API 版数が固定される**ので `reference_url` に使わない。canonical な `atlas.en-us.{guide}.meta/...` 形式（版数なし）に統一する。
 
 ### Distractor（不正解選択肢）の品質
 - 「ぱっと見正解と区別がつかない」レベルで作る

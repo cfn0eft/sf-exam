@@ -40,9 +40,21 @@
 - 模試のブループリント再現ずれ（2026-08-22 に再測定・状況が変わりました）
   ✅ sales-cloud は解消済み: 200問まで増えた結果、全5分野が必要数を満たし乖離ゼロ（記録当時の「app 分野だけで52%」は当時の在庫不足によるもの）。
   ✅ エンジン側の是正: `pickWeightedExam` を①最大剰余法（合計が必ず examN・丸め不利が末尾分野に固定されない）②不足分は「在庫の残る分野へウェイト比で再配分」（従来は全問題からランダム補填＝在庫の多い分野へ寄っていた）に変更。weight は不可侵のまま触っていない。
-  🔴 **残るのはデータ作業（人手）**。`node tools/validate-data.js` が毎回警告で可視化します:
-    - service-cloud: `ind`（業界知識）が必要7問に対し在庫4問 … **3問不足**
-    - sharing-visibility: `obj` 必要16/在庫11・`model` 必要11/在庫9 … **7問不足**。加えて81問中60問＝1回の模試で全体の74%を消費＝毎回ほぼ同じ出題になるため、分野を問わず増問が要る
+  ✅ 分野の在庫不足は 2026-08-22 に解消: service-cloud `ind` に3問（120→123問）、sharing-visibility `obj` に5問・`model` に2問（81→88問）を追加。**全8資格で模試が公式比率どおりに全分野から出せる状態**になった（validate-data の在庫不足警告が消滅）。
+  追加10問の裏取り: すべて Salesforce 公式ドキュメントを直接取得して確認済み（Apex 開発者ガイドの sharing キーワード／ユーザーモード既定・Apex リファレンスの Security.stripInaccessible・DRAES の暗黙の共有・スコープルール／制限ルール開発者ガイド・Trailhead の View All Fields／項目権限／Agent Analytics 指標定義／Command Center for Service／Service Intelligence）。各問の `reference_url` に該当ページを設定。
+  ✅ **2026-08-22 に増問完了**: sharing-visibility を 88→132問（obj+18 / model+12 / other+8 / rec+6 の44問）。模試1回の消費は 74%→**45%**、分野別の乖離も公式ウェイト±2pt 以内（obj -1.2 / rec +1.9 / other -0.1 / model -0.6）。validate-data の出題プール警告は消滅。
+  作成と検証を**別エージェントに分離**して実施。検証で見つかった主な誤りと対応:
+    - 【重大】所有権スキューの緩和策で公式の source/target が逆転（公式原文 `Keep them out of public groups that can be used as the source for sharing rules.`）→ 正解・誤答・解説すべて訂正
+    - 【重大】ケースの組織の共有設定に「親レコードに連動」を選ばせる問題＝**設定不可能**（`DefaultCaseAccess` の有効値は None/Read/Edit/ReadEditTransfer。`ControlledByParent` を持つのは `DefaultContactAccess`）→ 子オブジェクトを取引先責任者へ差し替え
+    - 既存 #33 と論点が重複する1問を**不採用**（45→44問）
+    - 日本語UI用語の誤り3件（「Apex 共有再計算」→「Apex 共有の再適用」／「セッションのアクティブ化が必要」→「セッションの有効化が必要」／「区分」→「ディビジョン」「大量ポータルユーザー」→「高ボリュームポータルユーザ」「親レコードにより制御」→「親レコードに連動」）
+    - `System.AccessType` の値の記載漏れ（UPSERTABLE を含む4値）／未検証の数値主張（「20件は旧上限」）の削除／版数固定URL(234.0)・`get_document_content` 形式URLの canonical 化
+  ⚠️ 追加44問はすべて `source:'gen'`。論点の出どころは各問の `origin` に記録（official-docs 30 / examtopics.com 5 / salesforceben.com 2 / issacc.com 2 / apexhours・validexamdumps・focusonforce・quizlet・dumpsmate 各1）。**だいきの最終確認を推奨。**
+
+- ✅ 既存データの不具合を1件修正（2026-08-22）: sharing-visibility #11
+  現状: 「ケース（標準オブジェクト）を Apex 管理共有で共有し、共有理由（rowCause）を定義する」という設問だったが、公式は `Apex sharing reasons and Apex managed sharing recalculation are only available for custom objects.` と明記しており、標準オブジェクトでは共有理由を定義できず設問が成立しない。
+  対応: 題材をカスタムオブジェクト「案件審査」に差し替え、解説に公式原文と「標準オブジェクトでは RowCause は 'Manual' になる」旨を追記。
+  ⚠️ 追加分は AI 生成（`source: 'gen'`）。公式ドキュメントの記述と1問ずつ突き合わせてはいるが、**だいきの最終確認を推奨**（特に #85 View All Fields の「読み取り専用かどうか」は公式ページに明記が無く、問題文でもその点は問うていない）。
 
 ## 検証レッドで巻き戻した項目
 

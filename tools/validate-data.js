@@ -152,7 +152,10 @@ function validateCert(slug, figKeys) {
   const ids = new Set();
   const caseGroups = {};   // case名 -> {n, scenarios:Set}
   // スキーマで想定しているキー。ここに無いキーは「タイポ or 未使用の死んだデータ」の疑いとして警告する。
-  const KNOWN_Q_KEYS = new Set(['id', 'question', 'choices', 'answers', 'explanation', 'reference_url', 'multi', 'domain', 'keywords', 'source', 'diff', 'fig', 'expFig', 'case', 'scenario']);
+  const KNOWN_Q_KEYS = new Set(['id', 'question', 'choices', 'answers', 'explanation', 'reference_url', 'multi', 'domain', 'keywords', 'source', 'diff', 'fig', 'expFig', 'case', 'scenario',
+    // origin = 論点の出どころ（対策サイトのホスト名 or 'official-docs'）。source（tyson/gen/jpnshiken）とは別軸で、
+    // 「どこで頻出と分かった論点か」を残すための保守用メタデータ。UI には出さない。
+    'origin']);
   const unknownKeys = {};
   let fewChoices = 0;   // 本番形式(4択以上)でない問題の数
   questions.forEach((q) => {
