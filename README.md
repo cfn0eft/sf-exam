@@ -49,19 +49,23 @@
 
 ## 📚 収録資格
 
-| 資格 | 試験コード | 問題数 | 分野 | 用語 | 合格ライン |
-|---|---|---:|---:|---:|---:|
-| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **437 問** | 8 分野（Agentforce 含む） | 94 語 | 65% |
-| **Salesforce 認定 Platform アプリケーションビルダー** | CRT-403 | **445 問** | 5 分野 | 83 語 | 63% |
-| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **499 問** | 4 分野 | 75 語 | 68% |
-| **Salesforce 認定 Agentforce Specialist** | — | **138 問** | 6 分野 | 26 語 | 73% |
-| **Salesforce 認定 Sales Cloud コンサルタント** | CRT-251 | **200 問** | 5 分野 | 67 語 | 69% |
-| **Salesforce 認定 Service Cloud コンサルタント** | CRT-261 | **120 問** | 8 分野 | 75 語 | 67% |
-| **Salesforce 認定 Experience Cloud コンサルタント** | CRT-271 | **132 問** | 8 分野 | 63 語 | 62% |
-| **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **81 問** | 4 分野 | 54 語 | 67% |
+| 資格 | 試験コード | 問題数 | 分野 | 用語 | 授業 | 合格ライン |
+|---|---|---:|---:|---:|---:|---:|
+| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **437 問** | 8 分野（Agentforce 含む） | 94 語 | 14 本 | 65% |
+| **Salesforce 認定 Platform アプリケーションビルダー** | CRT-403 | **445 問** | 5 分野 | 83 語 | 10 本 | 63% |
+| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **499 問** | 4 分野 | 75 語 | 19 本 | 68% |
+| **Salesforce 認定 Agentforce Specialist** | — | **138 問** | 6 分野 | 26 語 | — | 73% |
+| **Salesforce 認定 Sales Cloud コンサルタント** | CRT-251 | **200 問** | 5 分野 | 67 語 | — | 69% |
+| **Salesforce 認定 Service Cloud コンサルタント** | CRT-261 | **120 問** | 8 分野 | 75 語 | — | 67% |
+| **Salesforce 認定 Experience Cloud コンサルタント** | CRT-271 | **131 問** | 8 分野 | 63 語 | — | 62% |
+| **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **81 問** | 4 分野 | 54 語 | — | 67% |
 
-**全 8 資格・計 2,052 問**を収録。いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
+**全 8 資格・計 2,051 問**を収録。いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
 各資格とも「出典」フィルタで、タイソンブログ由来・jpnshiken 由来・AI 生成の問題を**複数選択**で切り替えられます。
+
+> **「授業」列**は、スライド形式で順に学ぶ「イチから授業」（`data/lessons.json`）の本数です。
+> `—` の 5 資格（Agentforce / Sales Cloud / Service Cloud / Experience Cloud / Sharing and Visibility）は
+> **授業コンテンツが未整備**で、ホームの授業導線も表示されません。問題・教科書・用語帳・比較表・模試は全 8 資格で利用できます。
 
 ---
 
@@ -137,6 +141,22 @@ sf-exam/
 1. `certifications/<slug>/data/` に 4 つの JSON（`questions` / `domains` / `vocab` / `navmap`）を置く
 2. 既存のシェル `index.html` を複製し、先頭の `window.CERT_CONFIG`（`slug` / `certName` / `examCode` / `examN` / `examMin` / `pass` / `storageKey` / `dataDir`）を差し替える
 3. ルート `index.html` の `CERTS[]` 配列に 1 件追加する → トップに資格カードが自動生成される
+
+---
+
+## 🧪 開発ツールと CI
+
+依存パッケージなし・`node` 単体で動くスクリプトを `tools/` に置いています。
+`.github/workflows/ci.yml` が push / PR ごとに前半 3 つを自動実行します。
+
+| コマンド | 何を検証するか | 実行するタイミング |
+|---|---|---|
+| `node tools/validate-data.js` | 各資格 JSON のスキーマ・ID 重複・分野参照・図解参照、SW のプリキャッシュ対象の実在、`manifest.webmanifest` の必須キーとリンク先、LP の `CERTS[].meta` とデータ実数の一致、キャッシュ版数 3 点セット、JS 構文、changelog 形式 | **データ・図・manifest を編集したら必ず** |
+| `node tools/test-engine.js` | エンジンの純粋ロジック（SRS・難易度推定・XP/レベル・模試抽出・逆算ペース・store 正規化ほか）。DOM スタブ＋`vm` でエンジンを丸ごと読み込む | **`quiz-engine.js` を編集したら必ず** |
+| `node tools/test-cloud-sync.js` | 同期・アクセス承認・休眠失効・メンテ例外・管理者ビュー集計の判定ロジック | **`cloud-sync.js` を編集したら必ず** |
+| `node tools/bump-version.js` | キャッシュ無効化 3 点セット（`sw.js` の `CACHE` / `SHELL` の `?v=` / 各 HTML の `?v=`）を一括繰り上げ（`--dry` で確認のみ） | **共有 JS/CSS を更新したら必ず** |
+| `node tools/check-links.js` | 全問題の `reference_url` の死活チェック（別ワークフローで週 1 実行） | 任意 |
+| `node tools/feedback-to-tasks.js <json>` | 管理者ビューから書き出したフィードバック JSON を対応チェックリストへ変換 | 任意 |
 
 ---
 

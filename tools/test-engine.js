@@ -17,14 +17,40 @@ const vm = require('vm');
 
 /* ---- DOM / ブラウザ API スタブ ---- */
 function makeElement() {
+  const attrs = {};
+  const classes = new Set();
+  const listeners = {};
   const el = {
     style: {}, dataset: {}, children: [], innerHTML: '', textContent: '', value: '',
-    className: '', disabled: false,
-    classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
-    setAttribute() {}, getAttribute: () => null, addEventListener() {},
+    disabled: false, attrs, listeners,
+    // クラスは実際に保持する（開閉トグルなど classList を使うロジックを検証するため）
+    classList: {
+      add(...c) { c.forEach((x) => x && classes.add(x)); },
+      remove(...c) { c.forEach((x) => classes.delete(x)); },
+      contains: (c) => classes.has(c),
+      toggle(c, force) {
+        const on = force === undefined ? !classes.has(c) : !!force;
+        if (on) classes.add(c); else classes.delete(c);
+        return on;
+      },
+    },
+    // 属性は実際に保持する（aria-pressed / data-theme などの状態伝達を検証するため）
+    setAttribute(k, v) { attrs[k] = String(v); },
+    getAttribute: (k) => (Object.prototype.hasOwnProperty.call(attrs, k) ? attrs[k] : null),
+    removeAttribute(k) { delete attrs[k]; }, hasAttribute: (k) => Object.prototype.hasOwnProperty.call(attrs, k),
+    // ハンドラを記録し、テストから fire() で発火できるようにする
+    addEventListener(type, fn) { (listeners[type] || (listeners[type] = [])).push(fn); },
+    removeEventListener(type, fn) { listeners[type] = (listeners[type] || []).filter((f) => f !== fn); },
+    fire(type, ev) { (listeners[type] || []).forEach((f) => f(Object.assign({ preventDefault() {}, stopPropagation() {}, target: el }, ev))); },
     appendChild() {}, removeChild() {}, insertBefore() {}, remove() {}, focus() {},
     querySelector: () => null, querySelectorAll: () => [],
   };
+  // className は classList と同じ実体を見る（engine は両方で書き換えるため）
+  Object.defineProperty(el, 'className', {
+    get: () => [...classes].join(' '),
+    set: (v) => { classes.clear(); String(v).split(/\s+/).filter(Boolean).forEach((c) => classes.add(c)); },
+    enumerable: true,
+  });
   el.parentNode = { insertBefore() {}, appendChild() {}, removeChild() {} };
   return el;
 }
@@ -298,6 +324,90 @@ t('saveFilters/restoreFilters: 出題設定（絞り込み）が端末に保存�
   eq(run('fDiffSet[2]'), true, '難易度(標準)が復元');
   eq(run('fDiffSet[1]'), false, '難易度(易)は false のまま');
   run("localStorage.removeItem(SKEY+'_filters')");
+});
+
+t('levelInfo: レベルアップ境界と次レベルの必要XP', () => {
+  run('store.xp=199');
+  let r = run('levelInfo()');
+  eq(r.lvl, 1, '199XP はまだ Lv.1');
+  eq(r.cur, 199, 'レベル内の獲得XP');
+  eq(r.need, 200, 'Lv.1→2 の必要XP');
+  run('store.xp=200');
+  r = run('levelInfo()');
+  eq(r.lvl, 2, 'ちょうど 200XP で Lv.2');
+  eq(r.cur, 0, '繰り上がり直後の獲得XPは0');
+  eq(r.need, 260, 'Lv.2→3 は 200+60');
+  eq(run('levelInfo().total'), 200, 'total は素の XP');
+});
+
+t('paceReco: 端数は切り上げ／受験日が今日以前なら0', () => {
+  run('store.hist={}');           // 全200問が未着手
+  eq(run('paceReco(7).perDay'), 29, '200÷7 は切り上げて29問');
+  eq(run('paceReco(0).perDay'), 0, '残り日数0なら1日ノルマは出さない');
+  eq(run('paceReco(-3).perDay'), 0, '受験日を過ぎていても0');
+  run('store.hist={};allQ.forEach(q=>{store.hist[q.id]={c:2,w:0,last:"c",lc:0};});');
+  const done = run('paceReco(10)');
+  eq(done.remain, 0, '全問マスター済みなら残り0');
+  eq(done.perDay, 0, '残り0なら1日ノルマも0');
+  run('store.hist={}');
+});
+
+t('qDiff: データの難易度を優先し、無ければ正答率から推定', () => {
+  eq(run('qDiff({id:9001,diff:3})'), 3, '数値の diff をそのまま使う');
+  eq(run('qDiff({id:9001,diff:"易"})'), 1, '和名の diff も解釈する');
+  eq(run('qDiff({id:9001,diff:"hard"})'), 3, '英名の diff も解釈する');
+  eq(run('qDiff({id:9002})'), 2, '履歴も diff も無ければ標準');
+  run('store.hist[9003]={c:4,w:1,last:"c"}');   // 正答率80%
+  eq(run('qDiff({id:9003})'), 1, '正答率80%以上は易と推定');
+  run('store.hist[9004]={c:1,w:3,last:"w"}');   // 正答率25%
+  eq(run('qDiff({id:9004})'), 3, '正答率50%未満は難と推定');
+  run('store.hist[9005]={c:1,w:0,last:"c"}');   // 1回だけ＝母数不足
+  eq(run('qDiff({id:9005})'), 2, '解答1回だけでは推定しない');
+  run('delete store.hist[9003];delete store.hist[9004];delete store.hist[9005]');
+});
+
+t('setBmBtn: ★/☆・on クラス・aria-pressed を同時に更新', () => {
+  const btn = byId('s-bmbtn');
+  run("setBmBtn(document.getElementById('s-bmbtn'),true)");
+  eq(btn.textContent, '★', 'ON の表示');
+  eq(btn.className, 'bmbtn on', 'ON のクラス');
+  eq(btn.getAttribute('aria-pressed'), 'true', 'ON の aria-pressed');
+  run("setBmBtn(document.getElementById('s-bmbtn'),false)");
+  eq(btn.textContent, '☆', 'OFF の表示');
+  eq(btn.className, 'bmbtn', 'OFF のクラス');
+  eq(btn.getAttribute('aria-pressed'), 'false', 'OFF の aria-pressed');
+  run('setBmBtn(null,true)');   // 要素が無くても落ちない
+});
+
+t('applyDark: テーマ属性とボタンの状態（絵文字・aria-pressed）が連動', () => {
+  run('applyDark(true)');
+  eq(run("document.documentElement.getAttribute('data-theme')"), 'dark', 'ダーク時のテーマ属性');
+  eq(byId('btn-dark').textContent, '☀️', 'ダーク時は太陽アイコン');
+  eq(byId('btn-dark').getAttribute('aria-pressed'), 'true', 'ダーク時の aria-pressed');
+  run('applyDark(false)');
+  eq(run("document.documentElement.getAttribute('data-theme')"), '', 'ライト時はテーマ属性が空');
+  eq(byId('btn-dark').textContent, '🌙', 'ライト時は月アイコン');
+  eq(byId('btn-dark').getAttribute('aria-pressed'), 'false', 'ライト時の aria-pressed');
+});
+
+t('bindChHead: 折りたたみ見出しがマウスでもキーボードでも開閉できる', () => {
+  const head = makeElement(), wrap = makeElement();
+  sandbox.__head = head; sandbox.__wrap = wrap;
+  run('bindChHead(__head,__wrap)');
+  eq(head.getAttribute('role'), 'button', 'ボタンとして読み上げられる');
+  eq(head.getAttribute('tabindex'), '0', 'キーボードでフォーカスできる');
+  eq(head.getAttribute('aria-expanded'), 'false', '初期は閉じている');
+  head.fire('click');
+  ok(wrap.classList.contains('open'), 'クリックで開く');
+  eq(head.getAttribute('aria-expanded'), 'true', '開いたら aria-expanded も true');
+  head.fire('keydown', { key: 'Enter' });
+  ok(!wrap.classList.contains('open'), 'Enter で閉じる');
+  eq(head.getAttribute('aria-expanded'), 'false', '閉じたら aria-expanded も false');
+  head.fire('keydown', { key: ' ' });
+  ok(wrap.classList.contains('open'), 'Space でも開く');
+  head.fire('keydown', { key: 'a' });
+  ok(wrap.classList.contains('open'), '関係ないキーでは何も起きない');
+  delete sandbox.__head; delete sandbox.__wrap;
 });
 
 console.log('\n' + (fail ? '❌ 失敗 ' + fail + '件 / 成功 ' + pass + '件' : '✅ 全 ' + pass + '件成功'));
