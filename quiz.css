@@ -485,6 +485,18 @@ body{
 #s-choices .choice{animation:fadeIn .3s ease}
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .choice:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+/* --- キーボードフォーカスの可視性（:focus-visible の補強）---
+ * 既定は上の全称ルール（primary 色のリング）。ただし次の2種類はそのままでは見えない:
+ *  ① outline:none を明示している入力欄 … 全称ルールより詳細度が高く打ち消されてしまう
+ *  ② primary/teal の濃い背景に載るボタン … 同系色のリングが背景に溶ける
+ * どちらもマウス操作の見た目は変えない（:focus-visible はキーボード操作時のみ効く）。 */
+.search-box:focus-visible,.memo-box:focus-visible,.qsearch-in:focus-visible,.fb-ta:focus-visible{
+  outline:2px solid var(--primary);outline-offset:2px}
+.topbar-btn:focus-visible,.hh-gear:focus-visible,.plan-reco-btn:focus-visible,.pbtn:focus-visible{
+  outline:2px solid #fff;outline-offset:2px}
+/* 折りたたみ見出し（bindChHead で role=button / tabindex=0 を付与）。行いっぱいなので
+   はみ出さないよう内側にリングを描く */
+.ch-head:focus-visible,.ch-head-left:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
 .chip{transition:all .15s,transform .08s}
 .chip:active{transform:scale(.95)}
 

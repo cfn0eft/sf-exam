@@ -436,10 +436,20 @@ function goBack(){
   goTo('home');
 }
 
+/* ブックマークボタンの表示・状態をまとめて更新する（★/☆・on クラス・aria-pressed）。
+   同じ3点の書き換えが4か所に散っていたのを1本化した。 */
+function setBmBtn(btn,on){
+  if(!btn)return;
+  btn.textContent=on?'★':'☆';
+  btn.className='bmbtn'+(on?' on':'');
+  btn.setAttribute('aria-pressed',on?'true':'false');
+}
+
 // --- dark mode ---
 function applyDark(on){
   document.documentElement.setAttribute('data-theme',on?'dark':'');
-  document.getElementById('btn-dark').textContent=on?'☀️':'🌙';
+  const b=document.getElementById('btn-dark');
+  if(b){b.textContent=on?'☀️':'🌙';b.setAttribute('aria-pressed',on?'true':'false');}
 }
 function toggleDark(){
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
@@ -529,6 +539,30 @@ function renderFigGallery(){
   items.forEach(it=>{h+='<div class="fig-gcard">'+figHTML(it.name,it.cap)+'</div>';});
   el.innerHTML=h+'</div>';
 }
+/* 折りたたみ見出し(.ch-head)の開閉をキーボードでも行えるようにする。
+   .ch-head は <div>＋click ハンドラなので、そのままではフォーカスも当たらず
+   スクリーンリーダーにも「開閉できる」と伝わらない。role/tabindex/aria-expanded を
+   与え、Enter と Space でも開閉できるようにする（マウス操作の挙動は変えない）。
+   hit=フォーカスを当てる要素（既定は見出し全体。入れ子のボタンがある章見出しだけ
+   .ch-head-left を渡し、role=button の中にボタンを入れない）。 */
+function bindChHead(head,wrap,hit){
+  const t=hit||head;
+  t.setAttribute('role','button');
+  t.setAttribute('tabindex','0');
+  t.setAttribute('aria-expanded',wrap.classList.contains('open')?'true':'false');
+  const toggle=()=>{ t.setAttribute('aria-expanded',wrap.classList.toggle('open')?'true':'false'); };
+  head.addEventListener('click',toggle);
+  t.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();e.stopPropagation();toggle();}
+  });
+}
+/* .open をコード側で直接付け外ししたときに aria-expanded を追従させる */
+function syncChExpanded(wrap){
+  if(!wrap)return;
+  const t=wrap.querySelector('[role="button"]');
+  if(t)t.setAttribute('aria-expanded',wrap.classList.contains('open')?'true':'false');
+}
+
 // ===== COMPARE（比較表ハブ） =====
 function renderCompare(){
   const el=document.getElementById('tb-cmp'); if(!el)return;
@@ -540,15 +574,17 @@ function renderCompare(){
   navWrap.className='filter-bar';
   navWrap.style.margin='0 0 12px';
   COMPDATA.forEach((s,i)=>{
-    const def=domainDef(s.domain||'');
-    const emo=def.emoji||'•';
+    // domain は「実在する分野コード」のときだけ解決する。domainDef() は未知コードを
+    // 先頭分野へフォールバックさせるため、ここで使うと全セクションが誤った分野バッジになる。
+    const def=DOMAIN_BY[s.domain]||null;
+    const emo=(def&&def.emoji)||'•';
     const btn=document.createElement('button');
     btn.className='chip';
     btn.innerHTML=emo+' '+escH(s.title);
     btn.addEventListener('click',()=>{
       const target=document.getElementById('cmp-sec-'+i);
       if(!target)return;
-      target.classList.add('open');
+      target.classList.add('open');syncChExpanded(target);
       target.scrollIntoView({behavior:'smooth',block:'start'});
     });
     navWrap.appendChild(btn);
@@ -558,8 +594,8 @@ function renderCompare(){
   // ── 章ごと折りたたみで各セクションを並べる ──
   COMPDATA.forEach((sec,i)=>{
     if(!sec||!sec.content)return;
-    const def=domainDef(sec.domain||'');
-    const badge=def.name?'<span class="dom-tag" style="font-size:11px;color:var(--text-sub);margin-left:6px">'+def.emoji+' '+escH(def.name)+'</span>':'';
+    const def=DOMAIN_BY[sec.domain]||null;
+    const badge=(def&&def.name)?'<span class="dom-tag" style="font-size:11px;color:var(--text-sub);margin-left:6px">'+def.emoji+' '+escH(def.name)+'</span>':'';
 
     const wrap=document.createElement('div');
     wrap.className='ch-item';wrap.id='cmp-sec-'+i;
@@ -567,7 +603,7 @@ function renderCompare(){
     head.innerHTML=
       '<div class="ch-head-left"><span>'+escH(sec.title)+'</span>'+badge+'</div>'+
       '<div class="ch-head-right"><span class="ch-arrow">›</span></div>';
-    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    bindChHead(head,wrap);
     const bodyEl=document.createElement('div');bodyEl.className='ch-body';
     bodyEl.innerHTML='<div class="cram-sec" style="margin:0;padding:12px 14px">'+cramMd(sec.content)+'</div>';
     wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
@@ -730,7 +766,7 @@ function renderTextbook(){
       '</div>';
     // まとめボタン
     head.querySelector('.ch-summary-btn').addEventListener('click',ev=>openSummary(ci,ev));
-    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    bindChHead(head,wrap,head.querySelector('.ch-head-left'));
 
     // ── Progress bar ──
     const pbar=document.createElement('div');pbar.className='ch-prog-bar';
@@ -828,7 +864,7 @@ function renderNavMap(){
     head.innerHTML=
       '<div class="ch-head-left"><span>'+escH(sec.title)+'</span></div>'+
       '<div class="ch-head-right"><span class="ch-arrow">›</span></div>';
-    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    bindChHead(head,wrap);
     const bodyEl=document.createElement('div');bodyEl.className='ch-body';
     bodyEl.innerHTML='<div class="nm-sec" style="margin:0;padding:12px 14px;box-shadow:none;border-radius:0">'+body+'</div>';
     wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
@@ -902,7 +938,7 @@ function renderCram(){
     head.innerHTML=
       '<div class="ch-head-left"><span>'+escH(sec.title||'（無題）')+'</span></div>'+
       '<div class="ch-head-right"><span class="ch-arrow">›</span></div>';
-    head.addEventListener('click',()=>wrap.classList.toggle('open'));
+    bindChHead(head,wrap);
     const bodyEl=document.createElement('div');bodyEl.className='ch-body';
     bodyEl.innerHTML='<div class="cram-sec" style="margin:0;padding:12px 14px">'+cramMd(sec.content||'')+'</div>';
     wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
@@ -912,7 +948,7 @@ function tbSearch(q){
   const query=q.toLowerCase().trim();
   const clearBtn=document.getElementById('tb-clear');
   if(clearBtn)clearBtn.style.display=query?'':'none';
-  document.querySelectorAll('.ch-item').forEach(c=>c.classList.remove('open'));
+  document.querySelectorAll('.ch-item').forEach(c=>{c.classList.remove('open');syncChExpanded(c);});
   let total=0,matched=0;
   document.querySelectorAll('.term-row').forEach(r=>{
     total++;
@@ -1114,8 +1150,7 @@ function renderSQ(){
   if(_scn){if(q.scenario){_scn.style.display='';_scn.innerHTML='<div class="scn-tag">📋 ケーススタディ</div>'+escH(q.scenario);}else{_scn.style.display='none';_scn.innerHTML='';}}
   setFig('s-qfig',q.fig);
   const bmbtn=document.getElementById('s-bmbtn');
-  bmbtn.textContent=isBm(q.id)?'★':'☆';
-  bmbtn.className='bmbtn'+(isBm(q.id)?' on':'');
+  setBmBtn(bmbtn,isBm(q.id));
   const choicesEl=document.getElementById('s-choices');choicesEl.innerHTML='';
   sDisp = cshufOn() ? shuffle(q.choices.map((_,i)=>i)) : q.choices.map((_,i)=>i);
   sDisp.forEach((oi,di)=>{
@@ -1299,8 +1334,7 @@ function toggleBm(){
   const q=sQueue[sCur];if(!q)return;
   togBm(q.id);
   const on=isBm(q.id);
-  const btn=document.getElementById('s-bmbtn');
-  btn.textContent=on?'★':'☆';btn.className='bmbtn'+(on?' on':'');
+  setBmBtn(document.getElementById('s-bmbtn'),on);
   toast(on?'★ ブックマークに追加':'☆ ブックマーク解除');
 }
 function studyDone(){
@@ -3058,7 +3092,7 @@ function renderQK(){
   setText('qk-q',q.question);
   const ansEl=document.getElementById('qk-ans');if(ansEl){ansEl.innerHTML='';ansEl.classList.remove('show');}
   setText('qk-hint','タップで答えを表示 👆');
-  const b=document.getElementById('qk-bm');if(b){const on=isBm(q.id);b.textContent=on?'★':'☆';b.className='bmbtn'+(on?' on':'');}
+  setBmBtn(document.getElementById('qk-bm'),isBm(q.id));
 }
 function qkReveal(){
   if(qkCur>=qkQueue.length)return;
@@ -3087,7 +3121,7 @@ function qkNav(d){
 function qkToggleBm(){
   const q=qkQueue[qkCur];if(!q)return;
   togBm(q.id);const on=isBm(q.id);
-  const b=document.getElementById('qk-bm');if(b){b.textContent=on?'★':'☆';b.className='bmbtn'+(on?' on':'');}
+  setBmBtn(document.getElementById('qk-bm'),on);
   toast(on?'★ ブックマークに追加':'☆ ブックマーク解除');
 }
 function qkDone(){
