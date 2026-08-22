@@ -47,8 +47,8 @@
     'app-builder': 'アプリケーションビルダー',
     'developer': 'デベロッパー',
     'agentforce': 'Agentforce Specialist',
-    'sales-cloud': 'Sales Cloud コンサルタント',
-    'service-cloud': 'Service Cloud コンサルタント',
+    'sales-cloud': 'Agentforce Sales コンサルタント',
+    'service-cloud': 'Agentforce Service コンサルタント',
     'experience-cloud': 'Experience Cloud コンサルタント',
     'sharing-visibility': 'Sharing and Visibility アーキテクト'
   };

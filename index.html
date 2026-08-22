@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=142"></script>
+<script src="maintenance.js?v=143"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -168,7 +168,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
      ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
      ============================================================ -->
 <!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有。renderCerts より先に読む -->
-<script src="progression.js?v=142"></script>
+<script src="progression.js?v=143"></script>
 <script>
   /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
      meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
@@ -186,11 +186,11 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     { slug:'agentforce', storageKey:'sfqaf_v1', icon:'🤖', title:'Salesforce 認定<br>Agentforce Specialist',
       desc:'AIエージェント・プロンプト・Data 360・Trust Layer・テスト/ガバナンスを網羅。最新の公式6分野に対応。',
       meta:['138問','26用語','合格73%'] },
-    { slug:'sales-cloud', storageKey:'sfqsales_v1', icon:'📈', title:'Salesforce 認定<br>Sales Cloud コンサルタント',
-      desc:'リード・商談・売上予測・価格表・テリトリ・Sales Cloud AI を網羅。公式分野に対応し、教科書・用語帳・比較表も搭載。',
+    { slug:'sales-cloud', storageKey:'sfqsales_v1', icon:'📈', title:'Salesforce 認定<br>Agentforce Sales コンサルタント',
+      desc:'旧「Sales Cloud コンサルタント」。リード・商談・売上予測・価格表・テリトリ・Sales Cloud AI を網羅。公式分野に対応し、教科書・用語帳・比較表も搭載。',
       meta:['200問','67用語','合格69%'] },
-    { slug:'service-cloud', storageKey:'sfqservice_v1', icon:'🎧', title:'Salesforce 認定<br>Service Cloud コンサルタント',
-      desc:'ケース管理・Omni-Channel・ナレッジ・エンタイトルメント・チャネル・分析を網羅。公式8分野に対応。',
+    { slug:'service-cloud', storageKey:'sfqservice_v1', icon:'🎧', title:'Salesforce 認定<br>Agentforce Service コンサルタント',
+      desc:'旧「Service Cloud コンサルタント」。ケース管理・Omni-Channel・ナレッジ・エンタイトルメント・チャネル・分析を網羅。公式8分野に対応。',
       meta:['123問','75用語','合格67%'] },
     { slug:'experience-cloud', storageKey:'sfqexp_v1', icon:'🌐', title:'Salesforce 認定<br>Experience Cloud コンサルタント',
       desc:'サイト構築・共有・ゲストユーザー・認証/SSO・ブランド・テンプレートを網羅。公式8分野に対応。',
@@ -271,8 +271,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=142"></script>
-<script src="cloud-sync.js?v=142"></script>
+<script src="changelog.js?v=143"></script>
+<script src="cloud-sync.js?v=143"></script>
 <script>
   /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
