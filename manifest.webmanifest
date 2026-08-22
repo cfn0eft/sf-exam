@@ -9,6 +9,8 @@
   "background_color": "#f8fafc",
   "theme_color": "#0176d3",
   "lang": "ja",
+  "id": "./",
+  "categories": ["education", "productivity"],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
@@ -38,6 +40,18 @@
       "name": "App Builder 模試（本番形式）",
       "short_name": "AB模試",
       "url": "./certifications/app-builder/index.html?go=exam",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Developer デイリーチャレンジ",
+      "short_name": "Devデイリー",
+      "url": "./certifications/developer/index.html?go=daily",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Developer 模試（本番形式）",
+      "short_name": "Dev模試",
+      "url": "./certifications/developer/index.html?go=exam",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     }
   ]

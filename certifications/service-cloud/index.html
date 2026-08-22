@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<script src="../../maintenance.js?v=138"></script>
+<script src="../../maintenance.js?v=139"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta name="description" content="Salesforce 認定 Service Cloud コンサルタント試験の無料学習クイズ。ケース管理・チャネル・ナレッジ・分析・統合の練習問題と本番形式の模試で合格を目指せます。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,7 +12,7 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=138">
+<link rel="stylesheet" href="../../quiz.css?v=139">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -22,13 +22,13 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
-  <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
+  <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none" title="戻る" aria-label="戻る">&#8592;</button>
+  <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" aria-label="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
   <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
-  <button class="topbar-btn" id="btn-guide" onclick="openGuide()" title="使い方ガイド">❓</button>
-  <button class="topbar-btn topbar-news" id="btn-news" onclick="openNews()" title="お知らせ">🔔<span class="news-dot" id="news-dot" style="display:none"></span></button>
-  <button class="topbar-btn" id="btn-mypage" onclick="goTo('mypage')" title="マイページ">👤</button>
-  <button class="topbar-btn" id="btn-dark" onclick="toggleDark()">🌙</button>
+  <button class="topbar-btn" id="btn-guide" onclick="openGuide()" title="使い方ガイド" aria-label="使い方ガイド">❓</button>
+  <button class="topbar-btn topbar-news" id="btn-news" onclick="openNews()" title="お知らせ" aria-label="お知らせ">🔔<span class="news-dot" id="news-dot" style="display:none"></span></button>
+  <button class="topbar-btn" id="btn-mypage" onclick="goTo('mypage')" title="マイページ" aria-label="マイページ">👤</button>
+  <button class="topbar-btn" id="btn-dark" onclick="toggleDark()" title="ダークモードの切り替え" aria-label="ダークモードの切り替え" aria-pressed="false">🌙</button>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -43,7 +43,7 @@
         <div id="cert-sub" style="font-size:11px;opacity:.85"></div>
       </div>
       <span class="hh-streak" id="hh-streak" style="display:none"></span>
-      <button class="hh-gear" onclick="togglePlanEdit()" title="受験日・目標を設定">⚙️</button>
+      <button class="hh-gear" onclick="togglePlanEdit()" title="受験日・目標を設定" aria-label="受験日・目標を設定">⚙️</button>
     </div>
     <div class="hh-goal" id="plan-goal" style="display:none">
       <div class="hh-goal-row"><span>今日の目標</span><span id="goal-txt">0 / 0 問</span></div>
@@ -172,7 +172,7 @@
       <span class="sess-ok" id="sess-ok-txt">✓ 0</span>
       <span style="color:var(--border)">|</span>
       <span class="sess-ng" id="sess-ng-txt">✗ 0</span>
-      <button class="bmbtn" id="s-bmbtn" onclick="toggleBm()">☆</button>
+      <button class="bmbtn" id="s-bmbtn" onclick="toggleBm()" title="この問題をブックマーク" aria-label="この問題をブックマーク" aria-pressed="false">☆</button>
     </div>
   </div>
   <div class="pbar"><div class="pfill" id="s-pfill"></div></div>
@@ -279,7 +279,7 @@
   <div class="sum-modal" id="sum-modal">
     <div class="sum-header">
       <span id="sum-title">まとめ</span>
-      <button class="sum-close" onclick="closeSummary()">✕</button>
+      <button class="sum-close" onclick="closeSummary()" title="閉じる" aria-label="閉じる">✕</button>
     </div>
     <div class="sum-body" id="sum-body"></div>
   </div>
@@ -296,7 +296,7 @@
     <!-- 検索バー -->
     <div class="search-wrap">
       <input class="search-box" id="tb-search" placeholder="🔍 用語・定義を検索..." oninput="tbSearch(this.value)">
-      <button class="search-clear" id="tb-clear" onclick="clearTbSearch()" style="display:none">✕</button>
+      <button class="search-clear" id="tb-clear" onclick="clearTbSearch()" style="display:none" title="検索をクリア" aria-label="検索をクリア">✕</button>
     </div>
     <div class="search-count" id="search-count" style="display:none"></div>
 
@@ -477,7 +477,7 @@
   </div>
   <div class="quiz-top">
     <span class="qprog" id="qk-prog">0 / 0</span>
-    <button class="bmbtn" id="qk-bm" onclick="qkToggleBm()">☆</button>
+    <button class="bmbtn" id="qk-bm" onclick="qkToggleBm()" title="この問題をブックマーク" aria-label="この問題をブックマーク" aria-pressed="false">☆</button>
   </div>
   <div class="pbar"><div class="pfill" id="qk-pfill"></div></div>
   <div class="card qk-card" id="qk-card" onclick="qkReveal()">
@@ -526,15 +526,15 @@
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
 <!-- アップデート履歴データ（LP・全資格で共有。エンジンより先に読み込む） -->
-<script src="../../changelog.js?v=138"></script>
+<script src="../../changelog.js?v=139"></script>
 <!-- 図解データ（インラインSVG・エンジンより先に読み込む） -->
-<script src="../../figures.js?v=138"></script>
+<script src="../../figures.js?v=139"></script>
 <!-- 共通クイズエンジン（全資格でこの1ファイルを共有） -->
-<script src="../../quiz-engine.js?v=138"></script>
+<script src="../../quiz-engine.js?v=139"></script>
 <!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有 -->
-<script src="../../progression.js?v=138"></script>
+<script src="../../progression.js?v=139"></script>
 <!-- クラウド同期（エンジンの後に読み込む。__getStore/__setStore/__refreshUI に依存） -->
-<script src="../../cloud-sync.js?v=138"></script>
+<script src="../../cloud-sync.js?v=139"></script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../../sw.js').catch(function(){});});}
 </script>
