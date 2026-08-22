@@ -12,6 +12,9 @@
  *    case⇔scenario の対応
  *  - vocab.json の fig 参照 / domains.json のウェイト合計
  *  - キャッシュ版数の3点セット整合（sw.js CACHE / SHELL の ?v= / 各HTMLの ?v=）
+ *  - sw.js の SHELL[] プリキャッシュ対象がディスクに実在するか
+ *  - manifest.webmanifest の必須キー・shortcuts の遷移先・icons の実在
+ *  - LP の CERTS[].meta（問題数/用語数/合格%）とシェルの CERT_CONFIG がデータ実数と一致するか
  *  - 主要 JS の構文チェック（node --check）
  * ===================================================================== */
 'use strict';
@@ -214,30 +217,64 @@ function validateCert(slug, figKeys) {
   let vocab;
   try { vocab = readJSON(path.join(dir, 'vocab.json')); }
   catch (e) { err('vocab.json が読めない: ' + e.message); vocab = []; }
+  if (vocab && !Array.isArray(vocab)) { err('vocab.json が配列でない'); vocab = []; }
   let terms = 0;
   const vTitles = new Set();
+  const vChapters = new Set();
+  // 章・用語で想定しているキー。ここに無いキーはタイポ or 死んだデータの疑い（警告）
+  const KNOWN_CH_KEYS = new Set(['chapter', 'terms', 'domain', 'emoji']);
+  const KNOWN_TERM_KEYS = new Set(['title', 'jaName', 'enName', 'definition', 'examPoints', 'questions', 'fig', 'domain']);
+  const unknownVocabKeys = {};
   (vocab || []).forEach((ch, i) => {
+    if (!ch || typeof ch !== 'object') { err('vocab[' + i + '] がオブジェクトでない'); return; }
+    Object.keys(ch).forEach((k) => { if (!KNOWN_CH_KEYS.has(k)) unknownVocabKeys[k] = (unknownVocabKeys[k] || 0) + 1; });
     if (!ch.chapter) err('vocab[' + i + '] chapter がない');
+    else if (vChapters.has(ch.chapter)) err('vocab 章タイトル重複: ' + ch.chapter);
+    else vChapters.add(ch.chapter);
+    if (!Array.isArray(ch.terms)) err('vocab[' + i + '] terms が配列でない');
+    else if (!ch.terms.length) warn('vocab 章「' + (ch.chapter || i) + '」の terms が空（教科書に空の章が出る）');
     (ch.terms || []).forEach((t) => {
       terms++;
+      Object.keys(t || {}).forEach((k) => { if (!KNOWN_TERM_KEYS.has(k)) unknownVocabKeys[k] = (unknownVocabKeys[k] || 0) + 1; });
       if (!t.title) err('vocab 章「' + (ch.chapter || i) + '」に title の無い用語');
       else if (vTitles.has(t.title)) warn('用語 title 重複: ' + t.title);
       else vTitles.add(t.title);
+      if (t.definition != null && typeof t.definition !== 'string') err('用語「' + t.title + '」の definition が文字列でない');
+      if (t.examPoints != null && !Array.isArray(t.examPoints)) err('用語「' + t.title + '」の examPoints が配列でない');
+      if (t.questions != null && !Array.isArray(t.questions)) err('用語「' + t.title + '」の questions が配列でない');
       if (t.fig && !figKeys.has(slug + '/' + t.fig)) err('用語「' + t.title + '」の fig が figures.js にない: ' + slug + '/' + t.fig);
       // 用語→関連問題の逆引き（questions[]）が実在する問題IDを指しているか（問題削除で腐るのを防ぐ）
       if (Array.isArray(t.questions)) t.questions.forEach((qid) => { if (!ids.has(qid)) warn('用語「' + t.title + '」の questions に存在しない問題ID: ' + qid); });
     });
   });
+  Object.keys(unknownVocabKeys).forEach((k) => warn('vocab のスキーマ外キー "' + k + '" が ' + unknownVocabKeys[k] + '件（タイポか死んだデータの疑い）'));
   info('  vocab: ' + (vocab || []).length + '章 ' + terms + '語');
 
+  // navmap（設定マップ）/ cram（直前対策）/ compare（比較表）は [{title, content, domain?}] の素朴な配列。
+  // 形式だけを検査する（本文の正誤は人手レビュー）。
+  const SECTION_KEYS = { 'navmap.json': ['title', 'content', 'domain', 'emoji'], 'cram.json': ['title', 'content', 'domain', 'emoji'], 'compare.json': ['title', 'content', 'domain', 'emoji'] };
   ['navmap.json', 'cram.json', 'compare.json'].forEach((f) => {
+    const fp = path.join(dir, f);
+    if (!fs.existsSync(fp)) return;   // cram/compare は任意
     try {
-      const d = readJSON(path.join(dir, f));
+      const d = readJSON(fp);
       if (!Array.isArray(d)) { err(f + ' が配列でない'); return; }
+      if (!d.length) { warn(f + ' が空配列（教科書タブに何も出ない）'); return; }
+      const known = new Set(SECTION_KEYS[f]);
+      const seenTitles = new Set();
+      const unknown = {};
       d.forEach((x, i) => {
+        if (!x || typeof x !== 'object') { err(f + '[' + i + '] がオブジェクトでない'); return; }
+        Object.keys(x).forEach((k) => { if (!known.has(k)) unknown[k] = (unknown[k] || 0) + 1; });
         if (!x.title) err(f + '[' + i + '] title がない');
+        else if (typeof x.title !== 'string') err(f + '[' + i + '] title が文字列でない');
+        else if (seenTitles.has(x.title)) warn(f + ' title 重複: ' + x.title);
+        else seenTitles.add(x.title);
         if (!x.content) err(f + '[' + i + '] content がない');
+        else if (typeof x.content !== 'string') err(f + '[' + i + '] content が文字列でない');
+        if (x.domain && !codes.has(x.domain)) err(f + '[' + i + '] 未知の domain: ' + x.domain);
       });
+      Object.keys(unknown).forEach((k) => warn(f + ' のスキーマ外キー "' + k + '" が ' + unknown[k] + '件（タイポか死んだデータの疑い）'));
     } catch (e) { err(f + ' が読めない: ' + e.message); }
   });
 
@@ -306,6 +343,130 @@ function validateVersions() {
   }
 }
 
+/* ---- sw.js の SHELL[] プリキャッシュ対象が実在するか ----
+ * install の `Promise.allSettled` は個々の `cache.add()` 失敗を握り潰すため、
+ * SHELL にタイプミスや消したファイルが残っていても静かに素通りし、
+ * 「初回訪問からオフラインで使える」前提だけが崩れる。ここで実在を保証する。 */
+function validateShell() {
+  info('\n== SW プリキャッシュ(SHELL) ==');
+  const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+  const m = sw.match(/const SHELL\s*=\s*\[([\s\S]*?)\];/);
+  if (!m) { err('sw.js の SHELL 配列が見つからない'); return; }
+  const entries = (m[1].match(/'([^']+)'/g) || []).map((x) => x.slice(1, -1));
+  if (!entries.length) { err('sw.js の SHELL が空'); return; }
+  let missing = 0;
+  const seen = new Set();
+  entries.forEach((e) => {
+    if (seen.has(e)) warn('SHELL に重複エントリ: ' + e);
+    else seen.add(e);
+    // './' はディレクトリ（=index.html）を指すエントリ。?v= は実ファイル名に含まれない
+    const rel = e.replace(/^\.\//, '').replace(/\?.*$/, '');
+    const target = rel === '' ? 'index.html' : rel;
+    if (!fs.existsSync(path.join(ROOT, target))) { err('SHELL の参照先が存在しない: ' + e); missing++; }
+  });
+  // 公開中の資格シェルが漏れていないか（プリキャッシュ漏れ＝その資格だけ初回オフライン不可）
+  fs.readdirSync(path.join(ROOT, 'certifications')).forEach((slug) => {
+    const shell = 'certifications/' + slug + '/index.html';
+    if (!fs.existsSync(path.join(ROOT, shell))) return;
+    if (!entries.some((e) => e.replace(/^\.\//, '').replace(/\?.*$/, '') === shell)) {
+      warn('SHELL に資格シェルが無い（初回オフラインで開けない）: ' + shell);
+    }
+  });
+  info('  ' + entries.length + '件検査' + (missing ? ' / 欠落 ' + missing + '件' : ' … すべて実在'));
+}
+
+/* ---- manifest.webmanifest の形式・参照整合 ---- */
+function validateManifest() {
+  info('\n== manifest ==');
+  const mp = path.join(ROOT, 'manifest.webmanifest');
+  let mf;
+  try { mf = readJSON(mp); }
+  catch (e) { err('manifest.webmanifest が読めない/JSONとして不正: ' + e.message); return; }
+  ['name', 'short_name', 'start_url', 'display', 'icons'].forEach((k) => {
+    if (mf[k] == null || mf[k] === '') err('manifest に必須キー "' + k + '" がない');
+  });
+  // id は省略時 start_url が使われる。明示しておくと start_url を変えてもインストール済みアプリの同一性が保てる
+  if (!mf.id) warn('manifest に id が無い（start_url 変更でインストール済みアプリの同一性が崩れる）');
+  if (!Array.isArray(mf.icons) || !mf.icons.length) err('manifest の icons が空');
+  else {
+    let maskable = false;
+    mf.icons.forEach((ic, i) => {
+      if (!ic.src) { err('manifest icons[' + i + '] に src がない'); return; }
+      if (!fs.existsSync(path.join(ROOT, ic.src))) err('manifest icons[' + i + '] のファイルが存在しない: ' + ic.src);
+      if (!ic.sizes) warn('manifest icons[' + i + '] に sizes がない');
+      if (String(ic.purpose || '').includes('maskable')) maskable = true;
+    });
+    if (!maskable) warn('manifest に maskable アイコンが無い（Android のアイコンが白枠になる）');
+  }
+  const certDir = path.join(ROOT, 'certifications');
+  (mf.shortcuts || []).forEach((sc, i) => {
+    const tag = 'manifest shortcuts[' + i + ']';
+    if (!sc.name) err(tag + ' に name がない');
+    if (!sc.url) { err(tag + ' に url がない'); return; }
+    const file = sc.url.replace(/^\.\//, '').replace(/[?#].*$/, '');
+    if (!fs.existsSync(path.join(ROOT, file))) err(tag + ' の遷移先が存在しない: ' + sc.url);
+    // ?go= はエンジンの handleLaunchShortcut() が解釈する値だけを許す
+    const go = (sc.url.match(/[?&]go=([^&#]*)/) || [])[1];
+    if (go && !['daily', 'exam'].includes(go)) err(tag + ' の ?go= が未対応の値: ' + go);
+    (sc.icons || []).forEach((ic) => {
+      if (ic.src && !fs.existsSync(path.join(ROOT, ic.src))) err(tag + ' のアイコンが存在しない: ' + ic.src);
+    });
+    if (file.startsWith('certifications/')) {
+      const slug = file.split('/')[1];
+      if (!fs.existsSync(path.join(certDir, slug, 'data'))) err(tag + ' が存在しない資格を指している: ' + slug);
+    }
+  });
+  info('  icons ' + (mf.icons || []).length + '件 / shortcuts ' + (mf.shortcuts || []).length + '件 … 参照OK');
+}
+
+/* ---- LP の資格カード（CERTS）と各シェルの CERT_CONFIG がデータ実数と一致するか ----
+ * LP の meta（問題数・用語数・合格%）は data/*.json と手動同期する運用なので、
+ * 増問・用語追加のたびにドリフトする。ここで実数と突き合わせて取りこぼしを防ぐ。 */
+function validateLanding() {
+  info('\n== LP の資格カード ==');
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const m = html.match(/const CERTS\s*=\s*(\[[\s\S]*?\n\s*\];)/);
+  if (!m) { err('index.html の CERTS 配列が見つからない'); return; }
+  let certs;
+  try { certs = new Function('return ' + m[1].replace(/;\s*$/, ''))(); }
+  catch (e) { err('index.html の CERTS を評価できない: ' + e.message); return; }
+  let n = 0;
+  certs.forEach((c) => {
+    if (!c || c.coming || !c.slug) return;
+    n++;
+    const dir = path.join(ROOT, 'certifications', c.slug, 'data');
+    if (!fs.existsSync(dir)) { err('CERTS の slug に対応する資格が無い: ' + c.slug); return; }
+    let qs = [], vocab = [];
+    try { qs = readJSON(path.join(dir, 'questions.json')); } catch (e) { return; }
+    try { vocab = readJSON(path.join(dir, 'vocab.json')); } catch (e) { vocab = []; }
+    const terms = (vocab || []).reduce((a, ch) => a + ((ch.terms || []).length), 0);
+    const meta = (c.meta || []).join(' ');
+    const pick = (re) => { const x = meta.match(re); return x ? Number(x[1]) : null; };
+    const mq = pick(/(\d+)問/), mv = pick(/(\d+)用語/), mp = pick(/合格(\d+)%/);
+    if (mq !== qs.length) err('LP ' + c.slug + ' の問題数が実数と不一致: meta=' + mq + ' 実数=' + qs.length);
+    if (mv !== terms) err('LP ' + c.slug + ' の用語数が実数と不一致: meta=' + mv + ' 実数=' + terms);
+    // 合格ラインはシェルの CERT_CONFIG.pass が出典（採点に使われるのはこちら）
+    const shellPath = path.join(ROOT, 'certifications', c.slug, 'index.html');
+    if (fs.existsSync(shellPath)) {
+      const shell = fs.readFileSync(shellPath, 'utf8');
+      const cm = shell.match(/window\.CERT_CONFIG\s*=\s*(\{[\s\S]*?\n\s*\};)/);
+      if (!cm) err(c.slug + ' のシェルに CERT_CONFIG が無い');
+      else {
+        let cfg = null;
+        try { cfg = new Function('return ' + cm[1].replace(/;\s*$/, ''))(); } catch (e) { err(c.slug + ' の CERT_CONFIG を評価できない: ' + e.message); }
+        if (cfg) {
+          if (cfg.slug !== c.slug) err(c.slug + ' のシェルの CERT_CONFIG.slug が違う: ' + cfg.slug);
+          if (cfg.storageKey !== c.storageKey) err(c.slug + ' の storageKey が LP と不一致: LP=' + c.storageKey + ' シェル=' + cfg.storageKey);
+          if (mp !== cfg.pass) err('LP ' + c.slug + ' の合格ラインがシェルと不一致: meta=' + mp + '% CERT_CONFIG.pass=' + cfg.pass + '%');
+          if (!(cfg.examN > 0)) err(c.slug + ' の examN が不正: ' + cfg.examN);
+          if (qs.length < cfg.examN) err(c.slug + ' の問題数(' + qs.length + ')が模試の出題数(' + cfg.examN + ')未満');
+        }
+      }
+    }
+  });
+  info('  ' + n + '資格の meta / CERT_CONFIG を実数と照合');
+}
+
 /* ---- 主要 JS の構文チェック ---- */
 function validateSyntax() {
   info('\n== JS 構文 ==');
@@ -345,6 +506,9 @@ fs.readdirSync(path.join(ROOT, 'certifications')).forEach((slug) => {
   if (fs.existsSync(path.join(ROOT, 'certifications', slug, 'data'))) validateCert(slug, figKeys);
 });
 validateVersions();
+validateShell();
+validateManifest();
+validateLanding();
 validateSyntax();
 validateChangelog();
 

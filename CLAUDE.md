@@ -5,7 +5,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
 - ローカル: `C:\Users\Nerod\ドキュメント\sf-exam`
-- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Sales Cloud コンサル (200問) / Service Cloud コンサル (120問) / Experience Cloud コンサル (132問) / Sharing & Visibility アーキテクト (81問)
+- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Sales Cloud コンサル (200問) / Service Cloud コンサル (120問) / Experience Cloud コンサル (131問) / Sharing & Visibility アーキテクト (81問)
 
 ---
 
@@ -65,6 +65,17 @@ Admin 8分野の公式ブループリント (2025/12/15改訂): Configuration15/
 
 App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリース10。
 
+### 授業（lessons.json）の整備状況
+
+スライド形式の「イチから授業」は資格ごとに任意。**未整備の資格はホームの授業導線ごと非表示**になる（エンジンが空配列扱いする）。
+
+| 整備済み | sf-admin 14本(70枚) / developer 19本(103枚) / app-builder 10本(50枚) |
+|---|---|
+| **未整備（0本）** | agentforce / sales-cloud / service-cloud / experience-cloud / sharing-visibility |
+
+問題・教科書・用語帳・比較表・模試は全8資格で使える。授業を足すときは `data/lessons.json` に
+`[{id,title,domain?,est?,slides:[{title,body?,code?,fig?,figCap?,checkIds?[]}]}]` を置くだけ（エンジンは触らない）。
+
 ### 新資格を追加する手順（これだけ）
 
 1. `certifications/{slug}/data/` にJSONを置く（questions/domains/vocab/navmap は必須、cram/compare は任意）
@@ -79,7 +90,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 `tools/` の Node スクリプト（依存パッケージなし・node 単体で動く）:
 
-- `node tools/validate-data.js` — データ・アセット整合の一括検証。questions/vocab 等のスキーマ、`fig`/`expFig` が figures.js に実在するか、`case`⇔`scenario` 対応、キャッシュ版数3点セットの整合、主要JSの構文、changelog 形式。**データや図を編集したら必ず実行**（エラーで exit 1）
+- `node tools/validate-data.js` — データ・アセット整合の一括検証。questions/vocab 等のスキーマ、`fig`/`expFig` が figures.js に実在するか、`case`⇔`scenario` 対応、navmap/cram/compare の形式（title 重複・型・`domain` が実在コードか）、sw.js `SHELL[]` のプリキャッシュ対象がディスクに実在するか、`manifest.webmanifest` の必須キー・shortcuts の遷移先・icons の実在、LP の `CERTS[].meta`（問題数/用語数/合格%）とシェルの `CERT_CONFIG` がデータ実数と一致するか、キャッシュ版数3点セットの整合、主要JSの構文、changelog 形式。**データや図を編集したら必ず実行**（エラーで exit 1）
 - `node tools/test-engine.js` — エンジン純粋ロジックのスモークテスト（SRS・難易度推定・復習判定・XP/レベル・模試抽出・store 正規化・重複回避・逆算ペース）。DOMスタブ＋vm でエンジンを丸ごと読み込んで検証。**quiz-engine.js を編集したら必ず実行**
 - `node tools/test-cloud-sync.js` — クラウド同期・管理者ビューの集計ロジックのスモークテスト。**cloud-sync.js を編集したら必ず実行**
 - `node tools/bump-version.js` — キャッシュ無効化3点セット（sw.js CACHE / SHELL の ?v= / 各HTMLの ?v=）を一括繰り上げ。`--dry` で確認のみ。**手作業での版数更新は廃止**
