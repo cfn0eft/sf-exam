@@ -10,7 +10,7 @@
 ![PWA](https://img.shields.io/badge/PWA-offline_ready-5A0FC8?logo=pwa&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_+_Firestore-FFCA28?logo=firebase&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-deployed-222?logo=github)
-![Questions](https://img.shields.io/badge/総問題数-2061-1f6feb)
+![Questions](https://img.shields.io/badge/総問題数-2105-1f6feb)
 ![No Build](https://img.shields.io/badge/build_step-none-success)
 
 </div>
@@ -58,9 +58,9 @@
 | **Salesforce 認定 Sales Cloud コンサルタント** | CRT-251 | **200 問** | 5 分野 | 67 語 | — | 69% |
 | **Salesforce 認定 Service Cloud コンサルタント** | CRT-261 | **123 問** | 8 分野 | 75 語 | — | 67% |
 | **Salesforce 認定 Experience Cloud コンサルタント** | CRT-271 | **131 問** | 8 分野 | 63 語 | — | 62% |
-| **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **88 問** | 4 分野 | 54 語 | — | 67% |
+| **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **132 問** | 4 分野 | 54 語 | — | 67% |
 
-**全 8 資格・計 2,061 問**を収録。いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
+**全 8 資格・計 2,105 問**を収録。いずれも **最新の公式ブループリント**に準拠（アドミンは 2025/12 改訂・Agentforce 8% を含む 8 分野構成）。
 各資格とも「出典」フィルタで、タイソンブログ由来・jpnshiken 由来・AI 生成の問題を**複数選択**で切り替えられます。
 
 > **「授業」列**は、スライド形式で順に学ぶ「イチから授業」（`data/lessons.json`）の本数です。
