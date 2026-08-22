@@ -55,8 +55,8 @@
 | **Salesforce 認定 Platform アプリケーションビルダー** | CRT-403 | **445 問** | 5 分野 | 83 語 | 10 本 | 63% |
 | **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **499 問** | 4 分野 | 75 語 | 19 本 | 68% |
 | **Salesforce 認定 Agentforce Specialist** | — | **138 問** | 6 分野 | 26 語 | — | 73% |
-| **Salesforce 認定 Sales Cloud コンサルタント** | CRT-251 | **200 問** | 5 分野 | 67 語 | — | 69% |
-| **Salesforce 認定 Service Cloud コンサルタント** | CRT-261 | **120 問** | 8 分野 | 75 語 | — | 67% |
+| **Salesforce 認定 Agentforce Sales コンサルタント**<br><sub>旧 Sales Cloud コンサルタント</sub> | CRT-251 | **200 問** | 5 分野 | 67 語 | — | 69% |
+| **Salesforce 認定 Agentforce Service コンサルタント**<br><sub>旧 Service Cloud コンサルタント</sub> | CRT-261 | **120 問** | 8 分野 | 75 語 | — | 67% |
 | **Salesforce 認定 Experience Cloud コンサルタント** | CRT-271 | **131 問** | 8 分野 | 63 語 | — | 62% |
 | **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **81 問** | 4 分野 | 54 語 | — | 67% |
 
