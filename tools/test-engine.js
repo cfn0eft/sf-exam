@@ -214,6 +214,63 @@ t('模試の重複回避: 新鮮な問題で足りる分野は直近出題を選
   eq(run('recentExamIds().size'), 0, '直近2回のみ保持されていない');
 });
 
+/* ---- 模試の分野別配分（examQuota・純粋関数） ---- */
+t('examQuota: 最大剰余法で合計がぴったり n になる（丸め不利が末尾分野に固定されない）', () => {
+  // 8分野×12.5% で n=60 ＝ 各 7.5問。分野ごとに独立して四捨五入すると 8×8=64 問になり、
+  // 旧実装は picked.slice(0,60) で「後ろの分野」だけを機械的に切り捨てていた。
+  const defs = Array.from({ length: 8 }, (_, i) => ({ code: 'd' + i, weight: 12.5 }));
+  const stock = {}; defs.forEach((d) => { stock[d.code] = 50; });
+  sandbox.__defs = defs; sandbox.__stock = stock;
+  const q = run('examQuota(__defs,60,__stock)');
+  const vals = defs.map((d) => q[d.code]);
+  eq(vals.reduce((a, b) => a + b, 0), 60, '合計が n にならない: ' + JSON.stringify(vals));
+  ok(Math.min(...vals) === 7 && Math.max(...vals) === 8, '配分が 7/8 に収まらない: ' + JSON.stringify(vals));
+  delete sandbox.__defs; delete sandbox.__stock;
+});
+
+t('examQuota: 在庫不足のあふれ分は在庫が残る分野へウェイト比で配り直す', () => {
+  // sharing-visibility 相当（obj と model が在庫不足）
+  sandbox.__defs = [{ code: 'obj', weight: 27 }, { code: 'rec', weight: 39 },
+    { code: 'other', weight: 16 }, { code: 'model', weight: 18 }];
+  sandbox.__stock = { obj: 11, rec: 48, other: 13, model: 9 };
+  const q = run('examQuota(__defs,60,__stock)');
+  eq(Object.keys(q).reduce((a, k) => a + q[k], 0), 60, '合計が n にならない: ' + JSON.stringify(q));
+  eq(q.obj, 11, '在庫を超えて割り当てた(obj)');
+  eq(q.model, 9, '在庫を超えて割り当てた(model)');
+  ok(q.rec <= 48 && q.other <= 13, '在庫を超えて割り当てた: ' + JSON.stringify(q));
+  ok(q.rec - 23 > q.other - 10, 'あふれ分がウェイト比で配られていない: ' + JSON.stringify(q));
+  delete sandbox.__defs; delete sandbox.__stock;
+});
+
+t('examQuota: 全体の在庫が n に満たなければ配れるだけ配って止まる', () => {
+  sandbox.__defs = [{ code: 'a', weight: 50 }, { code: 'b', weight: 50 }];
+  sandbox.__stock = { a: 4, b: 6 };
+  const q = run('examQuota(__defs,60,__stock)');
+  eq(q.a + q.b, 10, '在庫の総数を超える/下回る: ' + JSON.stringify(q));
+  delete sandbox.__defs; delete sandbox.__stock;
+});
+
+t('pickWeightedExam: 在庫が薄い分野があっても n 問そろえ、在庫は超えない', () => {
+  run(`
+    __bakQ=allQ;__bakD=DOMAIN_DEFS;__bakM=QDOMAIN;
+    DOMAIN_DEFS=[{code:'x',name:'X',weight:70,emoji:'❌'},{code:'y',name:'Y',weight:30,emoji:'🇾'}];
+    buildDomainIndex();
+    allQ=[];QDOMAIN={};
+    // y は weight 上 18問必要だが在庫5問しかない
+    for(let i=1;i<=100;i++){allQ.push({id:i,question:'Q'+i,choices:['x','y'],answers:['x'],domain:'x'});QDOMAIN[i]='x';}
+    for(let i=101;i<=105;i++){allQ.push({id:i,question:'Q'+i,choices:['x','y'],answers:['x'],domain:'y'});QDOMAIN[i]='y';}
+    localStorage.removeItem(EXAM_RECENT_KEY);
+  `);
+  try {
+    const byD = run('(function(){const c={x:0,y:0};pickWeightedExam(60).forEach(q=>c[QDOMAIN[q.id]]++);return c;})()');
+    eq(byD.x + byD.y, 60, '60問そろわない: ' + JSON.stringify(byD));
+    eq(byD.y, 5, '在庫を超えて y から出題した: ' + JSON.stringify(byD));
+    eq(byD.x, 55, '不足分が x へ回っていない: ' + JSON.stringify(byD));
+  } finally {
+    run('allQ=__bakQ;DOMAIN_DEFS=__bakD;QDOMAIN=__bakM;buildDomainIndex();');
+  }
+});
+
 /* ---- 出典フィルタ（複数選択） ---- */
 t('出典フィルタ: 複数の出典をトグルで選べる', () => {
   run(`
