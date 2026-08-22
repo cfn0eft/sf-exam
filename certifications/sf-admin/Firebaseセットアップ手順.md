@@ -84,7 +84,9 @@
 | 2 | **doc の削除を管理者だけに**（`allow delete`） | 停止中（blocked）の人が自分の doc を消して停止を帳消しにし、「承認待ち」の列へ並び直すのを防ぐ |
 | 3 | **管理者判定に uid を追加**（`adminUids()`） | ログインIDは誰でも自由に登録できるため、メールだけの判定だと管理者IDを先に他人に取られると権限ごと奪われる |
 
-> ⚠️ **#3 は手作業がひとつ必要です。** Firebase コンソール → **Authentication → Users** で管理者アカウントの **ユーザー UID** をコピーし、`firestore.rules` の `adminUids()` に貼ってから公開してください。貼り終えたら `adminEmails()` は `[]` にして構いません（uid だけで判定＝乗っ取り不能）。貼るまではメール判定のフォールバックで従来どおり動きます。
+> ✅ **#3 は 2026-08-22 に適用済みです。** `adminUids()` に管理者の UID が入り、`adminEmails()` は `[]`（メール判定は廃止）＝ログインIDを先に取られても管理者にはなれません。
+>
+> 管理者を**増やす/差し替える**ときは、Firebase コンソール → **Authentication → Users** で対象の **ユーザー UID** をコピーして `adminUids()` に足し、ルールを貼り直してください（`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせる）。
 
    - 管理者IDを `admin` 以外にしたい／複数にしたい場合は、`adminEmails()` の `'admin@sfquiz.local'` をそのIDのメール（例 `'daiki@sfquiz.local'`）に変更（カンマ区切りで複数可）し、**`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせて**ください。
 

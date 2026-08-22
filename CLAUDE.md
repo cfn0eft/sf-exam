@@ -160,7 +160,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 - **ルールの唯一の出典は root の `firestore.rules`**（2026-08-22 にリポジトリ管理化）。直したら Firebase コンソール「Firestore → ルール」へ貼って公開する。手順書のコードブロックは廃止し、貼り方だけを残した
 - ルールの要点: `progress/{uid}` は本人＋管理者だけが read。本人の書込は `selfKeys()` の**フィールド・ホワイトリスト**に限定（`maintOk`／`approvedAt`／`notices`／`fbReplies`／`adminLog` は管理者専用）。doc の**削除は管理者だけ**（停止中の人が doc を消して blocked を帳消しにするのを防ぐ）。`broadcast/*`（一斉お知らせ＋メンテ状態）は全ログインユーザーが read・管理者だけ write
-- ⚠️ **管理者判定は uid 固定を推奨**。ログインIDは誰でも自由に登録できるため、メール判定だけだと管理者IDを先に他人に取られると権限ごと奪われる。`firestore.rules` の `adminUids()` に Authentication の UID を貼れば解消（貼るまではメール判定のフォールバックで従来どおり動く）
+- **管理者判定は uid 固定済み**（2026-08-22）。`firestore.rules` の `adminUids()` に Authentication の UID を入れ、メール判定 `adminEmails()` は空にした。ログインIDは誰でも自由に登録できるため、メール判定のままだと管理者IDを先に他人へ登録された時点で権限ごと奪われる（uid 判定だけならその経路は塞がる）。⚠️ 管理者アカウントを増やす/差し替えるときは `adminUids()` に UID を足してコンソールへ貼り直す（`firebase-config.js` の `SFQ_ADMIN_IDS` も合わせる）
 - **Web の apiKey は公開前提**。GitHub のシークレットスキャン警告は false positive
 - 本当の防御は Firestore ルール（本人 uid 一致のみ read/write）
 - API キーは Google Cloud Console で **HTTP リファラー制限済み**：`https://cfn0eft.github.io/*` と `http://localhost/*` のみ許可

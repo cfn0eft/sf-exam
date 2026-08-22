@@ -28,14 +28,12 @@ service cloud.firestore {
         'zX5ZYus58QMrig8aD08t3uGsi4t2'
       ];
     }
-    // 移行用フォールバック。uid 判定が効いていることを確認できたら、この配列を
-    // 空 [] にする（＝uid だけで判定＝ログインIDを取られても管理者にはなれない）。
-    // 空にする前に必ず「管理者でログイン → 👑 管理者ビューが開く」を確認すること。
-    // firebase-config.js の SFQ_ADMIN_IDS と必ず一致させる。
+    // 移行用フォールバック（2026-08-22 に廃止＝空）。
+    // 空にしてある理由: ログインIDは誰でも自由に登録できるため、メールで管理者を
+    // 判定していると管理者IDを先に他人へ登録された時点で権限ごと奪われる。
+    // uid 判定だけにすればその経路は塞がる。ここへ戻す必要は通常ない。
     function adminEmails() {
-      return [
-        'admin@sfquiz.local'
-      ];
+      return [];
     }
     function isAdmin() {
       return request.auth != null && (
