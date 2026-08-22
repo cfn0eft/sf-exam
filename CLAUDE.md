@@ -4,7 +4,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
-- ローカル: `C:\Users\Nerod\ドキュメント\sf-exam`
+- ローカル: `C:\Users\PC_User\sf-exam`
 - 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Agentforce Sales コンサル (200問・旧 Sales Cloud コンサル) / Agentforce Service コンサル (120問・旧 Service Cloud コンサル) / Experience Cloud コンサル (131問) / Sharing & Visibility アーキテクト (81問)
 
 ---
@@ -16,12 +16,14 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 ```
 sf-exam/
 ├── index.html            # LP (gateway)。資格カードは末尾の CERTS 配列から自動生成。お知らせバナー＋モーダルも持つ
-├── quiz-engine.js        # 全資格共通の単一エンジン（約2950行）
+├── quiz-engine.js        # 全資格共通の単一エンジン（約3300行）
 ├── quiz.css              # 全資格共通
 ├── changelog.js          # アップデート履歴データ window.SFQ_CHANGELOG（LP・全資格で共有・唯一の出典）
 ├── figures.js            # 図解データ window.SFQ_FIGURES（全資格共有・唯一の出典。色は持たずクラス＋幾何のみのインラインSVG）
 ├── firebase-config.js    # ユーザー編集する唯一の Firebase 設定
 ├── cloud-sync.js         # ログイン/同期ロジック（編集不要）
+├── progression.js        # 資格のロック解除（直列進行）。LP・全資格ページ共通・唯一の出典（下記「資格のロック解除」参照）
+├── firestore.rules       # Firestore セキュリティルール（唯一の出典。変更したらコンソールへ貼り直す）
 ├── manifest.webmanifest  # PWA
 ├── sw.js                 # Service Worker（キャッシュ版数の更新は tools/bump-version.js で。手作業更新は廃止）
 ├── tools/                # 開発ツール（下記「開発ツール・CI」参照。サイト配信には含まれない）
@@ -76,6 +78,17 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 問題・教科書・用語帳・比較表・模試は全8資格で使える。授業を足すときは `data/lessons.json` に
 `[{id,title,domain?,est?,slides:[{title,body?,code?,fig?,figCap?,checkIds?[]}]}]` を置くだけ（エンジンは触らない）。
 
+### 資格のロック解除（progression.js・直列進行）
+
+`progression.js` が「いま学習できる資格はどれか」を全ページ共通で判定する**唯一の出典**（LP・各資格シェルの両方が読み込む）。エンジン・CSS・同期は触らない。
+
+- **順路**: アドミン → アプリビルダー → デベロッパー → 残り5資格（`POOL`）から**1つだけ選んで解除**。取得するとまた1つ選べる（＝常に開いているのは1資格）。
+- **取得済み＝学習ロック**: 取得済みにした資格は問題を解けなくなる。中身を見ずに「取得済み」だけ押して先取りするのを防ぐため。
+- **判定の出典は2系統**: クラウド接続時は cloud-sync が `window.SFQ_PROGRESS` / `window.SFQ_IS_ADMIN` を立てて `'sfq-progress'` を発火（端末横断）。未ログイン・localhost・file:// は localStorage の各 `storageKey` を走査するフォールバック。
+- **主なAPI**: `stateOf(slug)`（`open`/`locked`/`coming`）・`acquiredOf`・`electiveOf`・`isReleased`。LP のカード描画と各シェルのロック画面がこれを見る。
+- **公開制御**: `RELEASED` に無い資格は「🔜 いずれ公開」表示になり、管理者だけが裏で開ける。2026-07-30 に全8資格が `RELEASED` 入り済み。
+- 選んだ解除資格は本人 doc 直下の `elective`（＋localStorage `sfq_elective`）。選び間違いは管理者ビューの「選択をリセット」で救済する。
+
 ### 新資格を追加する手順（これだけ）
 
 1. `certifications/{slug}/data/` にJSONを置く（questions/domains/vocab/navmap は必須、cram/compare は任意）
@@ -90,7 +103,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 `tools/` の Node スクリプト（依存パッケージなし・node 単体で動く）:
 
-- `node tools/validate-data.js` — データ・アセット整合の一括検証。questions/vocab 等のスキーマ、`fig`/`expFig` が figures.js に実在するか、`case`⇔`scenario` 対応、navmap/cram/compare の形式（title 重複・型・`domain` が実在コードか）、sw.js `SHELL[]` のプリキャッシュ対象がディスクに実在するか、`manifest.webmanifest` の必須キー・shortcuts の遷移先・icons の実在、LP の `CERTS[].meta`（問題数/用語数/合格%）とシェルの `CERT_CONFIG` がデータ実数と一致するか、キャッシュ版数3点セットの整合、主要JSの構文、changelog 形式。**データや図を編集したら必ず実行**（エラーで exit 1）
+- `node tools/validate-data.js` — データ・アセット整合の一括検証。questions/vocab 等のスキーマ、`fig`/`expFig` が figures.js に実在するか、`case`⇔`scenario` 対応、navmap/cram/compare の形式（title 重複・型・`domain` が実在コードか）、sw.js `SHELL[]` のプリキャッシュ対象がディスクに実在するか、`manifest.webmanifest` の必須キー・shortcuts の遷移先・icons の実在、LP の `CERTS[].meta`（問題数/用語数/合格%）とシェルの `CERT_CONFIG` がデータ実数と一致するか、キャッシュ版数3点セットの整合、**模試が公式ブループリントを再現できるか（分野別の在庫不足・出題プールの薄さ）**、主要JSの構文、changelog 形式。**データや図を編集したら必ず実行**（エラーで exit 1）
 - `node tools/test-engine.js` — エンジン純粋ロジックのスモークテスト（SRS・難易度推定・復習判定・XP/レベル・模試抽出・store 正規化・重複回避・逆算ペース）。DOMスタブ＋vm でエンジンを丸ごと読み込んで検証。**quiz-engine.js を編集したら必ず実行**
 - `node tools/test-cloud-sync.js` — クラウド同期・管理者ビューの集計ロジックのスモークテスト。**cloud-sync.js を編集したら必ず実行**
 - `node tools/bump-version.js` — キャッシュ無効化3点セット（sw.js CACHE / SHELL の ?v= / 各HTMLの ?v=）を一括繰り上げ。`--dry` で確認のみ。**手作業での版数更新は廃止**
@@ -107,7 +120,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 - Firestore は `progress/{uid}` に保存。doc 構造は `{ stores: { '<slug>': store, ... }, name, email, updated, feedback:[], access, maintOk, approvedAt, expiredAt }`（資格別名前空間。複数資格が同じ uid を共有しても上書きされない）
 - `access` は利用承認フラグ（**doc 直下**）。`'approved'`=利用可／`'pending'`（既定・未設定含む）=承認待ち／`'blocked'`=停止。**管理者だけが `approved` を付与でき**（Firestore ルールで本人は `access` を `approved` に書けない）、`approved` 以外は cloud-sync が全面ロック画面（`#sfqc-lock`）を出して問題に触らせない（ホワイトリスト方式）。新規登録は `pending` の doc を生成して管理者ビューに可視化。管理者ビューの各アカウントに「✅ 承認 / ⏸ 停止」トグル＋承認状態フィルタあり。承認待ち画面には「お名前」入力＋利用申請フォームがあり、`doApplyAccess()` が本人 doc に `name` と `req:{name,ts}` を書く（access は pending 維持なのでルール変更不要で本人書込可）。管理者ビューは申請名と「📝 申請 日時」を表示。承認済みは localStorage `sfq_access_<uid>` に控え、オフライン再ログイン時のみ素通し（停止時はクリア）。**この機能は Firestore ルール変更が必須**（`certifications/sf-admin/Firebaseセットアップ手順.md` ステップ5）。⚠️ 既存ユーザーも `access` 未設定＝承認待ちになるため、導入後に管理者ビューで承認が必要。
 - **休眠アカウントの承認失効（30日）**: `INACTIVE_DAYS = 30`（`cloud-sync.js`）。承認済みでも「最終アクセス」から30日を超えるとログイン時に自分で `access:'pending'` に戻し（ルール変更不要＝本人は pending へ書ける）、`req` を消して**そのままログアウト**する。次回ログインで「⏳ 利用承認が失効しました」ロック＋申請フォーム＝**再申請が必要**。進捗（`stores`）は消さないので再承認すれば元どおり。起点は `lastSeen`（在席ハートビート）・`lastLogin`・`approvedAt`（管理者の承認日時）の**最も新しいもの**（ログインしたまま使い続けている人の誤失効と、再承認直後の再失効を防ぐ）。記録がまったく無い古い doc は起点なし＝失効させない。オフライン素通し用の localStorage `sfq_access_<uid>` も `{v,ts}` 形式にして30日で失効（旧形式の素の `'approved'` は後方互換で素通し）。管理者は対象外。判定は純粋関数 `accessExpired(data, now)` / `cachedApprovalValid(uid, now)`（`tools/test-cloud-sync.js` で検証）。管理者ビューのユーザータブに「🧹 休眠アカウント … 承認を一括解除」（`sweepExpiredAccess`）があり、ログインしてこない休眠分もまとめて棚卸しできる。失効した doc には `expiredAt`/`expiredDays` が入り、申請一覧・ユーザー一覧に「🧹 休眠失効」チップが出る（新規登録の申請と区別できる）
-- `maintOk` は「メンテナンス中でも利用できる」フラグ（**doc 直下**・既定 false）。`true` の間は `checkMaintenance()` が `maintenance.html` への転送をスキップし、代わりに橙バナー「🛠 ただいまメンテナンス中です（このアカウントは利用を許可されています）」を出す。**緊急全停止（`fullStop`）にも効く**。付与/解除は管理者ビューのユーザー一覧の「🛠 メンテ許可」ボタン（＋選択して一括／`🛠 メンテ許可` 絞り込みチップ／メンテ節に許可人数）。**Firestore ルール変更は不要**（既存の `isAdmin()` 全権で管理者だけが書ける）。本人 doc のライブ購読で付与/解除が即時反映され、すでに `maintenance.html` にいる人も `checkExempt()` がトップへ戻す。⚠️ `maintenance.js` の `MANUAL_MAINTENANCE`（手動オーバーライド）は Firebase を見ないため対象外＝そのときはプレビュー合言葉 `?preview=` を使う。判定は純粋関数 `maintShouldBlock(st, exempt, preview)` に切り出し済み（`tools/test-cloud-sync.js` で検証）
+- `maintOk` は「メンテナンス中でも利用できる」フラグ（**doc 直下**・既定 false）。`true` の間は `checkMaintenance()` が `maintenance.html` への転送をスキップし、代わりに橙バナー「🛠 ただいまメンテナンス中です（このアカウントは利用を許可されています）」を出す。**緊急全停止（`fullStop`）にも効く**。付与/解除は管理者ビューのユーザー一覧の「🛠 メンテ許可」ボタン（＋選択して一括／`🛠 メンテ許可` 絞り込みチップ／メンテ節に許可人数）。**`firestore.rules` を貼っていれば管理者だけが書ける**（本人の書込は `selfKeys()` のホワイトリストに限定され、`maintOk` はそこに含まれない）。⚠️ 2026-08-22 より前の旧ルールのままだと本人が自分に `maintOk` を付けられてしまう＝メンテ回避が自己申告で通る。既存プロジェクトは `firestore.rules` を貼り直すこと。本人 doc のライブ購読で付与/解除が即時反映され、すでに `maintenance.html` にいる人も `checkExempt()` がトップへ戻す。⚠️ `maintenance.js` の `MANUAL_MAINTENANCE`（手動オーバーライド）は Firebase を見ないため対象外＝そのときはプレビュー合言葉 `?preview=` を使う。判定は純粋関数 `maintShouldBlock(st, exempt, preview)` に切り出し済み（`tools/test-cloud-sync.js` で検証）
 - `feedback` は不具合報告/ご意見の配列（**doc 直下・各 store とは別**）。本人 doc への `arrayUnion` で追加（既存ルールのまま＝本人は自 doc 書込可、ルール変更不要）。未ログイン時は localStorage `sfq_feedback_pending` に退避し、次回ログインで `flushPendingFeedback()` が一括送信
 - 保存は `doc.update(new FieldPath('stores',CERT_KEY), st, ...)` で当該資格のサブストアを丸ごと置換（deep-merge 回避）
 - 保存は 0.8秒デバウンス。`save()` が `window.__cloudSave()` をフック
@@ -145,6 +158,9 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 ## Firebase セキュリティ
 
+- **ルールの唯一の出典は root の `firestore.rules`**（2026-08-22 にリポジトリ管理化）。直したら Firebase コンソール「Firestore → ルール」へ貼って公開する。手順書のコードブロックは廃止し、貼り方だけを残した
+- ルールの要点: `progress/{uid}` は本人＋管理者だけが read。本人の書込は `selfKeys()` の**フィールド・ホワイトリスト**に限定（`maintOk`／`approvedAt`／`notices`／`fbReplies`／`adminLog` は管理者専用）。doc の**削除は管理者だけ**（停止中の人が doc を消して blocked を帳消しにするのを防ぐ）。`broadcast/*`（一斉お知らせ＋メンテ状態）は全ログインユーザーが read・管理者だけ write
+- **管理者判定は uid 固定済み**（2026-08-22）。`firestore.rules` の `adminUids()` に Authentication の UID を入れ、メール判定 `adminEmails()` は空にした。ログインIDは誰でも自由に登録できるため、メール判定のままだと管理者IDを先に他人へ登録された時点で権限ごと奪われる（uid 判定だけならその経路は塞がる）。⚠️ 管理者アカウントを増やす/差し替えるときは `adminUids()` に UID を足してコンソールへ貼り直す（`firebase-config.js` の `SFQ_ADMIN_IDS` も合わせる）
 - **Web の apiKey は公開前提**。GitHub のシークレットスキャン警告は false positive
 - 本当の防御は Firestore ルール（本人 uid 一致のみ read/write）
 - API キーは Google Cloud Console で **HTTP リファラー制限済み**：`https://cfn0eft.github.io/*` と `http://localhost/*` のみ許可
@@ -187,7 +203,7 @@ store = {
 **Claude が Bash ツールで `git add`→`commit`→`push` まで自分で実行する**（このリポジトリでは Bash から GitHub への push が通ることを確認済み）。コマンドを提示して終わりにしない。push 完了まで見届けて結果を報告する。
 
 ```bash
-cd /c/Users/Nerod/ドキュメント/sf-exam
+cd /c/Users/PC_User/sf-exam
 git add <変更ファイル>     # または git add -A
 git commit -m "<日本語1行>"
 git push origin main
