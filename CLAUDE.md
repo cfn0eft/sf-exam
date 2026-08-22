@@ -265,7 +265,9 @@ git push origin main
   `https://resources.docs.salesforce.com/latest/latest/{en-us|ja-jp}/sfdc/pdf/{guide}.pdf` は **200 で取得できる**（`object_reference` 22MB 等）。`pdftotext -layout`（Git Bash 同梱・`/mingw64/bin/pdftotext`）で全文検索すれば、help.salesforce.com にしか無い内容も原文で確認できる。
   - `en-us` は**仕様の確定**に使う。例: `DefaultCaseAccess` の有効値は `None/Read/Edit/ReadEditTransfer` で **`ControlledByParent` は無い**（＝ケースに「親レコードに連動」は設定できない）。`DefaultContactAccess` にはある。
   - `ja-jp` は**日本語UI用語の確定**に使う。実際に「親レコードに連動」「Apex 共有の再適用」「セッションの有効化が必要」「ディビジョン」「高ボリュームポータルユーザ」などの誤表記をこれで潰した。
+  - ⚠️ **HTTP 200 でも PDF とは限らない**（`salesforce_security_impl_guide.pdf` は 200 を返すが中身は Salesforce Help の HTML）。取得したら必ず先頭4バイトが `%PDF` かを確認する: `curl -sL --range 0-3 <url> | head -c 4`。
   - ⚠️ 全ガイドが揃っているわけではない（`apexcode.pdf` は 404）。無いものは `developer.salesforce.com` の HTML を使う。
+  - 実績のあるガイド: `object_reference.pdf`（22MB・選択リストの有効値の確定に有効）／`api_meta.pdf`（13MB・**権限まわりの決定打**。`modifyAllRecords`＝レコードと共有設定の話／`viewAllFields`＝項目の参照権限で API 63.0 以降の別権限／`MutingPermissionSet` は `used in conjunction with PermissionSetGroup`／必須項目の項目権限は API 30.0 以降 取得・デプロイ不可、はすべてここで確定できる）。
   - ⚠️ `developer.salesforce.com/docs/get_document_content/...` 形式の URL は**生 JSON が返るうえ API 版数が固定される**ので `reference_url` に使わない。canonical な `atlas.en-us.{guide}.meta/...` 形式（版数なし）に統一する。
 
 ### Distractor（不正解選択肢）の品質
