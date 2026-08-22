@@ -19,10 +19,13 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     /* ---------------- 管理者の判定 ----------------
-     * 推奨は uid 固定。メール判定だけだと「ログインIDは誰でも自由に登録できる」
-     * 仕様のため、管理者IDを先に他人へ登録されると管理者権限ごと奪われる。
-     * uid は Firebase コンソール → Authentication → Users の「ユーザー UID」。
-     * ここへ貼ったら adminEmails() の行は空 [] にして構わない（uid だけで判定）。 */
+     * uid 固定（2026-08-22 移行済み・本番へ適用ずみ）。メール判定だけだと
+     * 「ログインIDは誰でも自由に登録できる」仕様のため、管理者IDを先に他人へ
+     * 登録された時点で管理者権限ごと奪われるため。
+     * 管理者を増やす/差し替えるときは、Firebase コンソール → Authentication →
+     * Users の「ユーザー UID」を adminUids() に足し、このファイルをコンソールの
+     * 「Firestore → ルール」へ貼り直して公開する
+     * （firebase-config.js の SFQ_ADMIN_IDS も同じIDに合わせること）。 */
     function adminUids() {
       return [
         'zX5ZYus58QMrig8aD08t3uGsi4t2'
