@@ -33,6 +33,11 @@
     - 日本語UI用語の誤り3件（「Apex 共有再計算」→「Apex 共有の再適用」／「セッションのアクティブ化が必要」→「セッションの有効化が必要」／「区分」→「ディビジョン」「大量ポータルユーザー」→「高ボリュームポータルユーザ」「親レコードにより制御」→「親レコードに連動」）
     - `System.AccessType` の値の記載漏れ（UPSERTABLE を含む4値）／未検証の数値主張（「20件は旧上限」）の削除／版数固定URL(234.0)・`get_document_content` 形式URLの canonical 化
   ⚠️ 追加44問はすべて `source:'gen'`。論点の出どころは各問の `origin` に記録（official-docs 30 / examtopics.com 5 / salesforceben.com 2 / issacc.com 2 / apexhours・validexamdumps・focusonforce・quizlet・dumpsmate 各1）。**だいきの最終確認を推奨。**
+  ✅ 検証で「確度：中」と留保が付いていた3点は、2026-08-22 に **PDF 経路（`api_meta.pdf`）で公式原文を取得して確定済み**（合成判断ではなくなった）:
+    - #94「すべて編集（Modify All）を付けても項目レベルセキュリティは残る」→ `modifyAllRecords` の定義は "all records ... regardless of the sharing settings for the object" ＝レコードと共有設定の話で、項目は API 63.0 以降の別権限 `viewAllFields`（"all fields and field data ... can be viewed"）が担う。
+    - #90「ミュート権限セットは単独でユーザーに割り当てられない」→ `MutingPermissionSet` は "used in conjunction with PermissionSetGroup"、"settings enabled by MutingPermissionSet are turned off for the permission set group that it's a component of"。
+    - #103「必須項目は項目権限を変更できない」→ `PermissionSetFieldPermissions` に "In API version 30.0 and later, permissions for required fields can't be retrieved or deployed."
+    あわせて、前バッチ #85（View All Fields が参照専用か編集可か公式に明記が無い、として保留していた点）も `viewAllFields` の定義 "can be viewed" で**参照**と確定し、解説に反映済み。
 
 - ✅ 既存データの不具合を1件修正（2026-08-22）: sharing-visibility #11
   現状: 「ケース（標準オブジェクト）を Apex 管理共有で共有し、共有理由（rowCause）を定義する」という設問だったが、公式は `Apex sharing reasons and Apex managed sharing recalculation are only available for custom objects.` と明記しており、標準オブジェクトでは共有理由を定義できず設問が成立しない。
