@@ -5,7 +5,7 @@ Salesforce 認定資格の学習用クイズサイト。GitHub Pages で配信�
 - 公開URL: https://cfn0eft.github.io/sf-exam/
 - リポジトリ: https://github.com/cfn0eft/sf-exam (main ブランチ)
 - ローカル: `C:\Users\PC_User\sf-exam`
-- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Sales Cloud コンサル (200問) / Service Cloud コンサル (123問) / Experience Cloud コンサル (131問) / Sharing & Visibility アーキテクト (132問)
+- 対応資格（全8資格 LP 公開済）: Administrator (合格済・437問) / Platform App Builder (445問) / Developer (499問) / Agentforce Specialist (138問) / Agentforce Sales コンサル (200問・旧 Sales Cloud コンサル) / Agentforce Service コンサル (123問・旧 Service Cloud コンサル) / Experience Cloud コンサル (131問) / Sharing & Visibility アーキテクト (132問)
 
 ---
 
@@ -56,8 +56,8 @@ sf-exam/
 | App Builder | app-builder | CRT-403 | 60 | 105 | 63 | sfqab_v1 | 5 (fund/data/logic/ui/deploy) |
 | Developer | developer | CRT-450 | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
 | Agentforce Specialist | agentforce | （なし） | 60 | 105 | 73 | sfqaf_v1 | 6 (agents/prompt/data360/deploy/gov/orch) |
-| Sales Cloud コンサル | sales-cloud | CRT-251 | 60 | 105 | 69 | sfqsales_v1 | 5 (strat/app/life/data/ai) |
-| Service Cloud コンサル | service-cloud | CRT-261 | 60 | 105 | 67 | sfqservice_v1 | 8 (ind/strat/design/know/channel/case/analytics/integ) |
+| Agentforce Sales コンサル | sales-cloud | CRT-251 | 60 | 105 | 69 | sfqsales_v1 | 5 (strat/app/life/data/ai) |
+| Agentforce Service コンサル | service-cloud | CRT-261 | 60 | 105 | 67 | sfqservice_v1 | 8 (ind/strat/design/know/channel/case/analytics/integ) |
 | Experience Cloud コンサル | experience-cloud | CRT-271 | 60 | 105 | 62 | sfqexp_v1 | 8 (admin/share/brand/auth/theme/basics/custom/adopt) |
 | Sharing & Visibility アーキテクト | sharing-visibility | （なし） | 60 | 120 | 67 | sfqsva_v1 | 4 (obj/rec/other/model) |
 

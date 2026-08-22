@@ -10,7 +10,7 @@
  *    全資格ぶんを再ダウンロードさせない）。訪問した資格の questions.json 等はランタイムで貯まる。
  * ※ HTML をネットワーク優先にすることで、ハードリロード(Ctrl+Shift+R)なしで更新が反映される。
  */
-const CACHE = 'sf-exam-v142';
+const CACHE = 'sf-exam-v143';
 const DATA_CACHE = 'sf-exam-data-v1';
 // プリキャッシュはアプリシェル（LP＋各資格シェル＋JS/CSS/icons）のみに限定する。
 // 学習データ(questions.json 等・全8資格で生6MB超)はここに含めない＝LPを開いただけのユーザーに
@@ -19,15 +19,15 @@ const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=142',
+  './maintenance.js?v=143',
   './manifest.webmanifest',
-  './quiz.css?v=142',
-  './quiz-engine.js?v=142',
-  './changelog.js?v=142',
-  './figures.js?v=142',
-  './progression.js?v=142',
+  './quiz.css?v=143',
+  './quiz-engine.js?v=143',
+  './changelog.js?v=143',
+  './figures.js?v=143',
+  './progression.js?v=143',
   './firebase-config.js',
-  './cloud-sync.js?v=142',
+  './cloud-sync.js?v=143',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   './certifications/developer/index.html',
