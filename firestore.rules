@@ -1,0 +1,112 @@
+rules_version = '2';
+
+/* =====================================================================
+ * sf-exam — Firestore セキュリティルール（唯一の出典）
+ * ---------------------------------------------------------------------
+ * これまでルールは「certifications/sf-admin/Firebaseセットアップ手順.md」の
+ * コードブロックだけが出典で、リポジトリに実体が無かった（＝差分が追えない）。
+ * 以後はこのファイルを正とし、変更したら Firebase コンソールの
+ * 「Firestore Database → ルール」へ貼り直して「公開」する。
+ *
+ * 設計:
+ *   progress/{uid} … 利用者ごとの進捗ドキュメント。読めるのは本人と管理者だけ。
+ *                    本人の書込は「本人が書いてよいフィールド」だけに限定する
+ *                    （ホワイトリスト方式）。管理者は全権。削除は管理者だけ。
+ *   broadcast/*    … 一斉お知らせ＋メンテナンス状態。全ログインユーザーが読め、
+ *                    書けるのは管理者だけ。
+ * ===================================================================== */
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ---------------- 管理者の判定 ----------------
+     * uid 固定（2026-08-22 移行済み・本番へ適用ずみ）。メール判定だけだと
+     * 「ログインIDは誰でも自由に登録できる」仕様のため、管理者IDを先に他人へ
+     * 登録された時点で管理者権限ごと奪われるため。
+     * 管理者を増やす/差し替えるときは、Firebase コンソール → Authentication →
+     * Users の「ユーザー UID」を adminUids() に足し、このファイルをコンソールの
+     * 「Firestore → ルール」へ貼り直して公開する
+     * （firebase-config.js の SFQ_ADMIN_IDS も同じIDに合わせること）。 */
+    function adminUids() {
+      return [
+        'zX5ZYus58QMrig8aD08t3uGsi4t2'
+      ];
+    }
+    // 移行用フォールバック（2026-08-22 に廃止＝空）。
+    // 空にしてある理由: ログインIDは誰でも自由に登録できるため、メールで管理者を
+    // 判定していると管理者IDを先に他人へ登録された時点で権限ごと奪われる。
+    // uid 判定だけにすればその経路は塞がる。ここへ戻す必要は通常ない。
+    function adminEmails() {
+      return [];
+    }
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.uid in adminUids() ||
+        request.auth.token.email in adminEmails()
+      );
+    }
+
+    /* ---------------- 本人が書いてよいフィールド ----------------
+     * ここに無いキーは本人が書けない＝管理者専用フィールド。
+     *   maintOk     メンテナンス中も利用できる例外フラグ（自己付与を防ぐ）
+     *   approvedAt  管理者が承認した日時（休眠失効の起点。自己更新で失効を無効化できてしまう）
+     *   notices     個別お知らせ（管理者→利用者）
+     *   fbReplies   フィードバックへの管理者返信
+     *   adminLog    管理者の操作ログ
+     * 進捗本体 stores は本人が書く（学習の保存そのもの）。
+     * stores.<資格>.acquiredDate（資格の取得済み）も本人が書くが、これは
+     * アプリ上「自分で取得を宣言する」ボタンがある正規の操作＝仕様どおり。 */
+    function selfKeys() {
+      return [
+        'stores', 'name', 'email', 'updated',
+        'access', 'req', 'expiredAt', 'expiredDays',
+        'feedback', 'newsSeen', 'read',
+        'lastLogin', 'lastSeen', 'logins',
+        'elective', 'chat'
+      ];
+    }
+    // 今回の書込で実際に増減・変更されるキー（作成時は全キー）
+    function touchedKeys() {
+      return resource == null
+        ? request.resource.data.keys()
+        : request.resource.data.diff(resource.data).affectedKeys();
+    }
+    function selfFieldsOnly() {
+      return touchedKeys().hasOnly(selfKeys());
+    }
+
+    /* access（利用承認フラグ）の自己書込ルール
+     *   - access を含めない通常保存        … 可
+     *   - 既存の access を維持したままの保存 … 可（停止中の人が出す「解除の申請」がこれ）
+     *   - 自分で 'pending' にする           … 可（休眠失効の自己降格）。ただし停止中からは不可
+     *   - 'approved' / 'blocked' へ        … 不可（管理者だけ） */
+    function accessOk() {
+      return !('access' in request.resource.data)
+        || (resource != null && request.resource.data.access == resource.data.access)
+        || (request.resource.data.access == 'pending' &&
+            (resource == null || resource.data.access != 'blocked'));
+    }
+
+    match /progress/{uid} {
+      // 読み取り: 本人 または 管理者
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+      // 作成・更新: 管理者は全権。本人はホワイトリストのフィールドのみ。
+      allow create, update: if request.auth != null && (
+        isAdmin() ||
+        (request.auth.uid == uid && selfFieldsOnly() && accessOk())
+      );
+
+      // 削除: 管理者だけ。
+      // （本人に許すと、停止中の人が自分の doc を消して blocked を帳消しにし、
+      //   次のログインで「承認待ち」の列に並び直せてしまう）
+      allow delete: if isAdmin();
+    }
+
+    /* 一斉お知らせ（broadcast/*）とメンテナンス状態（broadcast/maintenance）。
+     * 全ログインユーザーが読め、書けるのは管理者だけ。 */
+    match /broadcast/{doc} {
+      allow read:  if request.auth != null;
+      allow write: if isAdmin();
+    }
+  }
+}
