@@ -25,10 +25,12 @@ service cloud.firestore {
      * ここへ貼ったら adminEmails() の行は空 [] にして構わない（uid だけで判定）。 */
     function adminUids() {
       return [
-        // 'ここに管理者アカウントの UID を貼る'
+        'zX5ZYus58QMrig8aD08t3uGsi4t2'
       ];
     }
-    // 移行用フォールバック（uid を入れるまではこちらで判定）。
+    // 移行用フォールバック。uid 判定が効いていることを確認できたら、この配列を
+    // 空 [] にする（＝uid だけで判定＝ログインIDを取られても管理者にはなれない）。
+    // 空にする前に必ず「管理者でログイン → 👑 管理者ビューが開く」を確認すること。
     // firebase-config.js の SFQ_ADMIN_IDS と必ず一致させる。
     function adminEmails() {
       return [
