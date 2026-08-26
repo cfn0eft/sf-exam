@@ -1,8 +1,3 @@
-/* ============================================================
-   共有デザイン（資格クイズ共通スタイル）
-   sf-admin / app-builder など certifications/ 配下の各クイズで共有。
-   ここを編集すると全資格ページのデザインが統一的に変わります。
-   ============================================================ */
 :root{
   --primary:#0176d3;--primary-dark:#014486;--primary-light:#d8edff;
   --success:#2e844a;--success-light:#cdefc4;
@@ -31,7 +26,6 @@ body{
   background:var(--bg);color:var(--text);min-height:100vh;
   padding-bottom:var(--tab);transition:background .2s,color .2s;
 }
-/* TOP BAR */
 .topbar{
   position:sticky;top:0;z-index:100;background:var(--primary);color:#fff;
   padding:0 16px;display:flex;align-items:center;height:56px;
@@ -46,7 +40,6 @@ body{
   transition:background .15s;
 }
 .topbar-btn:hover{background:rgba(255,255,255,.2)}
-/* BOTTOM NAV */
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
   height:var(--tab);background:var(--card);
@@ -60,13 +53,10 @@ body{
 }
 .nav-btn.active{color:var(--primary)}
 .nav-icon{font-size:22px;line-height:1}
-/* PAGES */
 .page{display:none;max-width:680px;margin:0 auto;padding:16px 16px calc(16px + var(--tab))}
 .page.active{display:block}
-/* CARD */
 .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
   padding:16px;margin-bottom:12px}
-/* HOME */
 .cert-badge{
   background:linear-gradient(135deg,var(--primary),var(--primary-dark));
   color:#fff;border-radius:var(--radius);padding:20px;margin-bottom:12px;
@@ -109,7 +99,6 @@ body{
 .hm-legend{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-sub);margin-top:8px}
 .hm-legend .hm-cell{width:11px;height:11px}
 [data-theme="dark"] .hm-l0{background:#1f2937}
-/* FILTER */
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .chip{
   padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);
@@ -123,7 +112,6 @@ body{
   background:var(--card);color:var(--text);font-size:13px;cursor:pointer;
   margin-bottom:8px;
 }
-/* QUIZ */
 .quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .qprog{font-size:13px;color:var(--text-sub);font-weight:600}
 .pbar{height:4px;background:var(--border);border-radius:2px;margin-bottom:14px;overflow:hidden}
@@ -209,7 +197,6 @@ body{
   color:var(--warning);padding:5px 10px;border-radius:8px;font-weight:700;font-size:13px;
 }
 .timer.warn{background:var(--danger-light);color:var(--danger)}
-/* TEXTBOOK */
 .search-box{
   width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);
   background:var(--card);color:var(--text);font-size:14px;margin-bottom:12px;outline:none;
@@ -241,7 +228,6 @@ body{
   font-size:11px;background:var(--primary-light);color:var(--primary);
   padding:2px 8px;border-radius:999px;font-weight:700;flex-shrink:0;
 }
-/* TERM DETAIL */
 .td-view{display:none}
 .td-view.on{display:block}
 .td-head{
@@ -268,7 +254,6 @@ body{
   margin:3px;cursor:pointer;transition:all .12s;
 }
 .qchip:hover{background:var(--primary);color:#fff}
-/* NAV MAP */
 .nm-sec h3{
   font-size:13px;font-weight:700;color:var(--primary);margin:12px 0 8px;
   padding:7px 12px;background:var(--primary-light);border-radius:8px;
@@ -283,7 +268,6 @@ body{
   font-family:monospace;font-size:11px;background:var(--bg);
   padding:2px 6px;border-radius:4px;color:var(--text-sub);display:inline-block;margin-bottom:4px;
 }
-/* VOCAB */
 .vbar-wrap{height:6px;background:var(--border);border-radius:3px;margin-bottom:10px;overflow:hidden}
 .vbar-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .4s}
 .vfil-bar{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
@@ -323,7 +307,6 @@ body{
 .cpts{font-size:12px;color:var(--text-sub);line-height:1.6}
 .vact{display:flex;gap:10px;margin-bottom:10px}
 .vdone{text-align:center;padding:36px 20px}
-/* MD */
 .md strong{font-weight:700}
 .md code{
   background:var(--bg);border-radius:4px;padding:1px 5px;
@@ -331,7 +314,6 @@ body{
 }
 .md a{color:var(--primary);text-decoration:none}
 .md a:hover{text-decoration:underline}
-/* TOAST */
 .toast{
   position:fixed;top:68px;left:50%;transform:translateX(-50%) translateY(-8px);
   background:#222;color:#fff;padding:9px 18px;border-radius:20px;
@@ -339,7 +321,6 @@ body{
   opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-/* KW STATS */
 .kw-row{display:flex;align-items:center;gap:8px;padding:9px 0;
   border-bottom:1px solid var(--border);font-size:13px}
 .kw-name{flex:1;font-weight:600}
@@ -354,7 +335,6 @@ body{
   .nav-icon{font-size:20px}
 }
 
-/* ====== TEXTBOOK IMPROVEMENTS ====== */
 .ch-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;margin-bottom:4px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
 .ch-nav::-webkit-scrollbar{height:3px}
 .ch-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -440,7 +420,6 @@ body{
 .sum-tdef{font-size:12px;color:var(--text-sub);line-height:1.5;flex:1}
 .sum-sep{font-size:11px;font-weight:700;color:var(--primary);margin:10px 0 4px;padding:4px 8px;background:var(--primary-light);border-radius:6px}
 
-/* ============ ENHANCEMENTS ============ */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 #e-wrong-toggle.on{background:var(--danger);color:#fff;border-color:var(--danger)}
@@ -485,22 +464,14 @@ body{
 #s-choices .choice{animation:fadeIn .3s ease}
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .choice:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
-/* --- キーボードフォーカスの可視性（:focus-visible の補強）---
- * 既定は上の全称ルール（primary 色のリング）。ただし次の2種類はそのままでは見えない:
- *  ① outline:none を明示している入力欄 … 全称ルールより詳細度が高く打ち消されてしまう
- *  ② primary/teal の濃い背景に載るボタン … 同系色のリングが背景に溶ける
- * どちらもマウス操作の見た目は変えない（:focus-visible はキーボード操作時のみ効く）。 */
 .search-box:focus-visible,.memo-box:focus-visible,.qsearch-in:focus-visible,.fb-ta:focus-visible{
   outline:2px solid var(--primary);outline-offset:2px}
 .topbar-btn:focus-visible,.hh-gear:focus-visible,.plan-reco-btn:focus-visible,.pbtn:focus-visible{
   outline:2px solid #fff;outline-offset:2px}
-/* 折りたたみ見出し（bindChHead で role=button / tabindex=0 を付与）。行いっぱいなので
-   はみ出さないよう内側にリングを描く */
 .ch-head:focus-visible,.ch-head-left:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
 .chip{transition:all .15s,transform .08s}
 .chip:active{transform:scale(.95)}
 
-/* ============ 学習計画・メモ・自信度・分野別・バッジ・週次 ============ */
 .plan-card{background:linear-gradient(135deg,var(--teal),#0a6460);color:#fff;border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .plan-cd{display:flex;flex-direction:column;gap:1px}
@@ -571,7 +542,6 @@ body{
 .wk-up{color:var(--success)}.wk-down{color:var(--danger)}
 .wk-weak{font-size:12px;color:var(--text-sub);line-height:1.6}
 .wk-weak b{color:var(--danger)}
-/* ===== 直前まとめ（CRAM） ===== */
 .cram-head{margin-bottom:12px}
 .cram-title{font-size:20px;margin:0 0 4px}
 .cram-sub{font-size:12px;color:var(--text-sub);margin:0}
@@ -587,12 +557,6 @@ body{
 .cram-empty{text-align:center;color:var(--text-sub);font-size:13px;padding:40px 16px}
 .btn-cram{background:var(--danger);color:#fff}
 
-/* ============================================================
-   UI再構成（2026-05-28）：
-   ・ホームの「今日やる」カード（復習/SRS/弱点を1枚に集約）
-   ・絞り込み詳細／統計詳細／教科書フィルタの折りたたみ
-   ・リセットを地味なリンクに格下げ
-   ============================================================ */
 .next-card{
   background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   box-shadow:var(--shadow);padding:6px 6px 4px;margin:10px 0 14px;
@@ -620,7 +584,6 @@ body{
 }
 .next-badge:empty{display:none}
 
-/* 折りたたみ共通 */
 .more-filter,.more-stats,.tb-filter-wrap{
   display:block;margin:8px 0 12px;
 }
@@ -643,7 +606,6 @@ body{
 .more-stats[open] > summary::before,
 .tb-filter-wrap[open] > summary::before{content:"▾ "}
 
-/* リセットを目立たない格下げリンクに */
 .reset-link{
   background:none;border:none;color:var(--text-sub);
   font-size:12px;cursor:pointer;padding:10px 4px;margin-top:6px;
@@ -651,7 +613,6 @@ body{
 }
 .reset-link:hover{color:var(--danger)}
 
-/* 試験結果：問題ごとの結果は折りたたみ */
 .exam-rlist-details{display:block;margin:0 0 10px}
 .exam-rlist-details > summary{
   cursor:pointer;font-size:13px;font-weight:700;color:var(--primary);
@@ -666,7 +627,6 @@ body{
 }
 .exam-rlist-details[open] > summary::after{transform:rotate(90deg)}
 
-/* 試験画面：前/次ナビと採点ボタンを主役化 */
 .exam-nav-row{display:flex;gap:8px}
 .exam-nav-row .btn{flex:1;padding:14px 18px;font-size:14px;font-weight:700}
 .exam-finish-row{
@@ -679,7 +639,6 @@ body{
 }
 [data-theme=dark] .btn-finish{box-shadow:0 4px 12px rgba(229,64,78,.35)}
 
-/* 用語帳：3アクションを1行に */
 .vact-3{display:flex;gap:8px;margin-bottom:12px}
 .vact-3 .btn{flex:1;padding:14px 8px;font-size:14px;font-weight:700}
 .vact-3 .btn-skip{flex:0 0 88px;font-weight:500;font-size:13px}
@@ -687,18 +646,12 @@ body{
   .vact-3 .btn-skip{flex:0 0 70px;padding:14px 4px;font-size:12px}
 }
 
-/* ============================================================
-   試験モード改善（問題ナビゲータ／フラグ／採点前確認／スコアリング）
-   ============================================================ */
-/* 試験カードのヘッダ（バッジ＋フラグ） */
 .qhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 .flagbtn{border:1.5px solid var(--border);background:var(--card);border-radius:999px;
   font-size:12px;font-weight:700;color:var(--text-sub);padding:5px 12px;cursor:pointer;
   white-space:nowrap;transition:all .15s}
 .flagbtn.on{background:var(--warning-light);color:var(--warning);border-color:var(--warning)}
-/* 採点ボタンの回答件数 */
 .finish-cnt{display:inline-block;font-size:11px;font-weight:600;opacity:.9;margin-left:8px}
-/* 問題ナビゲータ */
 .navpal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
   padding:12px;margin-bottom:12px}
 .navpal-head{display:flex;justify-content:space-between;align-items:center;
@@ -722,12 +675,10 @@ body{
 .navlegend .lg.c{outline:2px solid var(--warning);outline-offset:0}
 .navlegend .lg.f::after{content:"";position:absolute;top:-3px;right:-3px;width:7px;height:7px;
   border-radius:50%;background:var(--warning)}
-/* スコアリング（結果） */
 .ring-wrap{position:relative;width:160px;height:160px;margin:4px auto 10px}
 .ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ring-num .big{font-size:38px;font-weight:800;line-height:1}
 .ring-num .lab{font-size:11px;color:var(--text-sub);margin-top:2px}
-/* 弱点コールアウト */
 .e-callout{background:var(--primary-light);border-radius:8px;padding:10px 12px;font-size:12.5px;
   margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .e-callout b{color:var(--primary-dark)}
@@ -735,7 +686,6 @@ body{
 .e-callout.ok{background:var(--success-light)}
 .e-callout-btn{margin-left:auto;border:none;background:var(--primary);color:#fff;
   border-radius:8px;font-size:12px;font-weight:700;padding:6px 12px;cursor:pointer;white-space:nowrap}
-/* 採点前確認シート */
 .e-sheet-dim{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.45);
   display:none;align-items:flex-end;justify-content:center}
 .e-sheet-dim.open{display:flex}
@@ -756,10 +706,6 @@ body{
 .e-sheet-btns{display:flex;gap:10px}
 .e-sheet-btns .btn{flex:1}
 
-/* ============================================================
-   UI改善（学習画面・ホーム・統計サマリー）2026-05
-   ============================================================ */
-/* --- 学習：問題文を大きく＋下部固定アクションバー --- */
 .qtext{font-size:16px;line-height:1.75}
 #pg-study.has-actbar{padding-bottom:calc(var(--tab) + 96px)}
 .study-actbar{position:fixed;left:0;right:0;bottom:var(--tab);z-index:90;
@@ -769,7 +715,6 @@ body{
 .study-actbar > .inner{display:flex;gap:10px;align-items:center;width:100%;max-width:680px;margin:0 auto}
 .study-actbar .btn{flex:1;padding:15px;font-size:15px;border-radius:12px}
 .study-actbar .conf-toggle{flex:0 0 auto}
-/* --- ホーム：ヒーロー＋主要2ボタン＋今日やる --- */
 .home-hero{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;
   border-radius:16px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
 .home-hero.acq{box-shadow:0 0 0 2px #f5c451 inset}
@@ -788,7 +733,6 @@ body{
 .hh-bar{height:8px;background:rgba(255,255,255,.25);border-radius:5px;overflow:hidden}
 .hh-fill{height:100%;background:#fff;border-radius:5px;transition:width .4s}
 .hh-cd{font-size:11px;opacity:.92;margin-top:8px}
-/* 逆算ペース（受験日からの1日ノルマ。renderPlan が plan-cd の直後に生成） */
 .plan-reco{font-size:11px;opacity:.95;margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .plan-reco b{font-size:13px}
 .plan-reco-btn{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);color:inherit;
@@ -810,13 +754,11 @@ body{
 .home-hero .plan-clear{background:rgba(255,255,255,.25);color:#fff;border:none;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer;white-space:nowrap}
 .home-hero .plan-edit{display:none;margin-top:10px}
 .home-hero .plan-edit.on{display:block}
-/* 今日やる（アイコン強化） */
 .todo-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .todo-ico.srs{background:#e9eafe;color:#6366f1}
 .todo-ico.wrong{background:var(--danger-light);color:var(--danger)}
 .todo-ico.weak{background:var(--warning-light);color:var(--warning)}
 [data-theme=dark] .todo-ico.srs{background:#1e1b4b;color:#a5b4fc}
-/* 出題設定の集約折りたたみ */
 .settings-acc{margin-bottom:12px}
 .settings-acc > summary{list-style:none;cursor:pointer;background:var(--card);border-radius:12px;
   box-shadow:var(--shadow);padding:13px 14px;font-size:13px;font-weight:700;color:var(--text-sub);
@@ -825,7 +767,6 @@ body{
 .settings-acc > summary::after{content:"▾";margin-left:auto;opacity:.6}
 .settings-acc[open] > summary::after{content:"▴"}
 .settings-acc .settings-body{padding:10px 2px 2px}
-/* --- 統計：合格可能性サマリー --- */
 .stat-summary{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .ss-ring{width:54px;height:54px;flex-shrink:0;position:relative}
 .ss-ring .ss-t{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
@@ -839,7 +780,6 @@ body{
 .ss-note{font-size:12px;color:var(--text-sub);margin-top:4px}
 .ss-note b{color:var(--danger)}
 
-/* ===== マイページ ===== */
 .acct{display:flex;align-items:center;gap:14px}
 .mp-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
 .mp-name{font-size:18px;font-weight:800}
@@ -875,7 +815,6 @@ body{
 .mp-seg button{border:none;background:none;padding:6px 11px;font-size:12px;font-weight:700;color:var(--text-sub);cursor:pointer}
 .mp-seg button.on{background:var(--primary);color:#fff}
 .mp-danger{background:none;border:none;color:var(--danger);font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0}
-/* 資格の取得 */
 .mp-acqbtn{border:none;border-radius:10px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer;flex-shrink:0;background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00}
 .mp-acqdone{display:flex;align-items:center;gap:10px;background:#fff7e6;border:1.5px solid #f5c451;border-radius:10px;padding:12px;color:#7a5200}
 [data-theme=dark] .mp-acqdone{background:#2a2410;border-color:#6b5212;color:#f0c969}
@@ -883,13 +822,11 @@ body{
 .mp-acqt{font-size:14px;font-weight:800}
 .mp-undo{background:rgba(0,0,0,.06);border:1.5px solid var(--border);color:var(--text-sub);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
 [data-theme=dark] .mp-undo{background:rgba(255,255,255,.08)}
-/* 試験結果の取得ボタン */
 .e-acq{margin:12px 0}
 .e-acq-btn{width:100%;background:linear-gradient(135deg,#ffd86b,#f0a500);color:#5a3d00}
 .e-acq-done{text-align:center;background:#fff7e6;border:1.5px solid #f5c451;border-radius:12px;padding:12px;color:#7a5200;font-weight:800}
 [data-theme=dark] .e-acq-done{background:#2a2410;border-color:#6b5212;color:#f0c969}
 
-/* ===== デイリーチャレンジ（ホーム「今日やる」先頭行） ===== */
 .todo-ico.dc{background:var(--primary-light);color:var(--primary-dark)}
 [data-theme=dark] .todo-ico.dc{background:#0c2d4a;color:#9cd0ff}
 .dc-row{background:linear-gradient(90deg,var(--primary-light),transparent)}
@@ -899,7 +836,6 @@ body{
 .dc-row.dc-done .next-title{color:var(--success)}
 .dc-row.dc-done .next-badge{background:var(--success-light);color:var(--success)}
 
-/* ===== 問題フリーワード検索（ホーム） ===== */
 .qsearch{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);
   border-radius:12px;box-shadow:var(--shadow);padding:3px 6px 3px 12px;margin:0 0 14px}
 .qsearch-ic{font-size:15px;flex-shrink:0;color:var(--text-sub)}
@@ -910,7 +846,6 @@ body{
 .qsearch-go:hover{background:var(--primary-dark)}
 .qsearch-go:disabled{opacity:.5;cursor:default;background:var(--text-sub)}
 
-/* ===== キーボードショートカット一覧モーダル ===== */
 .sc-help{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;
   align-items:center;justify-content:center;padding:20px}
 .sc-help.on{display:flex}
@@ -928,13 +863,11 @@ body{
 .sc-row kbd{font-family:inherit;font-size:11px;font-weight:700;background:var(--bg);
   border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:2px 7px;color:var(--text)}
 
-/* ===== 問題報告リンク（学習の解説欄） ===== */
 .report-wrap{margin-top:12px;padding-top:8px;border-top:1px dashed var(--border);text-align:right}
 .report-link{background:none;border:none;color:var(--text-sub);font-size:11px;cursor:pointer;
   text-decoration:underline;padding:4px 2px}
 .report-link:hover{color:var(--danger)}
 
-/* ===== 試験：時間管理コーチ（結果） ===== */
 .pace-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 10px}
 .pace-cell{background:var(--bg);border-radius:10px;padding:10px 6px;text-align:center}
 .pace-n{font-size:17px;font-weight:800;color:var(--text)}
@@ -951,7 +884,6 @@ body{
 .pace-slow-t{flex-shrink:0;font-size:12px;font-weight:800;color:var(--danger)}
 .erow-time{flex-shrink:0;font-size:11px;font-weight:700;color:var(--text-sub);margin-left:6px}
 
-/* ===== 模試スコアの推移（マイページ） ===== */
 .ext-top{display:flex;gap:8px;text-align:center;margin-bottom:6px}
 .ext-top>div{flex:1;background:var(--bg);border-radius:10px;padding:8px 4px}
 .ext-n{font-size:18px;font-weight:800;color:var(--primary)}
@@ -967,7 +899,6 @@ body{
 .extr-badge.p{background:var(--success-light);color:var(--success)}
 .extr-badge.f{background:var(--danger-light);color:var(--danger)}
 
-/* ===== 中断した試験の再開バナー（ホーム） ===== */
 .resume-card{display:flex;align-items:center;gap:10px;background:var(--warning-light);
   border:1px solid var(--warning);border-radius:12px;padding:11px 13px;margin:0 0 12px}
 .resume-main{flex:1;min-width:0}
@@ -977,7 +908,6 @@ body{
 .resume-go{border:none;border-radius:8px;padding:8px 14px;font-weight:800;font-size:13px;cursor:pointer;background:var(--warning);color:#fff}
 .resume-x{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-weight:700;font-size:12px;cursor:pointer;background:var(--card);color:var(--text-sub)}
 
-/* ===== 文字サイズ（本文テキストのみ拡大／縮小） ===== */
 body[data-fs=large] .qtext{font-size:18.5px;line-height:1.7}
 body[data-fs=large] .choice{font-size:16px}
 body[data-fs=large] .exp-box{font-size:15px}
@@ -992,13 +922,11 @@ body[data-fs=small] .exp-box{font-size:12.5px}
 body[data-fs=small] .cterm{font-size:21px}
 body[data-fs=small] .cdef{font-size:12px}
 
-/* ===== オフラインバー ===== */
 .offline-bar{position:fixed;left:0;right:0;bottom:calc(var(--tab) + 0px);z-index:95;
   background:#5c5c5c;color:#fff;text-align:center;font-size:12px;font-weight:700;
   padding:7px 12px;transform:translateY(120%);transition:transform .25s;pointer-events:none}
 .offline-bar.on{transform:translateY(0)}
 
-/* ===== 高速めくり：ホーム入口 ===== */
 .quick-entry{display:flex;align-items:center;gap:12px;width:100%;cursor:pointer;
   background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);
   padding:12px 14px;margin:0 0 14px;color:var(--text);text-align:left;transition:border-color .12s}
@@ -1009,7 +937,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .qe-sub{font-size:11px;color:var(--text-sub);margin-top:2px}
 .qe-arrow{font-size:20px;color:var(--text-sub);flex-shrink:0}
 
-/* ===== 高速めくり：カード ===== */
 .qk-card{cursor:pointer;min-height:180px;user-select:none}
 .qk-ans{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 .qk-ans.show{display:block;animation:qkfade .18s ease}
@@ -1020,14 +947,12 @@ body[data-fs=small] .cdef{font-size:12px}
 .qk-kp{font-size:12.5px;color:var(--text-sub);line-height:1.7;margin-top:10px}
 .qk-hint{font-size:11px;color:var(--text-sub);text-align:center;margin-top:14px}
 
-/* ===== アップデートのお知らせ（トップバーのベル＋未読ドット） ===== */
 .topbar-news{position:relative}
 .news-dot{position:absolute;top:9px;right:9px;width:9px;height:9px;border-radius:50%;
   background:#ff3b30;border:2px solid var(--primary);box-shadow:0 0 0 1px rgba(255,59,48,.5)}
 .news-new{flex-shrink:0;font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;
   background:var(--danger);border-radius:999px;padding:2px 8px}
 
-/* ===== お知らせモーダル（更新履歴一覧） ===== */
 .news-box{width:min(94vw,460px)}
 .news-body{padding:6px 16px 18px}
 .news-entry{padding:14px 0;border-bottom:1px solid var(--border)}
@@ -1039,7 +964,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .news-items{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
 .news-items li{font-size:12.5px;line-height:1.6;color:var(--text);padding-left:2px}
 
-/* ===== カスタム模試（ホーム入口＋設定モーダル） ===== */
 .exam-custom-btn{display:block;width:100%;margin:-4px 0 14px;padding:11px;cursor:pointer;
   background:var(--card);border:1px dashed var(--border);border-radius:12px;color:var(--text-sub);
   font-size:13px;font-weight:700;transition:border-color .12s,color .12s}
@@ -1050,7 +974,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .ce-chip{border:1.5px solid var(--border);background:var(--card);color:var(--text);border-radius:999px;
   padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .12s}
 .ce-chip.on{border-color:var(--primary);background:var(--primary);color:#fff}
-/* 不具合・ご意見の報告フォーム（.sc-box 内） */
 .fb-box{width:min(94vw,460px);color:var(--text)}
 .fb-ctx{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text-sub);margin:2px 0 4px}
 .fb-ctx b{color:var(--text)}
@@ -1074,7 +997,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .ce-start{width:100%}
 .ce-start:disabled{opacity:.5;cursor:default}
 
-/* ===== 学習カバレッジ（網羅率） ===== */
 .cov-row{display:flex;align-items:center;gap:10px}
 .cov-lab{flex-shrink:0;width:34px;font-size:12px;font-weight:700;color:var(--text-sub)}
 .cov-bar{flex:1;height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
@@ -1084,14 +1006,9 @@ body[data-fs=small] .cdef{font-size:12px}
 .cov-sub{font-size:11px;color:var(--text-sub);margin:4px 0 0;padding-left:44px}
 .cov-btn{width:100%;margin-top:12px}
 
-/* 模試履歴のカスタム問題数タグ */
 .extr-tag{flex-shrink:0;font-size:10px;font-weight:700;color:var(--text-sub);background:var(--bg);
   border:1px solid var(--border);border-radius:5px;padding:1px 6px}
 
-/* ============================================================
-   図解（インラインSVG）— 色は全部ここで管理し、図ファイル(figures.js)には
-   色を書かない。インライン展開された SVG が [data-theme] に追従する。
-   ============================================================ */
 .qfig{margin:12px 0;border-radius:12px;overflow:hidden;cursor:zoom-in}
 .qfig svg{display:block;width:100%;height:auto;
   --f-fig:#f8fafc;--f-figbd:#e2e8f0;--f-ink:#0f172a;--f-sub:#475569;--f-ln:#94a3b8;
@@ -1140,20 +1057,17 @@ body[data-fs=small] .cdef{font-size:12px}
 .qfig svg .g-amber{stop-color:var(--f-amber-bd)}
 .qfig svg text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 .qfig figcaption{font-size:11px;color:var(--text-sub);text-align:center;padding:6px 8px 0}
-/* 拡大表示（ライトボックス） */
 .figlb{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1200;display:none;
   align-items:center;justify-content:center;padding:14px}
 .figlb.show{display:flex}
 .figlb .qfig{cursor:zoom-out;max-width:920px;width:100%;margin:0;background:var(--card);
   padding:8px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
-/* 図解ギャラリー（教科書タブ） */
 .fig-gallery-note{font-size:12.5px;color:var(--text-sub);margin:2px 0 12px}
 .fig-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .fig-gcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 12px 12px}
 .fig-gcard .qfig{margin:0}
 .fig-gcard figcaption{font-size:12px;font-weight:600;color:var(--text);text-align:center;padding:8px 4px 0}
 
-/* ===== 学習分析（つまずき分析：誤答理由・時間・キャリブレーション） ===== */
 .wr-pick{margin-top:12px;padding:10px 11px;border:1px dashed var(--warning);border-radius:10px;background:var(--warning-light)}
 .wr-q{font-size:12px;font-weight:700;color:var(--text-sub);margin-bottom:8px}
 .wr-row{display:flex;gap:7px;flex-wrap:wrap}
@@ -1170,7 +1084,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .an-ins li{margin-bottom:8px}
 .an-act{display:inline-block;margin-left:4px;background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer}
 
-/* ===== 学習・復習体験（ヒント・類題・Feynman・間違いノート） ===== */
 #s-hint{margin:10px 0 0}
 .hint-btn{background:var(--warning-light);color:var(--warning);border:1px solid var(--warning);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer}
 .hint-list{margin-top:8px}
@@ -1198,7 +1111,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .nb-go{margin-top:6px;background:none;border:none;color:var(--primary);font-size:12px;font-weight:700;cursor:pointer;padding:0}
 .nb-foot{padding:12px 16px;border-top:1px solid var(--border)}
 
-/* ===== 難易度（ピル・分野×難易度ヒート） ===== */
 .dpill{display:inline-block;font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:5px;vertical-align:middle}
 .dpill.d1{background:var(--success-light);color:var(--success)}
 .dpill.d2{background:var(--primary-light);color:var(--primary-dark)}
@@ -1210,7 +1122,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .dh-cell{text-align:center;color:#fff;font-weight:700;border-radius:5px;padding:5px 0;min-width:36px}
 .dh-cell.dh-na{background:var(--border);color:var(--text-sub)}
 
-/* ===== ゲーミフィケーション（紙吹雪・レベル/XP・ミッション・合格確度推移） ===== */
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:1500;overflow:hidden}
 .confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;animation:cfall linear forwards}
 @keyframes cfall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(104vh) rotate(900deg);opacity:.65}}
@@ -1234,11 +1145,9 @@ body[data-fs=small] .cdef{font-size:12px}
 .rdz-line{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
 .rdz-pass{stroke:var(--success);stroke-width:1.5;stroke-dasharray:4 3;opacity:.8}
 
-/* ===== ケーススタディ ===== */
 .scenario-box{background:var(--purple-light);border-left:3px solid var(--purple);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;line-height:1.6;color:var(--text);white-space:pre-wrap}
 .scn-tag{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px}
 
-/* ===== 使い方ガイド（機能カタログ） ===== */
 .mp-guidebtn{width:100%;background:var(--primary-light);color:var(--primary-dark);border:1px solid var(--primary);border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:4px}
 .gd-intro{font-size:12.5px;color:var(--text-sub);line-height:1.6;margin-bottom:12px}
 .gd-cat{font-size:13px;font-weight:800;color:var(--text);margin:16px 0 8px;padding-bottom:5px;border-bottom:2px solid var(--border)}
@@ -1251,11 +1160,9 @@ body[data-fs=small] .cdef{font-size:12px}
 .gd-go{flex:0 0 auto;align-self:center;background:var(--primary);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
 .gd-tour{width:100%;background:var(--card);color:var(--primary);border:1px dashed var(--primary);border-radius:9px;padding:10px;font-size:12.5px;font-weight:700;cursor:pointer;margin-bottom:14px}
 
-/* ===== レッスン（授業：スライド学習） ===== */
 .lesson-entry{border-color:var(--teal)}
 .lesson-entry .qe-t{color:var(--teal)}
 .les-intro{font-size:12.5px;color:var(--text-sub);line-height:1.7;background:var(--teal-light);border-radius:10px;padding:11px 13px;margin-bottom:12px}
-/* 一覧カード */
 .les-card{display:block;width:100%;text-align:left;cursor:pointer;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--teal);border-radius:12px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow)}
 .les-card:hover{border-color:var(--teal)}
 .les-card-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
@@ -1264,7 +1171,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .les-pos{font-size:11px;font-weight:700;color:var(--warning);background:var(--warning-light);border-radius:20px;padding:2px 9px}
 .les-card-title{font-size:15px;font-weight:800;color:var(--text);line-height:1.5}
 .les-card-meta{font-size:11.5px;color:var(--text-sub);margin-top:4px}
-/* プレーヤー */
 .les-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .les-back{background:none;border:none;color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;flex:0 0 auto;padding:2px 0}
 .les-htitle{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--text-sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1286,7 +1192,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .les-nav .btn{flex:1}
 .les-finish{flex:1}
 
-/* アクセシビリティ: モーション低減設定を尊重（アニメ・トランジションをほぼ無効化し、紙吹雪は非表示） */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
     animation-duration:.001ms !important;
@@ -1296,7 +1201,6 @@ body[data-fs=small] .cdef{font-size:12px}
   }
   .confetti{display:none !important}
 }
-/* ===== ホームの「取得して次へ進む」カード（取得導線をわかりやすく） ===== */
 .home-progress{border:1.5px solid #f5c451;background:linear-gradient(180deg,#fffaf0,var(--card));padding:9px 11px}
 [data-theme=dark] .home-progress{background:linear-gradient(180deg,#2a2410,var(--card));border-color:#6b5212}
 .home-progress .hp-row{display:flex;gap:7px;align-items:flex-start}
@@ -1311,7 +1215,6 @@ body[data-fs=small] .cdef{font-size:12px}
 .mp-acqhint b{color:var(--text)}
 .mp-acqinfo{display:inline-block;margin-left:6px;border:1px solid var(--border);background:var(--card);color:var(--text-sub);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;cursor:pointer}
 
-/* ===== 資格取得の確認モーダル（ネイティブ confirm の代替） ===== */
 .acq-ov{display:none;position:fixed;inset:0;z-index:99996;background:rgba(15,23,42,.6);
   align-items:center;justify-content:center;padding:20px}
 .acq-ov.on{display:flex}
