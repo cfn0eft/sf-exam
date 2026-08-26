@@ -98,7 +98,6 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     <p class="mid" id="m-now"></p>
   </div>
 
-<!-- Firebase（管理者ビューからのライブ切替を反映するため。読めなくても画面は動作する） -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -107,21 +106,10 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
 (function () {
   'use strict';
 
-  /* =====================================================================
-   * メンテナンス画面の設定（フォールバックの既定値）
-   * ---------------------------------------------------------------------
-   *  管理者ビューからライブ切替で来た場合は、Firestore の設定（メッセージ・
-   *  終了予定）が優先されます。下の値は「手動オーバーライド時」や Firestore
-   *  が読めないときの既定として使われます。
-   *    start / end : ISO 8601（必ず JST の +09:00 を付ける／予定未定なら ''）
-   *    id          : 管理番号（運用感を出す任意の文字列）
-   *    tasks       : 作業内容の箇条書き
-   *    contact     : 問い合わせ先メール（不要なら '' で非表示）
-   * ===================================================================== */
   var CFG = {
     start:   '2026-06-21T02:00:00+09:00',
     end:     '2026-06-21T05:00:00+09:00',
-    id:      '',   // 空なら開始日から MNT-YYYYMMDD-01 を自動採番（管理者ビューからの設定が最優先）
+    id:      '',
     tasks:   ['データベースの最適化', 'サーバー構成の更新', 'セキュリティ更新の適用'],
     contact: ''
   };
@@ -132,10 +120,9 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   var liveMsg = '';
   var liveId = '';
   var liveTasks = null;
-  var firestoreActive = null;  // null=未取得 / true=メンテ中 / false=解除
-  var cameFromLive = false;    // cloud-sync のライブ切替から転送されてきたか
+  var firestoreActive = null;
+  var cameFromLive = false;
 
-  /* cloud-sync からの引き継ぎ（実際の終了予定・メッセージ・管理番号・作業内容・緊急全停止か） */
   try {
     var hand = JSON.parse(sessionStorage.getItem('sfq_maint') || 'null');
     if (hand) {
@@ -143,33 +130,28 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
       if (hand.msg) liveMsg = hand.msg;
       if (hand.id) liveId = hand.id;
       if (Array.isArray(hand.tasks) && hand.tasks.length) liveTasks = hand.tasks;
-      if (hand.full) { endMs = NaN; }        // 緊急全停止＝終了未定
+      if (hand.full) { endMs = NaN; }
       else if (hand.end) { endMs = hand.end; }
     }
   } catch (e) {}
 
-  /* 日時整形（JST固定） */
   var jstFmt = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
   var jstTime = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false });
 
-  /* 作業内容リストの描画（ライブ→CFG の順に優先） */
   function renderTasks(arr) {
     var ul = $('m-tasks'); if (!ul) return; ul.innerHTML = '';
     (arr && arr.length ? arr : ['システムメンテナンス']).forEach(function (t) {
       var li = document.createElement('li'); li.textContent = t; ul.appendChild(li);
     });
   }
-  /* YYYYMMDD(JST) 文字列 */
   function maintDateStr(ms) {
     try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ms).replace(/-/g, ''); }
     catch (e) { var d = new Date(ms); return '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
   }
-  /* 管理番号が未設定なら開始日(JST)から MNT-YYYYMMDD-01 を自動採番 */
   function autoMaintId() {
     return 'MNT-' + maintDateStr(isFinite(startMs) ? startMs : Date.now()) + '-01';
   }
 
-  /* 静的部分（作業内容・管理番号・問い合わせ先・予定枠）を描画 */
   (function initStatic() {
     renderTasks(liveTasks || CFG.tasks);
     $('m-id').textContent = liveId || CFG.id || autoMaintId();
@@ -197,7 +179,6 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     $('m-now').textContent = '現在時刻：' + jstTime.format(now) + ' JST';
 
     if (!isFinite(endMs)) {
-      // 終了予定なし（緊急全停止など）：カウントダウンは出さない
       $('m-count-wrap').style.display = 'none';
       startRecheck();
       return;
@@ -232,8 +213,6 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     }
   }
 
-  /* ---- Firestore ライブ購読：管理者がメンテ解除した瞬間に自動復帰 ---- */
-  // 都度メンテのキュー（旧 windows + enabled ゲートも吸収）
   function maintQueue(cfg) {
     if (!cfg) return [];
     if (Array.isArray(cfg.queue)) return cfg.queue;
@@ -292,10 +271,6 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
     } catch (e) {}
   }
 
-  /* ---- メンテ中でも利用を許可されたアカウント（progress/{uid}.maintOk）はトップへ戻す ----
-     管理者がメンテ開始後に許可を付けた場合など、この画面に来てしまった人を通すための救済。
-     ※ maintenance.js の MANUAL_MAINTENANCE（手動オーバーライド）中は index.html 側で再転送される
-        （Firebase を見ないため）。その場合はプレビュー合言葉 ?preview= を使う。 */
   function checkExempt(db, user) {
     if (exemptChecked || !user) return;
     exemptChecked = true;
@@ -321,21 +296,20 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
           if (!(hand && hand.full) && st.end) { endMs = st.end; }
           render();
         } else {
-          maybeReturnHome(false); // Firestore上は解除 → 手動フラグも確認のうえ復帰
+          maybeReturnHome(false);
         }
-      }, function () { subDone = false; /* 未ログイン/権限なし等は手動フラグ頼り */ });
+      }, function () { subDone = false;  });
     } catch (e) { subDone = false; }
   }
 
-  /* ---- 復帰判定：Firestore も手動フラグも「非メンテ」のときだけトップへ戻す ---- */
   function maybeReturnHome(force) {
-    if (isFinite(endMs) && Date.now() < endMs && !force) return;       // 計画終了前は戻さない
-    if (firestoreActive === true) return;                               // Firestore 上メンテ中
-    if (firestoreActive === null && cameFromLive && !isFinite(endMs) && !force) return; // 確認不能な全停止は誤復帰回避
+    if (isFinite(endMs) && Date.now() < endMs && !force) return;
+    if (firestoreActive === true) return;
+    if (firestoreActive === null && cameFromLive && !isFinite(endMs) && !force) return;
     fetch('maintenance.js?_=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : ''; })
       .then(function (t) {
-        if (/MANUAL_MAINTENANCE\s*=\s*true/.test(t)) return;            // 手動オーバーライド中はとどまる
+        if (/MANUAL_MAINTENANCE\s*=\s*true/.test(t)) return;
         location.replace('index.html');
       })
       .catch(function () {});
