@@ -143,7 +143,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 ### 管理者ビュー
 
-- 管理者ID = `admin` (`SFQ_ADMIN_IDS=["admin"]`)
+- 管理者IDは配信ファイルに**平文で置かない**。`firebase-config.js` の `SFQ_ADMIN_ID_HASHES` に SHA-256 ハッシュだけを置き、`cloud-sync.js` が `matchAdmin()` で照合する（旧 `SFQ_ADMIN_IDS` の平文判定も後方互換で動く）。ハッシュ生成は `node tools/admin-id-hash.js <ID>`、変更手順は `docs/ADMIN-ID.md`
 - 全アカウント一覧・リセット・削除・CSV書き出し可
 - **停止中（blocked）からの「解除の申請」**: 停止中も同じロック画面のフォームから申請できる（ボタンは「この内容で解除を申請する」）。`doApplyAccess` は停止中のとき **`access` を書き換えず `req:{name,ts,unblock:true}` だけ書く**＝自分では停止を解除できない。管理者ビューでは「🔔 申請（あなたの対応待ち）」に「📩 解除申請 <日付>」として並び、停止中チップにも件数（📩N）が出る。却下は「停止中のまま」の文言になる。⚠️ Firestore ルールは `access=='pending'` への自己書込に `resource.data.access != 'blocked'` の条件を追加済み（`Firebaseセットアップ手順.md` ステップ5・既存プロジェクトは貼り直し推奨。アプリは新旧どちらでも動く）
 - 申請フォームの名前欄は**常に空欄**で出す（ログインIDを自動で入れると管理者が誰か判別できないため、毎回入力してもらう）
@@ -152,7 +152,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 - 休眠アカウントの棚卸し＝「🧹 休眠アカウント／承認を一括解除」（30日以上アクセスがない承認済みを承認待ちに戻す。本人は次回ログインで再申請）
 - メンテナンス中でも利用できるアカウントの指定（`maintOk`）＝ユーザー一覧の「🛠 メンテ許可」トグル／選択して一括付与・解除／絞り込みチップ／メンテ節に「🛠 メンテ中も利用可 N人」
 - フィードバック/不具合報告も全 doc から集約表示（資格・種類で絞り込み／JSON・CSV書き出し＝Claudeに渡す用／各件「対応済み（削除）」で報告者 doc から `arrayRemove`）
-- 管理者ID変更時は `firebase-config.js` の `SFQ_ADMIN_IDS` と Firestore ルールのメール両方を変える
+- 管理者ID変更時は `firebase-config.js` の `SFQ_ADMIN_ID_HASHES` と `firestore.rules` の `adminUids()` の両方を変える（手順は `docs/ADMIN-ID.md`）
 
 ---
 
@@ -160,7 +160,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 - **ルールの唯一の出典は root の `firestore.rules`**（2026-08-22 にリポジトリ管理化）。直したら Firebase コンソール「Firestore → ルール」へ貼って公開する。手順書のコードブロックは廃止し、貼り方だけを残した
 - ルールの要点: `progress/{uid}` は本人＋管理者だけが read。本人の書込は `selfKeys()` の**フィールド・ホワイトリスト**に限定（`maintOk`／`approvedAt`／`notices`／`fbReplies`／`adminLog` は管理者専用）。doc の**削除は管理者だけ**（停止中の人が doc を消して blocked を帳消しにするのを防ぐ）。`broadcast/*`（一斉お知らせ＋メンテ状態）は全ログインユーザーが read・管理者だけ write
-- **管理者判定は uid 固定済み**（2026-08-22）。`firestore.rules` の `adminUids()` に Authentication の UID を入れ、メール判定 `adminEmails()` は空にした。ログインIDは誰でも自由に登録できるため、メール判定のままだと管理者IDを先に他人へ登録された時点で権限ごと奪われる（uid 判定だけならその経路は塞がる）。⚠️ 管理者アカウントを増やす/差し替えるときは `adminUids()` に UID を足してコンソールへ貼り直す（`firebase-config.js` の `SFQ_ADMIN_IDS` も合わせる）
+- **管理者判定は uid 固定済み**（2026-08-22）。`firestore.rules` の `adminUids()` に Authentication の UID を入れ、メール判定 `adminEmails()` は空にした。ログインIDは誰でも自由に登録できるため、メール判定のままだと管理者IDを先に他人へ登録された時点で権限ごと奪われる（uid 判定だけならその経路は塞がる）。⚠️ 管理者アカウントを増やす/差し替えるときは `adminUids()` に UID を足してコンソールへ貼り直す（`firebase-config.js` の `SFQ_ADMIN_ID_HASHES` も合わせる）
 - **Web の apiKey は公開前提**。GitHub のシークレットスキャン警告は false positive
 - 本当の防御は Firestore ルール（本人 uid 一致のみ read/write）
 - API キーは Google Cloud Console で **HTTP リファラー制限済み**：`https://cfn0eft.github.io/*` と `http://localhost/*` のみ許可
@@ -285,6 +285,7 @@ git push origin main
 - **配信ファイル（`*.js` / `quiz.css` / 各 `index.html` / `maintenance.html`）にコメントを書かない**。
   メールアドレス・運用手順・管理まわりの内部事情は特に書かない。
   説明が要るときは `docs/` の Markdown（＝サイトからは配信しない）か CLAUDE.md に書く。
+- 管理者IDのような「知られると狙われる値」も平文で置かない（`SFQ_ADMIN_ID_HASHES`）。
 - 個人のメールアドレスは**コードにもドキュメントにも書かない**。EmailJS の宛先は EmailJS の
   テンプレート側にだけ設定する（`docs/EMAILJS.md`）。
 - **`_config.yml` の `exclude`** が、CLAUDE.md・PROGRESS.md・`docs/`・`tools/`・`firestore.rules` などの
@@ -359,3 +360,4 @@ git push origin main
 - `docs/EMAILJS.md` — メール通知（EmailJS）の設定手順
 - `docs/MAINTENANCE.md` — メンテナンス（手動オーバーライド・プレビュー合言葉）の運用
 - `docs/CODE-NOTES.md` — 配信ファイルから退避したコードの補足メモ
+- `docs/ADMIN-ID.md` — 管理者IDをハッシュで持つ理由と変更手順

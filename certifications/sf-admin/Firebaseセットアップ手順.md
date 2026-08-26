@@ -86,9 +86,9 @@
 
 > ✅ **#3 は 2026-08-22 に適用済みです。** `adminUids()` に管理者の UID が入り、`adminEmails()` は `[]`（メール判定は廃止）＝ログインIDを先に取られても管理者にはなれません。
 >
-> 管理者を**増やす/差し替える**ときは、Firebase コンソール → **Authentication → Users** で対象の **ユーザー UID** をコピーして `adminUids()` に足し、ルールを貼り直してください（`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせる）。
+> 管理者を**増やす/差し替える**ときは、Firebase コンソール → **Authentication → Users** で対象の **ユーザー UID** をコピーして `adminUids()` に足し、ルールを貼り直してください（`firebase-config.js` の `SFQ_ADMIN_ID_HASHES` も新しいIDのハッシュに合わせる。手順は `docs/ADMIN-ID.md`）。
 
-   - 管理者IDを `admin` 以外にしたい／複数にしたい場合は、`adminEmails()` の `'admin@sfquiz.local'` をそのIDのメール（例 `'daiki@sfquiz.local'`）に変更（カンマ区切りで複数可）し、**`firebase-config.js` の `SFQ_ADMIN_IDS` も同じIDに合わせて**ください。
+   - 管理者IDを `admin` 以外にしたい／複数にしたい場合は、`adminEmails()` の `'admin@sfquiz.local'` をそのIDのメール（例 `'daiki@sfquiz.local'`）に変更（カンマ区切りで複数可）し、**`firebase-config.js` の `SFQ_ADMIN_ID_HASHES` も新しいIDのハッシュ（`node tools/admin-id-hash.js <ID>`）に合わせて**ください。
 
 ## ステップ 6: GitHub Pages に反映する
 
@@ -114,14 +114,14 @@
 
 ## 管理者として全アカウントを見る
 
-1. ID `admin`（＝`firebase-config.js` の `SFQ_ADMIN_IDS` に設定したID）とパスワードで、初回は「**新規登録**」してアカウントを作成します。
+1. 管理者ID（＝`firebase-config.js` の `SFQ_ADMIN_ID_HASHES` に入れたハッシュの元になるID）とパスワードで、初回は「**新規登録**」してアカウントを作成します。
 2. 以降、その `admin` でログインすると、画面右上に **「👑 管理者」ボタン** が表示されます。
 3. ボタンを押すと **管理者ビュー** が開き、全アカウントの一覧が見られます。
    - 各アカウントの **回答した問題数・正答率・正解／不正解数・連続正解・ブックマーク数・単語学習数・最終更新日時** が一覧表示されます。
    - 「**詳細**」を押すと、そのアカウントの **問題ごとの正解／不正解／正答率** の表が開きます。
    - 「**リセット**」でそのアカウントの進捗を初期化、「**削除**」で進捗データを削除できます。
    - 「**CSV書き出し**」で全アカウントの成績を表計算ソフト用に保存できます（Excel対応のUTF-8）。
-4. 管理者機能が表示されない／一覧の読み込みに失敗する場合は、ステップ5のルールの管理者メールと、`firebase-config.js` の `SFQ_ADMIN_IDS` が一致しているか確認してください。
+4. 管理者機能が表示されない／一覧の読み込みに失敗する場合は、ステップ5のルールの `adminUids()` と、`firebase-config.js` の `SFQ_ADMIN_ID_HASHES` を確認してください（切り分けは `docs/ADMIN-ID.md`）。
 
 > 「削除」は **進捗データ** を消すものです。ログインアカウント自体（ID/パスワード）を完全に消すには、Firebaseコンソールの **Authentication → ユーザー** から該当ユーザーを削除してください。
 

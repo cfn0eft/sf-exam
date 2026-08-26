@@ -18,4 +18,4 @@ window.SFQ_EMAILJS = {
 
 window.SFQ_LOGIN_DOMAIN = "sfquiz.local";
 window.SFQ_COLLECTION = "progress";
-window.SFQ_ADMIN_IDS = ["admin"];
+window.SFQ_ADMIN_ID_HASHES = ["8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"];
