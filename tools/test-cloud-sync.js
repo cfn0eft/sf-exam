@@ -270,5 +270,24 @@ t('idOf: 内部メールから表示用ログインIDを取り出す', () => {
   eq(T.idOf(''), ''); eq(T.idOf(null), '');
 });
 
+t('sha256Hex: Node の crypto と一致する（管理者IDのハッシュ照合用）', () => {
+  const crypto = require('crypto');
+  ['', 'abc', 'admin', 'sf-quiz.admin_2026', '日本語ID'].forEach((v) => {
+    eq(T.sha256Hex(v), crypto.createHash('sha256').update(v, 'utf8').digest('hex'), 'sha256(' + JSON.stringify(v) + ')');
+  });
+});
+
+t('matchAdmin: ハッシュ一致で管理者判定・平文IDは配信ファイルに置かない', () => {
+  const crypto = require('crypto');
+  const h = crypto.createHash('sha256').update('admin').digest('hex');
+  eq(T.matchAdmin([h], [], 'admin'), true, 'ハッシュが一致すれば管理者');
+  eq(T.matchAdmin([h], [], 'Admin'), true, '大文字小文字は sanitizeId で吸収');
+  eq(T.matchAdmin([h], [], 'admin2'), false, '別IDは管理者にならない');
+  eq(T.matchAdmin([h], [], ''), false, '空IDは管理者にならない');
+  eq(T.matchAdmin([], ['admin'], 'admin'), true, 'ハッシュ未設定なら旧来の平文IDで判定（後方互換）');
+  eq(T.matchAdmin([], ['admin'], 'other'), false, '平文判定でも別IDは対象外');
+  eq(T.matchAdmin([], [], 'admin'), false, '設定が空なら誰も管理者にならない');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
