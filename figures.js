@@ -1,17 +1,5 @@
-/* =====================================================================
- * 図解アセット（全資格共通・唯一の出典）  window.SFQ_FIGURES
- * ---------------------------------------------------------------------
- * 各図は「クラス名＋幾何情報」だけを持つインラインSVG文字列。
- * 色・テーマ（ライト/ダーク）は quiz.css の .qfig svg 側で一括定義し、
- * インライン展開された SVG がページのテーマ（[data-theme=dark]）に追従する。
- * → 図ファイル側に色を書かない（増やすときも quiz.css のパレットを共有）。
- *
- * キーは "<slug>/<name>"。問題データの fig / expFig はこの <name> を指す。
- * 描画は quiz-engine.js の figHTML()/setFig()/openFig()。
- * ===================================================================== */
 window.SFQ_FIGURES = {
 
-/* ============================ sf-admin ============================ */
 
 'sf-admin/record-access':
 '<svg viewBox="0 0 700 360" role="img" aria-label="レコードアクセスの決まり方">'
@@ -378,7 +366,6 @@ window.SFQ_FIGURES = {
 +'<text class="sub" x="435" y="400" font-size="11" text-anchor="middle">不十分なら前のステップへ戻り、入力を補って再試行（エージェントループ）</text>'
 +'</svg>',
 
-/* ============================ app-builder ============================ */
 
 'app-builder/governor-limits':
 '<svg viewBox="0 0 700 330" role="img" aria-label="主なガバナ制限（1トランザクションあたり）">'
@@ -738,7 +725,6 @@ window.SFQ_FIGURES = {
 +'<line class="ln" x1="232" y1="339" x2="296" y2="328" stroke-width="2.2" marker-end="url(#mo-ar)"/>'
 +'</svg>',
 
-/* ============================ developer（新規） ============================ */
 
 'developer/async-apex':
 '<svg viewBox="0 0 700 360" role="img" aria-label="非同期 Apex の使い分け">'
@@ -877,7 +863,6 @@ window.SFQ_FIGURES = {
 
 };
 
-/* 資格をまたいで使い回す図（同一SVGを別名で参照。教科書で app-builder「サンドボックス種別」に流用） */
 window.SFQ_FIGURES['app-builder/sandbox-types'] = window.SFQ_FIGURES['sf-admin/sandbox-types'];
 window.SFQ_FIGURES['app-builder/import-tools'] = window.SFQ_FIGURES['sf-admin/import-tools'];
 window.SFQ_FIGURES['app-builder/approval-process'] = window.SFQ_FIGURES['sf-admin/approval-process'];
@@ -885,7 +870,6 @@ window.SFQ_FIGURES['sf-admin/governor-limits'] = window.SFQ_FIGURES['app-builder
 window.SFQ_FIGURES['sf-admin/order-of-execution'] = window.SFQ_FIGURES['app-builder/order-of-execution'];
 window.SFQ_FIGURES['sf-admin/mobile-app'] = window.SFQ_FIGURES['app-builder/mobile-app'];
 
-/* developer で流用する図（同一SVGを別名で参照） */
 window.SFQ_FIGURES['developer/relationships'] = window.SFQ_FIGURES['app-builder/relationships'];
 window.SFQ_FIGURES['developer/rollup-summary'] = window.SFQ_FIGURES['app-builder/rollup-summary'];
 window.SFQ_FIGURES['developer/governor-limits'] = window.SFQ_FIGURES['app-builder/governor-limits'];
@@ -899,18 +883,6 @@ window.SFQ_FIGURES['developer/declarative-vs-code'] = window.SFQ_FIGURES['app-bu
 window.SFQ_FIGURES['developer/approval-process'] = window.SFQ_FIGURES['sf-admin/approval-process'];
 window.SFQ_FIGURES['developer/import-tools'] = window.SFQ_FIGURES['sf-admin/import-tools'];
 
-
-/* =====================================================================
- * 追加5資格の図解（2026-06-21・各6点＝計30点）
- *   agentforce / sales-cloud / service-cloud / experience-cloud / sharing-visibility
- *   tmp-figs/<slug>.js から統合。クラス名＋幾何のみ（色は quiz.css）。
- * ===================================================================== */
-
-/* ---- agentforce ---- */
-/* =====================================================================
- * 図解アセット（agentforce）  window.SFQ_FIGURES への追加分
- * 色は持たずクラス＋幾何のみ。最終的に figures.js へ統合する。
- * ===================================================================== */
 
 window.SFQ_FIGURES['agentforce/agent-anatomy'] =
 '<svg viewBox="0 0 700 360" role="img" aria-label="エージェントの構成（トピック＋アクション＋指示）">'
@@ -1106,13 +1078,6 @@ window.SFQ_FIGURES['agentforce/data-library-grounding'] =
 +'<text class="sub" x="350" y="328" font-size="11.5" text-anchor="middle">RAG（検索拡張生成）の標準手段。インデックスが Ready になる前は検索できない。</text>'
 +'</svg>';
 
-
-/* ---- sales-cloud ---- */
-/* =====================================================================
- * 図解アセット（Sales Cloud Consultant）  window.SFQ_FIGURES への追記
- * 色は持たずクラス＋幾何のみのインライン SVG（quiz.css のパレットを共有）
- * キーは "sales-cloud/<name>"。問題/用語の fig はこの <name> を指す。
- * ===================================================================== */
 
 window.SFQ_FIGURES['sales-cloud/lead-conversion'] =
 '<svg viewBox="0 0 700 360" role="img" aria-label="リード変換で作られる3つのレコード">'
@@ -1311,7 +1276,6 @@ window.SFQ_FIGURES['sales-cloud/predictive-vs-generative'] =
 +'</svg>';
 
 
-/* ---- service-cloud ---- */
 window.SFQ_FIGURES['service-cloud/case-lifecycle'] =
 '<svg viewBox="0 0 700 360" role="img" aria-label="ケースのライフサイクル（受付からクローズまで）">'
 +'<defs><marker id="sc-cl-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
@@ -1509,15 +1473,6 @@ window.SFQ_FIGURES['service-cloud/case-rules-order'] =
 +'</svg>';
 
 
-/* ---- experience-cloud ---- */
-/* =====================================================================
- * 図解アセット（Experience Cloud Consultant）  window.SFQ_FIGURES へ追記
- * ---------------------------------------------------------------------
- * 各図は「クラス名＋幾何情報」だけを持つインラインSVG文字列。
- * 色・テーマは quiz.css の .qfig svg 側で一括定義（図側に色を書かない）。
- * キーは "experience-cloud/<name>"。vocab.json の fig はこの <name> を指す。
- * ===================================================================== */
-
 window.SFQ_FIGURES['experience-cloud/license-decision'] =
 '<svg viewBox="0 0 700 380" role="img" aria-label="外部ユーザーライセンスの選び方">'
 +'<defs><marker id="lic-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker></defs>'
@@ -1714,7 +1669,6 @@ window.SFQ_FIGURES['experience-cloud/builder-structure'] =
 +'</svg>';
 
 
-/* ---- sharing-visibility ---- */
 window.SFQ_FIGURES['sharing-visibility/record-access-order'] =
 '<svg viewBox="0 0 700 360" role="img" aria-label="レコードアクセスの決まり方（OWDから足していく）">'
 +'<defs><marker id="sv-ra-ar" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" class="ar"/></marker>'

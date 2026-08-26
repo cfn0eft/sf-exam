@@ -133,7 +133,7 @@ App Builder 5分野: 基礎23/データ22/ロジック&自動化28/UI17/リリ�
 
 ### メール通知（任意・EmailJS / 2026-07-30 追加）
 
-- 利用申請・停止解除の申請・利用者からのDM が発生したとき、管理者のメールへ通知する。設定は `firebase-config.js` の `window.SFQ_EMAILJS = {serviceId, templateId, publicKey}`（**空なら完全に無効＝既存動作に影響なし**。設定手順はそのファイルのコメントに記載）
+- 利用申請・停止解除の申請・利用者からのDM が発生したとき、管理者のメールへ通知する。設定は `firebase-config.js` の `window.SFQ_EMAILJS = {serviceId, templateId, publicKey}`（**空なら完全に無効＝既存動作に影響なし**。設定手順は `docs/EMAILJS.md`）
 - 送信は「操作した利用者のブラウザ」から EmailJS の REST API を直接叩く＝**サーバ不要・Blaze プラン不要**。宛先（To）は EmailJS 側のテンプレートに固定するため、公開キーが露出しても他人へメールを送る踏み台にはならない
 - `notifyAdminMail(kind, info, cb)` が唯一の送信口。`kind` は `apply`／`unblock`／`dm`／`test`。通常は fire-and-forget（失敗しても申請やDMの保存は成功させる）。DM のみ端末ローカルで5分に1通へ間引く（`mailThrottled`）
 - 管理者ビューのダッシュボードに「✉️ メール通知（🟢有効/🟡未設定）＋テスト送信」。テスト送信だけは HTTP 結果を受け取って成否を表示する
@@ -277,6 +277,21 @@ git push origin main
 - 正解だけ突出して長く・詳しくしない。全選択肢を同程度の文長にそろえる
 - 多答問題は 4 段階の弁別を作る（明らかな正解・微妙な正解・ありそうな誤り・明らかな誤り）
 
+### 配信ファイルに情報を書かない（2026-08-26 方針変更）
+
+このリポジトリは公開リポジトリで、かつ **GitHub Pages はリポジトリのファイルをそのまま配信する**。
+つまり配信対象の JS/CSS/HTML は、ブラウザの「ソースを表示」で誰でも全文を読める。
+
+- **配信ファイル（`*.js` / `quiz.css` / 各 `index.html` / `maintenance.html`）にコメントを書かない**。
+  メールアドレス・運用手順・管理まわりの内部事情は特に書かない。
+  説明が要るときは `docs/` の Markdown（＝サイトからは配信しない）か CLAUDE.md に書く。
+- 個人のメールアドレスは**コードにもドキュメントにも書かない**。EmailJS の宛先は EmailJS の
+  テンプレート側にだけ設定する（`docs/EMAILJS.md`）。
+- **`_config.yml` の `exclude`** が、CLAUDE.md・PROGRESS.md・`docs/`・`tools/`・`firestore.rules` などの
+  内部ファイルを公開サイトから除外する。内部向けファイルを増やしたらこのリストにも足す。
+- 秘密にしたい値（合言葉など）は平文で置かない。`maintenance.js` の `PREVIEW_HASH` のように
+  ハッシュだけを置き、合言葉自体は推測されにくい長いものにする。
+
 ### Commit メッセージ
 - **必ず日本語で書く**、**1行に収める**（80〜120字以内）
 - 複数行・ヒアドキュメント・`\n` を含む `-m` は絶対に提案しない（Git Bash の `>` プロンプト事故）
@@ -341,3 +356,6 @@ git push origin main
 
 - `Firebaseセットアップ手順.md` — 初期設定（プロジェクト作成・キー貼り付け・Firestore ルール）
 - `SECURITY.md` — Firebase apiKey 公開の方針
+- `docs/EMAILJS.md` — メール通知（EmailJS）の設定手順
+- `docs/MAINTENANCE.md` — メンテナンス（手動オーバーライド・プレビュー合言葉）の運用
+- `docs/CODE-NOTES.md` — 配信ファイルから退避したコードの補足メモ

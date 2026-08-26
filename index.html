@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=143"></script>
+<script src="maintenance.js?v=144"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -66,7 +66,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 .card.acq{border-color:#f5c451;box-shadow:0 0 0 1px #f5c451, var(--shadow)}
 .adminonly-badge{position:absolute;top:12px;left:12px;background:#475569;
   color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;z-index:3}
-/* 進行ロック: 未解除 / 選択して解除 / 学習中 */
 .card.locked{background:var(--muted);cursor:not-allowed;color:var(--muted-text);font-family:inherit;text-align:left;width:100%}
 .card.locked:hover{transform:none;box-shadow:var(--shadow);border-color:var(--border)}
 .card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{filter:grayscale(1);opacity:.6}
@@ -92,7 +91,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   .grid{grid-template-columns:1fr;gap:12px}
   .card{min-height:0;padding:18px 16px}
 }
-/* アップデートのお知らせ（バナー＋モーダル） */
 .lp-news{display:flex;align-items:center;gap:13px;width:100%;cursor:pointer;text-align:left;font:inherit;
   background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px 18px;margin:0 0 26px;
   color:inherit;box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
@@ -131,7 +129,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     <p>学習したい資格を選択してください</p>
   </header>
 
-  <!-- アップデートのお知らせ -->
   <button class="lp-news" id="lp-news" onclick="lpOpenNews()">
     <span class="lp-news-ic">📣</span>
     <span class="lp-news-main">
@@ -152,7 +149,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 
 </div>
 
-<!-- アップデート履歴モーダル -->
 <div class="lp-modal" id="lp-modal" onclick="if(event.target===this)lpCloseNews()">
   <div class="lp-modal-box" role="dialog" aria-modal="true" aria-label="アップデート情報">
     <div class="lp-modal-head"><span>📣 アップデート情報</span><button class="lp-modal-x" onclick="lpCloseNews()" aria-label="閉じる">✕</button></div>
@@ -160,19 +156,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </div>
 </div>
 
-<!-- ============================================================
-     クラウド同期：ログイン・ゲートウェイ＋アカウント管理
-     このLPは進捗ストアを持たない gateway ロール。
-     未ログインだとログイン画面で覆われ、資格カードを選べない。
-     ログインすると右上にアカウントバッジ（ログアウト／👑管理者）が出る。
-     ※ Firebase 未設定のときは締め出しを避けるため自動で同期なし通過。
-     ============================================================ -->
-<!-- 資格のロック解除（直列進行）。判定の出典・全ページ共有。renderCerts より先に読む -->
-<script src="progression.js?v=143"></script>
+<script src="progression.js?v=144"></script>
 <script>
-  /* ===== 資格レジストリ：新しい資格はここに1件追加するだけ（カードを自動生成） =====
-     meta は [問数, 用語数, 合格%] で統一（data/*.json と要手動同期）。
-     現状: sf-admin=437問/94用語, app-builder=445問/83用語, developer=499問/75用語, agentforce=138問/26用語, sales-cloud=200問/67用語, service-cloud=120問/75用語, experience-cloud=131問/63用語, sharing-visibility=81問/54用語。 */
   const CERTS = [
     { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
       desc:'2025/12改訂の公式8分野（Agentforce 8%対応）。学習・試験・SRS・教科書・用語帳・統計をフル搭載。',
@@ -200,7 +185,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
       meta:['132問','54用語','合格67%'] },
     { coming:true }
   ];
-  // 残り5資格から1つずつ選んで解除（確認のうえ elective を保存→カード再描画→その資格へ）
   function lpChooseElective(slug){
     var P = window.SFQ_PROG, name = (P && P.NAME[slug]) || slug;
     if (!confirm(name + ' を解除しますか？\n\n一度に学習できるのは1資格です。取得済みにすると、残りからまた1つ選べます。')) return;
@@ -225,14 +209,12 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
         + '<h2 class="card-title">' + c.title + '</h2>'
         + '<p class="card-desc">' + (c.desc || '') + '</p>'
         + '<div class="card-meta">' + meta + '</div>';
-      // progression.js が未読込なら従来どおり素のリンクで出す（フォールバック）
       if (!P) return '<a class="card" href="certifications/' + c.slug + '/index.html">' + inner + '</a>';
       var st = P.stateOf(c.slug);
       if (st === 'coming') {
         return '<div class="card coming"><span class="coming-badge">🔜 いずれ公開</span>' + inner
           + '<div class="lock-reason">現在準備中です。順次公開予定。</div></div>';
       }
-      // 取得済み（今回ロック分・導入前のバッジ分どちらも）はカードに金バッジ。クリックは可能（ページ側でロック判定）
       if (P.acquiredOf(c.slug)) {
         return '<a class="card acq" href="certifications/' + c.slug + '/index.html"><span class="acq-badge">🎓 取得済み</span>' + inner + '</a>';
       }
@@ -242,7 +224,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
         else if (!P.isAdmin()) badge = '<span class="cur-badge">▶ 学習中</span>';
         return '<a class="card" href="certifications/' + c.slug + '/index.html">' + badge + inner + '</a>';
       }
-      // locked
       if (P.canChoose(c.slug)) {
         return '<button type="button" class="card choosable" onclick="lpChooseElective(\'' + c.slug + '\')"><span class="choose-badge">🔓 選択して解除</span>' + inner + '</button>';
       }
@@ -253,11 +234,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   }
   window.renderCerts = renderCerts;
   renderCerts();
-  // ログイン完了・取得/取消・選択でロック状態が変わったら再描画
   window.addEventListener('sfq-progress', renderCerts);
 
-  // cloud-sync のオーバーレイ/バッジをOSのダーク設定に追従させる
-  // （LP本体の配色は @media(prefers-color-scheme) で別途対応済み）
   (function () {
     var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
     function apply() { document.body.classList.toggle('dark', !!(mq && mq.matches)); }
@@ -270,11 +248,9 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<!-- アップデート履歴データ（LP・全資格で共有） -->
-<script src="changelog.js?v=143"></script>
-<script src="cloud-sync.js?v=143"></script>
+<script src="changelog.js?v=144"></script>
+<script src="cloud-sync.js?v=144"></script>
 <script>
-  /* ===== アップデートのお知らせ（changelog.js の window.SFQ_CHANGELOG を表示） ===== */
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
   function lpHasUnseen(){try{return (window.SFQ_CHANGELOG||[]).length>0 && localStorage.getItem('sfq_news_seen')!==lpNewsLatest();}catch(e){return false;}}
   function lpRenderNews(){
