@@ -115,7 +115,6 @@ function exportBookmarksCsv(){
 function getVM(k){return store.vm[k]||0;}
 function setVM(k,v){store.vm[k]=v;save();}
 
-// --- init ---
 function buildDomainIndex(){DOMAIN_BY={};(DOMAIN_DEFS||[]).forEach(d=>{DOMAIN_BY[d.code]=d;});}
 async function loadCertData(){
   async function gj(f){try{const r=await fetch(DATA_DIR+f,{cache:'no-cache'});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
@@ -134,9 +133,8 @@ async function loadCertData(){
   NAVDATA=(await gj('navmap.json'))||[];
   CRAMDATA=(await gj('cram.json'))||[];
   COMPDATA=(await gj('compare.json'))||[];
-  LESSDATA=(await gj('lessons.json'))||[];   // 授業（スライド学習）。無い資格は空配列のまま
+  LESSDATA=(await gj('lessons.json'))||[];
   allQ=[...QDATA];filtQ=[...allQ];
-  // 共有 localStorage の出典指定のうち、この資格に存在しない出典は選択から外す（保存はしない＝他資格の設定は維持）
   if(srcSel.size)srcSel=new Set(Array.from(srcSel).filter(s=>allQ.some(q=>q&&q.source===s)));
 }
 function applyCertText(){
@@ -154,7 +152,7 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{await loadCertData();}catch(e){console.error('cert data load failed',e);}
   applyCertText();
   try{buildKwFilter();}catch(e){}
-  try{restoreFilters();}catch(e){}   // 前回の出題設定を復元してから絞り込みを適用
+  try{restoreFilters();}catch(e){}
   try{applyFilters();}catch(e){}
   try{homeStats();}catch(e){}
   try{renderTextbook();}catch(e){}
@@ -171,7 +169,6 @@ document.addEventListener('DOMContentLoaded',async ()=>{
   try{handleLaunchShortcut();}catch(e){}
 });
 
-// PWAショートカット起動（manifest の shortcuts → ?go=daily|exam で着地。再読み込みでの再発火は防ぐ）
 function handleLaunchShortcut(){
   var go=null;
   try{go=new URLSearchParams(location.search).get('go');}catch(e){}
@@ -181,12 +178,10 @@ function handleLaunchShortcut(){
   else if(go==='exam')startExam();
 }
 
-// --- キーボード操作 ---
 function handleKey(e){
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   const tag=(e.target.tagName||'').toLowerCase();
   if(tag==='input'||tag==='textarea'||tag==='select')return;
-  // ? でショートカット一覧、Esc で閉じる（全モード共通）
   if(e.key==='?'){toggleShortcutHelp();e.preventDefault();return;}
   if(e.key==='Escape'){
     const _nb=document.getElementById('nb-ov');if(_nb&&_nb.classList.contains('show')){closeNotebook();e.preventDefault();return;}
@@ -237,16 +232,13 @@ function buildKwFilter(){
   allQ.forEach(q=>(q.keywords||[]).forEach(k=>c[k]=(c[k]||0)+1));
   const sorted=Object.entries(c).sort((a,b)=>b[1]-a[1]);
   const sel=document.getElementById('f-kw');
-  const prev=sel?sel.value:'';   // 再構築で選択が消えないよう現在値を控える（クラウド同期のUI再描画対策）
+  const prev=sel?sel.value:'';
   sel.innerHTML='<option value="">🏷️ キーワードで絞り込み（全て）</option>';
   sorted.forEach(([k,n])=>{
     const o=document.createElement('option');o.value=k;o.textContent=k+'（'+n+'問）';sel.appendChild(o);
   });
   if(prev&&Array.prototype.some.call(sel.options,o=>o.value===prev))sel.value=prev;
 }
-// 出題設定（絞り込みチップ）の端末保存＝毎回リセットされないようにする。
-// localStorage '<storageKey>_filters'（端末ローカル・資格ごと。sfq_src / sfq_cshuf と同じ方針＝クラウド同期しない端末設定）。
-// フリーワード検索(f-text)はその場限りの検索なので保存しない（古い検索が復活して0問になる事故を避ける）。
 function filtersKey(){return SKEY+'_filters';}
 function saveFilters(){
   try{
@@ -264,7 +256,7 @@ function restoreFilters(){
     const setChk=(id,v)=>{const e=document.getElementById(id);if(e&&typeof v==='boolean')e.checked=v;};
     setChk('f-new',st.nw);setChk('f-wrong',st.wr);setChk('f-lc',st.lc);setChk('f-bm',st.bm);setChk('f-multi',st.mu);setChk('f-shuf',st.sh);
     if(st.d)fDiffSet={1:!!st.d[1],2:!!st.d[2],3:!!st.d[3]};
-    const kwEl=document.getElementById('f-kw');   // 保存したキーワードが今の資格の選択肢にある時だけ復元
+    const kwEl=document.getElementById('f-kw');
     if(kwEl&&st.kw&&Array.prototype.some.call(kwEl.options,o=>o.value===st.kw))kwEl.value=st.kw;
   }catch(e){}
 }
@@ -309,7 +301,6 @@ function applyFilters(){
   const wc=scoped.filter(q=>isWrong(q.id)).length;
   const wcEl=document.getElementById('wrong-count');
   if(wcEl)wcEl.textContent=wc?' '+wc:'';
-  // 「次にやる」カード用ミラー
   const nwEl=document.getElementById('next-wrong');
   if(nwEl)nwEl.textContent=wc;
   const lc=scoped.filter(q=>isLowConfCorrect(q.id)).length;
@@ -318,9 +309,8 @@ function applyFilters(){
   [1,2,3].forEach(function(n){var el=document.getElementById('d'+n+'-count');if(el){var cc=scoped.filter(function(q){return qDiff(q)===n;}).length;el.textContent=cc?' '+cc:'';}});
   const el=document.getElementById('f-count');
   if(el)el.textContent='対象: '+filtQ.length+' 問';
-  saveFilters();   // 出題設定を端末に保存（次回もこの絞り込みで開ける）
+  saveFilters();
 }
-// 出典フィルタの切替（HTMLのchipから呼ばれる）。出典は複数選択でき、各 chip がトグル。'all' で選択解除＝すべて
 function setSrcFilter(v){
   if(v==='all'){srcSel=new Set();}
   else if(SRC_KEYS.includes(v)){if(srcSel.has(v))srcSel.delete(v);else srcSel.add(v);}
@@ -337,7 +327,6 @@ function syncSrcChips(){
     const c=document.getElementById('chip-src-'+s);
     if(c)c.classList.toggle('on',srcSel.has(s));
   });
-  // 件数表示
   const setBadge=(id,n)=>{const el=document.getElementById(id);if(el)el.textContent=n?' '+n:'';};
   setBadge('src-all-count',allQ.length);
   SRC_KEYS.forEach(s=>setBadge('src-'+s+'-count',allQ.filter(q=>q.source===s).length));
@@ -354,7 +343,6 @@ function homeStats(){
   const mastered=Object.values(store.vm||{}).filter(v=>v>=2).length;
   setText('st-vocab',mastered);
   updateSrsBtn();
-  // 「次にやる」カードの弱点件数（弱点分野の問題プール数）
   try{
     const ds=domainStats().filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct);
     const weak=ds.slice(0,3).map(d=>d.code);
@@ -374,7 +362,6 @@ function homeStats(){
   renderPlan();
 }
 
-// --- nav ---
 function goTo(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -401,8 +388,6 @@ function goBack(){
   goTo('home');
 }
 
-/* ブックマークボタンの表示・状態をまとめて更新する（★/☆・on クラス・aria-pressed）。
-   同じ3点の書き換えが4か所に散っていたのを1本化した。 */
 function setBmBtn(btn,on){
   if(!btn)return;
   btn.textContent=on?'★':'☆';
@@ -410,7 +395,6 @@ function setBmBtn(btn,on){
   btn.setAttribute('aria-pressed',on?'true':'false');
 }
 
-// --- dark mode ---
 function applyDark(on){
   document.documentElement.setAttribute('data-theme',on?'dark':'');
   const b=document.getElementById('btn-dark');
@@ -422,14 +406,12 @@ function toggleDark(){
   localStorage.setItem('dark',isDark?'0':'1');
 }
 
-// --- toast ---
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-// --- inline markdown ---
 function mdInline(s){
   if(!s)return'';
   return s
@@ -438,7 +420,6 @@ function mdInline(s){
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
     .replace(/`(.+?)`/g,'<code>$1</code>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g,function(_,txt,url){
-      // term:用語名 はアプリ内の学習ガイド（用語集）へジャンプ。それ以外は通常の外部リンク
       if(/^term:/.test(url)) return '<a href="#" class="tbk-xref" onclick="gotoTerm(decodeURIComponent(\''+encodeURIComponent(url.slice(5))+'\'));return false;">'+txt+'</a>';
       return '<a href="'+url+'" target="_blank">'+txt+'</a>';
     });

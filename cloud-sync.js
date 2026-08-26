@@ -744,7 +744,6 @@
     return { id: id, pw: pw };
   }
 
-  // store から集計値を算出
   function statsOf(store) {
     store = store || {};
     var hist = store.hist || {}, ids = Object.keys(hist);
@@ -758,27 +757,19 @@
     });
     var attempts = c + w;
 
-    // SRS：今日が期限の数
     var today = (function () { var d = new Date(); var p = function (n) { return ('0' + n).slice(-2); };
       return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); })();
     var srsAll = store.srs || {}, srsKeys = Object.keys(srsAll), srsDue = 0;
     srsKeys.forEach(function (k) { var s = srsAll[k]; if (s && (s.due || '9999-99-99') <= today) srsDue++; });
 
-    // 用語帳：習得済(2)と学習中(1)
     var vm = store.vm || {}, vmMastered = 0, vmLearning = 0;
     Object.keys(vm).forEach(function (k) { var v = vm[k]; if (v >= 2) vmMastered++; else if (v >= 1) vmLearning++; });
 
-    // 教科書：しおり/読了
     var tbm = store.tbm || {}, tbmBm = 0, tbmDone = 0;
     Object.keys(tbm).forEach(function (k) { var v = tbm[k]; if (v === 1) tbmBm++; else if (v === 2) tbmDone++; });
 
-    // メモ
     var notes = store.notes || {}, notesCount = Object.keys(notes).filter(function (k) { return (notes[k] || '').trim(); }).length;
 
-    // 試験履歴。合否は e.pass（真偽）で判定する。
-    // ※ e.ok は「正解数（整数）」なので合格数の判定には使わない（1問でも正解だと真になってしまう）。
-    // 「本番形式（フル）」= 問題数が examN の模試のみ。合格率の母数はこれに揃える
-    //   （ユーザー向け推移グラフ examTrendHTML の (e.n||EXAM_N)===EXAM_N と同義）。
     var FULL_N = (window.CERT_CONFIG && CERT_CONFIG.examN) || 60;
     var exams = store.exams || [], examCount = exams.length;
     var examBest = 0, examPassed = 0, examLastTs = 0, examFull = 0, examFullPassed = 0;
@@ -789,7 +780,6 @@
       if ((e.ts || 0) > examLastTs) examLastTs = e.ts;
     });
 
-    // 学習日数（daily の non-empty キー数）と最終学習日
     var daily = store.daily || {}, dailyKeys = Object.keys(daily).filter(function (k) { return (daily[k] || 0) > 0; });
     var daysActive = dailyKeys.length;
     var lastStudyDate = dailyKeys.sort().slice(-1)[0] || '';
@@ -810,10 +800,9 @@
       examFull: examFull, examFullPassed: examFullPassed,
       examDate: store.examDate || '', goal: store.goal || 0,
       daysActive: daysActive, lastStudyDate: lastStudyDate,
-      studySec: (store.time && typeof store.time.tot === 'number') ? store.time.tot : 0   // 学習時間（秒）#18
+      studySec: (store.time && typeof store.time.tot === 'number') ? store.time.tot : 0
     };
   }
-  // 学習時間の表示用フォーマット（秒→「Xh Ym」/「Ym」/「Xs」）
   function fmtDur(sec) {
     sec = Math.max(0, Math.round(sec || 0));
     if (sec < 60) return sec + '秒';
@@ -823,7 +812,6 @@
     return h + '時間' + (mm ? mm + '分' : '');
   }
 
-  /* ---------------- 認証アクション ---------------- */
   function doLogin() {
     var v = validate(); if (!v) return;
     busy(true); setMsg('ログイン中…');
@@ -850,36 +838,21 @@
     auth.signOut();
   }
 
-  /* ---------------- 管理者へのメール通知（EmailJS・任意機能） ----------------
-     利用申請・解除申請・利用者からのDM が発生したとき、管理者のメールアドレスへ
-     お知らせを送る。送信は「その操作をした利用者のブラウザ」から EmailJS の REST API を
-     直接叩く（サーバ不要・Firebase の Blaze プラン不要）。
 
-     設定は firebase-config.js の window.SFQ_EMAILJS。**未設定なら何もしない**ので、
-     設定しないままでも既存の動作には一切影響しない。
-     ・宛先（To）は EmailJS 側のテンプレートに固定する＝この JS からは宛先を指定できない
-       （公開キーが露出しても、他人へメールを送る踏み台にはならない）。
-     ・送信は fire-and-forget。失敗しても申請やDMの保存には影響させない。
-     ・注意: DM は本文の抜粋（120字）を通知に含めるため、その文字列は EmailJS を経由する。
-     取りこぼし（回線や拡張機能でブロックされた1件）が問題になる場合は、この関数の中身だけを
-     Cloud Functions / GitHub Actions 方式に差し替えればよい（呼び出し側は変えない）。 */
   var MAIL_KINDS = {
     apply:   '📩 利用申請がありました',
     unblock: '📩 停止解除の申請がありました',
     dm:      '💬 利用者からメッセージが届きました',
     test:    '✅ メール通知のテストです'
   };
-  var MAIL_THROTTLE_MS = 5 * 60000;   // 同じ種類の通知は5分に1回まで（DMの連投でメールが溢れないように）
+  var MAIL_THROTTLE_MS = 5 * 60000;
 
   function mailCfg() {
     var c = window.SFQ_EMAILJS;
-    if (!c || !c.serviceId || !c.templateId || !c.publicKey) return null;  // 未設定＝無効
+    if (!c || !c.serviceId || !c.templateId || !c.publicKey) return null;
     return c;
   }
   function mailEnabled() { return !!mailCfg(); }
-  // 送信間隔の制御（端末ローカル）。test（管理者のテスト送信）以外は全種類を throttle する。
-  // 以前は dm だけが対象で apply/unblock は無制限だったため、停止中ユーザーが「解除申請」を連打すると
-  // 管理者メールへ無制限に飛ばせた（通知チャネルへの DoS）。申請自体の Firestore 保存は throttle と無関係に成功する。
   function mailThrottled(kind, now) {
     if (kind === 'test') return false;
     var k = 'sfq_mailed_' + kind, prev = 0;
@@ -888,7 +861,6 @@
     try { localStorage.setItem(k, String(now)); } catch (e) {}
     return false;
   }
-  // EmailJS へ渡す template_params を組む（純粋関数・テストから検証する）
   function mailParams(kind, info) {
     info = info || {};
     return {
@@ -901,8 +873,6 @@
       site: (typeof location !== 'undefined' && location.origin) ? location.origin : ''
     };
   }
-  // cb(ok, err) は任意（管理者ビューの「テスト送信」だけが結果を受け取る）。
-  // 通常の通知は fire-and-forget＝失敗しても利用者の操作は止めない。
   function notifyAdminMail(kind, info, cb) {
     var c = mailCfg();
     if (!c) { if (cb) cb(false, 'メール通知が未設定です（firebase-config.js の SFQ_EMAILJS）'); return; }
@@ -916,13 +886,11 @@
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
       }).then(function (r) {
         if (r.ok) { try { console.info('[mail] sent ok:', kind); } catch (e) {} if (cb) cb(true, ''); return; }
-        // 失敗は cb の有無に関わらずコンソールに残す（本番の apply/dm は cb 無し＝従来は無音で失敗していた）
         r.text().then(function (tx) { try { console.warn('[mail] send failed:', kind, 'HTTP', r.status, (tx || '').slice(0, 200)); } catch (e) {} if (cb) cb(false, 'HTTP ' + r.status + ' ' + (tx || '').slice(0, 100)); },
                       function () { try { console.warn('[mail] send failed:', kind, 'HTTP', r.status); } catch (e) {} if (cb) cb(false, 'HTTP ' + r.status); });
       }).catch(function (e) { try { console.warn('[mail] send error:', kind, (e && e.message) || e); } catch (_) {} if (cb) cb(false, (e && e.message) || '送信できませんでした'); });
     } catch (e) { if (cb) cb(false, (e && e.message) || '送信できませんでした'); }
   }
-  // 管理者ビューからのテスト送信（設定が正しいか確かめる用）
   function sendMailTest() {
     if (!isAdmin) { alert('管理者アカウントでログインしてから実行してください。'); return; }
     toastSafe('テストメールを送信中…');
@@ -931,7 +899,6 @@
       name: currentName || 'admin', id: idOf(currentEmail), at: fmtDateTime(Date.now()),
       detail: 'これはメール通知の設定確認用のテスト送信です。'
     }, function (ok, err) {
-      // 結果は必ず alert で出す（LP＝ゲートウェイには toast が無く、成功時に無反応に見えるのを防ぐ）
       if (ok) {
         alert('EmailJS はテスト送信を受け付けました（HTTP OK）。\n\n' +
           '数分待っても届かない場合、原因は EmailJS 側か受信側です。次を確認してください:\n' +
@@ -948,50 +915,35 @@
     });
   }
 
-  /* ---------------- 休眠アカウントの承認失効（30日アクセスなし） ----------------
-     ・承認済み（access==='approved'）でも 30日以上アクセスがなければ、ログイン時に
-       自分で access を 'pending' に戻し（Firestore ルールで本人に許可済み）、そのまま
-       ログアウトする。次のログインで承認待ちロック＝再申請が必要になる。
-     ・進捗（stores）は消さない。管理者が再承認すればそのまま続けられる。
-     ・起点は lastSeen（在席ハートビート）・lastLogin・approvedAt（管理者が承認した日時）の
-       最も新しいもの。ログインしたまま毎日使っている人（Auth セッションは無期限持続）を
-       誤って失効させないため lastLogin だけでは判定せず、また承認直後の再失効を防ぐため
-       approvedAt も起点に含める（＝再承認で30日の猶予がリセットされる）。
-     ・管理者は対象外。管理者ビューの「🧹 承認を一括解除」でまとめて棚卸しもできる。 */
-  var INACTIVE_DAYS = 30;                          // これ以上アクセスがないと承認が失効する
+  var INACTIVE_DAYS = 30;
   var INACTIVE_MS = INACTIVE_DAYS * 86400000;
-  var expiredNotice = false;                       // 失効ログアウト直後にログインフォームへ出す案内
+  var expiredNotice = false;
 
   function lastActiveAt(data) {
     if (!data) return 0;
     return Math.max(data.lastSeen || 0, data.lastLogin || 0, data.approvedAt || 0);
   }
-  // 承認を失効させるべきか（純粋関数・テストから検証する）
   function accessExpired(data, now) {
-    if (!data || data.access !== 'approved') return false; // 承認済みだけが対象
+    if (!data || data.access !== 'approved') return false;
     var t = lastActiveAt(data);
-    if (!t) return false;                                  // 記録なし＝起点が無いので失効させない
+    if (!t) return false;
     return (now - t) > INACTIVE_MS;
   }
   function inactiveDaysOf(data, now) {
     var t = lastActiveAt(data);
     return t ? Math.floor((now - t) / 86400000) : 0;
   }
-  // 失効させる本体：本人 doc を pending に戻し（req も消して「新しい申請」にする）→ ログアウト
   function expireOwnAccess(uid, data) {
     var now = Date.now();
     try { localStorage.removeItem('sfq_access_' + uid); } catch (e) {}
     expiredNotice = true;
     var payload = { access: 'pending', expiredAt: now, expiredDays: inactiveDaysOf(data, now), updated: now };
     try { payload.req = firebase.firestore.FieldValue.delete(); } catch (e) {}
-    // 書込を待ってからサインアウトする（サインアウト後は自 doc に書けない）
     db.collection(COLLECTION).doc(uid).set(payload, { merge: true })
       .catch(function () {})
       .then(function () { doLogout(); });
   }
 
-  // 承認済みをローカルに控える（オフライン再ログイン用）。日時つき＝オフラインのまま
-  // 無期限に素通りできないようにする（旧形式の素の 'approved' は後方互換で素通し）。
   function cacheApproval(uid) {
     try { localStorage.setItem('sfq_access_' + uid, JSON.stringify({ v: 'approved', ts: Date.now() })); } catch (e) {}
   }
@@ -999,25 +951,20 @@
     var raw = '';
     try { raw = localStorage.getItem('sfq_access_' + uid) || ''; } catch (e) {}
     if (!raw) return false;
-    if (raw === 'approved') return true;      // 旧形式（日時なし）。次のオンラインログインで新形式へ移行される
+    if (raw === 'approved') return true;
     try {
       var o = JSON.parse(raw);
       return !!(o && o.v === 'approved' && o.ts && (now - o.ts) <= INACTIVE_MS);
     } catch (e) { return false; }
   }
 
-  /* ---------------- ログイン後の同期 ---------------- */
   function docPayload(store) { return { store: store, name: currentName, email: currentEmail, updated: Date.now() }; }
 
-  // 資格ごとにドキュメント内を名前空間化して保存する（stores[CERT_KEY]）。
-  // FieldPath で stores.<CERT_KEY> のみを丸ごと置換するので、(1) 他資格のサブストアは保持され、
-  // (2) リセット（空ストア書込）時に古い履歴キーが残らない（deep-merge を避ける）。
   function saveCertStore(uid, st) {
     var ref = db.collection(COLLECTION).doc(uid);
     var FP = firebase.firestore.FieldPath;
     return ref.update(new FP('stores', CERT_KEY), st, 'name', currentName, 'email', currentEmail, 'updated', Date.now())
       .catch(function () {
-        // doc がまだ無い場合は作成（merge:true、stores はこの資格のみ）
         var obj = { stores: {}, name: currentName, email: currentEmail, updated: Date.now() };
         obj.stores[CERT_KEY] = st;
         return ref.set(obj, { merge: true });
@@ -1031,24 +978,18 @@
     isAdmin = ADMIN_IDS.indexOf(sanitizeId(currentName)) >= 0;
     setBadge(currentName); showAdminBtn(isAdmin);
     busy(false);
-    flushPendingFeedback(); // 未ログイン中に退避した報告があれば送信
+    flushPendingFeedback();
 
     setStatus('確認中…');
-    // 自 doc のアクセス権をリアルタイム購読（管理者の「個別の停止/承認」を即時反映）。
     if (!isAdmin) startAccessWatch(user.uid);
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
       var data = (doc.exists && doc.data()) || {};
 
-      // ---- アクセス承認ゲート（ホワイトリスト方式・既定で不許可）----
-      // 管理者は常に許可。一般ユーザーは access==='approved' のときだけ利用可。
-      // 未設定/'pending'/'blocked' は全面ロック（承認は管理者ビューから付与）。
       if (!isAdmin) {
         var acc = data.access;
-        // 30日以上アクセスがない承認済みアカウントは、承認を失効させてログアウト（次回は再申請が必要）
         if (accessExpired(data, Date.now())) { expireOwnAccess(user.uid, data); return; }
         if (acc !== 'approved') {
           try { localStorage.removeItem('sfq_access_' + user.uid); } catch (e) {}
-          // 初回サインアップ等で doc が無ければ「承認待ち」doc を作り、管理者ビューに可視化する
           if (!doc.exists) {
             db.collection(COLLECTION).doc(user.uid).set(
               { access: 'pending', name: currentName, email: currentEmail, updated: Date.now() },
@@ -1060,26 +1001,19 @@
           return;
         }
       }
-      // ---- 管理者専用の資格ゲート ----
-      // SFQ_ADMIN_ONLY=true のページ（一部資格）は管理者以外アクセス不可。
-      // 承認済みの一般利用者でもロックして問題に触らせない。
       if (window.SFQ_ADMIN_ONLY && !isAdmin) {
         showLock('adminonly');
         return;
       }
       hideLock();
-      // メンテ中も利用を許可されたアカウントか（checkMaintenance より先に確定させる）
       maintExempt = !!data.maintOk;
-      publishProgress(data); // 資格のロック解除（直列進行）の状態を全ページへ通知
-      if (isAdmin) watchAdminPending(); // 管理者は承認待ち件数をライブ購読で通知バッジに反映
-      // 承認済みをローカルにも控える（オフライン時の再ログイン用。承認取消時は上で消える）
+      publishProgress(data);
+      if (isAdmin) watchAdminPending();
       cacheApproval(user.uid);
-      recordLogin(user.uid, data);     // ログイン日時を記録（履歴つき）
-      startPresence(user.uid);         // 在席ハートビート開始（管理者が「現在オンライン」を確認できる）
-      if (!isAdmin) startUserMessaging(user.uid); // お知らせ＋チャットのリアルタイム購読を開始
+      recordLogin(user.uid, data);
+      startPresence(user.uid);
+      if (!isAdmin) startUserMessaging(user.uid);
 
-      // gateway（ホーム）: このページは進捗ストアを持たないので同期は行わない。
-      // 認証とアカウント管理（管理者ビュー）のみ。進捗の読込/移行は各クイズページ側に任せる。
       if (!window.__setStore) {
         setStatus(''); setMsg(''); if (elPw) elPw.value = '';
         hideOverlay();
@@ -1089,12 +1023,10 @@
       setStatus('読込中…');
       var certStore = data.stores && data.stores[CERT_KEY];
       if (certStore) {
-        // この資格のクラウド進捗を採用（資格別に分離されている）
         window.__setStore(certStore);
         if (window.__refreshUI) window.__refreshUI();
         setStatus('同期済み');
       } else {
-        // この資格の進捗が未登録 → ローカル進捗を1回だけ移行（資格別フラグ）。無ければ空で開始。
         var seed = emptyStore();
         try {
           if (!localStorage.getItem(MIGRATE_FLAG) && window.__getStore) {
@@ -1109,13 +1041,10 @@
         setStatus('同期済み');
       }
       setMsg(''); if (elPw) elPw.value = ''; hideOverlay();
-      surfaceReplies(data.fbReplies);   // 管理者からの未読の返信があれば通知(#7)
-      syncNewsSeen(data);               // アップデートのお知らせ既読をクラウドと同期（再表示防止）
+      surfaceReplies(data.fbReplies);
+      syncNewsSeen(data);
     }).catch(function () {
-      // 管理者専用の資格は、オフラインでも管理者以外をロックする。
       if (window.SFQ_ADMIN_ONLY && !isAdmin) { showLock('adminonly'); return; }
-      // 読込失敗（オフライン等）。承認を確認できないので、過去に承認済みの端末のみ素通しする。
-      // ただし控えが古い（30日以上オンラインで確認できていない）場合は素通しさせない。
       if (!isAdmin && !cachedApprovalValid(user.uid, Date.now())) { showLock('error'); return; }
       hideLock();
       if (!window.__setStore) { setStatus(''); hideOverlay(); return; }
@@ -1123,8 +1052,6 @@
     });
   }
 
-  // ===== 資格のロック解除（直列進行・progression.js が判定の出典として使う）=====
-  // doc 全体の stores から各資格の取得済み日を集め、選択した解除資格 elective とともに公開する。
   function publishProgress(data) {
     try {
       var acq = {}, lk = {};
@@ -1138,9 +1065,8 @@
       window.dispatchEvent(new Event('sfq-progress'));
     } catch (e) {}
   }
-  // 残り5資格から1つだけ選んで解除する（本人 doc の doc 直下 elective に保存。ルール変更不要）。
   window.__cloudSetElective = function (slug) {
-    if (!currentUser || !db) { // localhost / 未ログイン時はローカルに退避
+    if (!currentUser || !db) {
       try { localStorage.setItem('sfq_elective', slug); } catch (e) {}
       if (!window.SFQ_PROGRESS) window.SFQ_PROGRESS = { acquired: {}, elective: '' };
       window.SFQ_PROGRESS.elective = slug;
@@ -1156,7 +1082,6 @@
       });
   };
 
-  // 管理者からの返信(#7)を本人に通知。未読（localStorage の既読 ts より新しい）だけモーダル表示。
   function surfaceReplies(fbReplies) {
     try {
       if (!fbReplies || typeof fbReplies !== 'object') return;
@@ -1201,8 +1126,6 @@
     if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
   }
 
-  // アップデートのお知らせ（changelog）既読をクラウドと同期。localStorage が消えても再表示しない。
-  // newsSeen は changelog 先頭 id（'YYYY-MM-DD' 等）。文字列比較で新しい方を採用。
   function syncNewsSeen(data) {
     try {
       var cloud = (data && data.newsSeen) || '';
@@ -1210,44 +1133,30 @@
       var newest = (cloud > local) ? cloud : local;
       if (newest && newest !== local) { try { localStorage.setItem('sfq_news_seen', newest); } catch (e) {} }
       if (local && local > cloud && currentUser && db) { db.collection(COLLECTION).doc(currentUser.uid).set({ newsSeen: local }, { merge: true }).catch(function () {}); }
-      if (window.SFQ_syncNews) { try { window.SFQ_syncNews(); } catch (e) {} } // ベル/バナーを再描画
+      if (window.SFQ_syncNews) { try { window.SFQ_syncNews(); } catch (e) {} }
     } catch (e) {}
   }
-  // 利用者が「お知らせ」を開いたら既読 id をクラウドへ保存（エンジン/LP から呼ぶ）
   window.__cloudMarkNews = function (id) {
     if (!id || !currentUser || !db) return;
     db.collection(COLLECTION).doc(currentUser.uid).set({ newsSeen: id }, { merge: true }).catch(function () {});
   };
 
-  /* ===================================================================
-     管理者 → 利用者メッセージ（① お知らせポップ：一斉＋個別 ／ ② チャット）
-     ・一斉お知らせ … 共有 doc `broadcast/current` を全員が購読（要 Firestore ルール）
-     ・個別お知らせ … 各利用者 doc の `notices[]`（管理者が追記、本人にポップ）
-     ・チャット     … 各利用者 doc の `chat[]`（本人・管理者が双方向に追記、realtime）
-     利用者側は自 doc を onSnapshot で購読し、未読を検知してポップ／バッジ表示する。
-     =================================================================== */
 
-  /* ===================================================================
-     アクセス権のリアルタイム監視（個別の停止/承認を即時反映）
-     ・管理者がアカウントを「停止」または承認取消 → 利用中でも即ロック。
-     ・「承認」 → 承認待ち画面のまま待っている人を即解除して同期開始。
-     再ログインや「再確認」ボタンを押さなくても反映される。
-     =================================================================== */
   function startAccessWatch(uid) {
     if (!db || !uid || isAdmin) return;
     if (accessUnsub) { accessUnsub(); accessUnsub = null; }
-    watchedAccess = null; // 初回スナップショットは現状把握のみ（初期判定は onLogin の get が担当）
+    watchedAccess = null;
     accessUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
-      if (snap.metadata && snap.metadata.hasPendingWrites) return; // 自分の書込は無視
+      if (snap.metadata && snap.metadata.hasPendingWrites) return;
       var d = (snap.exists && snap.data()) || {};
       var acc = d.access || 'pending';
       if (watchedAccess === null) { watchedAccess = acc; return; }
-      if (acc === watchedAccess) return; // アクセス権に変化なし
+      if (acc === watchedAccess) return;
       var prev = watchedAccess; watchedAccess = acc;
       if (acc === 'approved' && prev !== 'approved') {
-        onLogin(currentUser);          // 承認された → 即解除して同期開始
+        onLogin(currentUser);
       } else {
-        lockNowDueToAccess(acc, d);     // 停止/承認取消/却下 → 即ロック
+        lockNowDueToAccess(acc, d);
       }
     }, function () {});
   }
@@ -1255,48 +1164,39 @@
     if (accessUnsub) { accessUnsub(); accessUnsub = null; }
     watchedAccess = null;
   }
-  // 利用中に管理者がアクセス権を変更（停止/承認取消）したら、その場でロックして同期を止める。
   function lockNowDueToAccess(acc, d) {
     try { if (currentUser) localStorage.removeItem('sfq_access_' + currentUser.uid); } catch (e) {}
-    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; } // 保留中の保存を破棄
-    stopUserMessaging();  // チャット/お知らせ購読を停止
-    stopPresence();       // 在席ハートビートを停止
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    stopUserMessaging();
+    stopPresence();
     showLock(acc === 'blocked' ? 'blocked' : (acc || 'pending'),
       { reqName: (d && d.req && d.req.name) || (d && d.name) || currentName || '',
         applied: !!(d && d.req && d.req.ts), expired: !!(d && d.expiredAt) });
   }
 
-  // 承認済みの一般利用者がログインしたら、リアルタイム購読とチャットUIを開始
   function startUserMessaging(uid) {
     if (!db || !uid || isAdmin) return;
-    ownLoaded = false; // 既読マップを読み込むまでポップを抑止（読込のたびに出る不具合の防止）
+    ownLoaded = false;
     showChatFab(true);
-    // 自分の doc を購読（notices / chat の更新を即時反映）
     if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
     ownDocUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
-      if (snap.metadata && snap.metadata.hasPendingWrites) return; // 自分の書込は無視（ちらつき防止）
+      if (snap.metadata && snap.metadata.hasPendingWrites) return;
       var d = (snap.exists && snap.data()) || {};
-      // メンテ許可フラグの付与/解除を即時反映（管理者が操作した瞬間に入れる/締め出す）
       var mok = !!d.maintOk;
       if (mok !== maintExempt) { maintExempt = mok; checkMaintenance(); }
       lastNotices = Array.isArray(d.notices) ? d.notices : [];
       lastChat = Array.isArray(d.chat) ? d.chat : [];
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
-      ownLoaded = true; // 既読マップ取得済み
+      ownLoaded = true;
       surfaceNotices();
-      scheduleNoticeBoundary(); // 予約お知らせがあれば配信時刻に再チェック
-      surfaceReplies(d.fbReplies); // 管理者からのフィードバック返信(#7)も即時通知（既読は seen マップで抑止）
+      scheduleNoticeBoundary();
+      surfaceReplies(d.fbReplies);
       refreshChatBadge();
       if (chatOpen && chatMode === 'user') renderChatMsgs();
 
-      // ---- リアルタイム反映：資格のロック解除・他端末の進捗を即時同期 ----
-      // （自分の書込は冒頭の hasPendingWrites で除外済み＝サーバ確定値のみ反映。
-      //   承認状態の即時ロック/解除は startAccessWatch が担当する）
-      if (d.access && d.access !== 'approved') return; // 停止/承認待ちは startAccessWatch がロック
-      // 未保存のローカル変更がある間は反映しない（取得直後など、保存前にサーバの古い値で巻き戻すのを防ぐ）
+      if (d.access && d.access !== 'approved') return;
       if (cloudDirty) return;
-      publishProgress(d); // 進行状況（取得済み/ロック/選択）→ ゲート・LPカードを即時更新
-      // この資格の進捗を他端末/管理者操作に追従（クイズページのみ。未保存ローカル変更は上の guard で保護）
+      publishProgress(d);
       if (window.__setStore) {
         var cs = d.stores && d.stores[CERT_KEY];
         if (cs) {
@@ -1307,18 +1207,17 @@
         }
       }
     }, function () {});
-    // 一斉お知らせ（レコード）＋メンテナンス設定を broadcast コレクションでまとめて購読
     if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
     broadcastUnsub = db.collection(BROADCAST_COL).onSnapshot(function (snap) {
       var arr = [];
       snap.forEach(function (d) {
         if (d.id === MAINT_DOC) { lastMaint = d.data() || null; return; }
-        if (d.id === 'current') return; // 旧・単一お知らせは無視（レコード化済み）
+        if (d.id === 'current') return;
         var x = d.data() || {}; if (!x.msg) return; x.id = d.id; arr.push(x);
       });
       lastBroadcasts = arr;
       surfaceNotices();
-      scheduleNoticeBoundary(); // 予約の一斉お知らせも配信時刻にポップさせる
+      scheduleNoticeBoundary();
       checkMaintenance();
     }, function () {});
     if (maintTimer) clearInterval(maintTimer);
@@ -1333,7 +1232,7 @@
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
     lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null; ownLoaded = false;
-    maintExempt = false; // ログアウト時は許可を持ち越さない（次のログインで doc から読み直す）
+    maintExempt = false;
     chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
@@ -1345,14 +1244,12 @@
     if (fab) fab.classList[on ? 'add' : 'remove']('show');
   }
 
-  // お知らせの未読判定（配信時刻を過ぎ、かつ最終改訂(rev)より後に既読していない）
   function annDue(x, now) { return (x.publishAt || x.ts || 0) <= now; }
   function annUnread(x, map) { return ((map && map[x.id]) || 0) < (x.rev || x.ts || 0); }
-  // 未読のお知らせ（一斉＋個別）をまとめて1つのモーダルでポップ
   function surfaceNotices() {
     try {
-      if (!ownLoaded) return; // 既読マップ未取得のうちはポップしない（読込ごとの再表示を防止）
-      if (document.getElementById('sfqc-replies')) return; // 既にポップ表示中
+      if (!ownLoaded) return;
+      if (document.getElementById('sfqc-replies')) return;
       var now = Date.now();
       var bcm = (lastRead && lastRead.bcm) || {}, ntm = (lastRead && lastRead.ntm) || {};
       var items = [];
@@ -1368,9 +1265,6 @@
       showNoticeModal(items);
     } catch (e) {}
   }
-  // 予約お知らせ（publishAt が未来）を、その配信時刻ちょうどにポップさせるためのタイマー。
-  // doc は予約時に1度しか変化しないため、配信時刻には snapshot が再発火しない。
-  // そこで一番近い未来の publishAt に setTimeout を張り、到来したら surfaceNotices を再実行する。
   function scheduleNoticeBoundary() {
     if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
     var now = Date.now(), next = 0;
@@ -1378,15 +1272,13 @@
     lastBroadcasts.forEach(consider);
     (lastNotices || []).forEach(consider);
     if (!next) return;
-    // 上限6時間（長期予約はタイマーを張り続けず、次回の snapshot/ログインで拾う）。setTimeout 桁あふれも回避。
     var delay = Math.max(500, Math.min(next - now + 250, 6 * 60 * 60 * 1000));
     noticeBoundaryTimer = setTimeout(function () {
       noticeBoundaryTimer = null;
       surfaceNotices();
-      scheduleNoticeBoundary(); // 次の予約に向けて張り直す
+      scheduleNoticeBoundary();
     }, delay);
   }
-  // items を1つのモーダルで表示。opts.preview=true のときは管理者向け「送信プレビュー」（既読は記録しない）
   function showNoticeModal(items, opts) {
     var preview = !!(opts && opts.preview);
     var old = document.getElementById('sfqc-replies'); if (old && old.parentNode) old.parentNode.removeChild(old);
@@ -1406,7 +1298,7 @@
       if (!preview) {
         var now = Date.now(), bcm = {}, ntm = {};
         items.forEach(function (r) { if (r.kind === 'bc') bcm[r.id] = now; else ntm[r.id] = now; });
-        writeRead({ bcm: bcm, ntm: ntm }); // 既読をクラウドへ記録（管理者が可視化）
+        writeRead({ bcm: bcm, ntm: ntm });
       }
       document.removeEventListener('keydown', onKey);
       if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
@@ -1417,11 +1309,9 @@
     if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
   }
 
-  // チャットの未読件数（利用者側＝管理者からの未読、管理者側＝利用者からの未読）
   function chatUnreadCount(msgs, mode, uid) {
     var seen;
     if (mode === 'admin') seen = num(localStorage.getItem('sfq_chat_seen_adm_' + uid));
-    // 利用者側はクラウド既読(read.chat)も参照（localStorage が消えても再表示しない）
     else seen = Math.max(num(localStorage.getItem(uidKey('sfq_chat_seen'))), (lastRead && lastRead.chat) || 0);
     var fromSide = (mode === 'admin') ? 'user' : 'admin';
     var n = 0;
@@ -1434,14 +1324,12 @@
       var max = num(localStorage.getItem(key));
       (msgs || []).forEach(function (m) { if (m && (m.ts || 0) > max) max = m.ts; });
       localStorage.setItem(key, String(max));
-      if (mode === 'user') writeRead({ chat: max }); // 利用者が読んだら既読を記録
+      if (mode === 'user') writeRead({ chat: max });
     } catch (e) {}
   }
-  // 既読を自 doc の read{bcm:{id:ts}, ntm:{id:ts}, chat:ts} に記録（管理者ビューで集計表示）。
   function writeRead(patch) {
     if (!db || !currentUser || isAdmin) return;
     var cur = lastRead || {}, out = {}, changed = false;
-    // 一斉/個別お知らせ：レコードIDごとの既読マップ
     ['bcm', 'ntm'].forEach(function (mk) {
       if (!patch[mk]) return;
       var curMap = (cur[mk] && typeof cur[mk] === 'object') ? cur[mk] : {};
@@ -1451,7 +1339,6 @@
       });
       if (Object.keys(outMap).length) { out[mk] = outMap; cur[mk] = curMap; changed = true; }
     });
-    // チャット：高水位（数値）
     if (patch.chat && patch.chat > (cur.chat || 0)) { out.chat = patch.chat; cur.chat = patch.chat; changed = true; }
     if (!changed) return;
     lastRead = cur;
@@ -1466,7 +1353,6 @@
     fab.classList[n > 0 ? 'add' : 'remove']('has-unread');
   }
 
-  // チャットパネルを開く（mode='user' は本人、'admin' は管理者が特定利用者と）
   function openChat(uid, name, mode) {
     if (!uid) return;
     chatOpen = true; chatUid = uid; chatName = name || ''; chatMode = mode || 'user';
@@ -1475,7 +1361,6 @@
     if (title) title.textContent = (mode === 'admin') ? ('💬 ' + (name || '利用者')) : '管理者とのチャット';
     if (panel) panel.classList.add('show');
     if (mode === 'admin') {
-      // 管理者：対象利用者の doc を購読
       if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
       var msgsEl = document.getElementById('sfqc-chat-msgs');
       if (msgsEl) msgsEl.innerHTML = '<div class="sfqc-chat-empty">読み込み中…</div>';
@@ -1494,7 +1379,6 @@
     var panel = document.getElementById('sfqc-chat'); if (panel) panel.classList.remove('show');
     if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
     if (chatMode === 'admin' && typeof renderAdmin === 'function' && elAdmin && elAdmin.classList.contains('show')) {
-      // 既読を反映してバッジ更新
       renderAdmin();
     }
     chatMode = 'user';
@@ -1525,20 +1409,14 @@
     var rec = { from: from, msg: msg.slice(0, 1000), ts: Date.now(), by: currentName || from };
     var FV = firebase.firestore.FieldValue;
     ta.value = '';
-    // 楽観的に即描画
     lastChat = (lastChat || []).concat([rec]); renderChatMsgs();
     var ref = db.collection(COLLECTION).doc(chatUid);
-    // set(merge)+arrayUnion なら doc が無ければ作成・あれば追記を1回で行える。
-    // 以前は update 失敗時に set({chat:[rec]}) へフォールバックしており、一時的な失敗(権限/通信)でも
-    // チャット履歴全体を最新1件に潰していた。arrayUnion は既存配列を壊さない。
     ref.set({ chat: FV.arrayUnion(rec) }, { merge: true }).then(function () {
       if (chatMode === 'admin') { try { logAdmin('チャット', (chatName || '') + '：' + rec.msg.slice(0, 20)); } catch (e) {} }
-      // 利用者からのDMは管理者へメールで知らせる（未設定なら何もしない・5分に1通まで）
       else notifyAdminMail('dm', { name: currentName || '', id: idOf(currentEmail), detail: rec.msg.slice(0, 120), at: fmtDateTime(rec.ts) });
     }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
   }
 
-  // datetime-local 値（'YYYY-MM-DDTHH:MM'）⇔ ms
   function msToLocalInput(ms) {
     if (!ms) return '';
     var d = new Date(ms), p = function (n) { return ('0' + n).slice(-2); };
@@ -1546,9 +1424,6 @@
   }
   function localInputToMs(v) { if (!v) return 0; var t = new Date(v).getTime(); return isFinite(t) ? t : 0; }
 
-  // 作成モーダルを開く（新規/編集 兼用）。
-  //   broadcast: openCompose({mode:'broadcast', id?, msg?, publishAt?})
-  //   notice   : openCompose({mode:'notice', uid?, name?, id?, msg?, publishAt?})  uid 未指定なら宛先セレクトを表示
   function openCompose(ctx) {
     composeCtx = ctx || {};
     var mode = composeCtx.mode, editing = !!composeCtx.id;
@@ -1603,7 +1478,6 @@
       else { rec.ts = now; p = col.add(rec); }
       p.then(function () { logAdmin(composeCtx.id ? '一斉お知らせ編集' : '一斉お知らせ', (scheduled ? '[予約] ' : '') + msg.slice(0, 26)); if (!composeCtx.id) previewAnnouncement(msg); loadBroadcasts(function () { done(composeCtx && composeCtx.id ? '保存しました' : (scheduled ? '予約しました' : '送信しました')); }); }).catch(fail);
     } else if (composeCtx.uids) {
-      // 一括個別お知らせ：選択した各ユーザーの notices に追記
       var rec3 = function () { return { id: 'n' + Date.now() + Math.floor(Math.random() * 100000), msg: msg, ts: now, rev: now, publishAt: publishAt, by: currentName || 'admin' }; };
       Promise.all(composeCtx.uids.map(function (uid) {
         var uu = findUser(uid); var arr2 = (uu && Array.isArray(uu.notices)) ? uu.notices.slice() : []; var r = rec3(); arr2.push(r);
@@ -1634,12 +1508,10 @@
       }).catch(function (e) { alert('保存に失敗しました: ' + (e && e.message)); });
     }
   }
-  // 送信直後に管理者自身の画面へ「送信プレビュー」をポップ（利用者に表示される見た目を確認）
   function previewAnnouncement(msg) {
     var n = Date.now();
     showNoticeModal([{ kind: 'bc', id: 'preview', title: '📢 お知らせ', msg: msg, ts: n, rev: n }], { preview: true });
   }
-  // 全体お知らせの編集/削除、個別お知らせの編集/削除
   function editBroadcast(id) { var b = adminBroadcasts.filter(function (x) { return x.id === id; })[0]; if (b) openCompose({ mode: 'broadcast', id: id, msg: b.msg, publishAt: b.publishAt }); }
   function deleteBroadcast(id) {
     if (!isAdmin || !db || !id) return;
@@ -1661,7 +1533,6 @@
       u.notices = arr; logAdmin('個別お知らせ削除', (u.name || '') + '／' + id); toastSafe('削除しました'); if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
     }).catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
   }
-  // 全体お知らせレコードを取得して adminBroadcasts に格納
   function loadBroadcasts(cb) {
     if (!db) { if (cb) cb(); return; }
     db.collection(BROADCAST_COL).get().then(function (snap) {
@@ -1671,19 +1542,12 @@
     }).catch(function () { if (cb) cb(); });
   }
 
-  /* ---------------- メンテナンス（単発＋定期。期間中は非管理者を全画面ロック） ---------------- */
-  // 設定 broadcast/maintenance:
-  //   都度メンテ … queue:[{id,start,end,msg,tasks}]（各エントリが自分の番号・作業内容・メッセージを持つ。旧 windows も読む）
-  //   定期メンテ … recurring:{enabled,dows:[0-6],start:'HH:MM',durMin,msg,tasks}（独立）
-  //   共通       … msg,tasks（エントリ未指定時のフォールバック）・preMsg,preMin・fullStop（緊急全停止）・idDate,idSeq（採番）
-  // 都度メンテのキューを取り出す（旧モデルの windows + enabled ゲートも吸収）
   function maintQueue(cfg) {
     if (!cfg) return [];
     if (Array.isArray(cfg.queue)) return cfg.queue;
-    if (Array.isArray(cfg.windows)) return (cfg.enabled === false) ? [] : cfg.windows; // 旧モデル後方互換
+    if (Array.isArray(cfg.windows)) return (cfg.enabled === false) ? [] : cfg.windows;
     return [];
   }
-  // 表示用の番号・メッセージ・作業内容を解決（エントリ固有 → 共通フォールバック）
   function maintEntryInfo(cfg, w) {
     var g = cfg || {};
     return {
@@ -1694,7 +1558,6 @@
       preMin: (w && w.preMin != null) ? w.preMin : ((g.preMin != null) ? g.preMin : 60)
     };
   }
-  // 定期メンテの1回分（番号は発生日から MNT-YYYYMMDD-R を自動採番）
   function maintRecurInfo(cfg, occMs) {
     var r = (cfg && cfg.recurring) || {};
     return {
@@ -1705,18 +1568,15 @@
       preMin: (r.preMin != null) ? r.preMin : ((cfg && cfg.preMin != null) ? cfg.preMin : 60)
     };
   }
-  // 現在がメンテ中か／直近の予定を判定して {active,end,upcoming,full,entry,upEntry} を返す
   function maintStatus(cfg, now) {
     var res = { active: false, end: 0, upcoming: 0, upEnd: 0, full: false, entry: null, upEntry: null };
     if (!cfg) return res;
-    if (cfg.fullStop) { res.active = true; res.full = true; res.entry = maintEntryInfo(cfg, null); return res; } // 緊急全停止
-    // 都度メンテ（キュー）
+    if (cfg.fullStop) { res.active = true; res.full = true; res.entry = maintEntryInfo(cfg, null); return res; }
     maintQueue(cfg).forEach(function (w) {
       if (!w || !w.start || !w.end) return;
       if (now >= w.start && now < w.end) { res.active = true; if (w.end > res.end) { res.end = w.end; res.entry = maintEntryInfo(cfg, w); } }
       else if (w.start > now && (!res.upcoming || w.start < res.upcoming)) { res.upcoming = w.start; res.upEnd = w.end; res.upEntry = maintEntryInfo(cfg, w); }
     });
-    // 定期メンテ（独立）
     var r = cfg.recurring;
     if (r && r.enabled && r.start && r.durMin && r.dows && r.dows.length) {
       var hm = r.start.split(':'); var hh = +hm[0] || 0, mm = +hm[1] || 0, dur = (+r.durMin || 0) * 60000;
@@ -1732,7 +1592,6 @@
     return res;
   }
   function dowLabel(n) { return ['日', '月', '火', '水', '木', '金', '土'][n] || ''; }
-  // 作業内容テンプレート（テンプレ適用後に自由編集できる）
   var MAINT_TASK_TEMPLATES = [
     { label: '🔧 定期メンテ', tasks: ['データベースの最適化', 'サーバー構成の更新', 'セキュリティ更新の適用'] },
     { label: '🚀 機能リリース', tasks: ['新機能のリリース', 'データ移行と整合性チェック', 'リリース後の動作確認'] },
@@ -1740,12 +1599,10 @@
     { label: '🗄️ DB作業', tasks: ['データベースのバックアップ', 'インデックスの再構築', 'パフォーマンスの改善'] },
     { label: '🧹 クリア', tasks: [] }
   ];
-  // 管理番号の自動採番：MNT-YYYYMMDD(JST)-NN（同じ日付で採番するたび連番を繰り上げ）
   function maintDateStr(ms) {
     try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ms).replace(/-/g, ''); }
     catch (e) { var d = new Date(ms); return '' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
   }
-  // 新規キューエントリの管理番号を自動採番（基準日＝対象期間の開始日。同日採番で連番を繰り上げ）
   function maintAutoNumberEntry(baseMs) {
     var d = maintDraft; if (!d) return;
     var ds = maintDateStr(baseMs || Date.now());
@@ -1754,10 +1611,8 @@
     d.entry.id = 'MNT-' + ds + '-' + ('0' + seq).slice(-2);
   }
   var maintDraft = null;
-  // 管理者：メンテナンス設定の概要（ダッシュボードタブ）
   function maintenanceSectionHTML() {
     var m = lastMaint, html = '<div class="sfqc-sec">🛠 メンテナンス</div><div class="sfqc-bc-card">';
-    // 緊急全停止トグル（ボタンで即時ON/OFF＝全利用者をライブでロック。管理者は対象外）
     var full = !!(m && m.fullStop);
     html += '<div class="sfqc-bc-meta" style="margin-bottom:8px">' +
         '<button class="sfqc-mini" id="sfqc-fullstop" style="background:' + (full ? '#16a34a' : '#dc2626') + ';color:#fff">' + (full ? '✅ 全停止を解除' : '🚨 今すぐ全停止') + '</button>' +
@@ -1765,11 +1620,9 @@
       '</div>';
     var nowMs = Date.now();
     var st = maintStatus(m, nowMs);
-    // 現在の状態（アクティブ/次回予定の番号も表示）
     var status = (st.active && !st.full) ? ('🔴 メンテナンス中' + (st.entry && st.entry.id ? '（' + st.entry.id + '）' : '') + ' 終了予定 ' + fmtDate(st.end))
       : (st.upcoming ? ('🟡 次回予定 ' + fmtDate(st.upcoming) + (st.upEntry && st.upEntry.id ? '（' + st.upEntry.id + '）' : '')) : '🟢 直近の予定なし');
     html += '<div class="sfqc-bc-msg">' + esc(status) + '</div>';
-    // 都度メンテ（キュー）と定期メンテは入力・管理を分ける（それぞれ専用ボタン）
     var future = maintQueue(m).filter(function (w) { return w && w.end > nowMs; });
     var rec = (m && m.recurring && m.recurring.enabled)
       ? '毎週 ' + (m.recurring.dows || []).map(dowLabel).join('・') + ' ' + esc(m.recurring.start) + 'から' + m.recurring.durMin + '分'
@@ -1779,14 +1632,12 @@
         '<button class="sfqc-mini" id="sfqc-maint-queue">📋 キューを管理</button></span></div>' +
       '<div class="sfqc-bc-meta"><span>🔁 定期メンテ：' + esc(rec) + '</span>' +
         '<button class="sfqc-mini" id="sfqc-maint-edit-recur">⚙️ 定期メンテを管理</button></div>';
-    // メンテ中でも利用できるアカウント（maintOk）の一覧。ユーザータブの「🛠 メンテ許可」で切替える。
     var exempts = adminUsers.filter(function (u) { return u.maintOk; });
     html += '<div class="sfqc-bc-meta"><span>🛠 メンテ中も利用可：<b>' + exempts.length + '</b> 人' +
         (exempts.length ? '（' + esc(exempts.slice(0, 5).map(function (u) { return u.name || u.uid; }).join('・')) + (exempts.length > 5 ? ' ほか' : '') + '）' : '') +
       '</span><span style="color:#64748b">ユーザータブの「🛠 メンテ許可」で切替</span></div>';
     return html + '</div>' + mailSectionHTML();
   }
-  // 管理者：メール通知の状態＋テスト送信（ダッシュボードタブ）
   function mailSectionHTML() {
     var on = mailEnabled();
     return '<div class="sfqc-sec">✉️ メール通知</div><div class="sfqc-bc-card">' +
@@ -1810,15 +1661,11 @@
       })
       .catch(function (e) { alert('変更に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
   }
-  // 全体ドラフトを作る（都度／定期どちらの画面でも、未編集側を保全したまま保存できるよう全項目を持つ）
   function buildMaintDraft() {
     var m = lastMaint || {};
     maintDraft = {
-      // 都度メンテのキュー（各エントリが自分の番号・作業内容・メッセージ・予告を持つ）
       queue: maintQueue(m).map(function (w) { return { id: w.id || '', start: w.start, end: w.end, msg: w.msg || '', tasks: Array.isArray(w.tasks) ? w.tasks.slice() : [], preMsg: w.preMsg || '', preMin: (w.preMin != null) ? w.preMin : 60 }; }),
-      // 新規エントリ作成バッファ（期間は入力欄から）
       entry: { id: '', msg: '', tasks: [], preMsg: '', preMin: 60 },
-      // 定期メンテ（独立・自分のメッセージ/作業内容/予告を持つ）
       recurring: {
         enabled: !!(m.recurring && m.recurring.enabled),
         dows: (m.recurring && m.recurring.dows) ? m.recurring.dows.slice() : [],
@@ -1829,18 +1676,15 @@
         preMsg: (m.recurring && m.recurring.preMsg) || '',
         preMin: (m.recurring && m.recurring.preMin != null) ? m.recurring.preMin : 60
       },
-      // 共通（予告・フォールバック・採番カウンタ）
       preMsg: m.preMsg || '',
       preMin: (m.preMin != null) ? m.preMin : 60,
       msg: m.msg || '',
       tasks: Array.isArray(m.tasks) ? m.tasks.slice() : [],
       idDate: m.idDate || '',
       idSeq: +m.idSeq || 0,
-      editIdx: -1, entryStart: 0, entryEnd: 0   // 都度メンテのフォーム状態（-1=新規 / 0以上=編集中の index）
+      editIdx: -1, entryStart: 0, entryEnd: 0
     };
   }
-  // 都度メンテ（キュー）の入力・管理画面
-  // 都度メンテ：新規作成（フォーム）
   function openQueueNew() {
     if (!isAdmin) return;
     buildMaintDraft(); maintDraft.mode = 'queue-form'; maintDraft.editIdx = -1;
@@ -1850,7 +1694,6 @@
     document.getElementById('sfqc-compose').classList.add('show');
     renderMaintEditor();
   }
-  // 都度メンテ：キューを管理（各件の編集・削除）
   function openQueueList() {
     if (!isAdmin) return;
     buildMaintDraft(); maintDraft.mode = 'queue-list';
@@ -1858,7 +1701,6 @@
     document.getElementById('sfqc-compose').classList.add('show');
     renderMaintEditor();
   }
-  // キューの1件をフォームに読み込んで編集
   function editQueueEntry(i) {
     var d = maintDraft; if (!d || !d.queue[i]) return;
     var w = d.queue[i];
@@ -1866,7 +1708,6 @@
     d.entryStart = w.start; d.entryEnd = w.end; d.editIdx = i; d.mode = 'queue-form';
     renderMaintEditor();
   }
-  // 定期メンテの入力・管理画面
   function openRecurringEditor() {
     if (!isAdmin) return;
     buildMaintDraft(); maintDraft.mode = 'recurring';
@@ -1876,7 +1717,6 @@
   }
   function maintTplBtns(tgt) { return MAINT_TASK_TEMPLATES.map(function (t, i) { return '<button class="sfqc-mini" type="button" data-tpl="' + tgt + ':' + i + '">' + esc(t.label) + '</button>'; }).join(''); }
   function maintSplitTasks(v) { return (v || '').split('\n').map(function (s) { return s.trim().slice(0, 80); }).filter(Boolean).slice(0, 8); }
-  // テンプレ適用（q=新規エントリ / r=定期 / g=既定）。pull は各画面のものを渡す
   function bindMaintTpl(card, d, pull) {
     card.querySelectorAll('[data-tpl]').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -1890,14 +1730,12 @@
       });
     });
   }
-  // 入力画面の振り分け：定期 / 都度キュー一覧 / 都度フォーム（新規・編集）
   function renderMaintEditor() {
     var d = maintDraft; if (!d) return;
     if (d.mode === 'recurring') renderMaintRecurring();
     else if (d.mode === 'queue-list') renderQueueList();
     else renderQueueForm();
   }
-  // ── 都度メンテ：新規作成 / 編集フォーム ──
   function renderQueueForm() {
     var d = maintDraft; if (!d) return;
     var card = document.getElementById('sfqc-cmp-card');
@@ -1954,7 +1792,6 @@
       } });
     });
   }
-  // ── 都度メンテ：キューを管理（編集・削除） ──
   function renderQueueList() {
     var d = maintDraft; if (!d) return;
     var card = document.getElementById('sfqc-cmp-card');
@@ -1988,7 +1825,6 @@
     });
     document.getElementById('sfm-cancel').addEventListener('click', closeCompose);
   }
-  // ── 定期メンテの入力・管理 ──
   function renderMaintRecurring() {
     var d = maintDraft; if (!d) return;
     var card = document.getElementById('sfqc-cmp-card');
@@ -2034,15 +1870,12 @@
     opts = opts || {};
     var d = maintDraft; if (!d || !db) return;
     var rec = {
-      // 都度メンテのキュー（各エントリが自分の番号・作業内容・メッセージ・予告を持つ）
       queue: (d.queue || []).map(function (w) { return { id: (w.id || '').slice(0, 40), start: w.start, end: w.end, msg: (w.msg || '').slice(0, 1000), tasks: Array.isArray(w.tasks) ? w.tasks.slice(0, 8) : [], preMsg: (w.preMsg || '').slice(0, 1000), preMin: (w.preMin != null) ? (+w.preMin || 0) : 60 }; }),
-      // 定期メンテ（独立）
       recurring: { enabled: !!d.recurring.enabled, dows: d.recurring.dows || [], start: d.recurring.start || '02:00', durMin: +d.recurring.durMin || 120, msg: (d.recurring.msg || '').slice(0, 1000), tasks: Array.isArray(d.recurring.tasks) ? d.recurring.tasks.slice(0, 8) : [], preMsg: (d.recurring.preMsg || '').slice(0, 1000), preMin: (d.recurring.preMin != null) ? (+d.recurring.preMin || 0) : 60 },
-      // 共通フォールバック・予告・採番カウンタ
       msg: (d.msg || '').slice(0, 1000), tasks: Array.isArray(d.tasks) ? d.tasks.slice(0, 8) : [],
       preMsg: (d.preMsg || '').slice(0, 1000), preMin: +d.preMin || 0,
       idDate: d.idDate || '', idSeq: +d.idSeq || 0,
-      fullStop: !!(lastMaint && lastMaint.fullStop), // 緊急全停止はこの保存で消さない
+      fullStop: !!(lastMaint && lastMaint.fullStop),
       updated: Date.now(), by: currentName || 'admin'
     };
     db.collection(BROADCAST_COL).doc(MAINT_DOC).set(rec).then(function () {
@@ -2052,23 +1885,17 @@
       if (opts.after) opts.after();
     }).catch(function (e) { alert('保存に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
   }
-  // バナー表示中の重なり対策：本文・上部バー（sticky）・アカウントバッジ（fixed）を h ぶん下げる
   function applyBannerOffset(h) {
     document.body.style.paddingTop = h ? (h + 'px') : '';
     var tb = document.querySelector('.topbar'); if (tb) tb.style.top = h ? (h + 'px') : '';
     if (elBadge) elBadge.style.top = h ? (h + 9) + 'px' : '';
   }
-  /* メンテ画面へ転送すべきか（純粋関数・テストから検証する）。
-     メンテを素通りできる例外は2つで、どちらも緊急全停止（fullStop）にも効く:
-       ① exempt  … 管理者が「🛠 メンテ許可」を付けたアカウント（progress/{uid}.maintOk）
-       ② preview … プレビュー合言葉を知っている端末（中身の確認用）
-     ※ 管理者自身は checkMaintenance の冒頭で対象外。 */
   function maintShouldBlock(st, exempt, preview) {
     if (!st || !st.active) return false;
     return !exempt && !preview;
   }
   function checkMaintenance() {
-    if (isAdmin) return; // 管理者は対象外
+    if (isAdmin) return;
     var overlay = document.getElementById('sfqc-maint');
     var banner = document.getElementById('sfqc-maint-banner');
     if (!overlay || !banner) return;
@@ -2076,19 +1903,16 @@
     var st = maintStatus(lastMaint, now);
     var ent = st.entry || {}, up = st.upEntry || {};
     var msg = ent.msg || (lastMaint && lastMaint.msg) || 'ただいまメンテナンスを実施しています。しばらくお待ちください。';
-    var preMsg = up.preMsg || '';                                   // 予告は「次に始まるメンテ」固有の設定を使う
+    var preMsg = up.preMsg || '';
     var preMin = (up.preMin != null) ? up.preMin : 60;
     var preview = !!(window.SFQ_hasPreview && window.SFQ_hasPreview());
     if (maintShouldBlock(st, maintExempt, preview)) {
-      // メンテ中：リッチな全画面メンテ画面 (maintenance.html) へ転送（管理者は冒頭で return 済み）。
-      // 終了予定・メッセージ・緊急全停止かを sessionStorage で引き継ぐ。
       try { sessionStorage.setItem('sfq_maint', JSON.stringify({ msg: msg, end: st.end || 0, full: !!st.full, id: ent.id || '', tasks: (ent.tasks && ent.tasks.length ? ent.tasks : null), ts: now })); } catch (e) {}
       var maintUrl = (HOME_URL || 'index.html').replace(/index\.html(?:[?#].*)?$/, 'maintenance.html');
       location.replace(maintUrl);
       return;
     }
     if (st.active) {
-      // 素通り中：なぜ使えているのかが分かるようバナーで明示する（オーバーレイは出さない）
       overlay.classList.remove('show');
       banner.textContent = maintExempt
         ? '🛠 ただいまメンテナンス中です（このアカウントは利用を許可されています）'
@@ -2101,30 +1925,27 @@
         banner.classList.add('show');
       } else { banner.classList.remove('show'); }
     }
-    // 予告バナーは position:fixed。表示中はその高さぶん本文・上部バー・アカウントバッジを下げて重なり/クリック不能を防ぐ
     applyBannerOffset(banner.classList.contains('show') ? banner.offsetHeight : 0);
-    // 次に状態が変わる「境界時刻」ちょうどに再判定する（タイマー＝ほぼリアルタイムで開始/終了を反映）
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     var cands = [];
-    if (st.active && st.end) cands.push(st.end);            // 期間終了→ロック解除
-    if (st.upcoming) { cands.push(st.upcoming); cands.push(st.upcoming - preMin * 60000); } // 開始／予告開始
+    if (st.active && st.end) cands.push(st.end);
+    if (st.upcoming) { cands.push(st.upcoming); cands.push(st.upcoming - preMin * 60000); }
     var next = 0;
     cands.forEach(function (t) { if (t > now && (!next || t < next)) next = t; });
     if (next) {
-      var delay = Math.min(next - now + 500, 21600000); // 最大6時間で再評価（タイマー上限対策）
+      var delay = Math.min(next - now + 500, 21600000);
       maintBoundaryTimer = setTimeout(checkMaintenance, Math.max(1000, delay));
     }
   }
   function num(v) { var n = parseInt(v, 10); return isFinite(n) ? n : 0; }
   function uidKey(base) { return base + '_' + ((currentUser && currentUser.uid) || 'anon'); }
 
-  /* ---------------- クラウド保存（デバウンス＋失敗時リトライ） ---------------- */
-  var saveRetry = 0;   // 連続保存失敗回数（指数バックオフ用）
+  var saveRetry = 0;
   window.__cloudSave = function () {
     if (!currentUser || !db) return;
-    if (accessLocked) return; // 停止/承認待ち中はクラウドへ書き込まない
+    if (accessLocked) return;
     setStatus('保存中…');
-    cloudDirty = true; // 未保存のローカル変更あり（この間はリアルタイム反映でローカルを上書きしない）
+    cloudDirty = true;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
       saveTimer = null;
@@ -2133,10 +1954,6 @@
       saveCertStore(currentUser.uid, st)
         .then(function () { cloudDirty = false; saveRetry = 0; setStatus('保存済み'); })
         .catch(function () {
-          // 保存失敗時は cloudDirty を保持したまま指数バックオフで再送する。
-          // 以前はここで cloudDirty=false に落としており、未保存のローカル進捗が次のサーバ snapshot で
-          // 古い値に上書きされて「目の前で解答が巻き戻る」事故になっていた（しかもリトライも無かった）。
-          // cloudDirty=true のままにすることで ownDocUnsub の上書きガードが効き続け、進捗が守られる。
           saveRetry = Math.min(saveRetry + 1, 6);
           setStatus('オフライン（自動で再試行します）');
           if (saveTimer) clearTimeout(saveTimer);
@@ -2145,13 +1962,8 @@
     }, 800);
   };
 
-  /* ---------------- フィードバック / 不具合報告（自docの feedback 配列へ蓄積） ----------------
-     ・ログイン中: 本人docに arrayUnion で1件追加（既存ルール「本人は自doc書込可」で許可）。
-     ・未ログイン/ローカル: エンジン側が localStorage 'sfq_feedback_pending' に退避し、
-       次回ログイン時に flushPendingFeedback() でまとめて送信する。
-     ・管理者は全docを読めるため、loadAdmin で各docの feedback を集約して一覧表示する。 */
   window.__cloudSubmitFeedback = function (report) {
-    if (!currentUser || !db) return false; // 呼び出し側（エンジン）がローカル退避する
+    if (!currentUser || !db) return false;
     var FV = firebase.firestore.FieldValue;
     return db.collection(COLLECTION).doc(currentUser.uid).set({
       feedback: FV.arrayUnion(report),
@@ -2171,30 +1983,28 @@
     }).catch(function () {});
   }
 
-  /* ---------------- 管理者ビュー ---------------- */
-  var adminRows = [];   // adminUsers から都度導出する平坦化行（CSV/ダッシュボード用）
-  var adminUsers = [];  // 単一の真実：uid単位 { uid, name, email, updated, access, req, certs:[{cert,store,stats}], agg }
-  var adminFeedback = [];// フィードバック集約 [{uid,name,email,fb,reply}]（fbは各docの feedback 配列要素）
-  var adminLogEntries = []; // 管理者の操作ログ（管理者自身の doc の adminLog を取り込む）#4
-  var adminSelApps = {}; // 一括承認の選択状態 {uid:1} #8
-  var adminSelUsers = {}; // ユーザータブの一括選択 {uid:1}（一括お知らせ/停止/リセット）
-  var fbFilterCert = 'all', fbFilterCat = 'all', fbOnlyPending = false; // フィードバックの絞り込み（未対応＝未返信）
-  var adminFilter = ''; // 名前/メール検索
-  var adminSort = 'updated'; // 'updated'|'answered'|'rate'|'days'|'name'
-  var adminCert = 'all';     // 資格フィルタ
-  var adminActivity = 'all'; // 'all'|'week'|'dormant'
-  var adminPass = false;     // 合格者のみ
-  var adminAccess = 'all';   // 'all'|'approved'|'applied'|'noreq'|'blocked'（アクセス状態フィルタ・accessStateOf と対応）
-  var adminMaintOk = false;  // true＝メンテ中も利用可（maintOk）のアカウントだけに絞る
-  var adminPendingCount = 0; // 承認待ち件数（バッジ通知用）
-  var adminTab = 'users';    // 管理者ビューのタブ：'users'|'dash'|'msg'（ダッシュボードとDMを分離）
-  var dmFilter = '';         // メッセージタブの名前絞り込み
-  var adminDashCert = '';    // 詳細集計（分野別・問題別）で表示中の資格。''=現在ページの資格 #2
+  var adminRows = [];
+  var adminUsers = [];
+  var adminFeedback = [];
+  var adminLogEntries = [];
+  var adminSelApps = {};
+  var adminSelUsers = {};
+  var fbFilterCert = 'all', fbFilterCat = 'all', fbOnlyPending = false;
+  var adminFilter = '';
+  var adminSort = 'updated';
+  var adminCert = 'all';
+  var adminActivity = 'all';
+  var adminPass = false;
+  var adminAccess = 'all';
+  var adminMaintOk = false;
+  var adminPendingCount = 0;
+  var adminTab = 'users';
+  var dmFilter = '';
+  var adminDashCert = '';
 
   function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
   function admDaysAgo(s) { if (!s) return Infinity; try { var d = new Date(s + 'T00:00:00'); return Math.floor((Date.now() - d.getTime()) / 86400000); } catch (e) { return Infinity; } }
 
-  // 全体ダッシュボード（KPI＋分野別＋問題別正答率）。問題別は折りたたみ。
   function adminDashboardHTML() {
     var total = adminUsers.length, today = admToday();
     var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumExF = 0, sumExFP = 0, sumStudy = 0;
@@ -2204,7 +2014,6 @@
       if (admDaysAgo(a.lastStudyDate) <= 6) actWeek++;
     });
     var avgRate = sumAtt ? Math.round(sumCorr / sumAtt * 100) : 0;
-    // 合格率は「本番形式（フル）の模試」だけを母数にする（カスタム/短縮模試は除外＝ユーザー向け推移グラフと同義）
     var passRate = sumExF ? Math.round(sumExFP / sumExF * 100) : 0;
     var onlineNow = adminUsers.filter(isOnline).length;
     var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
@@ -2215,12 +2024,11 @@
       kpi(fmtDur(sumStudy), '総学習時間') +
       '</div>';
 
-    html += timeSeriesHTML();   // 日別アクティブの推移
+    html += timeSeriesHTML();
 
-    // ---- 詳細集計（分野別・問題別）。資格を切り替えて全資格を1画面で点検できる(#2) ----
     var certSet = {}; adminRows.forEach(function (r) { if (r.cert && r.cert !== '—') certSet[r.cert] = 1; });
     var certKeys = Object.keys(certSet);
-    var dcert = dashCert();   // 選択中の資格（既定＝現在ページの資格）
+    var dcert = dashCert();
     var isCur = (dcert === CERT_KEY);
     var engineHere = (typeof QDATA !== 'undefined' && QDATA && QDATA.length && typeof domainOf === 'function');
 
@@ -2231,7 +2039,6 @@
       html += '<div class="sfqc-toolbar sfqc-toolbar2"><span class="sfqc-sort-label">詳細集計の資格:</span>' + dchips + '</div>';
     }
 
-    // 分野別（選択中の資格の分野データを取得して全資格で表示。現在資格はエンジンから即時、他資格は data を取得＝取得中はプレースホルダ）
     var dom = getDashDom(dcert);
     if (dom) {
       var domAgg = {};
@@ -2243,7 +2050,6 @@
           var dc = dom.domBy[id]; if (dc == null) dc = dom.domBy[+id];
           if (dc) { var da = domAgg[dc] || (domAgg[dc] = { c: 0, t: 0, sec: 0 }); da.c += (h.c || 0); da.t += t; }
         });
-        // 分野別の学習時間（store.time.dom[code].sec）も足し込む #18
         var tdom = (r.store.time && r.store.time.dom) || {};
         Object.keys(tdom).forEach(function (dc) {
           var sec = (tdom[dc] && tdom[dc].sec) || 0; if (!sec) return;
@@ -2263,7 +2069,6 @@
       html += '<div class="sfqc-sec">分野別 平均正答率＋学習時間（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card"><div class="sfqc-itnote">分野データを読み込み中…</div></div>';
     }
 
-    // 問題別（hist だけで全資格分を計算できる。問題文・要確認フラグは現在資格のときだけ付く）
     var items = perQuestionStats(dcert);
     if (items.length) {
       var qmap = (isCur && engineHere) ? qTextMap() : {};
@@ -2285,10 +2090,7 @@
     return html;
   }
 
-  // 分野別集計用の「資格スラッグ→分野データ」キャッシュ。
-  // 現在ページの資格はエンジン(DOMAIN_DEFS/domainOf)から即時構築。他資格は data/{domains,questions}.json を取得し、
-  // 取れたら renderAdmin() で再描画する（取得中は null を返してプレースホルダ表示）。
-  var dashDomCache = {};   // slug -> {loaded, defs:[{code,name,emoji,weight}], domBy:{id:code}}
+  var dashDomCache = {};
   function getDashDom(slug) {
     if (slug === CERT_KEY && typeof QDATA !== 'undefined' && QDATA && QDATA.length &&
         typeof domainOf === 'function' && typeof DOMAIN_DEFS !== 'undefined' && DOMAIN_DEFS.length) {
@@ -2299,7 +2101,6 @@
     var c = dashDomCache[slug];
     if (c) return c.loaded ? c : null;
     dashDomCache[slug] = { loaded: false };
-    // データの基準パスはページ役割で変わる: クイズページ(client)は ../<slug>/ ／ ルートLP(gateway)は certifications/<slug>/
     var base = (ROLE === 'client') ? '../' : 'certifications/';
     var grab = function (path) { return fetch(path).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
     Promise.all([grab(base + slug + '/data/domains.json'), grab(base + slug + '/data/questions.json')]).then(function (res) {
@@ -2314,7 +2115,6 @@
     return null;
   }
 
-  // 詳細集計で選択中の資格（無効/未選択なら現在ページの資格、無ければ存在する最初の資格）
   function dashCert() {
     var has = {}; adminRows.forEach(function (r) { if (r.cert && r.cert !== '—') has[r.cert] = 1; });
     if (adminDashCert && has[adminDashCert]) return adminDashCert;
@@ -2323,7 +2123,6 @@
     return ks[0] || CERT_KEY;
   }
 
-  // 指定資格の問題別集計（hist だけで計算するので、エンジン未読込・他資格でも動く）。低い順にソート。
   function perQuestionStats(cert) {
     var perQ = {};
     adminRows.forEach(function (r) {
@@ -2345,7 +2144,6 @@
     return map;
   }
 
-  // 日別アクティブ人数＋解答数の推移（直近30日）。全ユーザーの store.daily を横断集計。
   function timeSeriesHTML() {
     var DAYS = 30;
     var p = function (n) { return ('0' + n).slice(-2); };
@@ -2361,20 +2159,19 @@
         Object.keys(daily).forEach(function (k) {
           var n = daily[k] || 0; if (!n || !(k in ans)) return;
           ans[k] += n;
-          if (!seen[k]) { seen[k] = 1; act[k]++; }   // 同一ユーザーは資格をまたいでも1日1人
+          if (!seen[k]) { seen[k] = 1; act[k]++; }
         });
       });
     });
     var maxAct = 1, maxAns = 1;
     labels.forEach(function (k) { if (act[k] > maxAct) maxAct = act[k]; if (ans[k] > maxAns) maxAns = ans[k]; });
-    // 1枚のSVGで描画（緑の棒=解答数・青い折れ線=アクティブ人数）。座標系 0..VW × 0..100、縦は preserveAspectRatio=none で 96px に伸長
-    var CW = 10;                                    // 1日あたりの横幅（viewBox単位）
+    var CW = 10;
     var VW = DAYS * CW;
-    var step = Math.max(1, Math.ceil(DAYS / 5));    // 日付ラベルは約5本に間引いて重なりを防ぐ
+    var step = Math.max(1, Math.ceil(DAYS / 5));
     var rects = '', hits = '', pts = [];
     labels.forEach(function (k, idx) {
-      var ha = act[k] ? Math.max(2, Math.round(act[k] / maxAct * 100)) : 0;   // 人数（maxActで正規化）
-      var hn = ans[k] ? Math.max(2, Math.round(ans[k] / maxAns * 100)) : 0;   // 解答数（maxAnsで正規化）
+      var ha = act[k] ? Math.max(2, Math.round(act[k] / maxAct * 100)) : 0;
+      var hn = ans[k] ? Math.max(2, Math.round(ans[k] / maxAns * 100)) : 0;
       var x = idx * CW;
       rects += '<rect class="bar" x="' + (x + 2.2).toFixed(1) + '" y="' + (100 - hn) + '" width="5.6" height="' + hn + '" rx="0.8"></rect>';
       pts.push((x + CW / 2).toFixed(1) + ',' + (100 - ha));
@@ -2397,7 +2194,6 @@
       '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。緑の棒＝解答数／青い折れ線＝アクティブ人数（各系列はそれぞれの最大値を基準に高さを正規化）。</div></div>';
   }
 
-  // 操作ログ（#4）。管理者アカウントに保存された adminLog を新しい順に表示。
   function auditLogHTML() {
     if (!adminLogEntries.length) return '';
     var rows = adminLogEntries.slice(0, 50).map(function (e) {
@@ -2439,18 +2235,16 @@
   function closeAdmin() {
     if (elAdmin) elAdmin.classList.remove('show');
     if (chatMode === 'admin') closeChat();
-    if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; } // ライブ購読を停止（無駄な読み取りを避ける）
+    if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; }
     if (adminRenderTimer) { clearTimeout(adminRenderTimer); adminRenderTimer = null; }
   }
 
-  // 1ユーザーの stats/agg を再計算（store を差し替えたあと等に呼ぶ）
   function refreshUser(u) {
     u.certs.forEach(function (c) { c.stats = statsOf(c.store); });
-    u.certs.sort(function (a, b) { return b.stats.attempts - a.stats.attempts; }); // 解答数の多い順
+    u.certs.sort(function (a, b) { return b.stats.attempts - a.stats.attempts; });
     u.agg = aggregateUser(u.certs);
     return u;
   }
-  // adminUsers（真実）から平坦化行を導出。renderAdmin の冒頭で都度作るのでダッシュボード/CSVは常に最新。
   function rebuildRows() {
     adminRows = [];
     adminUsers.forEach(function (u) {
@@ -2460,12 +2254,10 @@
     });
   }
   function findUser(uid) { for (var i = 0; i < adminUsers.length; i++) if (adminUsers[i].uid === uid) return adminUsers[i]; return null; }
-  // 承認待ち（実申請のみ・自分以外）の件数を通知バッジへ同期
   function syncPendingBadge() {
     setAdminPending(adminUsers.filter(function (u) { return isApplicant(u) && !(currentUser && u.uid === currentUser.uid); }).length);
   }
 
-  // 全 doc を adminUsers / adminFeedback / adminLog へ取り込む（get・onSnapshot 共用）
   function ingestAdminDocs(snap) {
     adminFeedback = [];
     adminLogEntries = [];
@@ -2480,7 +2272,6 @@
           if (fb && typeof fb === 'object') adminFeedback.push({ uid: d.id, name: nm, email: email, fb: fb, reply: (fb.fid && replies[fb.fid]) || null });
         });
       }
-      // 管理者自身の doc から操作ログを取り込む（#4）
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
       var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
       var stores = data.stores;
@@ -2494,7 +2285,7 @@
       byUid[d.id] = entry;
     });
     adminUsers = Object.keys(byUid).map(function (k) { return refreshUser(byUid[k]); });
-    adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); }); // 新しい順
+    adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); });
     adminLogEntries.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
     if (adminLogEntries.length > LOG_CAP) adminLogEntries = adminLogEntries.slice(0, LOG_CAP);
   }
@@ -2505,12 +2296,10 @@
     adminSelApps = {};
     if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; }
     var first = true;
-    // 進捗コレクションをライブ購読（DMの未読バッジ・既読などが「↻更新」なしで即時反映）
     adminColUnsub = db.collection(COLLECTION).onSnapshot(function (snap) {
       ingestAdminDocs(snap);
       if (first) {
         first = false;
-        // 初回だけ お知らせレコード一覧／メンテナンス設定を取得してから描画
         loadBroadcasts(function () {
           db.collection(BROADCAST_COL).doc(MAINT_DOC).get()
             .then(function (m) { lastMaint = (m && m.exists && m.data()) || null; }).catch(function () {})
@@ -2518,28 +2307,24 @@
         });
         return;
       }
-      scheduleAdminRender(); // 2回目以降＝ライブ更新（入力中などは控える・デバウンス）
+      scheduleAdminRender();
     }, function (e) {
       if (body && !adminUsers.length) body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
     });
   }
-  // ライブ再描画（デバウンス＋入力/モーダル操作中は抑止し、操作の邪魔をしない）
   function scheduleAdminRender() {
     if (adminRenderTimer) clearTimeout(adminRenderTimer);
     adminRenderTimer = setTimeout(function () {
       if (!elAdmin || !elAdmin.classList.contains('show')) return;
-      syncPendingBadge(); // バッジは常に最新化
+      syncPendingBadge();
       var ae = document.activeElement;
       if (ae && (ae.id === 'sfqc-dm-q' || ae.id === 'sfqc-q' || ae.id === 'sfqc-cmp-text' || ae.id === 'sfqc-chat-text')) return;
       var cmp = document.getElementById('sfqc-compose'); if (cmp && cmp.classList.contains('show')) return;
-      if (document.querySelector('.sfqc-detail.show')) return; // 詳細を開いている間は再描画しない
+      if (document.querySelector('.sfqc-detail.show')) return;
       renderAdmin();
-    }, 1500); // ハートビート連発時の再描画を抑えるためデバウンス長め
+    }, 1500);
   }
 
-  // 操作ログを記録（#4）。管理者自身の doc に保存（自doc書込はルール上常に可）。
-  // 直近 LOG_CAP 件だけを保持する「上限付き」配列をそのまま書き戻すので、無制限には増えない。
-  // 表示は即時にローカル adminLogEntries を使うため、DB 書込は best-effort（失敗しても UI を妨げない）。
   var LOG_CAP = 200;
   function logAdmin(action, detail) {
     var entry = { ts: Date.now(), action: action, detail: detail || '', by: currentName || '' };
@@ -2560,14 +2345,12 @@
       return d.getFullYear() + '/' + p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
     catch (e) { return '—'; }
   }
-  // 秒まで表示（ログイン・アクセス時刻用）
   function fmtDateTime(ms) {
     if (!ms) return '—';
     try { var d = new Date(ms); var p = function (n) { return ('0' + n).slice(-2); };
       return d.getFullYear() + '/' + p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()); }
     catch (e) { return '—'; }
   }
-  // 経過時間の概算（「たった今 / N分前」）
   function fmtAgo(ms) {
     if (!ms) return '—';
     var s = Math.floor((Date.now() - ms) / 1000);
@@ -2577,11 +2360,6 @@
     return Math.floor(s / 86400) + '日前';
   }
 
-  /* ---------------- ログイン記録＋在席（オンライン）ハートビート ----------------
-     ・ログイン時に lastLogin（秒精度）と logins[]（直近30件の履歴）を記録。
-     ・在席中は lastSeen を45秒ごとに更新（非表示タブは更新しない）。
-       管理者は (now - lastSeen) <= ONLINE_MS なら「オンライン」と判定して可視化。
-     ・いずれも本人 doc への書込のみ＝既存ルールのまま動作（ルール変更不要）。 */
   function recordLogin(uid, data) {
     if (!db || !uid) return;
     var now = Date.now();
@@ -2590,7 +2368,7 @@
     db.collection(COLLECTION).doc(uid).set({ lastLogin: now, lastSeen: now, logins: logins }, { merge: true }).catch(function () {});
   }
   function presenceWrite(uid) {
-    if (!db || !uid || document.hidden) return; // 非表示タブは在席に数えない
+    if (!db || !uid || document.hidden) return;
     db.collection(COLLECTION).doc(uid).set({ lastSeen: Date.now() }, { merge: true }).catch(function () {});
   }
   function startPresence(uid) {
@@ -2625,19 +2403,13 @@
       if (adminSort === 'rate')     return b.agg.rate - a.agg.rate;
       if (adminSort === 'days')     return b.agg.daysActive - a.agg.daysActive;
       if (adminSort === 'name')     return (a.name || '').localeCompare(b.name || '', 'ja');
-      return (b.updated || 0) - (a.updated || 0); // 'updated'
+      return (b.updated || 0) - (a.updated || 0);
     });
     return list;
   }
 
-  // 「新規申請」は実際に申請ボタンを押した人（req あり）かつ未承認のみを対象にする。
-  // 既存の未ログイン/未申請アカウントは含めない（＝勝手に申請扱いにしない）。
   function isApplicant(u) { return (u.access || 'pending') !== 'approved' && u.req && u.req.ts; }
 
-  /* 承認待ちを2つに分けて表示する（「自分が承認すべきか」が一目で分かるように）:
-       'applied' … 本人が申請済み＝管理者の承認を待っている（要対応）
-       'noreq'   … まだ申請していない＝本人の操作を待っている（管理者は待つだけ）
-     accessStateOf は絞り込み・チップ・件数で共通に使う唯一の判定。 */
   function accessStateOf(u) {
     var acc = (u && u.access) || 'pending';
     if (acc === 'approved' || acc === 'blocked') return acc;
@@ -2653,7 +2425,6 @@
     var m = ACCESS_CHIP[accessStateOf(u)] || ACCESS_CHIP.noreq;
     return '<span class="sfqc-acc-access ' + m[0] + '" title="' + esc(m[2]) + '">' + m[1] + '</span>';
   }
-  // 申請の日付チップ。停止中からの申請は「解除申請」として区別する（対応が別だから）
   function reqChipHTML(u) {
     if (!(u && u.req && u.req.ts)) return '';
     var unblock = (u.access === 'blocked');
@@ -2662,8 +2433,7 @@
   }
   function applicationsSectionHTML() {
     var apps = adminUsers.filter(isApplicant);
-    apps.sort(function (a, b) { return (b.req.ts || 0) - (a.req.ts || 0); }); // 申請の新しい順
-    // 停止中からの「解除の申請」も同じ節に出す（対応するのは管理者だから）
+    apps.sort(function (a, b) { return (b.req.ts || 0) - (a.req.ts || 0); });
     var unblockN = apps.filter(function (u) { return u.access === 'blocked'; }).length;
     var head = '<div class="sfqc-sec" style="margin-top:0">🔔 申請（あなたの対応待ち） ' +
       '<span class="sfqc-fb-count">' + apps.length + '件' + (unblockN ? '（うち解除申請 ' + unblockN + '件）' : '') + '</span></div>';
@@ -2673,11 +2443,9 @@
         '<small>まだ申請していないアカウントは、下の一覧の「✋ 未申請」で確認できます（そのまま承認することもできます）。</small></div>' +
         '<div class="sfqc-divider"></div>';
     }
-    // 選択状態は現存する申請者だけに絞る（消えた申請の取り残し防止）
     var present = {}; apps.forEach(function (u) { present[u.uid] = 1; });
     Object.keys(adminSelApps).forEach(function (k) { if (!present[k]) delete adminSelApps[k]; });
     var selCount = Object.keys(adminSelApps).length;
-    // 一括操作バー（#8）
     var bulk = '<div class="sfqc-app-bulk">' +
         '<label class="sfqc-app-selall"><input type="checkbox" id="sfqc-app-all"' + (selCount && selCount === apps.length ? ' checked' : '') + '> すべて選択</label>' +
         '<span class="sfqc-count">' + selCount + ' 件選択</span>' +
@@ -2685,9 +2453,8 @@
       '</div>';
     var cards = apps.map(function (u) {
       var isBlock = (u.access === 'blocked');
-      var stateChip = accessChipHTML(u);   // この節は全員「申請あり」なので 📩 承認待ち（申請あり）になる
-      var reqChip = reqChipHTML(u);   // 停止中からの申請は「📩 解除申請」になる
-      // 休眠で承認が失効した「再申請」かを区別できるようにする（新規登録の申請と混ざらないように）
+      var stateChip = accessChipHTML(u);
+      var reqChip = reqChipHTML(u);
       var expChip = u.expiredAt ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効 ' + esc(fmtDate(u.expiredAt)) + '</span>' : '';
       var emailLabel = u.email ? '<span class="sfqc-acc-email">' + esc(u.email) + '</span>' : '';
       return '<div class="sfqc-app-item' + (isBlock ? ' is-block' : '') + '">' +
@@ -2707,8 +2474,8 @@
 
   function renderAdmin() {
     var body = document.getElementById('sfqc-adm-body');
-    rebuildRows();        // adminUsers から平坦化行を導出（常に最新）
-    syncPendingBadge();   // 承認待ち件数の通知バッジを同期
+    rebuildRows();
+    syncPendingBadge();
     if (!adminUsers.length) { body.innerHTML = '<div class="sfqc-empty">アカウントがまだありません。</div>'; return; }
     var list = filterSortUsers();
 
@@ -2717,9 +2484,8 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
 
-    // ── タブで「ユーザー／ダッシュボード／お知らせ／DM」を分離 ──
     var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
-    var fbPending = adminFeedback.filter(function (r) { return !r.reply; }).length; // 未対応フィードバック
+    var fbPending = adminFeedback.filter(function (r) { return !r.reply; }).length;
     var tabBtn = function (k, l, badge) {
       return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
         (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
@@ -2732,27 +2498,24 @@
       '</div>';
 
     if (adminTab === 'dash') {
-      // 分析専用（KPI・推移・分野別/問題別・操作ログ）＋メンテナンス設定
       html += maintenanceSectionHTML();
       html += adminDashboardHTML();
       html += auditLogHTML();
     } else if (adminTab === 'ann') {
-      html += announcementsSectionHTML(); // お知らせ（一斉＋個別）の作成・編集・削除・既読
+      html += announcementsSectionHTML();
     } else if (adminTab === 'dm') {
-      html += dmSectionHTML();            // 利用者とのチャット＋フィードバック
+      html += dmSectionHTML();
     } else {
-      // ユーザー管理（新規申請＋一覧。承認/停止/詳細）
       html += applicationsSectionHTML();
       html += '<div class="sfqc-sec">ユーザー</div>';
       html += '<div class="sfqc-toolbar">' +
           '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
           '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
         '</div>';
-      // アクセス状態ごとの件数（チップに出す＝「あと何件承認すればいいか」が一目で分かる）
       var accessCounts = { approved: 0, applied: 0, noreq: 0, blocked: 0, unblockReq: 0 };
       adminUsers.forEach(function (u) {
         var k = accessStateOf(u); if (accessCounts[k] != null) accessCounts[k]++;
-        if (k === 'blocked' && u.req && u.req.ts) accessCounts.unblockReq++;   // 停止中からの解除申請
+        if (k === 'blocked' && u.req && u.req.ts) accessCounts.unblockReq++;
       });
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
           '<span class="sfqc-sort-label">資格:</span>' + certChips +
@@ -2774,7 +2537,6 @@
           sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
         '</div>';
 
-      // 休眠アカウントの棚卸し（30日以上アクセスがない承認済み → 承認を一括解除＝再申請が必要に）
       var nowSweep = Date.now();
       var expTargets = adminUsers.filter(function (u) { return accessExpired(u, nowSweep); });
       html += '<div class="sfqc-app-bulk">' +
@@ -2783,7 +2545,6 @@
           '<button class="sfqc-mini sfqc-danger" id="sfqc-expire-sweep"' + (expTargets.length ? '' : ' disabled') + '>承認を一括解除</button>' +
         '</div>';
 
-      // 一括操作バー（表示中ユーザーから選択 → 一括お知らせ/停止/リセット）
       var present = {}; list.forEach(function (u) { present[u.uid] = 1; });
       Object.keys(adminSelUsers).forEach(function (k) { if (!present[k]) delete adminSelUsers[k]; });
       var selN = Object.keys(adminSelUsers).length;
@@ -2808,15 +2569,12 @@
         var passLabel = a.examCount ? ' (合格 ' + a.examPassed + '回)' : '';
         var dago = admDaysAgo(a.lastStudyDate);
         var dormantLabel = (dago >= 30 && isFinite(dago)) ? ' <span class="sfqc-inactive">休眠 ' + dago + '日</span>' : '';
-        var accChip = accessChipHTML(u);   // ✅承認済み / 📩承認待ち（申請あり） / ✋未申請 / 🚫停止中
-        // 申請日は行にも出す（いつからあなたの承認/対応を待っているかが分かる）
+        var accChip = accessChipHTML(u);
         var reqAtChip = reqChipHTML(u);
         var accBtn = (u.access === 'approved')
           ? '<button class="sfqc-act-block" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="blocked">⏸ 停止</button>'
           : '<button class="sfqc-act-approve" data-acc-uid="' + esc(u.uid) + '" data-acc-name="' + esc(u.name) + '" data-acc-state="approved">✅ 承認</button>';
-        // メンテ中も利用できるアカウント（maintOk）。チップで可視化し、ボタンでその場で切替
         var maintChip = u.maintOk ? '<span class="sfqc-acc-access maint" title="メンテナンス中でもログイン・学習できます">🛠 メンテ中も可</span>' : '';
-        // 休眠で承認が失効したアカウント（再承認するまで pending）
         var expChipRow = (u.expiredAt && u.access !== 'approved')
           ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効</span>' : '';
         var maintBtn = '<button class="sfqc-act-maint' + (u.maintOk ? ' on' : '') + '" data-mok-uid="' + esc(u.uid) + '" data-mok-name="' + esc(u.name) + '" data-mok-state="' + (u.maintOk ? '0' : '1') + '" title="メンテナンス中でも利用できるアカウントにする">' +
@@ -2849,15 +2607,13 @@
           '</div>';
       });
     }
-    var prevScroll = body.scrollTop; // ライブ再描画でスクロール位置が飛ばないよう保持
+    var prevScroll = body.scrollTop;
     body.innerHTML = html;
     try { body.scrollTop = prevScroll; } catch (e) {}
 
-    // タブ切替（ダッシュボード／ユーザー／メッセージ）
     body.querySelectorAll('[data-tab]').forEach(function (b) {
       b.addEventListener('click', function () { adminTab = b.getAttribute('data-tab'); renderAdmin(); });
     });
-    // お知らせ（全体/個別）の新規・編集・削除
     var bcNew = document.getElementById('sfqc-bc-new'); if (bcNew) bcNew.addEventListener('click', function () { openCompose({ mode: 'broadcast' }); });
     var ntNew = document.getElementById('sfqc-nt-new'); if (ntNew) ntNew.addEventListener('click', function () { openCompose({ mode: 'notice' }); });
     body.querySelectorAll('[data-bcedit]').forEach(function (b) { b.addEventListener('click', function () { editBroadcast(b.getAttribute('data-bcedit')); }); });
@@ -2869,12 +2625,10 @@
     var maintEditR = document.getElementById('sfqc-maint-edit-recur'); if (maintEditR) maintEditR.addEventListener('click', openRecurringEditor);
     var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
     var mailTestBtn = document.getElementById('sfqc-mailtest'); if (mailTestBtn) mailTestBtn.addEventListener('click', sendMailTest);
-    // メッセージタブ：DM絞り込み
     var dmIn = document.getElementById('sfqc-dm-q');
     if (dmIn) {
       dmIn.addEventListener('input', function () { dmFilter = dmIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-dm-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
     }
-    // フィルタ/ソート
     var qIn = document.getElementById('sfqc-q');
     if (qIn) {
       qIn.addEventListener('input', function () { adminFilter = qIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
@@ -2909,11 +2663,9 @@
     body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
     });
-    // 管理者→利用者：チャットを開く
     body.querySelectorAll('[data-chat-uid]').forEach(function (b) {
       b.addEventListener('click', function () { openChat(b.getAttribute('data-chat-uid'), b.getAttribute('data-chat-name'), 'admin'); });
     });
-    // フィードバック：ダウンロード・絞り込み・対応済み
     var fbJson = document.getElementById('sfqc-fb-json'); if (fbJson) fbJson.addEventListener('click', exportFeedbackJson);
     var fbCsv = document.getElementById('sfqc-fb-csv'); if (fbCsv) fbCsv.addEventListener('click', exportFeedbackCsv);
     body.querySelectorAll('[data-fbcert]').forEach(function (b) {
@@ -2927,24 +2679,20 @@
     body.querySelectorAll('.sfqc-fb-done').forEach(function (b) {
       b.addEventListener('click', function () { adminResolveFeedback(+b.getAttribute('data-fi')); });
     });
-    // フィードバック：問題へジャンプ(#5)
     body.querySelectorAll('[data-openq]').forEach(function (b) {
       b.addEventListener('click', function () { var id = b.getAttribute('data-openq'); closeAdmin(); if (window.jumpQ) window.jumpQ(Number(id)); });
     });
-    // ダッシュボード：詳細集計の資格切替(#2)・問題別正答率の書き出し(#6)
     body.querySelectorAll('[data-dashcert]').forEach(function (b) {
       b.addEventListener('click', function () { adminDashCert = b.getAttribute('data-dashcert'); renderAdmin(); });
     });
     var qCsv = document.getElementById('sfqc-q-csv'); if (qCsv) qCsv.addEventListener('click', function () { exportQuestionRates('csv'); });
     var qJson = document.getElementById('sfqc-q-json'); if (qJson) qJson.addEventListener('click', function () { exportQuestionRates('json'); });
-    // 日別アクティブ：棒をタップ/キー操作でその日の値を表示（タッチ端末対応）
     body.querySelectorAll('[data-ts-label]').forEach(function (b) {
       var show = function () { var ro = document.getElementById('sfqc-ts-readout'); if (ro) ro.textContent = '📅 ' + b.getAttribute('data-ts-label'); };
       b.addEventListener('click', show);
       b.addEventListener('mouseenter', show);
       b.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } });
     });
-    // 申請の一括承認(#8)：チェック選択・全選択・実行
     body.querySelectorAll('.sfqc-app-sel').forEach(function (b) {
       b.addEventListener('change', function () {
         var uid = b.getAttribute('data-sel-uid');
@@ -2960,7 +2708,6 @@
     });
     var bulkBtn = document.getElementById('sfqc-app-bulk-approve');
     if (bulkBtn) bulkBtn.addEventListener('click', function () { bulkApprove(Object.keys(adminSelApps)); });
-    // ユーザー一括選択＋一括操作
     body.querySelectorAll('.sfqc-usel').forEach(function (b) {
       b.addEventListener('change', function () { var uid = b.getAttribute('data-usel-uid'); if (b.checked) adminSelUsers[uid] = 1; else delete adminSelUsers[uid]; renderAdmin(); });
     });
@@ -2973,7 +2720,6 @@
     var ubU = document.getElementById('sfqc-ubulk-unapprove'); if (ubU) ubU.addEventListener('click', bulkUnapprove);
     var ubB = document.getElementById('sfqc-ubulk-block'); if (ubB) ubB.addEventListener('click', bulkBlock);
     var ubR = document.getElementById('sfqc-ubulk-reset'); if (ubR) ubR.addEventListener('click', bulkResetUsers);
-    // フィードバックへの返信(#7)
     body.querySelectorAll('[data-reply-uid]').forEach(function (b) {
       b.addEventListener('click', function () { replyFeedback(b.getAttribute('data-reply-uid'), b.getAttribute('data-reply-fid'), b.getAttribute('data-reply-name')); });
     });
@@ -2985,7 +2731,6 @@
     var goalLabel = s.goal ? (s.goal + '問/日') : '未設定';
     var lastExam = s.examLastTs ? fmtDate(s.examLastTs) : '—';
     var acqDate = (c.store && c.store.acquiredDate) || '';
-    // 「取得済み」は本人からは取り消せない仕様。管理者だけがここから取り消せる。
     var revokeBtn = acqDate
       ? '<button class="sfqc-act-revoke" data-uid="' + esc(uid) + '" data-cert="' + esc(c.cert) + '" data-name="' + esc(name) + '">🎓 取得取消</button>'
       : '';
@@ -3038,7 +2783,6 @@
     var u = list[i]; if (!u) return;
 
     var html = '<div class="sfqc-detail-inner">';
-    // 全資格集計
     html += '<div class="sfqc-meta">' +
       '<div>UID: <code>' + esc(u.uid) + '</code></div>' +
       (u.email ? '<div>メール: ' + esc(u.email) + '</div>' : '') +
@@ -3047,7 +2791,6 @@
       (u.req && u.req.ts ? '<div>申請: ' + esc(u.req.name || u.name) + '（' + esc(fmtDate(u.req.ts)) + '）</div>' : '') +
       (u.elective ? '<div>選択中の解除資格(elective): <code>' + esc(u.elective) + '</code> <button class="sfqc-act-revoke sfqc-el-reset" data-eluid="' + esc(u.uid) + '" data-elname="' + esc(u.name) + '">選択をリセット</button></div>' : '') +
       '</div>';
-    // ログイン履歴（直近・秒精度）
     if (u.logins && u.logins.length) {
       var recent = u.logins.slice().sort(function (a, b) { return b - a; }).slice(0, 15);
       html += '<details class="sfqc-rd"><summary>🕑 ログイン履歴（' + u.logins.length + '件中・最新' + recent.length + '件）</summary>' +
@@ -3056,11 +2799,8 @@
             (idx === 0 ? '<span class="sfqc-login-latest">最新</span>' : '') + '</div>';
         }).join('') + '</div></details>';
     }
-    // アカウント全体の削除（doc ごと削除＝全資格の進捗・申請・フィードバックを消去）
     html += '<div><button class="sfqc-del-doc" data-deluid="' + esc(u.uid) + '" data-delname="' + esc(u.name) + '">🗑 このアカウントを完全削除（全データ）</button></div>';
-    // 資格ごと
     u.certs.forEach(function (c) { html += certDetailHTML(c, u.uid, u.name); });
-    // 問題別履歴（最も多く解いている資格の hist を表示）
     var primary = u.certs.slice().sort(function (a, b) { return b.stats.attempts - a.stats.attempts; })[0];
     if (primary && primary.stats.attempts) {
       var hist = primary.store.hist || {}, qmap = qTextMap();
@@ -3096,11 +2836,7 @@
     });
   }
 
-  // 以下の管理操作は、成功時に全件再取得せず adminUsers（真実）をローカル更新して再描画する（#3）。
-  // これで Firestore 読み取りコストと体感遅延を抑える。失敗時は alert のみで状態は変えない。
 
-  // アカウントを doc ごと完全削除（全資格の進捗・申請・フィードバックを消去）。
-  // ※ログイン認証(Firebase Auth)自体はクライアントから消せないため、コンソールで別途削除する。
   function deleteUserDoc(uid, name) {
     if (!isAdmin || !db || !uid) return;
     if (!confirm('「' + name + '」のアカウントデータを完全に削除します。\n（全資格の進捗・利用申請・フィードバックがすべて消えます。取り消せません）\n\n※ログインID自体(Firebase Authentication)はFirebaseコンソールから削除してください。\n\n本当に削除しますか？')) return;
@@ -3114,8 +2850,6 @@
       .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
   }
 
-  // 利用申請の却下（管理者のみ）。req を消して申請一覧から外す。access は承認待ちのまま。
-  // （完全に締め出すときは「停止」を使う。却下後も本人は再申請できる）
   function rejectApplication(uid, name) {
     if (!isAdmin || !db || !uid) return;
     var ru = findUser(uid), rBlocked = !!(ru && ru.access === 'blocked');
@@ -3134,13 +2868,11 @@
       .catch(function (e) { alert('却下に失敗しました: ' + (e && e.message)); });
   }
 
-  // アクセス権の付与/停止（管理者のみ）。Firestoreルールで access は管理者だけ書込可。
   function setAccess(uid, name, state) {
     if (!isAdmin || !db) return;
     var verb = state === 'approved' ? '承認' : '停止';
     if (!confirm('「' + name + '」を' + verb + 'します。よろしいですか？')) return;
     var ts = Date.now();
-    // 承認時は approvedAt を打つ＝休眠失効（30日）の猶予がここから数え直しになる
     var rec = { access: state, updated: ts };
     if (state === 'approved') rec.approvedAt = ts;
     db.collection(COLLECTION).doc(uid).set(rec, { merge: true })
@@ -3153,11 +2885,6 @@
       .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
   }
 
-  /* ── メンテナンス中でも利用できるアカウント（progress/{uid}.maintOk） ──
-     ・true のアカウントは checkMaintenance() の転送を素通りし、代わりに橙バナーが出る。
-     ・緊急全停止（fullStop）にも効く。付与/解除できるのは管理者だけ（Firestore ルールの isAdmin() 全権）。
-     ・maintenance.js の MANUAL_MAINTENANCE（手動オーバーライド）は Firebase を見ないため対象外＝
-       その場合はプレビュー合言葉 ?preview= を使う。 */
   function setMaintOk(uid, name, on) {
     if (!isAdmin || !db) return;
     var verb = on ? 'メンテナンス中も利用できるように' : 'メンテナンス中の利用を';
@@ -3171,8 +2898,6 @@
       .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
   }
 
-  // 休眠（30日以上アクセスなし）の承認済みアカウントを、まとめて承認待ちに戻す。
-  // 本人の次回ログイン時は「承認が失効しました」ロック＝再申請が必要。進捗は消さない。
   function sweepExpiredAccess() {
     if (!isAdmin || !db) return;
     var now = Date.now();
@@ -3200,7 +2925,6 @@
     });
   }
 
-  // 選択したアカウントのメンテ許可をまとめて付与/解除
   function bulkMaintOk(on) {
     if (!isAdmin || !db) return;
     var uids = Object.keys(adminSelUsers); if (!uids.length) return;
@@ -3220,7 +2944,6 @@
     });
   }
 
-  // 選択した申請をまとめて承認（#8）
   function bulkApprove(uids) {
     if (!isAdmin || !db || !uids || !uids.length) return;
     if (!confirm(uids.length + ' 件の申請をまとめて承認します。よろしいですか？')) return;
@@ -3244,15 +2967,10 @@
     });
   }
 
-  // ── 選択ユーザーへの一括操作 ──
   function bulkNotice() {
     var uids = Object.keys(adminSelUsers); if (!uids.length) return;
-    openCompose({ mode: 'notice', uids: uids }); // 複数宛て個別お知らせ
+    openCompose({ mode: 'notice', uids: uids });
   }
-  // 選択したアカウントの承認をまとめて解除＝「承認待ち」に戻す（本人は再申請が必要）。
-  // ・対象は「✅ 承認済み」だけ。停止中（blocked）は意図的な締め出しなので触らない。
-  // ・req を消して再申請を求める。過去の休眠失効の記録（expiredAt）も消して、
-  //   ロック画面の文言が「失効しました」ではなく通常の「承認待ちです」になるようにする。
   function bulkUnapprove() {
     var uids = Object.keys(adminSelUsers); if (!isAdmin || !db || !uids.length) return;
     var targets = uids.filter(function (uid) { var u = findUser(uid); return u && u.access === 'approved'; });
@@ -3307,8 +3025,6 @@
     });
   }
 
-  // 「取得済み」の取り消し（管理者のみ）。本人は取り消せない仕様のため、ここが唯一の取消手段。
-  // 当該資格のサブストアの acquiredDate のみ空にして書き戻す（他の進捗は保持）。
   function revokeAcquire(uid, cert, name) {
     if (!isAdmin || !db) return;
     var u = findUser(uid); if (!u) return;
@@ -3331,7 +3047,6 @@
       .catch(function (e) { alert('取り消しに失敗しました: ' + (e && e.message)); });
   }
 
-  // 選択した解除資格(elective)のリセット（管理者のみ）。選び間違いの救済。
   function adminResetElective(uid, name) {
     if (!isAdmin || !db || !uid) return;
     if (!confirm('「' + name + '」が選択中の「解除する資格(elective)」をリセットします。\n本人は残りの資格からもう一度選び直せるようになります。\n（取得済みの資格や進捗には影響しません）\n\nよろしいですか？')) return;
@@ -3384,24 +3099,19 @@
       .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
   }
 
-  /* ---------------- フィードバック一覧（管理者ビュー上部） ---------------- */
   function fbCatLabel(k) {
     var m = { bug: '🐞 不具合', answer: '❌ 正解誤り', exp: '📝 解説誤り', choice: '🔀 選択肢', japanese: '🗾 日本語', request: '💡 要望', other: '＊ その他' };
     return m[k] || k || '—';
   }
-  // チャット配列から最新メッセージを取り出す
   function lastChatMsg(chat) {
     if (!Array.isArray(chat) || !chat.length) return null;
     var m = null; chat.forEach(function (x) { if (x && (!m || (x.ts || 0) > (m.ts || 0))) m = x; });
     return m;
   }
-  // 配信対象（管理者自身を除く）と、一斉お知らせの既読者
   function annAudience() { var myUid = (currentUser && currentUser.uid) || ''; return adminUsers.filter(function (u) { return u.uid !== myUid; }); }
 
-  // 📢 お知らせタブ：全体お知らせ（レコード）＋個別お知らせ。どちらも作成・編集・削除・既読つき。
   function announcementsSectionHTML() {
     var now = Date.now();
-    // ── 全体お知らせ ──
     var html = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">📢 全体お知らせ <span class="sfqc-fb-count">' + adminBroadcasts.length + '件</span></div>' +
       '<div class="sfqc-fb-dl"><button class="sfqc-mini reload" id="sfqc-bc-new">＋ 新規作成</button></div></div>';
     if (!adminBroadcasts.length) html += '<div class="sfqc-empty">まだ全体お知らせはありません。</div>';
@@ -3429,7 +3139,6 @@
           '</div></details>' +
         '</div>';
     });
-    // ── 個別お知らせ（全ユーザー横断） ──
     html += '<div class="sfqc-divider"></div>';
     var notices = [];
     adminUsers.forEach(function (u) { (u.notices || []).forEach(function (n) { notices.push({ u: u, n: n, id: (n.id || ('n' + (n.ts || 0))) }); }); });
@@ -3459,7 +3168,6 @@
     return html;
   }
 
-  // 💬 DMタブ：利用者とのチャット＋フィードバック
   function dmSectionHTML() {
     var users = adminUsers.map(function (u) {
       var last = lastChatMsg(u.chat);
@@ -3489,7 +3197,7 @@
   }
   function feedbackSectionHTML() {
     var all = adminFeedback;
-    var pending = all.filter(function (r) { return !r.reply; }).length; // 未対応＝未返信
+    var pending = all.filter(function (r) { return !r.reply; }).length;
     var head = '<div class="sfqc-fb-head"><div class="sfqc-sec" style="margin:0">🛠 フィードバック / 不具合報告 <span class="sfqc-fb-count">' + all.length + '件</span>' +
       (pending ? ' <span class="sfqc-read no">未対応 ' + pending + '</span>' : '') + '</div>' +
       '<div class="sfqc-fb-dl"><button class="sfqc-mini fb-dl" id="sfqc-fb-json">⬇ JSON</button><button class="sfqc-mini fb-dl" id="sfqc-fb-csv">⬇ CSV</button></div></div>';
@@ -3517,7 +3225,6 @@
       var fb = r.fb;
       var idx = adminFeedback.indexOf(r);
       var qref = fb.qid ? ('Q' + esc(String(fb.qid))) : '（全般）';
-      // 問題への導線(#5)：現在ページの資格なら jumpQ で即表示、他資格は報告時のURLを開く。
       var openLink = '';
       if (fb.qid && fb.cert === CERT_KEY && typeof window.jumpQ === 'function') {
         openLink = '<button class="sfqc-fb-open" data-openq="' + esc(String(fb.qid)) + '">🔎 Q' + esc(String(fb.qid)) + ' を開く</button>';
@@ -3538,7 +3245,6 @@
         '<div class="sfqc-fb-msg">' + esc(fb.msg || '') + '</div>' +
         (fb.qtext ? '<div class="sfqc-fb-qx">問題: ' + esc(fb.qtext) + '</div>' : '') +
         links +
-        // 管理者からの返信(#7)：既存の返信を表示し、返信ボタンを出す（fid がある報告のみ返信可）
         (r.reply ? '<div class="sfqc-fb-reply">📩 返信（' + esc(fmtDate(r.reply.ts)) + '）：' + esc(r.reply.msg || '') + '</div>' : '') +
         (fb.fid ? '<div class="sfqc-fb-replyrow"><button class="sfqc-fb-open" data-reply-uid="' + esc(r.uid) + '" data-reply-fid="' + esc(String(fb.fid)) + '" data-reply-name="' + esc(r.name || '') + '">✏️ ' + (r.reply ? '返信を編集' : '返信する') + '</button></div>' : '') +
         '</div>';
@@ -3558,8 +3264,6 @@
       })
       .catch(function (e) { alert('削除に失敗しました: ' + (e && e.message)); });
   }
-  // フィードバックへの返信(#7)。報告者の doc の fbReplies[fid] に保存（管理者は全doc書込可）。
-  // 本人はログイン時に cloud-sync が未読の返信を検知して通知する（rule 変更不要）。
   function replyFeedback(uid, fid, name) {
     if (!isAdmin || !db || !uid || !fid) return;
     var cur = adminFeedback.filter(function (x) { return x.uid === uid && x.fb && String(x.fb.fid) === String(fid); })[0];
@@ -3606,8 +3310,6 @@
     dlBlob(blob, 'sfquiz-feedback-' + new Date().toISOString().slice(0, 10) + '.csv');
   }
 
-  // 問題別 正答率の書き出し（#6）。表示は上位40件だが、書き出しは全件。
-  // 問題文は現在ページの資格のときだけ付く（他資格は QDATA 未読込のため空欄）。
   function questionRateRows(cert) {
     var qmap = (cert === CERT_KEY) ? qTextMap() : {};
     return perQuestionStats(cert).map(function (it) {
@@ -3673,7 +3375,6 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
-  // テスト用フック：純粋な集計ロジックだけを公開（本番動作には影響しない）。tools/test-cloud-sync.js が参照。
   window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
     maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
     accessExpired: accessExpired, inactiveDaysOf: inactiveDaysOf, cacheApproval: cacheApproval, cachedApprovalValid: cachedApprovalValid,
@@ -3681,16 +3382,13 @@
     mailEnabled: mailEnabled, mailParams: mailParams, mailThrottled: mailThrottled, idOf: idOf,
     INACTIVE_DAYS: INACTIVE_DAYS };
 
-  /* ---------------- 初期化 ---------------- */
   function init() {
-    // 役割の決定: 明示指定（SFQ_PAGE_ROLE）を優先。無ければストアアダプタ有無で自動判定。
     ROLE = window.SFQ_PAGE_ROLE || (window.__setStore ? 'client' : 'gateway');
     HOME_URL = window.SFQ_HOME_URL || 'index.html';
 
     buildUI();
-    setupSWUpdate();   // 新バージョン検知 → 更新トースト（全ページ・全環境で有効）
+    setupSWUpdate();
 
-    // マイページ（エンジン側）がアカウント情報・操作を取得するための橋渡し。
     window.__sfqAccount = function () {
       var h = location.hostname, loc = (h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '');
       return { loggedIn: !!currentUser, name: currentName || '', email: currentEmail || '', isAdmin: !!isAdmin,
@@ -3699,9 +3397,6 @@
     window.__sfqLogout = function () { doLogout(); };
     window.__sfqOpenAdmin = function () { openAdmin(); };
 
-    // ローカル開発環境（localhost / 127.0.0.1 / file://）では、ログイン/同期を一切要求しない。
-    // Firebase の HTTP リファラー制限で localhost からは認証できないため、ローカル保存のみで素通しする。
-    // 本番（cfn0eft.github.io）はこの分岐に入らないので影響なし。
     var _h = location.hostname;
     if (_h === 'localhost' || _h === '127.0.0.1' || _h === '::1' || _h === '') {
       hideOverlay();
@@ -3709,8 +3404,6 @@
       return;
     }
 
-    // Firebase 未設定/未読込のときは、サイト全体をロックしない（特に gateway）。
-    // ログインできない状態で必須ゲートにすると締め出しになるため、同期なしで通す。
     if (!configOk()) {
       hideOverlay();
       try { console.warn('[cloud-sync] Firebaseの設定が未完了です。「Firebaseセットアップ手順.md」を参照してください。'); } catch (e) {}
@@ -3731,8 +3424,6 @@
       return;
     }
 
-    // gateway は認証復元中もログイン画面で覆う（必須ゲート）。
-    // client は復元前にオーバーレイを出さない（ログイン済みで遷移してきた時のチラつき防止）。
     if (ROLE !== 'client') showOverlay();
 
     auth.onAuthStateChanged(function (user) {
@@ -3742,8 +3433,7 @@
         currentUser = null; isAdmin = false;
         stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
-        hideLock(); showOverlay(); // gateway=ログインフォーム / client=ホーム誘導カード
-        // 休眠による自動ログアウト直後は、なぜ切れたのかをログインフォームに出す
+        hideLock(); showOverlay();
         if (expiredNotice) {
           expiredNotice = false;
           setMsg(INACTIVE_DAYS + '日以上ご利用がなかったため、自動的にログアウトしました。ログインのうえ、もう一度利用を申請してください。', 'err');
