@@ -1,23 +1,13 @@
-/* =====================================================================
- * quiz-engine.js — SF資格 学習アプリ 共通クイズエンジン
- * 各資格ページは window.CERT_CONFIG を定義してこの1ファイルだけを読み込む。
- * データ（問題・分野・用語・設定マップ）は CERT_CONFIG.dataDir 配下の
- *   questions.json / domains.json / vocab.json / navmap.json を実行時 fetch。
- * 機能・配置・UI は全資格共通（sf-admin のフル機能を踏襲）。
- * HTML の inline onclick が依存するためグローバル関数のまま（IIFEで包まない）。
- * ===================================================================== */
 let QDATA=[], CHDATA=[], NAVDATA=[], CRAMDATA=[], COMPDATA=[], LESSDATA=[];
-let lesCur=null, lesIdx=0;   // レッスン（授業）：現在のレッスンid / 表示中スライド番号
+let lesCur=null, lesIdx=0;
 const CFG=(typeof window!=='undefined'&&window.CERT_CONFIG)||{};
 const EXAM_N=CFG.examN||60, EXAM_MIN=CFG.examMin||105, PASS=CFG.pass||65, SKEY=CFG.storageKey||'sfq_default';
 const DATA_DIR=CFG.dataDir||'data/';
-/* ===== 分野定義は data/domains.json から実行時に読み込む（下の変数へ格納） ===== */
 let DOMAIN_DEFS=[];
 let QDOMAIN={};
 let DOMAIN_BY={};
 function domainOf(id){return QDOMAIN[id]||(DOMAIN_DEFS[0]?DOMAIN_DEFS[0].code:'');}
 function domainDef(code){return DOMAIN_BY[code]||DOMAIN_BY[(DOMAIN_DEFS[0]||{}).code]||(DOMAIN_DEFS[0]||{code:'',name:'',weight:1,emoji:''});}
-/* 難易度（#21）: 1=易 2=標準 3=難。questions.json の diff を優先、無ければ自分の正答率から推定。 */
 const DIFF_LABEL={1:'易',2:'標準',3:'難'};
 let fDiffSet={1:false,2:false,3:false};
 function qDiff(q){
@@ -32,55 +22,38 @@ function qDiffData(q){var d=q&&q.diff;return d===1||d===2||d===3||(typeof d==='s
 function diffPillHTML(q){var d=qDiff(q);return ' <span class="dpill d'+d+'"'+(qDiffData(q)?'':' title="推定（データ未設定）"')+'>'+DIFF_LABEL[d]+(qDiffData(q)?'':'?')+'</span>';}
 function fDiffActive(){return fDiffSet[1]||fDiffSet[2]||fDiffSet[3];}
 function toggleDiffFilter(n){fDiffSet[n]=!fDiffSet[n];try{applyFilters();}catch(e){}}
-/* 追加機能の状態 */
 let sDisp=[], eDispArr=[], sLowConf=false;
 function cshufOn(){return localStorage.getItem('sfq_cshuf')!=='0';}
-/* 問題報告のリポジトリ（全資格共通。CERT_CONFIG.repoUrl で上書き可） */
 const REPO_URL=(CFG.repoUrl)||'https://github.com/cfn0eft/sf-exam';
-/* デイリーチャレンジ進行中フラグ（studyDone で完了判定に使用） */
 let dcActive=false;
 
-// --- state ---
 let allQ=[], filtQ=[];
 let certName=CFG.certName||'';
 let store=loadStore();
-// study
 let sQueue=[],sCur=0,sOk=0,sNg=0,sSel=[],sRevealed=false,sLastWrong=[],sQStart=0;
 let sHint=0,loopMode=false,loopStreak={},loopTotal=0;
-// exam
 let eQ=[],eCur=0,eAns={},eTimer=null,eSecs=0,eWrongOnly=false,eFlag={},eQTime={};
-// カスタム模試：eN=今回の問題数 / eTimed=時間制限あり / eBudget=持ち時間(秒,timed時)
 let eN=EXAM_N,eTimed=true,eBudget=EXAM_MIN*60;
-// filters
 let fBm=false,fShuf=true,fMulti=false,fKw='',fWrong=false;
-// 出典フィルタ（tyson=タイソンブログ / gen=生成 / jpnshiken=jpnshiken）
-// 複数選択可。選んだ出典の集合 srcSel が空＝「すべて」。localStorage 'sfq_src' にカンマ区切りで保存（'all' or 空=すべて）
 const SRC_KEYS=['tyson','gen','jpnshiken'];
 const SRC_LABEL={tyson:'タイソン',gen:'生成',jpnshiken:'jpnshiken'};
 let srcSel=(function(){try{const v=localStorage.getItem('sfq_src');if(!v||v==='all')return new Set();return new Set(v.split(',').filter(s=>SRC_KEYS.includes(s)));}catch(e){return new Set();}})();
 function saveSrcSel(){try{localStorage.setItem('sfq_src',srcSel.size?Array.from(srcSel).join(','):'all');}catch(e){}}
 function inScope(q){return srcSel.size===0||(q&&srcSel.has(q.source));}
 function scopedQ(){return allQ.filter(inScope);}
-// vocab
 let vQueue=[],vCur=0,vFilter='all',vFlipped=false;
-// quick review（高速めくり総ざらい）
 let qkQueue=[],qkCur=0,qkMode='all',qkRevealed=false;
-// 試験の中断・再開用（クラウド同期対象外のローカル専用キー）
 const EXAM_SAVE_KEY=SKEY+'_examstate';
-// 模試の出題重複回避：直近2回の模試に出た問題IDを保持（ローカル専用・同期対象外）
 const EXAM_RECENT_KEY=SKEY+'_recentexam';
 function recentExamIds(){try{const a=JSON.parse(localStorage.getItem(EXAM_RECENT_KEY)||'[]');return new Set([].concat.apply([],Array.isArray(a)?a:[]));}catch(e){return new Set();}}
 function pushRecentExam(ids){try{let a=JSON.parse(localStorage.getItem(EXAM_RECENT_KEY)||'[]');if(!Array.isArray(a))a=[];a.push(ids||[]);localStorage.setItem(EXAM_RECENT_KEY,JSON.stringify(a.slice(-2)));}catch(e){}}
-// シャッフルしつつ「直近の模試に出ていない問題」を前に並べる（抽出時の優先度付け）
 function freshFirst(list){const rec=recentExamIds();if(!rec.size)return shuffle(list);const a=[],b=[];shuffle(list).forEach(q=>(rec.has(q.id)?b:a).push(q));return a.concat(b);}
 
-// --- storage ---
 function loadStore(){
   try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}
   return{bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',acqLock:0,time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};
 }
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} if(window.__cloudSave)window.__cloudSave();}
-// --- クラウド同期アダプタ（cloud-sync.js から呼ばれる） ---
 window.__getStore=function(){return store;};
 window.__setStore=function(o){ if(!o||typeof o!=='object')return; store=o; if(!store.bm)store.bm=[]; if(!store.hist)store.hist={}; if(!store.vm)store.vm={}; if(!store.tbm)store.tbm={}; if(!store.srs)store.srs={}; if(!store.daily)store.daily={}; if(store.streak==null)store.streak=0; if(!store.notes)store.notes={}; if(!store.exams)store.exams=[]; if(!store.badges)store.badges={}; if(!store.dc||typeof store.dc!=='object')store.dc={}; if(store.examDate==null)store.examDate=''; if(store.goal==null)store.goal=0; if(store.acquiredDate==null)store.acquiredDate=''; if(store.acqLock==null)store.acqLock=0; if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}}; if(typeof store.time.tot!=='number')store.time.tot=0; if(!store.time.dom)store.time.dom={}; if(!store.time.hour)store.time.hour={}; if(!store.sum||typeof store.sum!=='object')store.sum={}; if(typeof store.xp!=='number')store.xp=0; if(!store.missions||typeof store.missions!=='object')store.missions={wk:'',claimed:{}}; if(!store.missions.claimed)store.missions.claimed={}; if(!Array.isArray(store.rdz))store.rdz=[]; if(!store.lessons||typeof store.lessons!=='object')store.lessons={}; try{localStorage.setItem(SKEY,JSON.stringify(store));}catch(e){} };
 window.__refreshUI=function(){ try{buildKwFilter();}catch(e){} try{applyFilters();}catch(e){} try{homeStats();}catch(e){} try{renderTextbook();}catch(e){} try{renderNavMap();}catch(e){} try{renderChapNav();}catch(e){} };
@@ -93,17 +66,14 @@ function recH(id,ok,low,opts){
   store.hist[id].lc=low?1:0;
   srsUpdate(id,ok,low);
   bumpDaily();
-  store.xp=(store.xp||0)+(ok?(low?6:10):3);   // #12 XP（正解10/自信なし正解6/不正解も努力3）
-  try{snapReadiness();}catch(e){}              // #17 合格確度スナップショット
-  // 模試採点など一括記録では opts.defer=true で保存/バッジ/ミッション判定を抑止し、呼び出し側でループ後に1回だけ実行する
-  // （60問模試で save() を60回→1回にし、採点ボタン押下時のフリーズを解消）
+  store.xp=(store.xp||0)+(ok?(low?6:10):3);
+  try{snapReadiness();}catch(e){}
   if(opts&&opts.defer)return;
   save();
   if(typeof checkBadges==='function')checkBadges();
-  try{maybeGoalCheer();}catch(e){}             // #15 デイリーゴール達成のお祝い
-  try{checkMissions();}catch(e){}              // #16 週ミッション判定
+  try{maybeGoalCheer();}catch(e){}
+  try{checkMissions();}catch(e){}
 }
-// 学習時間・時間帯の記録（#18）。sec は checkAnswer で算出（上限300秒でアイドル除外）。
 function recStudyTime(domain,ok,sec){
   if(!store.time||typeof store.time!=='object')store.time={tot:0,dom:{},hour:{}};
   if(!store.time.dom)store.time.dom={};if(!store.time.hour)store.time.hour={};
@@ -114,17 +84,12 @@ function recStudyTime(domain,ok,sec){
   const hb=store.time.hour[h]||(store.time.hour[h]={c:0,w:0,sec:0});
   hb.sec+=sec;if(ok)hb.c++;else hb.w++;
 }
-// 直近の解答が不正解か（=復習対象）。正解すると自動で外れる。
-// last 未記録の旧データは w>0 をフォールバック判定。
 function isWrong(id){const h=store.hist[id];if(!h)return false;if(h.last)return h.last==='w';return h.w>0;}
-// 未回答＝解答履歴が無い（正誤いずれもまだ記録されていない）問題。
 function isUnseen(id){const h=store.hist[id];return !h||(h.c+h.w)===0;}
-// 要復習＝間違えた問題、または「自信なし」で正解した問題（まぐれ）。
 function needsReview(id){const h=store.hist[id];if(!h)return false;if(isWrong(id))return true;return h.last==='c'&&h.lc===1;}
 function isLowConfCorrect(id){const h=store.hist[id];return !!(h&&h.last==='c'&&h.lc===1);}
 function isBm(id){return store.bm.includes(id);}
 function togBm(id){const i=store.bm.indexOf(id);if(i>=0)store.bm.splice(i,1);else store.bm.push(id);save();}
-// 管理者用: ブックマークした問題（問題・選択肢・答えのみ）をCSVで書き出す
 function exportBookmarksCsv(){
   const qs=(store.bm||[]).map(function(id){return allQ.find(function(q){return q.id===id;});}).filter(Boolean);
   if(!qs.length){toast('ブックマークした問題がありません');return;}
@@ -498,12 +463,10 @@ function mdBlock(text){
   return out;
 }
 
-// --- helpers ---
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=0|Math.random()*(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}
 function arrEq(a,b){if(a.length!==b.length)return false;for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true;}
 function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 
-// ===== TEXTBOOK =====
 let tbTab='guide';
 function switchTbTab(t){
   tbTab=t;
@@ -514,21 +477,18 @@ function switchTbTab(t){
   });
   if(t==='cmp')renderCompare();
   if(t==='figs')renderFigGallery();
-  // 学習ガイド専用UI（章ナビ・検索・読了フィルタ）は guide / nav タブだけで表示
   const guideUI=(t==='guide'||t==='nav');
   const chNav=document.getElementById('ch-nav'); if(chNav)chNav.style.display=guideUI?'':'none';
   const sw=document.querySelector('#pg-textbook .search-wrap'); if(sw)sw.style.display=guideUI?'':'none';
-  // mark-filter は guide/nav では renderTextbook が制御するため触らない。それ以外は隠す
   if(!guideUI){const mf=document.getElementById('tb-mark-filter'); if(mf)mf.style.display='none';}
 }
-// ===== 図解ギャラリー（教科書タブ・この資格で使う図を一覧） =====
 function renderFigGallery(){
   const el=document.getElementById('tb-figs'); if(!el)return;
   const pre=(CFG.slug||'')+'/';
   const seen={},items=[];
   Object.keys(FIGS).forEach(k=>{
     if(k.indexOf(pre)!==0)return;
-    const svg=FIGS[k]; if(!svg||seen[svg])return; seen[svg]=1; // 別名（同一SVG）は1点に集約
+    const svg=FIGS[k]; if(!svg||seen[svg])return; seen[svg]=1;
     const name=k.slice(pre.length);
     const m=svg.match(/aria-label="([^"]*)"/);
     items.push({name:name,cap:(m&&m[1])?m[1]:name});
@@ -539,12 +499,6 @@ function renderFigGallery(){
   items.forEach(it=>{h+='<div class="fig-gcard">'+figHTML(it.name,it.cap)+'</div>';});
   el.innerHTML=h+'</div>';
 }
-/* 折りたたみ見出し(.ch-head)の開閉をキーボードでも行えるようにする。
-   .ch-head は <div>＋click ハンドラなので、そのままではフォーカスも当たらず
-   スクリーンリーダーにも「開閉できる」と伝わらない。role/tabindex/aria-expanded を
-   与え、Enter と Space でも開閉できるようにする（マウス操作の挙動は変えない）。
-   hit=フォーカスを当てる要素（既定は見出し全体。入れ子のボタンがある章見出しだけ
-   .ch-head-left を渡し、role=button の中にボタンを入れない）。 */
 function bindChHead(head,wrap,hit){
   const t=hit||head;
   t.setAttribute('role','button');
@@ -556,26 +510,21 @@ function bindChHead(head,wrap,hit){
     if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();e.stopPropagation();toggle();}
   });
 }
-/* .open をコード側で直接付け外ししたときに aria-expanded を追従させる */
 function syncChExpanded(wrap){
   if(!wrap)return;
   const t=wrap.querySelector('[role="button"]');
   if(t)t.setAttribute('aria-expanded',wrap.classList.contains('open')?'true':'false');
 }
 
-// ===== COMPARE（比較表ハブ） =====
 function renderCompare(){
   const el=document.getElementById('tb-cmp'); if(!el)return;
   if(!COMPDATA||!COMPDATA.length){el.innerHTML='<div class="cram-empty">📊 この資格の比較表は準備中です。</div>';return;}
   el.innerHTML='';
 
-  // ── ドメイン別ジャンプチップ（章を自動展開してからスクロール）──
   const navWrap=document.createElement('div');
   navWrap.className='filter-bar';
   navWrap.style.margin='0 0 12px';
   COMPDATA.forEach((s,i)=>{
-    // domain は「実在する分野コード」のときだけ解決する。domainDef() は未知コードを
-    // 先頭分野へフォールバックさせるため、ここで使うと全セクションが誤った分野バッジになる。
     const def=DOMAIN_BY[s.domain]||null;
     const emo=(def&&def.emoji)||'•';
     const btn=document.createElement('button');
@@ -591,7 +540,6 @@ function renderCompare(){
   });
   el.appendChild(navWrap);
 
-  // ── 章ごと折りたたみで各セクションを並べる ──
   COMPDATA.forEach((sec,i)=>{
     if(!sec||!sec.content)return;
     const def=DOMAIN_BY[sec.domain]||null;
@@ -610,16 +558,14 @@ function renderCompare(){
   });
 }
 
-// ===== TEXTBOOK MARK =====
 function getTBM(k){return store.tbm[k]||0;}
 function setTBM(k,v){store.tbm[k]=v;save();}
 function cycleTBM(k){setTBM(k,(getTBM(k)+1)%3);}
 const MARK_ICON=[' ','🔖','✓'];
 const MARK_CLASS=['','bm','done'];
 
-// ─── 章ナビゲーションピル ───
 let currentTbChap=-1;
-let markFilter='all'; // 'all','bm','undone','done'
+let markFilter='all';
 
 function renderChapNav(){
   const el=document.getElementById('ch-nav');if(!el)return;
@@ -642,10 +588,8 @@ function renderChapNav(){
 function scrollToChap(ci){
   const el=document.getElementById('ch-item-'+ci);
   if(!el)return;
-  // open it
   if(!el.classList.contains('open'))el.classList.add('open');
   el.scrollIntoView({behavior:'smooth',block:'start'});
-  // highlight pill
   document.querySelectorAll('.ch-pill').forEach(p=>p.classList.remove('active'));
   const pill=document.getElementById('cp-'+ci);
   if(pill){pill.classList.add('active');pill.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
@@ -659,7 +603,6 @@ function setMarkFilter(f){
   renderTextbook();
 }
 
-// ─── 章まとめモーダル ───
 let sumChapIdx=-1;
 function openSummary(ci,ev){
   if(ev)ev.stopPropagation();
@@ -675,10 +618,9 @@ function openSummary(ci,ev){
       '<span class="sum-tdef">'+escH((t.definition||'').slice(0,60)+(t.definition&&t.definition.length>60?'…':''))+'</span>';
     row.onclick=()=>{closeSummary();showTD(ci,ti);};
     body.appendChild(row);
-    // Exam point hint
     if(t.examPoints&&t.examPoints.length){
       const hint=document.createElement('div');hint.className='sum-sep';
-      hint.textContent='⚡ '+t.examPoints[0].replace(/\*\*/g,'').slice(0,50);   // textContent は自動でエスケープする（escH 不要・二重エスケープ回避）
+      hint.textContent='⚡ '+t.examPoints[0].replace(/\*\*/g,'').slice(0,50);
       body.insertBefore(hint,row);
     }
   });
@@ -690,7 +632,6 @@ function closeSummary(){
   document.getElementById('sum-modal').classList.remove('on');
 }
 
-// ─── 章プログレス更新 ───
 function updateChapProgress(ci){
   const ch=CHDATA[ci];
   const total=ch.terms.length;
@@ -700,14 +641,12 @@ function updateChapProgress(ci){
   if(el)el.textContent=done?('✓'+done+'/'+total):(bm?('🔖'+bm):(''+total+'用語'));
   const fill=document.getElementById('chfill-'+ci);
   if(fill)fill.style.width=(total?Math.round(done/total*100):0)+'%';
-  // pill
   const pill=document.getElementById('cp-'+ci);
   if(pill){
     pill.querySelector('.pill-prog').textContent=done>0?(' '+done+'/'+total):'';
   }
 }
 
-// 用語詳細 前後ナビ用
 let tdCi=-1,tdTi=-1,tdTermList=[];
 
 function navTD(dir){
@@ -737,7 +676,6 @@ function renderTextbook(){
   const filterBar=document.getElementById('tb-mark-filter');
   if(filterBar)filterBar.style.display='';
   CHDATA.forEach((ch,ci)=>{
-    // Filter terms by markFilter
     const visTerms=ch.terms.map((t,ti)=>({t,ti})).filter(({t})=>{
       const v=getTBM(t.title||t.jaName);
       if(markFilter==='bm')return v===1;
@@ -750,7 +688,6 @@ function renderTextbook(){
     const wrap=document.createElement('div');
     wrap.className='ch-item';wrap.id='ch-item-'+ci;
 
-    // ── Chapter header ──
     const head=document.createElement('div');head.className='ch-head';
     const done=ch.terms.filter(t=>getTBM(t.title||t.jaName)===2).length;
     const bm=ch.terms.filter(t=>getTBM(t.title||t.jaName)===1).length;
@@ -764,15 +701,12 @@ function renderTextbook(){
         '<button class="ch-summary-btn" title="章まとめ">まとめ</button>'+
         '<span class="ch-arrow">›</span>'+
       '</div>';
-    // まとめボタン
     head.querySelector('.ch-summary-btn').addEventListener('click',ev=>openSummary(ci,ev));
     bindChHead(head,wrap,head.querySelector('.ch-head-left'));
 
-    // ── Progress bar ──
     const pbar=document.createElement('div');pbar.className='ch-prog-bar';
     pbar.innerHTML='<div class="ch-prog-fill" id="chfill-'+ci+'" style="width:'+(ch.terms.length?Math.round(done/ch.terms.length*100):0)+'%"></div>';
 
-    // ── Term list ──
     const body=document.createElement('div');body.className='ch-body';
     body.appendChild(pbar);
     visTerms.forEach(({t,ti})=>{
@@ -807,10 +741,6 @@ function renderTextbook(){
 }
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-/* ===== 図解（インラインSVG・テーマ追従） =====
- * 図データは figures.js（window.SFQ_FIGURES）が唯一の出典。キーは "<slug>/<name>"。
- * 問題データの fig（設問図）/ expFig（解説図）にこの <name> を入れると表示される。
- * インライン展開なので quiz.css のパレットで [data-theme] に自動追従。タップで拡大。 */
 const FIGS=(typeof window!=='undefined'&&window.SFQ_FIGURES)||{};
 function figMarkup(name){if(!name)return '';return FIGS[(CFG.slug||'')+'/'+name]||FIGS[name]||'';}
 function figHTML(name,cap){
@@ -838,7 +768,6 @@ function renderNavMap(){
   NAVDATA.forEach((sec,si)=>{
     if(!sec.content.trim())return;
 
-    // ── 本文ビルド（旧ロジックを踏襲）──
     let body='';
     const paths=sec.content.match(/`\[設定\][^`]+`/g)||[];
     paths.forEach(p=>body+='<span class="path-code">'+escH(p.replace(/`/g,''))+'</span><br>');
@@ -857,7 +786,6 @@ function renderNavMap(){
     const notes=sec.content.split('\n').filter(l=>/^> /.test(l));
     notes.forEach(n=>body+='<blockquote style="border-left:3px solid var(--warning);background:var(--warning-light);padding:8px 12px;border-radius:0 8px 8px 0;margin:6px 0;font-size:12px">'+mdInline(n.slice(2))+'</blockquote>');
 
-    // ── 章ごと折りたたみで包む ──
     const wrap=document.createElement('div');
     wrap.className='ch-item';wrap.id='nm-sec-'+si;
     const head=document.createElement('div');head.className='ch-head';
@@ -870,9 +798,6 @@ function renderNavMap(){
     wrap.appendChild(head);wrap.appendChild(bodyEl);el.appendChild(wrap);
   });
 }
-// ===== CRAM（直前まとめ）=====
-// cram.json は navmap.json と同じく [{title, content}]。content は簡易Markdown
-// （### 小見出し / | テーブル | / - 箇条書き / 1. 番号 / > 引用・注意 / **強調**）。
 function cramMd(text){
   const lines=String(text||'').split('\n');
   let out='',listType=null,i=0;
@@ -881,7 +806,6 @@ function cramMd(text){
   const isSep=r=>/^\s*\|?[\s:|-]+\|?\s*$/.test(r)&&r.indexOf('-')>=0;
   while(i<lines.length){
     const raw=lines[i], t=raw.trim();
-    // table（ヘッダ行 + 区切り行）
     if(t.indexOf('|')>=0 && i+1<lines.length && isSep(lines[i+1])){
       closeList();
       const th=cellsOf(raw); i+=2;
@@ -910,7 +834,6 @@ function renderCram(){
   }
   el.innerHTML='';
 
-  // ── 章ジャンプチップ（タップで自動展開＋スクロール）──
   const navWrap=document.createElement('div');
   navWrap.className='filter-bar';
   navWrap.style.margin='0 0 12px';
@@ -929,7 +852,6 @@ function renderCram(){
   });
   el.appendChild(navWrap);
 
-  // ── 章ごと折りたたみ ──
   CRAMDATA.forEach((sec,i)=>{
     if(!sec)return;
     const wrap=document.createElement('div');
@@ -978,7 +900,6 @@ function showTD(ci,ti){
   setText('td-title',t.jaName||t.title);
   setText('td-en',t.enName?'( '+t.enName+' )':'');
   document.getElementById('td-def').innerHTML=mdBlock(t.definition)||'—';
-  // 図解（用語に fig 指定があれば定義の下に表示）
   const tdFigBlk=document.getElementById('td-fig-blk');
   if(t.fig&&figMarkup(t.fig)){
     document.getElementById('td-fig').innerHTML=figHTML(t.fig);
@@ -1000,13 +921,12 @@ function showTD(ci,ti){
     });
     document.getElementById('td-q-blk').style.display='';
   }else{document.getElementById('td-q-blk').style.display='none';}
-  // Prev/Next nav
   const prevBtn=document.getElementById('td-prev');
   const nextBtn=document.getElementById('td-next');
   const posEl=document.getElementById('td-pos');
   if(prevBtn)prevBtn.disabled=ti===0;
   if(nextBtn)nextBtn.disabled=ti===total-1;
-  if(posEl)posEl.textContent=CHDATA[ci].chapter.replace(/^第\d+章[:：]\s*/,'')+'  '+(ti+1)+'/'+total;   // textContent は自動エスケープ（escH 不要）
+  if(posEl)posEl.textContent=CHDATA[ci].chapter.replace(/^第\d+章[:：]\s*/,'')+'  '+(ti+1)+'/'+total;
   refreshTDMark();
   document.getElementById('tb-list').style.display='none';
   document.getElementById('td-view').classList.add('on');
@@ -1016,24 +936,21 @@ function closeTD(){
   document.getElementById('td-view').classList.remove('on');
   document.getElementById('tb-list').style.display='';
 }
-// 用語名から学習ガイド（教科書タブ）の該当用語へジャンプ。ナビマップの相互参照リンク等から呼ぶ
 function gotoTerm(label){
   if(!label)return;
   const norm=s=>String(s||'').replace(/\s/g,'');
   const L=norm(label);
   const keysOf=t=>[t.title,t.jaName,t.enName].filter(Boolean).map(norm);
   let found=null;
-  // ①完全一致
   for(let ci=0;ci<CHDATA.length&&!found;ci++)
     for(let ti=0;ti<CHDATA[ci].terms.length;ti++)
       if(keysOf(CHDATA[ci].terms[ti]).some(k=>k===L)){found=[ci,ti];break;}
-  // ②部分一致（ラベルが用語を含む／用語がラベルを含む）
   for(let ci=0;ci<CHDATA.length&&!found;ci++)
     for(let ti=0;ti<CHDATA[ci].terms.length;ti++)
       if(keysOf(CHDATA[ci].terms[ti]).some(k=>k&&(L.includes(k)||k.includes(L)))){found=[ci,ti];break;}
   goTo('textbook');switchTbTab('guide');
   if(found){showTD(found[0],found[1]);}
-  else{ // フォールバック：見つからなければ検索に流す
+  else{
     const inp=document.getElementById('tb-search');
     if(inp){inp.value=label;tbSearch(label);}
     toast('「'+label+'」に近い用語を表示');
@@ -1048,7 +965,6 @@ function jumpQ(qid){
   goTo('study');renderSQ();toast('Q'+qid+' を表示中');
 }
 
-// ===== VOCAB =====
 function allTerms(){
   const out=[];
   CHDATA.forEach(ch=>ch.terms.forEach(t=>out.push({key:t.title,ja:t.jaName||t.title,en:t.enName||'',cat:ch.chapter,def:t.definition,pts:t.examPoints})));
@@ -1124,7 +1040,6 @@ function vocabDone(){
   setText('v-done-sub','全'+all.length+'用語中 '+m+'用語習得済み');
 }
 
-// ===== STUDY MODE =====
 function startStudy(){
   applyFilters();
   if(filtQ.length===0){toast('対象の問題がありません');return;}
@@ -1188,7 +1103,6 @@ function selChoice(idx,isM){
     item.setAttribute('aria-pressed',on?'true':'false');
     item.querySelector('.cmark').textContent=on?(isM?'✓':item.dataset.num):item.dataset.num;
   });
-  // 複数選択は必要数ちょうど選ぶまで解答へ進めない
   const chk=document.getElementById('s-check');
   chk.disabled=sSel.length!==need;
   if(isM){const rem=need-sSel.length;chk.textContent=rem>0?'あと'+rem+'つ選択':'解答する';}
@@ -1228,7 +1142,6 @@ function checkAnswer(){
   exp.innerHTML=_eh+'<div style="white-space:pre-wrap">'+escH(q.explanation||'解説なし')+'</div>';
   if(q.expFig)exp.innerHTML+=figHTML(q.expFig);
   if(q.reference_url){exp.innerHTML+='<br><a class="reflink" href="'+q.reference_url+'" target="_blank">🔗 Salesforce ヘルプを見る</a>';}
-  // 誤答理由タグ（#1・任意・根本原因レポートに集計）
   if(!isOk){
     const wrDiv=document.createElement('div');wrDiv.className='wr-pick';
     wrDiv.innerHTML='<div class="wr-q">なぜ間違えた？（任意・分析に使います）</div>';
@@ -1241,7 +1154,6 @@ function checkAnswer(){
     });
     wrDiv.appendChild(wrow);exp.appendChild(wrDiv);
   }
-  // related terms（vocab に一致した用語）
   const rel=[];
   (q.keywords||[]).forEach(kw=>{
     CHDATA.forEach((ch,ci)=>{ch.terms.forEach((t,ti)=>{
@@ -1261,7 +1173,6 @@ function checkAnswer(){
     });
     exp.appendChild(rDiv);
   }
-  // 全キーワード（vocab未収録のものも見える化）
   const kws=q.keywords||[];
   if(kws.length){
     const matched=new Set(rel.map(r=>r.kw));
@@ -1270,19 +1181,16 @@ function checkAnswer(){
     kws.forEach(kw=>{
       const c=document.createElement('span');c.className='qchip';
       if(matched.has(kw)){
-        // 関連用語にあれば、用語詳細にジャンプ
         c.style.cssText='background:var(--purple-light);color:var(--purple);cursor:pointer';
         c.title='用語詳細を開く';
         const hit=rel.find(r=>r.kw===kw);
         c.onclick=()=>showTD(hit.ci,hit.ti);
       } else {
-        // 未マッチでも分野統計/絞り込みのトリガーになる
         c.style.cssText='background:var(--bg-sub,#f3f4f6);color:var(--text-sub);cursor:pointer';
         c.title='このキーワードで絞り込み';
         c.onclick=()=>{
           fKw=kw;
           const sel=document.getElementById('f-kw'); if(sel){
-            // optionが無ければ作って選択
             let has=Array.from(sel.options).some(o=>o.value===kw);
             if(!has){const o=document.createElement('option');o.value=kw;o.textContent='🏷️ '+kw;sel.appendChild(o);}
             sel.value=kw;
@@ -1295,7 +1203,6 @@ function checkAnswer(){
     });
     exp.appendChild(kDiv);
   }
-  // 似た問題（#3・タップで挑戦）
   const relQ=relatedQuestions(q,3);
   if(relQ.length){
     const rqDiv=document.createElement('div');rqDiv.style.marginTop='10px';
@@ -1303,7 +1210,6 @@ function checkAnswer(){
     relQ.forEach(function(o){const b=document.createElement('button');b.type='button';b.className='relq';b.textContent='Q'+o.id+'：'+(o.question.length>34?o.question.slice(0,34)+'…':o.question);b.onclick=function(){beginStudyWith([o]);};rqDiv.appendChild(b);});
     exp.appendChild(rqDiv);
   }
-  // 自分の言葉で説明（Feynman・#6・任意。間違いノートに表示）
   (function(){
     const feyWrap=document.createElement('div');feyWrap.className='fey-wrap';
     feyWrap.innerHTML='<div class="fey-q">🧠 自分の言葉で説明（任意）</div>';
@@ -1313,7 +1219,6 @@ function checkAnswer(){
     ta.oninput=function(){if(!store.sum)store.sum={};const v=ta.value;if(v.trim())store.sum[q.id]=v;else delete store.sum[q.id];clearTimeout(_ft);_ft=setTimeout(save,600);};
     feyWrap.appendChild(ta);exp.appendChild(feyWrap);
   })();
-  // 問題報告リンク（内容が誤り/古いと思ったら GitHub Issue をプリフィルで起票）
   const repDiv=document.createElement('div');repDiv.className='report-wrap';
   const repBtn=document.createElement('button');repBtn.type='button';repBtn.className='report-link';
   repBtn.textContent='⚠️ この問題を報告';repBtn.onclick=()=>reportQuestion(q.id);
@@ -1344,7 +1249,6 @@ function studyDone(){
   const total=sOk+sNg,pct=total?Math.round(sOk/total*100):0;
   setText('s-end-score',pct+'%');
   setText('s-end-sub',total+'問中 '+sOk+'問正解');
-  // このセッションで間違えた問題だけを即復習する導線
   sLastWrong=sQueue.filter(q=>isWrong(q.id));
   const box=document.querySelector('#s-end .result-box');
   if(box){
@@ -1357,7 +1261,6 @@ function studyDone(){
     if(sLastWrong.length){rb.style.display='block';rb.textContent='🔁 間違えた '+sLastWrong.length+' 問だけ復習';}
     else rb.style.display='none';
   }
-  // デイリーチャレンジを完走したら本日分を完了マーク
   if(dcActive){
     if(!store.dc||typeof store.dc!=='object')store.dc={};
     store.dc.d=_today();store.dc.done=1;save();
@@ -1366,11 +1269,8 @@ function studyDone(){
     toast('🎉 デイリーチャレンジ完了！また明日');
   }
 }
-// 直近セッションの誤答だけで学習を再開
 function redoWrong(){if(sLastWrong&&sLastWrong.length)beginStudyWith(sLastWrong.slice());}
 
-// ===== Phase2: 段階的ヒント / 類題 / 重点ループ / 間違いノート =====
-// #2 段階的ヒント：①分野 → ②明らかな誤りを薄く表示
 function showHint(){
   const q=sQueue[sCur];if(!q||sRevealed)return;
   const list=document.getElementById('s-hint-list');if(!list)return;
@@ -1385,7 +1285,6 @@ function showHint(){
     const btn=document.getElementById('s-hint-btn');if(btn)btn.style.display='none';
   }
 }
-// #3 類題：同じキーワード/分野の問題を関連度順に
 function relatedQuestions(q,limit){
   const kws={};(q.keywords||[]).forEach(function(k){kws[k]=1;});
   const dom=domainOf(q.id),scored=[];
@@ -1393,7 +1292,6 @@ function relatedQuestions(q,limit){
   scored.sort(function(a,b){return b.s-a.s;});
   return scored.slice(0,limit||3).map(function(x){return x.q;});
 }
-// #10 重点ループ：誤答が重なる「つまずき問題」を2連続正解まで反復
 function isLeech(id){const h=store.hist[id];if(!h)return false;return (h.w||0)>=2&&(h.last==='w'||h.lc===1);}
 function leechList(){return scopedQ().filter(function(q){return isLeech(q.id);});}
 function startLeech(){
@@ -1402,7 +1300,6 @@ function startLeech(){
   beginStudyWith(shuffle(ls),{loop:true});
   toast('🔂 重点ループ：2連続正解で習得');
 }
-// #8 間違いノート：誤答・自信なし問題＋理由・要約・メモを1冊に
 function notebookEntries(){
   return scopedQ().filter(function(q){return needsReview(q.id);}).map(function(q){
     const h=store.hist[q.id]||{};
@@ -1437,11 +1334,8 @@ function closeNotebook(){const ov=document.getElementById('nb-ov');if(ov)ov.clas
 function nbStudy(id){closeNotebook();const q=allQ.find(function(x){return x.id===id;});if(q)beginStudyWith([q]);}
 function nbReviewAll(){const ls=scopedQ().filter(function(q){return needsReview(q.id);});closeNotebook();beginStudyWith(shuffle(ls));}
 
-// ===== Phase4: XP・レベル / お祝い演出 / 週ミッション / 合格確度トレンド =====
-// 紙吹雪エフェクト（バッジ・目標・ミッション・合格時）
 function celebrate(){
   try{
-    // モーション低減を希望する利用者には紙吹雪を出さない（アクセシビリティ）
     if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     var c=document.createElement('div');c.className='confetti';
     var cols=['#0176d3','#2e844a','#dd7a01','#ba0517','#7b5ea7','#0b827c'];
@@ -1450,13 +1344,11 @@ function celebrate(){
     setTimeout(function(){if(c&&c.parentNode)c.parentNode.removeChild(c);},2800);
   }catch(e){}
 }
-// #12 レベル：XPからレベル・進捗を算出（上がるほど必要XP増）
 function levelInfo(){
   var xp=store.xp||0,lvl=1,need=200,acc=0;
   while(xp>=acc+need&&lvl<99){acc+=need;lvl++;need=200+(lvl-1)*60;}
   return {lvl:lvl,cur:xp-acc,need:need,total:xp};
 }
-// #17 合格確度（総合到達度）を1日1点スナップショット
 function snapReadiness(){
   var tc=0,tt=0;Object.values(store.hist).forEach(function(h){tc+=h.c||0;tt+=(h.c||0)+(h.w||0);});
   if(!tt)return;var p=Math.round(tc/tt*100),d=_today();
@@ -1464,7 +1356,6 @@ function snapReadiness(){
   var last=store.rdz[store.rdz.length-1];
   if(last&&last.d===d)last.p=p;else{store.rdz.push({d:d,p:p});if(store.rdz.length>180)store.rdz.shift();}
 }
-// #15 デイリーゴール達成のお祝い（1日1回）
 function maybeGoalCheer(){
   var goal=store.goal||0;if(goal<=0)return;
   var today=_today(),todayN=(store.daily&&store.daily[today])||0;
@@ -1472,7 +1363,6 @@ function maybeGoalCheer(){
   try{if(localStorage.getItem('sfq_goalcheer')===today)return;localStorage.setItem('sfq_goalcheer',today);}catch(e){}
   store.xp=(store.xp||0)+20;save();celebrate();toast('🎉 今日の目標達成！ +20XP');
 }
-// #16 週ミッション（日曜はじまり）
 function _weekStart(){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return d;}
 function weekKey(){return _fmtD(_weekStart());}
 function weeklyMissions(){
@@ -1494,7 +1384,6 @@ function checkMissions(){
   weeklyMissions().forEach(function(m){if(m.cur>=m.tgt&&!store.missions.claimed[m.id]){store.missions.claimed[m.id]=1;store.xp=(store.xp||0)+50;newly=m;}});
   if(newly){save();celebrate();toast('🏅 ミッション達成！「'+newly.label+'」+50XP');}
 }
-// ホームのゲーミフィケーションカード：レベル/XP・今週のミッション
 function renderGame(){
   var host=document.getElementById('gamecard');if(!host)return;
   var li=levelInfo(),ms=weeklyMissions(),lvPct=Math.round(li.cur/li.need*100);
@@ -1509,7 +1398,6 @@ function renderGame(){
   html+='</div>';
   host.innerHTML=html;
 }
-// #17 合格確度の推移（折れ線・直近30点）
 function readinessTrendHTML(){
   var rz=(store.rdz||[]).slice(-30);
   if(rz.length<2)return '';
@@ -1529,7 +1417,6 @@ function readinessTrendHTML(){
     +'<div class="an-note">直近 '+rz.length+' 点。現在 <b>'+last+'%</b>（合格ライン '+PASS+'%）'+(diff>=0?'・期間 +'+diff+'pt':'・期間 '+diff+'pt')+'。横線＝合格ライン。</div></div>';
 }
 
-// ===== Phase5: ケーススタディ（同一シナリオの関連問題を連続提示） =====
 function caseList(){
   var map={},order=[];
   scopedQ().forEach(function(q){if(q.case){if(!map[q.case]){map[q.case]={id:q.case,scenario:q.scenario||'',qs:[]};order.push(q.case);}map[q.case].qs.push(q);}});
@@ -1553,8 +1440,6 @@ function beginCase(id){
   beginStudyWith(qs);
 }
 
-// ===== 使い方ガイド（全機能カタログ・チュートリアル） =====
-// 新規ユーザーが全機能を把握できる常設リファレンス。act があれば「開く」で実際に試せる。
 const GUIDE=[
   {cat:'🎓 資格のステップ制', items:[
     {ic:'🔓',name:'資格は順番に解除',desc:'アドミニストレーター→アプリビルダー→デベロッパー→残りを1つずつ。前の資格を「取得済み」にすると次が解除されます。',act:'progress'},
@@ -1641,9 +1526,6 @@ function guideAct(a){
   }catch(e){}
 }
 
-// ===== EXAM =====
-// 標準（引数なし）=本番形式60問・時間制限あり。opts でカスタム模試。
-//   opts = { n:問題数, weak:true(弱点3分野), domains:[code…], timed:false(時間無制限) }
 function startExam(opts){
   opts=opts||{};
   let universe=scopedQ();
@@ -1659,35 +1541,22 @@ function startExam(opts){
   const want=opts.n||EXAM_N;
   eN=Math.min(want,universe.length);
   eTimed=opts.timed!==false;
-  // 分野を絞ったときはその範囲から抽出。標準は公式比率で重み付け抽出。
-  // いずれも直近2回の模試に出た問題を後回しにする（重複回避）。
   eQ=(opts.weak||(opts.domains&&opts.domains.length))?freshFirst(universe).slice(0,eN):pickWeightedExam(eN);
   eCur=0;eAns={};eFlag={};eQTime={};
-  eBudget=Math.max(60,Math.round(EXAM_MIN*60*eN/EXAM_N));   // 標準と同じ1問ペース
-  eSecs=eTimed?eBudget:0;                                    // timed=残り / untimed=経過
+  eBudget=Math.max(60,Math.round(EXAM_MIN*60*eN/EXAM_N));
+  eSecs=eTimed?eBudget:0;
   eDispArr=eQ.map(q=> cshufOn()? shuffle(q.choices.map((_,i)=>i)) : q.choices.map((_,i)=>i));
   clearExamState();
   document.getElementById('e-result').style.display='none';
   document.getElementById('e-area').style.display='block';
   goTo('exam');startTimer();renderEQ();
 }
-/* 模試の分野別出題数を決める（純粋関数・test-engine で検証）。
- * defs=[{code,weight}] / n=総出題数 / stock={分野コード:在庫数}
- *  ① 最大剰余法で weight どおりに n を配分する。
- *     旧実装は分野ごとに独立して Math.round していたため合計が n からずれ、
- *     最後の picked.slice(0,n) で「配列の末尾＝domains.json の後ろの分野」だけが
- *     系統的に切り捨てられていた（丸め誤差の不利が特定分野に固定される）。
- *  ② 在庫が足りない分野は在庫までに丸め、あふれた分は「まだ在庫が残る分野」へ
- *     weight 比で配り直す。旧実装は不足分を全問題からランダムに補填していたため、
- *     在庫の多い分野へ寄って公式比率の再現がさらに崩れていた。
- */
 function examQuota(defs,n,stock){
   const list=(defs||[]).filter(d=>d&&d.code);
   const out={};list.forEach(d=>out[d.code]=0);
   if(!list.length||!(n>0))return out;
   const totW=list.reduce((s,d)=>s+(d.weight||0),0);
   if(totW<=0)return out;
-  // ① 最大剰余法（整数部を配ってから、小数部の大きい順に余りを1問ずつ）
   const rem=[];let sum=0;
   list.forEach((d,i)=>{
     const ex=n*(d.weight||0)/totW,fl=Math.floor(ex);
@@ -1695,13 +1564,12 @@ function examQuota(defs,n,stock){
   });
   rem.sort((a,b)=>(b.f-a.f)||(b.w-a.w)||(a.i-b.i));
   for(let k=0;sum<n&&k<rem.length;k++){out[rem[k].code]++;sum++;}
-  // ② 在庫で頭打ち → あふれた分を在庫の残る分野へ weight 比で再配分
   const cap=c=>Math.max(0,(stock&&stock[c])||0);
   let over=0;
   list.forEach(d=>{const c=cap(d.code);if(out[d.code]>c){over+=out[d.code]-c;out[d.code]=c;}});
   while(over>0){
     const room=list.filter(d=>out[d.code]<cap(d.code));
-    if(!room.length)break;                                   // 全分野が在庫切れ＝これ以上は配れない
+    if(!room.length)break;
     const w=room.reduce((s,d)=>s+(d.weight||0),0)||room.length;
     let moved=0;
     room.forEach(d=>{
@@ -1714,19 +1582,18 @@ function examQuota(defs,n,stock){
   }
   return out;
 }
-// 公式出題比率（分野の weight）に沿って EXAM_N 問を抽出。不足分は全体から補填。
 function pickWeightedExam(n){
   const universe=scopedQ();
   const byD={};DOMAIN_DEFS.forEach(d=>byD[d.code]=[]);
   universe.forEach(q=>{const c=domainOf(q.id);(byD[c]||(byD[c]=[])).push(q);});
-  Object.keys(byD).forEach(c=>byD[c]=freshFirst(byD[c]));   // 直近の模試に出た問題は後回し
+  Object.keys(byD).forEach(c=>byD[c]=freshFirst(byD[c]));
   const stock={};Object.keys(byD).forEach(c=>stock[c]=byD[c].length);
   const quota=examQuota(DOMAIN_DEFS,n,stock);
   const picked=[],used=new Set();
   DOMAIN_DEFS.forEach(d=>{
     (byD[d.code]||[]).slice(0,quota[d.code]||0).forEach(q=>{picked.push(q);used.add(q.id);});
   });
-  if(picked.length<n){   // 全分野を配り切ってもなお足りない（＝資格全体の在庫不足）ときだけ素の残りで補填
+  if(picked.length<n){
     const rest=freshFirst(universe.filter(q=>!used.has(q.id)));
     for(const q of rest){if(picked.length>=n)break;picked.push(q);used.add(q.id);}
   }
@@ -1736,10 +1603,10 @@ function startTimer(){
   if(eTimer)clearInterval(eTimer);
   tickTimer();
   eTimer=setInterval(()=>{
-    if(eQ[eCur])eQTime[eCur]=(eQTime[eCur]||0)+1;   // 設問ごとの所要時間を加算
-    if(eTimed)eSecs--; else eSecs++;                 // timed=残り減算 / untimed=経過加算
+    if(eQ[eCur])eQTime[eCur]=(eQTime[eCur]||0)+1;
+    if(eTimed)eSecs--; else eSecs++;
     tickTimer();
-    if(eSecs%5===0)saveExamState();                  // 中断復帰用に定期保存
+    if(eSecs%5===0)saveExamState();
     if(eTimed&&eSecs<=0){clearInterval(eTimer);eTimer=null;finishExam();}
   },1000);
 }
@@ -1767,7 +1634,6 @@ function renderEQ(){
   order.forEach(oi=>{
     const ch=q.choices[oi],on=saved.includes(oi);
     const item=document.createElement('div');item.className='choice'+(on?' sel':'');item.dataset.oi=oi;
-    // キーボード/スクリーンリーダー対応（学習モードと同じ role=button + aria-pressed。選択状態も反映）
     item.setAttribute('role','button');item.setAttribute('aria-pressed',on?'true':'false');item.tabIndex=0;
     const mark=document.createElement('div');mark.className='cmark';
     mark.textContent=on?(isM?'☑':'●'):(isM?'□':'○');
@@ -1783,20 +1649,15 @@ function renderEQ(){
   if(fb){const on=!!eFlag[eCur];fb.classList.toggle('on',on);fb.textContent=on?'🚩 見直す':'🚩 後で';}
   renderNavPalette();
   updateFinishLabel();
-  saveExamState();   // 解答・移動・フラグのたびに中断復帰用へ保存
+  saveExamState();
 }
-// 解答済み問題数
 function eAnsweredCount(){let n=0;for(let i=0;i<eN;i++){if((eAns[i]||[]).length>0)n++;}return n;}
-// フラグの切替
 function toggleEFlag(){eFlag[eCur]=!eFlag[eCur];renderEQ();}
-// 任意の問題へジャンプ
 function eJump(i){closeExamSheet();eCur=Math.max(0,Math.min(eN-1,i));renderEQ();window.scrollTo({top:0,behavior:'smooth'});}
-// 採点ボタンに解答済み件数を表示
 function updateFinishLabel(){
   const b=document.getElementById('e-finish');if(!b)return;
   b.innerHTML='📝 採点する<span class="finish-cnt">'+eAnsweredCount()+'/'+eN+' 回答</span>';
 }
-// 問題ナビゲータ（一覧グリッド）
 function renderNavPalette(){
   const host=document.getElementById('e-navpal');if(!host)return;
   const done=eAnsweredCount();
@@ -1821,14 +1682,12 @@ function selEChoice(idx,isM){
   renderEQ();
 }
 function eNav(d){eCur=Math.max(0,Math.min(eN-1,eCur+d));renderEQ();}
-// 採点ボタン押下時：未回答／フラグがあれば確認シートを出し、無ければ即採点
 function confirmFinishExam(){
   const unans=[];for(let i=0;i<eN;i++){if((eAns[i]||[]).length===0)unans.push(i);}
   let flags=0;for(let i=0;i<eN;i++){if(eFlag[i])flags++;}
   if(unans.length===0&&flags===0){finishExam();return;}
   showExamSheet(unans,flags);
 }
-// 採点前確認シート（DOMは初回に動的生成しbodyへ）
 function showExamSheet(unans,flags){
   let dim=document.getElementById('e-sheet-dim');
   if(!dim){
@@ -1857,7 +1716,6 @@ function showExamSheet(unans,flags){
   dim.classList.add('open');
 }
 function closeExamSheet(){const d=document.getElementById('e-sheet-dim');if(d)d.classList.remove('open');}
-// 弱点分野コールアウト（合格ライン未満の分野を抽出）
 function renderWeakCallout(byd){
   const host=document.getElementById('e-weak-callout');if(!host)return;
   const weak=DOMAIN_DEFS.filter(d=>{const b=byd[d.code];return b&&b.t&&Math.round(b.c/b.t*100)<PASS;});
@@ -1866,7 +1724,6 @@ function renderWeakCallout(byd){
   host.innerHTML='<div class="e-callout">弱点は <b>'+escH(names)+'</b>。'
     +'<button type="button" class="e-callout-btn" onclick="startWeakDomains()">弱点分野を出題 →</button></div>';
 }
-// スコアリング（円グラフ）描画
 function renderScoreRing(pct,pass){
   const host=document.getElementById('e-ring');if(!host){setText('e-pct',pct+'%');return;}
   const r=68,c=2*Math.PI*r,off=c*(1-pct/100);
@@ -1886,18 +1743,18 @@ function finishExam(){
     const isOk=arrEq(sel.slice().sort(),q.answers.slice().sort());
     if(isOk)ok++;
     const c=domainOf(q.id);if(!byd[c])byd[c]={c:0,t:0};byd[c].t++;if(isOk)byd[c].c++;
-    recH(q.id,isOk,false,{defer:true});   // 保存/バッジ/ミッションはループ後に1回だけ（下の save()/checkBadges()/checkMissions()）
+    recH(q.id,isOk,false,{defer:true});
   });
   const pct=Math.round(ok/eN*100),pass=pct>=PASS;
-  const secsUsed=eTimed?(eBudget-Math.max(0,eSecs)):Math.max(0,eSecs);   // 使用した試験時間（秒）
+  const secsUsed=eTimed?(eBudget-Math.max(0,eSecs)):Math.max(0,eSecs);
   if(!store.exams)store.exams=[];
   store.exams.push({ts:Date.now(),pct:pct,ok:ok,n:eN,pass:pass,byd:byd,secsUsed:secsUsed,custom:(eN!==EXAM_N||!eTimed)});
   if(store.exams.length>50)store.exams=store.exams.slice(-50);
-  try{pushRecentExam(eQ.map(q=>q.id));}catch(e){}   // 次回の模試で同じ問題を後回しにする
-  store.xp=(store.xp||0)+30+(pass?100:0);   // #12 模試完了+合格ボーナス
+  try{pushRecentExam(eQ.map(q=>q.id));}catch(e){}
+  store.xp=(store.xp||0)+30+(pass?100:0);
   save();
   checkBadges();
-  try{maybeGoalCheer();}catch(e){}   // 採点でデイリーゴール到達時のお祝い（recH の defer で各問からは抑止済み）
+  try{maybeGoalCheer();}catch(e){}
   try{checkMissions();}catch(e){}
   if(pass)try{celebrate();}catch(e){}
   document.getElementById('e-area').style.display='none';
@@ -1913,8 +1770,8 @@ function finishExam(){
   eWrongOnly=false;
   const wt=document.getElementById('e-wrong-toggle');if(wt)wt.classList.remove('on');
   renderExamResultList();
-  renderPaceCard(secsUsed);   // 時間管理コーチ
-  clearExamState();           // 完了したので中断データは破棄
+  renderPaceCard(secsUsed);
+  clearExamState();
 }
 function renderExamDomains(byd){
   const host=document.getElementById('e-domains');if(!host)return;host.innerHTML='';
@@ -1980,13 +1837,11 @@ function toggleExamWrong(){
   renderExamResultList();
 }
 
-// ===== REVIEW =====
 function startReview(){
   const bad=scopedQ().filter(q=>needsReview(q.id)||isBm(q.id));
   if(!bad.length){toast('復習する問題がありません');return;}
   beginStudyWith(shuffle(bad));
 }
-// 弱点分野（正答率の低い分野）を狙い撃ちで出題
 function startWeakDomains(){
   const ds=domainStats();
   const ranked=ds.filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct);
@@ -1998,7 +1853,6 @@ function startWeakDomains(){
   toast('🎯 弱点分野を出題: '+weak.map(c=>domainDef(c).name).join('・'));
 }
 
-// ===== STATS =====
 function renderStats(){
   renderStatsSummary();
   renderCoverage();
@@ -2036,13 +1890,11 @@ function renderStats(){
   });
 }
 
-/* ===== 学習分析：根本原因(#20)・学習時間(#18)・キャリブレーション(#7) ===== */
 function renderAnalysis(){
   const host=document.getElementById('analysis');if(!host)return;
   const html=readinessTrendHTML()+rootCauseHTML()+diffHeatHTML()+timeHTML()+calibHTML();
   host.innerHTML=html;
 }
-// #20 弱点の根本原因：誤答理由タグ＋最弱分野＋時間のかかる分野を統合した助言
 function rootCauseHTML(){
   const insights=[];
   const reasons={unknown:0,careless:0,narrow:0};let rTot=0;
@@ -2063,7 +1915,6 @@ function rootCauseHTML(){
   if(!insights.length)return '';
   return '<div class="card"><div class="sec-label" style="margin-top:0">🔎 弱点の根本原因</div><ul class="an-ins">'+insights.map(i=>'<li>'+i+'</li>').join('')+'</ul></div>';
 }
-// #18 学習時間：総時間・分野別の投下時間・時間帯別の正答率
 function timeHTML(){
   const t=store.time||{tot:0,dom:{},hour:{}};
   if(!t.tot)return '';
@@ -2082,7 +1933,6 @@ function timeHTML(){
     +(domBars||'<div class="an-note">分野別の学習時間がここに表示されます。</div>')
     +(hourNote?'<div class="an-note">'+hourNote+'</div>':'')+'</div>';
 }
-// #7 自信と正答のキャリブレーション（直近の解答ベース：lc=自信なしフラグ）
 function calibHTML(){
   let cy={c:0,w:0},cn={c:0,w:0};
   Object.values(store.hist).forEach(h=>{
@@ -2103,7 +1953,6 @@ function calibHTML(){
     +bar('🤔 自信なし',pn,tn,'var(--warning)')
     +'<div class="an-note">'+diag+'</div></div>';
 }
-// #19 分野×難易度ヒートマップ：あなたの正答率を 分野×難易度 のマトリクスで
 function diffHeatHTML(){
   const agg={};let any=false;
   scopedQ().forEach(function(q){const h=store.hist[q.id];if(!h)return;const t=(h.c||0)+(h.w||0);if(!t)return;any=true;const dom=domainOf(q.id),b=qDiff(q);agg[dom]=agg[dom]||{};agg[dom][b]=agg[dom][b]||{c:0,w:0};agg[dom][b].c+=h.c||0;agg[dom][b].w+=h.w||0;});
@@ -2117,7 +1966,6 @@ function diffHeatHTML(){
     +'<div class="an-note">セル＝その分野・難易度での正答率。難で苦戦＝理解不足、易で取りこぼし＝注意不足のサイン。難易度はデータ設定値（未設定は正答率から推定）。</div></div>';
 }
 
-/* ===== 統計：合格可能性サマリー ===== */
 function renderStatsSummary(){
   const host=document.getElementById('stats-summary');if(!host)return;
   const ds=domainStats().filter(d=>d.t>0);
@@ -2143,7 +1991,6 @@ function renderStatsSummary(){
     +'</div>';
 }
 
-/* ===== 分野別の習熟度 ===== */
 function domainStats(){
   const agg={};DOMAIN_DEFS.forEach(d=>agg[d.code]={code:d.code,c:0,w:0});
   allQ.forEach(q=>{const c=domainOf(q.id),h=store.hist[q.id];if(!agg[c])agg[c]={code:c,c:0,w:0};if(h){agg[c].c+=h.c||0;agg[c].w+=h.w||0;}});
@@ -2152,14 +1999,13 @@ function domainStats(){
 function renderDomainList(){
   const host=document.getElementById('dom-list');if(!host)return;host.innerHTML='';
   const ds=domainStats();
-  // 現プールの分野構成（公式比との乖離を可視化する）
   const poolCnt={}; allQ.forEach(q=>{const c=domainOf(q.id);poolCnt[c]=(poolCnt[c]||0)+1;});
   const poolN=allQ.length||1;
   ds.forEach(d=>{
     const def=domainDef(d.code),answered=d.t>0;
     const col=!answered?'var(--border)':d.pct>=80?'var(--success)':d.pct>=60?'var(--warning)':'var(--danger)';
     const cur=Math.round((poolCnt[d.code]||0)*100/poolN);
-    const gap=cur-def.weight; // +なら過剰、−なら不足
+    const gap=cur-def.weight;
     const gapTxt=Math.abs(gap)>=5?(gap>0?' <span style="color:var(--warning)">（プール+'+gap+')</span>':' <span style="color:var(--danger)">（プール'+gap+'）</span>'):'';
     const row=document.createElement('div');row.className='dom-row';
     row.innerHTML='<span class="dom-emoji">'+def.emoji+'</span>'
@@ -2168,7 +2014,6 @@ function renderDomainList(){
       +'<span class="dom-pct" style="color:'+(answered?col:'var(--text-sub)')+'">'+(answered?d.pct+'%':'—')+'</span>';
     host.appendChild(row);
   });
-  // 凡例（公式比 vs 現プール比 の意味を明示）
   const note=document.createElement('div');
   note.style.cssText='font-size:11px;color:var(--text-sub);margin-top:6px;line-height:1.5';
   note.innerHTML='公式 = 試験の出題比率　／　現 = 現在のプールでの分野割合。試験モードは公式比で出題するので、現%が小さい分野ほど同じ問題が反復されやすい。';
@@ -2176,7 +2021,6 @@ function renderDomainList(){
   const btn=document.getElementById('dom-focus-all');if(btn)btn.disabled=!ds.some(d=>d.t>0);
 }
 
-/* ===== 週次レポート ===== */
 function _fmtD(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
 function dayStreak(){
   const daily=store.daily||{};let n=0;const d=new Date();d.setHours(0,0,0,0);
@@ -2184,14 +2028,11 @@ function dayStreak(){
   while(daily[_fmtD(d)]){n++;d.setDate(d.getDate()-1);}
   return n;
 }
-// ヒーロー内の学習ストリーク表示（連続学習日数）
 function renderStreakBanner(){
   const n=dayStreak();
   const hs=document.getElementById('hh-streak');
   if(hs){ if(n>=1){hs.style.display='';hs.textContent='🔥 '+n+'日連続';} else hs.style.display='none'; return; }
 }
-// ===== 初回オンボーディング（5ステップ・かんたんツアー） =====
-// 内容を変えたら OB_VERSION を上げると、全ユーザーに一度だけ再表示される。
 const OB_VERSION='2';
 const OB_STEPS=[
   {ic:'🎉',t:'ようこそ！',d:'このアプリひとつで合格まで。「学ぶ → 実力を測る → 復習で定着 → 続ける」をまるごとサポートします。まずは流れを30秒で。'},
@@ -2253,7 +2094,6 @@ function renderWeekly(){
   host.innerHTML=h;
 }
 
-/* ===== 実績バッジ ===== */
 const BADGES=[
   {id:'first',emoji:'🌱',title:'はじめの一歩',desc:'1問解答',test:s=>totalAnswered()>=1},
   {id:'q50',emoji:'📗',title:'50問',desc:'累計50問',test:s=>totalAnswered()>=50},
@@ -2291,8 +2131,6 @@ function renderBadges(){
   const cnt=document.getElementById('badge-count');if(cnt)cnt.textContent='（'+earned+' / '+BADGES.length+'）';
 }
 
-/* ===== 学習計画（受験日カウントダウン＋デイリー目標） ===== */
-// 逆算ペース：受験日までに「未着手＋要復習」を消化するための1日ノルマ（#逆算プラン）
 function paceReco(daysLeft){
   const pool=scopedQ();
   const remain=pool.filter(q=>isUnseen(q.id)||needsReview(q.id)).length;
@@ -2319,7 +2157,6 @@ function renderPlan(){
     document.getElementById('goal-fill').style.width=Math.min(100,Math.round(todayN/goal*100))+'%';
     setText('plan-pace','今日の残り '+Math.max(0,goal-todayN)+'問');
   }else goalWrap.style.display='none';
-  // 逆算ペース（受験日があるときだけ表示。目標未設定ならワンタップで採用できる）
   let reco=document.getElementById('plan-reco');
   if(!reco){reco=document.createElement('div');reco.id='plan-reco';reco.className='plan-reco';cd.parentNode.insertBefore(reco,cd.nextSibling);}
   let html='';
@@ -2350,11 +2187,9 @@ function clearPlan(){
   document.getElementById('plan-edit').classList.remove('on');renderPlan();toast('学習計画をクリア');
 }
 
-/* ===== マイページ ===== */
 function renderMypage(){
   const host=document.getElementById('mypage-body');if(!host)return;
   const acc=(typeof window.__sfqAccount==='function')?window.__sfqAccount():{loggedIn:false,local:true};
-  // 学習サマリー
   let tc=0,tt=0;Object.values(store.hist).forEach(h=>{tc+=h.c;tt+=h.c+h.w;});
   const overall=tt?Math.round(tc/tt*100):0,pass=overall>=PASS;
   const ringCol=pass?'var(--success)':overall>=PASS-10?'var(--warning)':'var(--danger)';
@@ -2439,8 +2274,6 @@ function clearMyPlan(){store.examDate='';store.goal=0;save();renderPlan();render
 function setDarkMode(on){applyDark(on);try{localStorage.setItem('dark',on?'1':'0');}catch(e){}renderMypage();}
 window.__sfqOnAccount=function(){var p=document.getElementById('pg-mypage');if(p&&p.classList.contains('active'))renderMypage();};
 
-/* ===== 資格の取得（取得済みの記録と主張表示） ===== */
-// 取得状態が変わったら progression.js（資格のロック解除）へ通知し、ゲートを再評価させる。
 function __notifyProgress(){
   try{
     var slug=(window.CERT_CONFIG&&CERT_CONFIG.slug)||'';
@@ -2456,7 +2289,6 @@ function __notifyProgress(){
   }catch(e){}
 }
 function acquireCert(){
-  // ネイティブ confirm はブラウザ設定（Brave/iOS等）でブロックされ無反応になることがあるため、自前モーダルで確認する
   showAcqConfirm();
 }
 function hideAcqConfirm(){var ov=document.getElementById('acq-confirm-ov');if(ov)ov.classList.remove('on');}
@@ -2484,9 +2316,6 @@ function doAcquireCert(){
   __notifyProgress();
   toast('🎓 取得済みにしました！おめでとうございます 🎉');
 }
-// ※「取得済み」は一度設定すると取り消せない仕様（取り消し機能は提供しない）。
-// ホームに「取得して次へ進む」カードを表示（取得導線をわかりやすく）。
-// 取得済みのときは進行ゲートが画面を覆うのでカードは出さない。
 function renderHomeProgress(){
   const home=document.getElementById('pg-home');if(!home)return;
   let card=document.getElementById('home-progress');
@@ -2510,7 +2339,6 @@ function renderHomeProgress(){
     +'<button class="hp-infobtn" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">❓ ステップ制とは？</button>'
     +'</div>';
 }
-// ホームのヒーローに取得済みバッジ／リボンを反映
 function renderHomeAcq(){
   const on=!!store.acquiredDate;
   const badge=document.getElementById('hh-acq'),rib=document.getElementById('hh-ribbon'),hero=document.querySelector('.home-hero');
@@ -2518,7 +2346,6 @@ function renderHomeAcq(){
   if(rib)rib.style.display=on?'':'none';
   if(hero)hero.classList.toggle('acq',on);
 }
-// 試験結果（合格時）に取得ボタン or 取得済み表示
 function renderExamAcq(pass){
   const host=document.getElementById('e-acq');if(!host)return;
   if(store.acquiredDate){host.innerHTML='<div class="e-acq-done">🎓 取得済み（'+escH(store.acquiredDate)+'）</div>';}
@@ -2526,16 +2353,11 @@ function renderExamAcq(pass){
   else host.innerHTML='';
 }
 
-// ===== レッスン（授業：スライド学習）=====
-// data/lessons.json が無い資格では LESSDATA=[] となり、ホームの導線も非表示。
-// lessons.json: [{id, title, domain, est?, slides:[{title, body?(Markdown), code?, fig?, figCap?, checkIds?[]}]}]
 function lessonsAvailable(){return Array.isArray(LESSDATA)&&LESSDATA.length>0;}
 function lessonById(id){return (LESSDATA||[]).find(function(l){return l&&l.id===id;});}
 function lessonProg(id){if(!store.lessons)store.lessons={};return store.lessons[id]||{done:0,last:0};}
-// ホームの「イチから授業」導線は lessons.json がある資格だけ出す
 function revealLessonEntry(){const b=document.getElementById('lesson-entry');if(b)b.style.display=lessonsAvailable()?'':'none';}
 
-// レッスン一覧（進捗バッジ付き）
 function renderLessonList(){
   const el=document.getElementById('les-list'); if(!el)return;
   const player=document.getElementById('les-player'); if(player)player.style.display='none';
@@ -2558,7 +2380,6 @@ function renderLessonList(){
   window.scrollTo(0,0);
 }
 
-// レッスンを開く（前回の続きから）
 function openLesson(id){
   const l=lessonById(id); if(!l){toast('レッスンが見つかりません');return;}
   lesCur=id;
@@ -2568,7 +2389,6 @@ function openLesson(id){
   renderLessonSlide();
 }
 
-// 現在のスライドを描画（描画のたびに「最後に見たスライド」を保存＝中断再開に対応）
 function renderLessonSlide(){
   const l=lessonById(lesCur); if(!l)return;
   const list=document.getElementById('les-list'); if(list)list.style.display='none';
@@ -2577,21 +2397,17 @@ function renderLessonSlide(){
   const slides=l.slides||[], n=slides.length;
   if(lesIdx<0)lesIdx=0; if(lesIdx>n-1)lesIdx=n-1;
   const s=slides[lesIdx]||{}, isLast=lesIdx===n-1;
-  // 進捗保存
   if(!store.lessons)store.lessons={};
   const prog=store.lessons[lesCur]||(store.lessons[lesCur]={done:0,last:0});
   if(lesIdx>(prog.last||0)){prog.last=lesIdx;save();}
-  // ドット（タップで該当スライドへ）
   let dots='';
   for(let i=0;i<n;i++)dots+='<span class="les-dot'+(i===lesIdx?' on':(i<lesIdx?' seen':''))+'" onclick="lesGo('+i+')"></span>';
-  // 本文（図解→本文Markdown→コード→理解度チェック）
   let body='';
   if(s.fig)body+=figHTML(s.fig,s.figCap||'');
   if(s.body)body+='<div class="les-body">'+cramMd(s.body)+'</div>';
   if(s.code)body+='<pre class="les-code"><code>'+escH(s.code)+'</code></pre>';
   if(Array.isArray(s.checkIds)&&s.checkIds.length)
     body+='<button class="btn bp les-check" onclick="lessonCheck(\''+lesCur+'\','+lesIdx+')">📝 関連問題を解く（'+s.checkIds.length+'問）</button>';
-  // ナビ
   const prevBtn='<button class="btn bg" '+(lesIdx===0?'disabled':'')+' onclick="lesNav(-1)">‹ 前へ</button>';
   const nextBtn=isLast
     ? '<button class="btn bs- les-finish" onclick="finishLesson()">✓ 修了する</button>'
@@ -2608,7 +2424,6 @@ function renderLessonSlide(){
 function lesNav(d){lesGo(lesIdx+d);}
 function lesGo(i){const l=lessonById(lesCur);if(!l)return;const n=(l.slides||[]).length;lesIdx=Math.max(0,Math.min(n-1,i));renderLessonSlide();}
 function exitLesson(){renderLessonList();}
-// 修了：done=1 にして修了ボーナス XP。一覧に戻る
 function finishLesson(){
   if(!lesCur)return;
   if(!store.lessons)store.lessons={};
@@ -2621,7 +2436,6 @@ function finishLesson(){
   try{homeStats();}catch(e){}
   renderLessonList();
 }
-// 理解度チェック：このスライドの checkIds の問題だけで学習セッションを開始
 function lessonCheck(id,idx){
   const l=lessonById(id); if(!l)return;
   const s=(l.slides||[])[idx]||{}, ids=s.checkIds||[];
@@ -2635,10 +2449,8 @@ function resetAll(){
   store={bm:[],hist:{},streak:0,vm:{},tbm:{},srs:{},daily:{},notes:{},examDate:'',goal:0,exams:[],badges:{},dc:{},acquiredDate:'',acqLock:0,time:{tot:0,dom:{},hour:{}},sum:{},xp:0,missions:{wk:'',claimed:{}},rdz:[],lessons:{}};save();homeStats();renderTextbook();renderMypage();toast('🗑️ リセットしました');
 }
 
-// ===== SRS（間隔反復・SM-2簡易版）=====
 function _today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function _addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-// 解答のたびに次回出題日(due)を更新。正解で間隔を伸ばし、不正解で当日に戻す。
 function srsUpdate(id,ok,low){
   if(!store.srs)store.srs={};
   const s=store.srs[id]||{ivl:0,ease:2.5,reps:0};
@@ -2646,7 +2458,7 @@ function srsUpdate(id,ok,low){
     s.reps=Math.max(1,s.reps||0);
     s.ivl=1;
     s.ease=Math.max(1.3,(s.ease||2.5)-0.05);
-    s.due=_addDays(1);            // 自信なし正解 → 翌日に再出題
+    s.due=_addDays(1);
   }else if(ok){
     s.reps=(s.reps||0)+1;
     if(s.reps<=1)s.ivl=1;
@@ -2657,7 +2469,7 @@ function srsUpdate(id,ok,low){
   }else{
     s.reps=0;s.ivl=0;
     s.ease=Math.max(1.3,(s.ease||2.5)-0.2);
-    s.due=_today();           // 当日中に再復習
+    s.due=_today();
   }
   store.srs[id]=s;
 }
@@ -2669,7 +2481,6 @@ function updateSrsBtn(){
   const el=document.getElementById('srs-count');if(el){el.textContent=n?(' '+n):'';}
   const el2=document.getElementById('next-srs');if(el2){el2.textContent=n;}
 }
-// startStudy() を経由せずに任意の問題集合で学習を開始（applyFilters で上書きされないように）
 function beginStudyWith(arr,opts){
   if(!arr||!arr.length){toast('対象の問題がありません');return;}
   dcActive=!!(opts&&opts.daily);
@@ -2686,7 +2497,6 @@ function startSRS(){
   beginStudyWith(shuffle(due));
 }
 
-// ===== 学習カレンダー（ヒートマップ）=====
 function bumpDaily(){if(!store.daily)store.daily={};const t=_today();store.daily[t]=(store.daily[t]||0)+1;}
 function renderHeatmap(){
   const host=document.getElementById('heatmap');if(!host)return;
@@ -2694,7 +2504,6 @@ function renderHeatmap(){
   const WEEKS=20;
   const today=new Date();today.setHours(0,0,0,0);
   const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  // 起点 = (今日からWEEKS*7-1日前) を含む週の日曜
   const cur=new Date(today);cur.setDate(cur.getDate()-(WEEKS*7-1));cur.setDate(cur.getDate()-cur.getDay());
   const cols=[];
   while(cur.getTime()<=today.getTime()){
@@ -2723,13 +2532,7 @@ function renderHeatmap(){
   const sub=document.getElementById('hm-sub');if(sub)sub.textContent=days+'日 / 計'+ans+'問';
 }
 
-/* =====================================================================
- * 追加機能：問題フリーワード検索 / ショートカットヘルプ / 問題報告 /
- *           進捗バックアップ / デイリーチャレンジ
- * ===================================================================== */
 
-// ----- 問題のフリーワード検索（ホーム）-----
-// f-text は applyFilters() に統合済み。ここでは入力に応じて学習ボタン等を更新。
 function onQSearch(){
   try{applyFilters();}catch(e){}
   const i=document.getElementById('f-text');
@@ -2744,7 +2547,6 @@ function onQSearch(){
 }
 function clearQSearch(){const i=document.getElementById('f-text');if(i)i.value='';onQSearch();i&&i.focus();}
 
-// ----- キーボードショートカット一覧（? キー / マイページから）-----
 function toggleShortcutHelp(force){
   let ov=document.getElementById('sc-help');
   if(!ov){
@@ -2774,13 +2576,8 @@ function toggleShortcutHelp(force){
   ov.classList.toggle('on',open);
 }
 
-// ----- 問題の報告（アプリ内フォームを開く。送信先はクラウド→管理者ビュー）-----
 function reportQuestion(id){ openFeedback({qid:id}); }
 
-/* ===== 不具合・ご意見の報告（アプリ内フォーム → クラウド蓄積 → 管理者ビュー） =====
-   ・ログイン中: cloud-sync の __cloudSubmitFeedback が本人docへ即送信。
-   ・未ログイン/ローカル: localStorage 'sfq_feedback_pending' に退避し、次回ログイン時に自動送信。
-   ・GitHub Issue は使わない（運営が管理者ビューで一覧→JSON/CSVで書き出してClaudeに渡す想定）。 */
 const FB_CATS=[
   {k:'bug',label:'🐞 不具合・バグ'},
   {k:'answer',label:'❌ 正解が誤り'},
@@ -2794,14 +2591,14 @@ let fbQid='', fbCat='bug', fbBusy=false;
 function openFeedback(opts){
   opts=opts||{};
   fbQid=opts.qid?String(opts.qid):'';
-  fbCat=fbQid?'answer':'bug'; // 問題からは「正解が誤り」、一般は「不具合」を初期選択
+  fbCat=fbQid?'answer':'bug';
   let ov=document.getElementById('fb-modal');
   if(!ov){
     ov=document.createElement('div');ov.id='fb-modal';ov.className='sc-help';
     ov.addEventListener('click',function(e){if(e.target===ov)closeFeedback();});
     document.body.appendChild(ov);
   }
-  var _old=document.getElementById('fb-msg');if(_old)_old.value=''; // 開くたびに新規入力（再描画の保持と区別）
+  var _old=document.getElementById('fb-msg');if(_old)_old.value='';
   ov.classList.add('on');renderFeedback();
   setTimeout(function(){var t=document.getElementById('fb-msg');if(t)t.focus();},60);
 }
@@ -2817,7 +2614,7 @@ function renderFeedback(){
       +(q?'<div class="fb-qx">'+escH((q.question||'').slice(0,90))+(q.question&&q.question.length>90?'…':'')+'</div>':'')+'</div>';
   }
   const chips=FB_CATS.map(c=>'<button type="button" class="fb-chip'+(fbCat===c.k?' on':'')+'" onclick="fbSetCat(\''+c.k+'\')">'+c.label+'</button>').join('');
-  const prev=(document.getElementById('fb-msg')||{}).value||''; // 再描画でも入力中テキストを保持
+  const prev=(document.getElementById('fb-msg')||{}).value||'';
   let note='';
   if(acc.local)note='<div class="fb-note">💻 ローカルモードのため、いまは端末に保存され、ログイン時にまとめて送信されます。</div>';
   else if(!acc.loggedIn)note='<div class="fb-note">未ログインのため、いったん端末に保存し、ログイン後に自動送信します。</div>';
@@ -2863,7 +2660,6 @@ function submitFeedback(){
   else{stashLocal();done(false);}
 }
 
-// ----- 進捗のバックアップ（書き出し／読み込み）-----
 function exportProgress(){
   try{
     const blob=new Blob([JSON.stringify(store,null,2)],{type:'application/json'});
@@ -2886,8 +2682,8 @@ function importProgress(input){
         toast('対応していないファイルです');input.value='';return;
       }
       if(!confirm('現在の進捗を、読み込んだデータで置き換えます。よろしいですか？')){input.value='';return;}
-      window.__setStore(o);   // 欠損フィールド正規化＋localStorage 保存
-      save();                 // クラウドにも反映
+      window.__setStore(o);
+      save();
       try{window.__refreshUI&&window.__refreshUI();}catch(e){}
       try{homeStats();}catch(e){}
       try{renderMypage();}catch(e){}
@@ -2898,7 +2694,6 @@ function importProgress(input){
   rd.readAsText(f);
 }
 
-// ----- デイリーチャレンジ（今日の10問：SRS期日→要復習→弱点→未着手の順で構成）-----
 const DAILY_N=10;
 function buildDailySet(){
   const today=_today();
@@ -2910,13 +2705,13 @@ function buildDailySet(){
   const inS=scopedQ();
   const pick=[],used=new Set();
   const take=list=>{shuffle(list).forEach(q=>{if(pick.length<DAILY_N&&!used.has(q.id)){used.add(q.id);pick.push(q);}});};
-  take(inS.filter(q=>srsDue(q.id)));                       // 1) SRS 期日到来
-  take(inS.filter(q=>needsReview(q.id)));                  // 2) 要復習（誤答・自信なし正解）
+  take(inS.filter(q=>srsDue(q.id)));
+  take(inS.filter(q=>needsReview(q.id)));
   let weak=[];
   try{weak=domainStats().filter(d=>d.t>0).sort((a,b)=>a.pct-b.pct).slice(0,3).map(d=>d.code);}catch(e){}
-  if(weak.length)take(inS.filter(q=>weak.includes(domainOf(q.id)))); // 3) 弱点分野
-  take(inS.filter(q=>isUnseen(q.id)));                     // 4) 未着手
-  take(inS);                                               // 5) 残りを補填
+  if(weak.length)take(inS.filter(q=>weak.includes(domainOf(q.id))));
+  take(inS.filter(q=>isUnseen(q.id)));
+  take(inS);
   const set=pick.slice(0,DAILY_N);
   store.dc={d:today,ids:set.map(q=>q.id),done:0};save();
   return set;
@@ -2945,19 +2740,13 @@ function renderDaily(){
   }
 }
 
-/* =====================================================================
- * 追加機能(第2弾)：試験ペース計測 / 中断・再開 / 模試推移グラフ /
- *                  文字サイズ / オフライン・インストール / 高速めくり
- * ===================================================================== */
 
-// 秒を読みやすく整形
 function fmtSec(s){s=Math.max(0,Math.round(s));if(s<60)return s+'秒';const m=Math.floor(s/60),x=s%60;return m+':'+String(x).padStart(2,'0');}
 
-// ----- 1) 試験の時間管理コーチ（結果画面） -----
 function renderPaceCard(secsUsed){
   const host=document.getElementById('e-pace');if(!host)return;
   const used=secsUsed||0;
-  const target=EXAM_MIN*60/EXAM_N;     // 1問あたりの目安秒（本番基準で固定）
+  const target=EXAM_MIN*60/EXAM_N;
   const avg=used/Math.max(1,eN);
   const within=avg<=target;
   const col=within?'var(--success)':avg<=target*1.2?'var(--warning)':'var(--danger)';
@@ -2985,7 +2774,6 @@ function renderPaceCard(secsUsed){
   host.innerHTML=h;
 }
 
-// ----- 2) 試験の中断・再開（クラウド非同期のローカル専用保存） -----
 function saveExamState(){
   if(!(eQ&&eQ.length))return;
   try{localStorage.setItem(EXAM_SAVE_KEY,JSON.stringify({v:2,ids:eQ.map(q=>q.id),ans:eAns,flag:eFlag,cur:eCur,secs:eSecs,disp:eDispArr,qt:eQTime,n:eN,timed:eTimed,budget:eBudget,ts:Date.now()}));}catch(e){}
@@ -2997,7 +2785,7 @@ function hasResumableExam(){
   if(!st||!Array.isArray(st.ids)||!st.ids.length)return false;
   const n=st.n||EXAM_N;
   if(st.ids.length!==n)return false;
-  if(st.timed!==false&&!(st.secs>0))return false;   // 時間制限ありは残り0なら再開不可
+  if(st.timed!==false&&!(st.secs>0))return false;
   return st.ids.every(id=>allQ.some(q=>q.id===id));
 }
 function resumeExam(){
@@ -3031,11 +2819,10 @@ function renderResumeBanner(){
     +'<button type="button" class="resume-x" onclick="discardExam()">破棄</button></div></div>';
 }
 
-// ----- 3) 模試スコアの推移グラフ＋履歴一覧（マイページに描画） -----
 function examTrendHTML(){
   const ex=(store.exams||[]).filter(e=>e&&typeof e.pct==='number');
   if(!ex.length)return '';
-  const full=ex.filter(e=>(e.n||EXAM_N)===EXAM_N);   // 本番形式（フル）。推移はこれで描く
+  const full=ex.filter(e=>(e.n||EXAM_N)===EXAM_N);
   const gsrc=full.length?full:ex;
   const data=gsrc.slice(-20),n=data.length;
   const W=300,H=120,padX=8,padY=12;
@@ -3069,14 +2856,12 @@ function examTrendHTML(){
     +'<div class="ext-graph">'+svg+'</div><div class="ext-list">'+rows+'</div></div>';
 }
 
-// ----- 4) 文字サイズ -----
 function applyFontSize(size){
   if(size!=='small'&&size!=='large')size='normal';
   if(document.body)document.body.setAttribute('data-fs',size);
   try{localStorage.setItem('sfq_fontsize',size);}catch(e){}
 }
 
-// ----- 5) オフライン表示 / PWAインストール促進 -----
 function renderOnlineState(){
   let bar=document.getElementById('offline-bar');
   const off=(typeof navigator!=='undefined')&&navigator.onLine===false;
@@ -3099,7 +2884,6 @@ if(typeof window!=='undefined'){
   window.addEventListener('appinstalled',function(){window.__deferredInstall=null;try{renderMypage();}catch(_){}try{toast('✅ アプリを追加しました');}catch(_){}});
 }
 
-// ----- 6) 高速めくり総ざらい（クイックレビュー） -----
 function qkPool(mode){
   const s=scopedQ();
   if(mode==='bm')return s.filter(q=>isBm(q.id));
@@ -3144,7 +2928,6 @@ function qkReveal(){
   const q=qkQueue[qkCur];
   const ansEl=document.getElementById('qk-ans');if(!ansEl)return;
   let h='<div class="qk-correct">'+q.answers.map(a=>'<span class="qk-c">✓ '+escH(a)+'</span>').join('')+'</div>';
-  // 要点 = 解説の先頭行。選択肢記号や「正解文の重複」を取り除いて読みやすく
   let kp=(q.explanation||'').split('\n').map(s=>s.trim()).filter(Boolean)[0]||'';
   kp=kp.replace(/^[\s□○◯●✓✔✗✘・\-\*]+/,'');
   q.answers.forEach(a=>{if(a&&kp.indexOf(a)===0)kp=kp.slice(a.length).replace(/^[\s　:：]+/,'');});
@@ -3174,19 +2957,12 @@ function qkDone(){
   setText('qk-done-sub','全 '+qkQueue.length+' 問を見終えました');
 }
 
-/* =====================================================================
- * アップデートのお知らせ（各資格ページ＋ルートLP 共通）
- * 履歴データは changelog.js（window.SFQ_CHANGELOG）が唯一の出典。
- * 新リリースは changelog.js の先頭に1件追加するだけ。未読判定は id で行う。
- * 各資格ホームではトップバーのベル(#btn-news)＋未読ドット(#news-dot)で告知。
- * ===================================================================== */
 const CHANGELOG=(typeof window!=='undefined'&&window.SFQ_CHANGELOG)||[];
 function newsLatestId(){return CHANGELOG.length?CHANGELOG[0].id:'';}
 function hasUnseenNews(){try{return !!CHANGELOG.length&&localStorage.getItem('sfq_news_seen')!==newsLatestId();}catch(e){return false;}}
 function markNewsSeen(){try{localStorage.setItem('sfq_news_seen',newsLatestId());}catch(e){} try{if(window.__cloudMarkNews)window.__cloudMarkNews(newsLatestId());}catch(e){}}
 if(typeof window!=='undefined')window.SFQ_syncNews=function(){try{renderNews();}catch(e){}};
 function renderNews(){
-  // 各資格ホーム：トップバーのベルに未読ドットを出す（ポップアップは openNews）
   const has=hasUnseenNews();
   const dot=document.getElementById('news-dot');
   if(dot)dot.style.display=has?'':'none';
@@ -3217,11 +2993,7 @@ function openNews(){
 }
 function closeNews(){const ov=document.getElementById('news-modal');if(ov)ov.classList.remove('on');}
 
-/* =====================================================================
- * 追加機能：カスタム模試 / 学習カバレッジ / アプリ更新
- * ===================================================================== */
 
-// ----- カスタム模試（分野・問題数・時間制限を選んで開始） -----
 let ceN=20, ceRange='all', ceTimed=true, ceDoms={};
 function openCustomExam(){
   let ov=document.getElementById('ce-modal');
@@ -3276,7 +3048,6 @@ function startCustomExam(){
   startExam(opts);
 }
 
-// ----- 学習カバレッジ（網羅率：全問・全分野） -----
 function renderCoverage(){
   const host=document.getElementById('coverage');if(!host)return;
   const pool=scopedQ();const total=pool.length;
@@ -3301,7 +3072,6 @@ function startUnseen(){
   beginStudyWith(shuffle(pool));
 }
 
-// ----- アプリを更新（キャッシュ破棄＋SW更新確認→再読み込み） -----
 async function updateApp(){
   toast('🔄 最新版に更新しています…');
   try{
@@ -3310,5 +3080,4 @@ async function updateApp(){
   }catch(e){}
   setTimeout(function(){location.reload();},900);
 }
-
 

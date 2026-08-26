@@ -1,32 +1,12 @@
-/* =============================================================
-   cloud-sync.js  —  SFクイズ アカウント別クラウド同期 ＋ 管理者ビュー
-   Firebase Authentication（ID＋パスワード）＋ Firestore
-   このファイルは編集不要です。設定は firebase-config.js で行います。
-
-   仕組み:
-   - ログインすると、進捗は Firestore（クラウド）に保存されます。
-   - 同じID/パスワードでログインすれば、別の端末・別ブラウザでも
-     同じ進捗が引き継がれます（PC版/モバイル版も共有）。
-   - アカウントごとに進捗は完全に分かれます。
-   - 管理者ID（firebase-config.js の SFQ_ADMIN_IDS）でログインすると、
-     全アカウントの詳細を閲覧・リセット・削除できます。
-   ============================================================= */
 (function () {
   'use strict';
 
   var CFG = window.SFQ_FIREBASE_CONFIG || null;
   var LOGIN_DOMAIN = window.SFQ_LOGIN_DOMAIN || 'sfquiz.local';
   var COLLECTION = window.SFQ_COLLECTION || 'progress';
-  // 資格ごとの名前空間キー。各クイズページの CERT_CONFIG.slug を使う（gateway/LP では 'default'）。
-  // これにより 1 ユーザーの doc 内を資格別に分け、資格どうしの上書き・全消えを防ぐ。
   var CERT_KEY = (window.CERT_CONFIG && window.CERT_CONFIG.slug) || window.SFQ_CERT_KEY || 'default';
-  // ローカル→クラウド初回移行フラグも資格別に持つ（共有フラグだと2つ目以降の資格が移行されない）。
   var MIGRATE_FLAG = 'sfq_migrated_' + CERT_KEY;
 
-  // ページの役割:
-  //  'gateway' … ホーム(LP)。進捗ストアを持たず、ログイン必須＋アカウント管理のみ。
-  //  'client'  … 各資格(クイズ)ページ。進捗を同期。未ログイン時は強制せずLPへ誘導する。
-  // 明示指定が無ければ、ストアアダプタの有無で自動判定する。
   var ROLE = 'gateway';
   var HOME_URL = 'index.html';
 
@@ -37,28 +17,23 @@
   var currentName = '', currentEmail = '', isAdmin = false;
   var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
 
-  /* 管理者→利用者メッセージ（お知らせポップ＋チャット）の状態 */
-  var BROADCAST_COL = 'broadcast';       // 一斉お知らせの共有コレクション（doc 'current'）
+  var BROADCAST_COL = 'broadcast';
   var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
-  /* アクセス権のリアルタイム監視（個別の停止/承認を即時反映）の状態 */
   var accessUnsub = null, watchedAccess = null, accessLocked = false;
-  var lockedAccess = '';   // 今ロック画面を出している理由の access 値（'pending'|'blocked' 等）。申請の書込み方を決める
-  var adminPendingUnsub = null; // 管理者の申請通知バッジのライブ購読（パネル非表示でも即更新）
+  var lockedAccess = '';
+  var adminPendingUnsub = null;
   var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
-  var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user'; // 'user'|'admin'
-  var MAINT_DOC = 'maintenance';   // broadcast/maintenance（共有・管理者のみ書込）
-  var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null; // メンテナンス設定
-  // メンテナンス中でも利用できるアカウント（progress/{uid}.maintOk が true）。
-  // 管理者ビューの「🛠 メンテ許可」で付与/解除する。付与は管理者だけ（Firestore ルールの isAdmin() 全権）。
+  var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user';
+  var MAINT_DOC = 'maintenance';
+  var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null;
   var maintExempt = false;
-  var noticeBoundaryTimer = null; // 予約お知らせ（publishAt が未来）の配信時刻に再チェックするタイマー
-  var composeCtx = null;           // 作成モーダルの文脈 {mode,uid,name}
-  var adminBroadcasts = [];        // 管理者ビュー用：一斉お知らせレコード一覧 [{id,...}]
-  var adminColUnsub = null, adminRenderTimer = null; // 管理者ビューのライブ購読（DM未読バッジ等の即時反映）
-  var hbTimer = null, hbVisHandler = null;          // 在席ハートビート（lastSeen 更新）
-  var ONLINE_MS = 120000;                            // この時間以内に lastSeen があれば「オンライン」とみなす
+  var noticeBoundaryTimer = null;
+  var composeCtx = null;
+  var adminBroadcasts = [];
+  var adminColUnsub = null, adminRenderTimer = null;
+  var hbTimer = null, hbVisHandler = null;
+  var ONLINE_MS = 120000;
 
-  /* ---------------- スタイル ---------------- */
   function injectStyle() {
     var css = '' +
       '#sfqc-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.72);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
@@ -97,7 +72,6 @@
       '[data-theme=dark] #sfqc-menu button,body.dark #sfqc-menu button{color:#cbd5e1}' +
       '[data-theme=dark] #sfqc-menu button:hover,body.dark #sfqc-menu button:hover{background:#334155}' +
       '[data-theme=dark] #sfqc-menu .sfqc-status,body.dark #sfqc-menu .sfqc-status{border-color:#334155}' +
-      /* 管理者パネル */
       '#sfqc-admin{position:fixed;inset:0;z-index:100000;display:none;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif}' +
       '#sfqc-admin.show{display:block}' +
       '.sfqc-adminwrap{position:absolute;inset:14px;background:#f8fafc;color:#1e293b;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden}' +
@@ -132,7 +106,6 @@
       '.sfqc-detail th{color:#64748b;font-weight:600;position:sticky;top:0;background:#fff}' +
       '.sfqc-detail .num{text-align:right;font-variant-numeric:tabular-nums}' +
       '.sfqc-detail .qx{max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569}' +
-      /* 検索＋並び替えツールバー */
       '.sfqc-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;position:sticky;top:0;z-index:5}' +
       '.sfqc-search{flex:1;min-width:200px;padding:8px 12px;font-size:13px;border:1px solid #cbd5e1;border-radius:8px;outline:none;background:#fff;color:#0f172a}' +
       '.sfqc-search:focus{border-color:#2563eb}' +
@@ -140,7 +113,6 @@
       '.sfqc-sort{border:1px solid #cbd5e1;background:#fff;color:#475569;padding:6px 10px;font-size:11.5px;font-weight:700;border-radius:8px;cursor:pointer}' +
       '.sfqc-sort.on{background:#2563eb;color:#fff;border-color:#2563eb}' +
       '.sfqc-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:700}' +
-      /* 拡充ダッシュボード */
       '.sfqc-sec{font-size:12px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}' +
       '.sfqc-kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:4px}' +
       '@media(max-width:760px){.sfqc-kpis{grid-template-columns:repeat(3,1fr)}}' +
@@ -166,7 +138,6 @@
       '.sfqc-itbl th{color:#64748b;font-weight:700;font-size:11px}' +
       '.sfqc-itbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}' +
       '.sfqc-itbl .qx{max-width:430px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155}' +
-      /* ダークテーマ：管理パネル全体を暗色で統一 */
       'body.dark .sfqc-adminwrap{background:#0f172a;color:#e2e8f0}' +
       'body.dark .sfqc-adminhead{background:#1e293b;border-color:#334155}' +
       'body.dark .sfqc-adminhead h2{color:#f1f5f9}' +
@@ -188,24 +159,19 @@
       '.sfqc-fchip.on{background:#2563eb;color:#fff;border-color:#2563eb}' +
       '.sfqc-toolbar2{margin-top:-6px}' +
       '.sfqc-inactive{font-size:10px;background:#fef9c3;color:#854d0e;border-radius:5px;padding:1px 6px;font-weight:700}' +
-      /* ユーザー集計行：メール表示 */
       '.sfqc-acc-email{font-weight:500;color:#64748b;font-size:12px;margin-left:8px}' +
-      /* 詳細インナー */
       '.sfqc-detail-inner{padding:10px 0 4px}' +
       '.sfqc-meta{font-size:11.5px;color:#64748b;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap}' +
       '.sfqc-meta code{background:#f1f5f9;border-radius:4px;padding:1px 6px;font-size:11px;color:#334155}' +
-      /* 資格ブロック */
       '.sfqc-cert{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;margin:0 0 10px;overflow:hidden}' +
       '.sfqc-cert-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#eef2ff;border-bottom:1px solid #e0e7ff;gap:8px;flex-wrap:wrap}' +
       '.sfqc-cert-name{font-weight:700;font-size:13px;color:#3730a3}' +
       '.sfqc-cert-actions{display:flex;gap:6px}' +
       '.sfqc-cert-actions button{border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}' +
-      /* KVグリッド */
       '.sfqc-kv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1px;background:#e2e8f0;padding:1px}' +
       '.sfqc-kv{background:#fff;padding:6px 10px}' +
       '.sfqc-k{font-size:10.5px;color:#64748b;font-weight:600;line-height:1.4}' +
       '.sfqc-v{font-size:13px;color:#0f172a;font-weight:700;line-height:1.4}' +
-      /* 問題別履歴の折りたたみ */
       '.sfqc-qhist{margin-top:6px}' +
       '.sfqc-qhist > summary{cursor:pointer;font-size:12px;color:#2563eb;font-weight:700;padding:6px 4px}' +
       '.sfqc-qhist[open] > summary{margin-bottom:4px}' +
@@ -221,7 +187,6 @@
       'body.dark .sfqc-v{color:#f1f5f9}' +
       'body.dark .sfqc-meta code{background:#1e293b;color:#cbd5e1}' +
       '.sfqc-empty{color:#94a3b8;font-size:13px;text-align:center;padding:30px}' +
-      /* フィードバック / 不具合報告 */
       '.sfqc-fb-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:2px 0 10px}' +
       '.sfqc-fb-count{font-size:12px;color:#64748b;font-weight:700}' +
       '.sfqc-fb-dl{display:flex;gap:6px}' +
@@ -240,12 +205,10 @@
       '.sfqc-fb-reply{font-size:12px;margin-top:6px;background:#ecfeff;border:1px solid #a5f3fc;color:#0e7490;border-radius:7px;padding:6px 9px;white-space:pre-wrap;word-break:break-word}' +
       '.sfqc-fb-replyrow{margin-top:5px}' +
       'body.dark .sfqc-fb-reply{background:#083344;border-color:#155e75;color:#a5f3fc}' +
-      /* 申請の一括操作バー */
       '.sfqc-app-bulk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}' +
       '.sfqc-app-selall{font-size:12px;color:#475569;display:inline-flex;align-items:center;gap:5px;cursor:pointer}' +
       '.sfqc-app-check{display:inline-flex;align-items:center;margin-right:4px}' +
       'body.dark .sfqc-app-selall{color:#cbd5e1}' +
-      /* 日別アクティブ（緑の棒=解答数／青い折れ線=アクティブ人数）。1枚のSVGで描画 */
       '.sfqc-ts{display:block;width:100%;height:96px}' +
       '.sfqc-ts .bar{fill:#16a34a}' +
       '.sfqc-ts .ln{fill:none;stroke:#2563eb;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}' +
@@ -258,7 +221,6 @@
       '.sfqc-ts-legend .swl{display:inline-block;width:16px;height:0;border-top:2px solid #2563eb;margin-right:4px;vertical-align:middle}' +
       '.sfqc-ts-readout{font-size:12px;color:#334155;margin-top:6px;font-weight:700;min-height:1.4em}' +
       'body.dark .sfqc-ts .bar{fill:#4ade80}body.dark .sfqc-ts .ln{stroke:#60a5fa}body.dark .sfqc-ts-legend .swl{border-top-color:#60a5fa}body.dark .sfqc-ts-readout{color:#cbd5e1}body.dark .sfqc-ts-legend{color:#cbd5e1}' +
-      /* 操作ログ */
       '.sfqc-log-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow:auto}' +
       '.sfqc-log-item{display:flex;gap:8px;font-size:11px;align-items:baseline;border-bottom:1px solid #f1f5f9;padding:3px 0}' +
       '.sfqc-log-ts{color:#94a3b8;white-space:nowrap}' +
@@ -276,10 +238,8 @@
       'body.dark .sfqc-field{background:#0f172a;border-color:#334155;color:#e2e8f0}' +
       'body.dark .sfqc-btn-ghost{background:#334155;color:#cbd5e1}' +
       'body.dark .sfqc-sub{color:#94a3b8}' +
-      /* アクセス承認ゲート（未承認ロック画面） */
       '#sfqc-lock{position:fixed;inset:0;z-index:100001;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.85);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '#sfqc-lock.show{display:flex}' +
-      /* 管理者からの返信モーダル(#7) */
       '#sfqc-replies{position:fixed;inset:0;z-index:100002;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.7);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '.sfqc-rep-card{text-align:left;width:min(92vw,420px)}' +
       '.sfqc-rep-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow:auto;margin-top:6px}' +
@@ -287,7 +247,6 @@
       '.sfqc-rep-ts{font-size:11px;color:#0891b2;margin-bottom:3px}' +
       '.sfqc-rep-msg{font-size:13.5px;color:#0e4a5b;white-space:pre-wrap;word-break:break-word;line-height:1.55}' +
       'body.dark .sfqc-rep-item{background:#083344;border-color:#155e75}body.dark .sfqc-rep-msg{color:#cffafe}body.dark .sfqc-rep-ts{color:#67e8f9}' +
-      /* 管理者→利用者メッセージ：お知らせポップ＋チャット */
       '#sfqc-chat-fab{position:fixed;right:16px;bottom:calc(var(--tab,0px) + 14px);z-index:99990;display:none;width:54px;height:54px;border:none;border-radius:50%;background:#6366f1;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.45);font-family:inherit}' +
       '#sfqc-chat-fab.show{display:flex;align-items:center;justify-content:center}' +
       '#sfqc-chat-fab:hover{filter:brightness(1.08)}' +
@@ -313,7 +272,6 @@
       'body.dark .sfqc-chat-b.theirs{background:#1e293b;color:#e2e8f0;border-color:#334155}' +
       'body.dark .sfqc-chat-input{background:#1e293b;border-color:#334155}' +
       'body.dark .sfqc-chat-input textarea{background:#0f172a;color:#e2e8f0;border-color:#334155}' +
-      /* 作成モーダル（お知らせの本文＋予約日時）／メンテナンス編集 */
       '#sfqc-compose{position:fixed;inset:0;z-index:100003;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.7);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:14px}' +
       '#sfqc-compose.show{display:flex}' +
       '.sfqc-cmp-card{width:min(94vw,460px);max-height:90vh;overflow:auto;background:#fff;color:#1e293b;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:left}' +
@@ -330,17 +288,14 @@
       '.sfqc-cmp-win{display:flex;align-items:center;gap:8px;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 9px;margin-top:6px}' +
       '.sfqc-cmp-win button{margin-left:auto;border:none;background:#fee2e2;color:#b91c1c;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer}' +
       'body.dark .sfqc-cmp-card{background:#1e293b;color:#e2e8f0}body.dark .sfqc-cmp-card textarea,body.dark .sfqc-cmp-card input,body.dark .sfqc-cmp-card select{background:#0f172a;color:#e2e8f0;border-color:#334155}body.dark .sfqc-cmp-card label{color:#cbd5e1}body.dark .sfqc-cmp-win{background:#0f172a;border-color:#334155}' +
-      /* 既読/未読チップ（DM一覧） */
       '.sfqc-read{font-size:10px;font-weight:800;border-radius:999px;padding:1px 7px;white-space:nowrap}' +
       '.sfqc-read.yes{background:#dcfce7;color:#15803d}' +
       '.sfqc-read.no{background:#fee2e2;color:#b91c1c}' +
       'body.dark .sfqc-read.yes{background:#14532d;color:#bbf7d0}body.dark .sfqc-read.no{background:#7f1d1d;color:#fecaca}' +
-      /* 一斉お知らせの状態カード（メッセージタブ） */
       '.sfqc-bc-card{background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:12px 14px;margin-bottom:12px}' +
       '.sfqc-bc-card .sfqc-bc-msg{font-size:13px;color:#1e293b;white-space:pre-wrap;word-break:break-word;margin:4px 0 8px}' +
       '.sfqc-bc-card .sfqc-bc-meta{font-size:11.5px;color:#475569;display:flex;gap:12px;flex-wrap:wrap;align-items:center}' +
       'body.dark .sfqc-bc-card{background:#312e81;border-color:#4f46e5}body.dark .sfqc-bc-card .sfqc-bc-msg{color:#e2e8f0}body.dark .sfqc-bc-card .sfqc-bc-meta{color:#c7d2fe}' +
-      /* 既読者・未読者の一覧（一斉お知らせ） */
       '.sfqc-rd{margin-top:8px}' +
       '.sfqc-rd > summary{cursor:pointer;font-size:12px;font-weight:700;color:#4338ca}' +
       '.sfqc-rd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}' +
@@ -350,24 +305,20 @@
       '.sfqc-rd-none{color:#94a3b8}' +
       'body.dark .sfqc-rd > summary{color:#c7d2fe}body.dark .sfqc-rd-row{color:#e2e8f0}' +
       '@media(max-width:560px){.sfqc-rd-grid{grid-template-columns:1fr}}' +
-      /* オンライン在席チップ（「承認済み」緑と区別するため別色＋点滅ドット） */
       '.sfqc-online{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}' +
       '.sfqc-online-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:sfqc-pulse 1.8s infinite}' +
       '@keyframes sfqc-pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 6px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}' +
       'body.dark .sfqc-online{background:#312e81;color:#c7d2fe;border-color:#4f46e5}' +
-      /* ログイン履歴の行 */
       '.sfqc-login-hist{margin-top:6px;display:flex;flex-direction:column;gap:4px}' +
       '.sfqc-login-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#334155;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:5px 10px}' +
       '.sfqc-login-no{font-size:10px;font-weight:800;color:#94a3b8;min-width:16px;text-align:right}' +
       '.sfqc-login-latest{margin-left:auto;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;border-radius:999px;padding:1px 7px}' +
       'body.dark .sfqc-login-row{background:#0f172a;border-color:#334155;color:#cbd5e1}body.dark .sfqc-login-latest{background:#14532d;color:#bbf7d0}' +
-      /* メンテナンス：全画面ロック＋予告バナー */
       '#sfqc-maint{position:fixed;inset:0;z-index:100004;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:16px}' +
       '#sfqc-maint.show{display:flex}' +
       '#sfqc-maint .sfqc-card{text-align:center}' +
       '#sfqc-maint-banner{position:fixed;left:0;right:0;top:0;z-index:99980;display:none;background:#b45309;color:#fff;font-size:12.5px;font-weight:700;text-align:center;padding:8px 12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.2)}' +
       '#sfqc-maint-banner.show{display:block}' +
-      /* 新バージョン検知の更新トースト（タップで即リロード） */
       '#sfqc-swtoast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(24px);z-index:99986;display:flex;align-items:center;gap:10px;background:#0176d3;color:#fff;font-size:13px;font-weight:700;padding:10px 10px 10px 16px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);opacity:0;transition:opacity .25s,transform .25s;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;max-width:92vw}' +
       '#sfqc-swtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}' +
       '.sfqc-swtoast-btn{background:#fff;color:#0176d3;border:none;border-radius:9px;padding:6px 13px;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap}' +
@@ -377,13 +328,11 @@
       '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
       '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
       '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
-      /* 管理者ビュー：タブ（ダッシュボード／ユーザー／メッセージの分離） */
       '.sfqc-tabs{display:flex;gap:6px;margin:0 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}' +
       '.sfqc-tab{flex:0 0 auto;border:1px solid #e2e8f0;background:#fff;color:#475569;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;position:relative}' +
       '.sfqc-tab.on{background:#6366f1;color:#fff;border-color:#6366f1}' +
       '.sfqc-tab-badge{display:inline-block;min-width:18px;margin-left:6px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;vertical-align:middle}' +
       'body.dark .sfqc-tab{background:#1e293b;color:#cbd5e1;border-color:#334155}' +
-      /* 管理者ビュー：DM一覧（メッセージタブ） */
       '.sfqc-dm{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;margin-bottom:8px}' +
       '.sfqc-dm.unread{border-color:#c7d2fe;background:#f5f7ff}' +
       '.sfqc-dm-main{display:flex;align-items:center;gap:8px;min-width:0;flex:1}' +
@@ -393,7 +342,6 @@
       '.sfqc-dm-act{display:flex;align-items:center;gap:6px;flex:0 0 auto}' +
       '.sfqc-dm-act button{border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap}' +
       '.sfqc-dm-time{font-size:10px;color:#94a3b8;white-space:nowrap}' +
-      /* 管理者ビュー：スマホ最適化 */
       '@media(max-width:560px){' +
         '.sfqc-adminwrap{inset:6px;border-radius:12px}' +
         '.sfqc-adminhead{padding:9px 11px;gap:6px}' +
@@ -412,19 +360,17 @@
         '.sfqc-dm-time{display:none}' +
         '.sfqc-acc-stats span{white-space:nowrap}' +
       '}' +
-      /* 管理者ビュー：アカウントのアクセス状態チップ＋承認/停止ボタン */
       '.sfqc-acc-access{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap}' +
       '.sfqc-acc-access.ok{background:#dcfce7;color:#15803d}' +
       '.sfqc-acc-access.pend{background:#fef9c3;color:#854d0e}' +
       '.sfqc-acc-access.block{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-acc-access.maint{background:#ffedd5;color:#9a3412}' +
-      '.sfqc-acc-access.none{background:#e2e8f0;color:#475569}' +   /* 未申請（本人の操作待ち＝管理者は待つだけ） */
+      '.sfqc-acc-access.none{background:#e2e8f0;color:#475569}' +
       '.sfqc-act-approve{background:#dcfce7;color:#15803d}' +
       '.sfqc-act-block{background:#fee2e2;color:#b91c1c}' +
       '.sfqc-act-maint{background:#ffedd5;color:#9a3412}' +
       '.sfqc-act-maint.on{background:#9a3412;color:#fff}' +
       '.sfqc-act-reject{background:#fef3c7;color:#92400e}' +
-      /* 新規申請・承認待ちセクション */
       '.sfqc-app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}' +
       '.sfqc-app-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;border-radius:10px;padding:10px 12px}' +
       '.sfqc-app-item.is-block{border-left-color:#ef4444}' +
@@ -433,11 +379,9 @@
       '.sfqc-app-actions{display:flex;gap:6px}' +
       '.sfqc-app-actions button{border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}' +
       'body.dark .sfqc-app-item{background:#1e293b;border-color:#334155}' +
-      /* 申請通知ドット（バッジ）＋管理者ビューボタンの件数 */
       '#sfqc-badge-dot{display:none;width:9px;height:9px;border-radius:50%;background:#ef4444;margin-left:3px;box-shadow:0 0 0 2px #fff;vertical-align:middle}' +
       '#sfqc-admin-btn.has-pending{color:#b45309}' +
       '.sfqc-admin-badge{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle}' +
-      /* アカウント一覧をコンパクトに（情報過多で改行が重なる問題の解消） */
       '.sfqc-acc-head{gap:10px}' +
       '.sfqc-acc-stats{gap:6px 12px;font-size:11.5px}' +
       '.sfqc-del-doc{margin:6px 0 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}';
@@ -446,7 +390,6 @@
     document.head.appendChild(s);
   }
 
-  /* ---------------- DOM 構築 ---------------- */
   function loginCardHTML() {
     return '<div class="sfqc-card">' +
         '<p class="sfqc-title">📚 学習アカウント</p>' +
@@ -461,7 +404,6 @@
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
       '</div>';
   }
-  // client（クイズ）ページ用: ログインせずに開いた時の誘導カード
   function guideCardHTML() {
     return '<div class="sfqc-card">' +
         '<p class="sfqc-title">🔑 ログインが必要です</p>' +
@@ -506,7 +448,6 @@
       '</div>';
     document.body.appendChild(elAdmin);
 
-    // アクセス承認ゲート（未承認/停止中の利用者を全面ロックする画面）
     elLock = document.createElement('div');
     elLock.id = 'sfqc-lock';
     elLock.innerHTML =
@@ -527,7 +468,6 @@
       '</div>';
     document.body.appendChild(elLock);
 
-    // チャット：起動ボタン（💬）＋パネル（承認済みの一般利用者にのみ表示）
     var fab = document.createElement('button');
     fab.id = 'sfqc-chat-fab'; fab.type = 'button';
     fab.innerHTML = '💬<span class="sfqc-chat-badge" id="sfqc-chat-badge"></span>';
@@ -552,14 +492,12 @@
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
     });
 
-    // 作成モーダル（お知らせ作成＋予約 / メンテナンス編集を兼用）
     var compose = document.createElement('div');
     compose.id = 'sfqc-compose';
     compose.innerHTML = '<div class="sfqc-cmp-card" id="sfqc-cmp-card"></div>';
     compose.addEventListener('click', function (e) { if (e.target === compose) closeCompose(); });
     document.body.appendChild(compose);
 
-    // メンテナンス：全画面ロック＋予告バナー（管理者は対象外）
     var maint = document.createElement('div');
     maint.id = 'sfqc-maint';
     maint.innerHTML =
@@ -584,11 +522,9 @@
     elAdminBtn = document.getElementById('sfqc-admin-btn');
 
     if (ROLE === 'client') {
-      // 誘導カード: ホームへ移動するだけ
       var go = document.getElementById('sfqc-gohome');
       if (go) go.addEventListener('click', function () { location.href = HOME_URL; });
     } else {
-      // ログインフォーム
       elMsg = document.getElementById('sfqc-msg');
       elId = document.getElementById('sfqc-id');
       elPw = document.getElementById('sfqc-pw');
@@ -600,12 +536,10 @@
       elId.addEventListener('keydown', function (e) { if (e.key === 'Enter') elPw.focus(); });
     }
 
-    // アカウントバッジのドロップダウン開閉
     var badgeToggle = document.getElementById('sfqc-badge-toggle');
     if (badgeToggle) badgeToggle.addEventListener('click', function (e) { e.stopPropagation(); elBadge.classList.toggle('open'); });
     document.addEventListener('click', function (e) { if (elBadge && !elBadge.contains(e.target)) elBadge.classList.remove('open'); });
 
-    // バッジ・管理者パネルは両モード共通
     document.getElementById('sfqc-logout').addEventListener('click', function () { elBadge.classList.remove('open'); doLogout(); });
     elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
@@ -613,7 +547,6 @@
     document.getElementById('sfqc-adm-broadcast').addEventListener('click', function () { openCompose({ mode: 'broadcast' }); });
     document.getElementById('sfqc-adm-csv').addEventListener('click', exportCsv);
 
-    // ロック画面のボタン
     document.getElementById('sfqc-lock-logout').addEventListener('click', doLogout);
     document.getElementById('sfqc-lock-reload').addEventListener('click', function () { if (currentUser) onLogin(currentUser); });
     document.getElementById('sfqc-lock-home').addEventListener('click', function () { location.href = HOME_URL; });
@@ -624,28 +557,22 @@
 
   function showOverlay() { if (elOverlay) elOverlay.classList.add('show'); }
   function hideOverlay() { if (elOverlay) elOverlay.classList.remove('show'); }
-  // 未承認/停止中の利用者を全面ロック（state: 'pending'|'blocked'|'error'）
-  // info.reqName = 入力欄に復元する名前 / info.applied = すでに利用申請済み（req あり）
-  // info.expired = 休眠（30日アクセスなし）で承認が失効した状態
   function showLock(state, info) {
     if (!elLock) return;
-    showChatFab(false); // 未承認/停止中はチャットを出さない
+    showChatFab(false);
     info = info || {};
     var t = document.getElementById('sfqc-lock-title');
     var s = document.getElementById('sfqc-lock-sub');
     var form = document.getElementById('sfqc-lock-form');
     var nameIn = document.getElementById('sfqc-lock-name');
     var lockMsg = document.getElementById('sfqc-lock-msg');
-    // 管理者専用ページ以外は申請フォームを出す。停止中も「解除の申請」ができる
-    // （停止中の申請は access を 'blocked' のまま req だけ書く＝自分では解除できない。doApplyAccess 参照）
     var blocked = (state === 'blocked');
-    lockedAccess = state;                    // doApplyAccess が「解除申請」かどうかを判断するのに使う
+    lockedAccess = state;
     var showForm = (state !== 'adminonly');
     var adminOnly = (state === 'adminonly');
     var applyBtn = document.getElementById('sfqc-lock-apply');
     var reloadBtn = document.getElementById('sfqc-lock-reload');
     var homeBtn = document.getElementById('sfqc-lock-home');
-    // 管理者専用は「再確認」しても状況は変わらないので、代わりに「ホームへ戻る」を出す
     if (reloadBtn) reloadBtn.style.display = adminOnly ? 'none' : '';
     if (homeBtn) homeBtn.style.display = adminOnly ? '' : 'none';
     if (state === 'blocked') {
@@ -660,22 +587,18 @@
       if (t) t.textContent = '🔒 この資格は管理者専用です';
       if (s) s.innerHTML = 'この資格は現在、管理者のみご利用いただけます。<br>ホームに戻って他の資格をご利用ください。';
     } else if (info.expired && !info.applied) {
-      // 30日以上アクセスがなく承認が失効した状態（まだ再申請していない）
       if (t) t.textContent = '⏳ 利用承認が失効しました';
       if (s) s.innerHTML = INACTIVE_DAYS + '日以上ご利用がなかったため、利用承認が解除されました。<br>下のフォームにお名前を入れて、もう一度「利用を申請」してください（学習の進捗は残っています）。';
     } else if (info.applied) {
-      // 申請済み＝あとは管理者の承認を待つだけ
       if (t) t.textContent = '⏳ 承認をお待ちください';
       if (s) s.innerHTML = 'ご利用の申請を受け付けています。<br>管理者が承認するとご利用いただけます（承認されたら「再確認」）。';
     } else {
-      // まだ申請していない＝本人の操作が必要
       if (t) t.textContent = '✋ 利用の申請をしてください';
       if (s) s.innerHTML = 'ご利用には管理者の承認が必要です。<br>下のフォームにお名前を入れて「利用を申請」してください。';
     }
     if (form) form.style.display = showForm ? '' : 'none';
     if (applyBtn) applyBtn.textContent = blocked ? 'この内容で解除を申請する' : 'この内容で利用を申請する';
     if (showForm && nameIn) {
-      // 名前は自動で埋めない（ログインIDが入ると管理者が誰か分からないため、毎回きちんと入力してもらう）
       nameIn.value = '';
       if (lockMsg) {
         if (info.applied) {
@@ -686,15 +609,11 @@
     }
     hideOverlay();
     elLock.classList.add('show');
-    accessLocked = true; // ロック中はクラウド保存を止める（停止後の上書き防止）
+    accessLocked = true;
     setStatus('');
   }
   function hideLock() { if (elLock) elLock.classList.remove('show'); accessLocked = false; lockedAccess = ''; }
 
-  // 承認待ちユーザーが「お名前」を入れて利用を申請する。access は pending のまま、
-  // name/req を本人 doc に書く（Firestore ルールで pending 維持の書込は本人に許可）。
-  // 停止中（blocked）からの「解除の申請」も同じフォームで行うが、その場合は
-  // access を書き換えず（= blocked 維持）req だけ書く。自分で停止を解除はできない。
   function doApplyAccess() {
     if (!currentUser || !db) return;
     var nameIn = document.getElementById('sfqc-lock-name');
@@ -704,7 +623,7 @@
     var isBlocked = (lockedAccess === 'blocked');
     if (lockMsg) { lockMsg.textContent = '申請中…'; lockMsg.className = 'sfqc-msg'; }
     var rec = { name: nm, email: currentEmail, req: { name: nm, ts: Date.now(), unblock: isBlocked }, updated: Date.now() };
-    if (!isBlocked) rec.access = 'pending';   // 停止中は access に触らない（ルール上も本人は blocked→pending にできない扱いにする）
+    if (!isBlocked) rec.access = 'pending';
     db.collection(COLLECTION).doc(currentUser.uid).set(rec, { merge: true })
       .then(function () {
         currentName = nm; setBadge(nm);
@@ -712,7 +631,6 @@
           lockMsg.textContent = isBlocked ? '解除の申請を受け付けました。管理者の対応をお待ちください。' : '申請を受け付けました。承認をお待ちください。';
           lockMsg.className = 'sfqc-msg ok';
         }
-        // 管理者へメールで知らせる（未設定なら何もしない）
         notifyAdminMail(isBlocked ? 'unblock' : 'apply',
           { name: nm, id: idOf(currentEmail), at: fmtDateTime(Date.now()) });
       })
@@ -724,16 +642,12 @@
   function setStatus(t) { if (elStatus) elStatus.textContent = t || ''; notifyAccount(); }
   function setBadge(name) {
     if (!elBadge) return;
-    // client（資格ページ）は「マイページ」にアカウントUIを集約するため、浮遊バッジは出さない。
-    // gateway（LP）はマイページが無いのでバッジを表示する。
     if (name) { document.getElementById('sfqc-name').textContent = '👤 ' + name; if (ROLE !== 'client') elBadge.classList.add('show'); }
     else { elBadge.classList.remove('show'); }
     notifyAccount();
   }
-  // マイページ等へアカウント状態の更新を通知（エンジン側が __sfqOnAccount を実装）
   function notifyAccount() { if (window.__sfqOnAccount) { try { window.__sfqOnAccount(); } catch (e) {} } }
   function showAdminBtn(v) { if (elAdminBtn) elAdminBtn.classList[v ? 'add' : 'remove']('show'); }
-  // 承認待ち件数をバッジ（赤ドット）と管理者ビューボタンに反映
   function setAdminPending(n) {
     adminPendingCount = n || 0;
     if (elAdminBtn) {
@@ -743,17 +657,14 @@
     var dot = document.getElementById('sfqc-badge-dot');
     if (dot) dot.style.display = (adminPendingCount > 0 && isAdmin) ? 'inline-block' : 'none';
   }
-  // 管理者ログイン中は承認待ち（実申請のみ）の件数をライブ購読してバッジに即反映する。
-  // 管理者ビューを開いていなくても、新しい利用申請が届いた瞬間に通知ドット/件数が更新される。
   function watchAdminPending() {
     if (!isAdmin || !db) return;
     if (adminPendingUnsub) { adminPendingUnsub(); adminPendingUnsub = null; }
     adminPendingUnsub = db.collection(COLLECTION).onSnapshot(function (snap) {
       var n = 0;
       snap.forEach(function (d) {
-        if (currentUser && d.id === currentUser.uid) return; // 管理者自身は除外
+        if (currentUser && d.id === currentUser.uid) return;
         var data = d.data() || {};
-        // 通知は「実際に申請ボタンを押した人（req あり）かつ未承認」だけを数える
         if ((data.access || 'pending') !== 'approved' && data.req && data.req.ts) n++;
       });
       setAdminPending(n);
@@ -764,9 +675,6 @@
   }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
 
-  /* 新バージョン検知 → 更新トースト（タップで即リロード）。
-     SW は skipWaiting で即アクティブ化されるが、開いているページは旧コードのまま動くため、
-     新バージョンが入ったら通知して、利用者の操作で確実にリロードさせる（自動リロードはしない＝学習中の中断防止）。 */
   function showSWUpdateToast() {
     if (document.getElementById('sfqc-swtoast')) return;
     var t = document.createElement('div'); t.id = 'sfqc-swtoast';
@@ -785,11 +693,10 @@
     try {
       navigator.serviceWorker.ready.then(function (reg) {
         if (!reg) return;
-        if (reg.waiting && navigator.serviceWorker.controller) showSWUpdateToast(); // 既に更新が待機中
+        if (reg.waiting && navigator.serviceWorker.controller) showSWUpdateToast();
         reg.addEventListener('updatefound', function () {
           var nw = reg.installing; if (!nw) return;
           nw.addEventListener('statechange', function () {
-            // 既存コントローラがいる状態で新SWが installed＝更新（初回インストールは controller が無いので除外）
             if (nw.state === 'installed' && navigator.serviceWorker.controller) showSWUpdateToast();
           });
         });
@@ -797,9 +704,7 @@
     } catch (e) {}
   }
 
-  /* ---------------- ヘルパー ---------------- */
   function idToEmail(id) { var c = sanitizeId(id); return c ? c + '@' + LOGIN_DOMAIN : ''; }
-  // 内部メール（ID@sfquiz.local）から表示用のログインIDへ戻す
   function idOf(email) { return String(email || '').split('@')[0]; }
   function configOk() {
     return !!(CFG && CFG.apiKey && CFG.apiKey.indexOf('ここに') < 0 &&
@@ -808,13 +713,10 @@
   function emptyStore() { return { bm: [], hist: {}, streak: 0, vm: {}, tbm: {} }; }
   function toastSafe(t) { try { if (typeof window.toast === 'function') window.toast(t); } catch (e) {} }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  // 管理者ビューに表示する外部由来URL(フィードバックの url/ref 等)を http(s)/相対のみに絞る。
-  // esc() で属性脱出は防げるが javascript: 等のスキームは別途弾く必要がある。不正は空文字を返す。
   function safeUrl(u) {
     try { var p = new URL(String(u == null ? '' : u), self.location ? self.location.href : 'https://x/'); return /^https?:$/.test(p.protocol) ? p.href : ''; }
     catch (e) { return ''; }
   }
-  // CSV セル用: RFC4180 の引用に加え、先頭が =+-@ 等だと Excel/Sheets が数式として実行するため先頭に ' を付けて無害化する。
   function csvCell(x) {
     var v = String(x == null ? '' : x);
     if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
