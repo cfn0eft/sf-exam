@@ -12334,10 +12334,10 @@
       "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>"
     ],
     "answers": [
-      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"6\" largeDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>"
+      "<lightning:layout multipleRows=\"true\">\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Name}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.AccountNumber}</lightning:layoutItem>\n<lightning:layoutItem size=\"12\" mediumDeviceSize=\"4\">{!v.account.Industry}</lightning:layoutItem>\n</lightning:layout>"
     ],
-    "explanation": "モバイル=3 行（size=12）、デスクトップ/タブレット=1 行にするには、medium と large の両方のサイズ指定が要ります。\n□ D：正解。size=12・mediumDeviceSize=6・largeDeviceSize=4 を各 layoutItem に指定します。\n□ A：不正解。medium のみ指定でデスクトップ要件を満たせません。\n□ B：不正解。medium と large の値が不整合です。\n□ C：不正解。medium=6 のみではデスクトップで 1 行になりません。\n参考：lightning:layout のレスポンシブ",
-    "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
+    "explanation": "サイズ属性は加算的で、指定したデバイスサイズ「以上」に適用されます（mediumDeviceSize を指定して largeDeviceSize を省くと、medium の値がタブレットにもデスクトップにも効きます）。12 分割グリッドに 3 項目を 1 行で並べるにはサイズ 4 が必要です。\n□ A：正解。size=12 でモバイルは 3 行、mediumDeviceSize=4 がタブレットとデスクトップの両方に適用され、どちらも 1 行になります。\n□ B：不正解。1 つ目だけ medium 指定で、2・3 つ目は large 指定のみです。タブレットでは 2・3 つ目が size=12 のままなので 1 行になりません。\n□ C：不正解。medium=6 は 1 行に 2 項目までなので、タブレットもデスクトップも 2 行になります。\n□ D：不正解。デスクトップ（large=4）は 1 行になりますが、タブレットは medium=6 が効いて 2 行のままです。\n参考：lightning:layoutItem のサイズ属性（指定サイズ以上のデバイスに適用）",
+    "reference_url": "https://developer.salesforce.com/docs/component-library/bundle/lightning:layoutItem/documentation",
     "multi": false,
     "domain": "ui",
     "keywords": [
@@ -12526,19 +12526,17 @@
     "id": 604,
     "question": "Universal Containers は、マーケティング部門向けに新しい Lightning Web コンポーネントを開発しています。同社は、コンポーネントが微調整され、シームレスなユーザー エクスペリエンスが提供されることを確認したいと考えています。\nLightning コンポーネント フレームワークを使用する利点は何ですか?",
     "choices": [
-      "クライアント側レンダリングによるパフォーマンスの向上",
-      "アクセシビリティ標準の自動サポート",
-      "すべてのウェブブラウザとの互換性",
-      "サードパーティのライブラリとの簡単な統合"
+      "クライアント側で描画し、サーバとは JSON でデータのみをやり取りするため応答性が高い",
+      "カスタムコンポーネントにもアクセシビリティ対応が自動的に組み込まれる",
+      "旧バージョンを含むすべての Web ブラウザで同じ動作が保証される",
+      "サードパーティ製の JavaScript ライブラリを設定なしで CDN から直接読み込める"
     ],
     "answers": [
-      "クライアント側レンダリングによるパフォーマンスの向上",
-      "アクセシビリティ標準の自動サポート",
-      "サードパーティのライブラリとの簡単な統合"
+      "クライアント側で描画し、サーバとは JSON でデータのみをやり取りするため応答性が高い"
     ],
-    "explanation": "3つ選びます。Lightning コンポーネントフレームワークの利点です。\n□ A：正解。クライアント側描画で性能/応答性が向上します。\n□ B：正解。アクセシビリティ標準（ARIA 等）を自動でサポートします。\n□ D：正解。JavaScript 経由でサードパーティライブラリと容易に統合できます。\n□ C：不正解。「すべてのブラウザ互換」は誤りで、対応は最新ブラウザです。\n参考：Lightning コンポーネントの利点",
+    "explanation": "□ A：正解。ステートフルなクライアントとステートレスなサーバという構成で、画面の描画はクライアント側で行い、サーバとは JSON でデータだけをやり取りします。サーバ往復と再描画が減るぶん応答性が上がります。\n□ B：不正解。アクセシビリティが組み込まれているのは lightning 名前空間の基本コンポーネントです。自作コンポーネントでは ARIA 属性やキーボード操作を開発者が実装する必要があります。\n□ C：不正解。フレームワークが対応するのは主要ブラウザの新しいバージョンで、すべてのブラウザでの動作は保証されません（HTML5・CSS3 前提です）。\n□ D：不正解。サードパーティライブラリは静的リソースに登録して ltng:require（LWC では platformResourceLoader）で読み込みます。外部 URL から直接読み込むには CSP 信頼済みサイトの登録が要ります。\n参考：Lightning コンポーネントフレームワークの利点／基本コンポーネントのアクセシビリティ",
     "reference_url": "https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_framework.htm",
-    "multi": true,
+    "multi": false,
     "domain": "ui",
     "keywords": [
       "Lightning コンポーネント",
