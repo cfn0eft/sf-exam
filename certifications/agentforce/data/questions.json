@@ -3572,5 +3572,487 @@
   "source": "jpnshiken",
   "origin": "jpnshiken.com",
   "id": 154
+ },
+ {
+  "question": "返金を確定する Agent Script アクションについて、実行直前に必ず顧客の同意を求めたいと考えています。アクション定義で使用するプロパティはどれですか?",
+  "choices": [
+   "`require_user_confirmation: True`",
+   "`include_in_progress_indicator: True`",
+   "`filter_from_agent: True`"
+  ],
+  "answers": [
+   "`require_user_confirmation: True`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `require_user_confirmation: True`　これは正解です。このアクションレベルのプロパティを有効にすると、エージェントはアクションを実行する前に顧客へ確認を求めます。\n\n□ `include_in_progress_indicator: True`　これは不正解です。アクション実行中の進行状況表示を制御しますが、顧客による実行前の承認は求めません。\n\n□ `filter_from_agent: True`　これは不正解です。アクションの出力パラメータをエージェントのコンテキストから除外する設定で、実行前確認とは別の機能です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-actions.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "require_user_confirmation",
+   "実行前確認"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 155
+ },
+ {
+  "question": "顧客照会アクションが内部用のリスクスコアを返します。この値を後続のエージェント推論や顧客への回答に含めず、アクション処理だけで扱いたい場合の設定はどれですか?",
+  "choices": [
+   "対象の出力パラメータで `filter_from_agent: True` を設定する。",
+   "アクション全体で `include_in_progress_indicator: False` を設定する。",
+   "対象の出力パラメータから `description` と `label` を削除する。"
+  ],
+  "answers": [
+   "対象の出力パラメータで `filter_from_agent: True` を設定する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 対象の出力パラメータで `filter_from_agent: True` を設定する。　これは正解です。この設定により、出力値はエージェントのコンテキストから除外され、推論や顧客向け回答に使われません。既定値は False です。\n\n□ アクション全体で `include_in_progress_indicator: False` を設定する。　これは不正解です。進行状況インジケーターの表示だけを変える設定で、出力データの可視性は制御しません。\n\n□ 対象の出力パラメータから `description` と `label` を削除する。　これは不正解です。表示名や説明を省略しても出力値は既定でエージェントのコンテキストに含まれます。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-actions.html",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "Agent Script",
+   "filter_from_agent",
+   "データ最小化"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 156
+ },
+ {
+  "question": "Agent Script のアクション入力について、LLM がスロットフィリングを試みるのはどの入力ですか?",
+  "choices": [
+   "必須であり、まだ値がバインドされていない入力",
+   "任意であり、既定値が設定されているすべての入力",
+   "必須かどうかに関係なく、アクションに定義されたすべての入力"
+  ],
+  "answers": [
+   "必須であり、まだ値がバインドされていない入力"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 必須であり、まだ値がバインドされていない入力　これは正解です。Agentforce が LLM によるスロットフィリングを試すのは、参照先アクションの必須入力のうち値が未指定のものだけです。\n\n□ 任意であり、既定値が設定されているすべての入力　これは不正解です。任意入力を一律に埋める仕組みではなく、既定値がある入力はすでに値を持っています。\n\n□ 必須かどうかに関係なく、アクションに定義されたすべての入力　これは不正解です。バインド済みの入力や任意入力まで自動的にスロットフィリングするわけではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-actions.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "スロットフィリング",
+   "アクション入力"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 157
+ },
+ {
+  "question": "時間のかかる在庫照会アクションの実行中に、顧客へ処理中であることを示したいと考えています。アクション定義で使用する設定はどれですか?",
+  "choices": [
+   "`include_in_progress_indicator: True`",
+   "`require_user_confirmation: True`",
+   "`filter_from_agent: False`"
+  ],
+  "answers": [
+   "`include_in_progress_indicator: True`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `include_in_progress_indicator: True`　これは正解です。アクションの実行中に進行状況インジケーターを表示するかを制御する専用プロパティです。\n\n□ `require_user_confirmation: True`　これは不正解です。実行前に顧客の確認を求める設定であり、実行中の進行状況表示を有効にするものではありません。\n\n□ `filter_from_agent: False`　これは不正解です。出力をエージェントのコンテキストへ含める設定であり、顧客向けの処理中表示とは関係ありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-actions.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "include_in_progress_indicator",
+   "進行状況"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 158
+ },
+ {
+  "question": "メッセージングセッションの値を Agent Script の linked 変数として宣言します。linked 変数の制約として正しい組み合わせはどれですか?",
+  "choices": [
+   "既定値を持てず、エージェントから設定できず、object または list 型にもできない。",
+   "既定値を必須とし、mutable を付ければエージェントから変更できる。",
+   "外部ソースを指定せず、object と list 型だけを使用できる。"
+  ],
+  "answers": [
+   "既定値を持てず、エージェントから設定できず、object または list 型にもできない。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 既定値を持てず、エージェントから設定できず、object または list 型にもできない。　これは正解です。linked 変数は指定した外部ソースに値が結び付く読み取り専用の変数で、既定値や複合型には対応しません。\n\n□ 既定値を必須とし、mutable を付ければエージェントから変更できる。　これは不正解です。これはカスタム変数に近い説明であり、linked 変数はエージェントから変更できません。\n\n□ 外部ソースを指定せず、object と list 型だけを使用できる。　これは不正解です。linked 変数には source が必要で、使用できるのは string、number、boolean、date などの型です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "linked変数",
+   "変数制約"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 159
+ },
+ {
+  "question": "直近の顧客発話だけを業界特化の感情分析アクションへ渡したいと考えています。Agent Script で参照するシステム変数はどれですか?",
+  "choices": [
+   "`@system_variables.user_input`",
+   "`@system_variables.current_connection`",
+   "`@system_variables.uploaded_files`"
+  ],
+  "answers": [
+   "`@system_variables.user_input`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `@system_variables.user_input`　これは正解です。顧客の最も新しい発話だけを保持する読み取り専用のシステム変数で、会話履歴全体ではありません。\n\n□ `@system_variables.current_connection`　これは不正解です。現在のターンで接続されているクライアントを識別する変数で、顧客の発話本文は保持しません。\n\n□ `@system_variables.uploaded_files`　これは不正解です。セッション中に顧客がアップロードしたファイルの一覧で、テキスト発話を表す変数ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables-system.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "user_input",
+   "システム変数"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 160
+ },
+ {
+  "question": "同じエージェントで、音声通話では短く書式なし、拡張チャットでは詳しい書式付き回答に切り替えたいと考えています。判定に使うシステム変数はどれですか?",
+  "choices": [
+   "`@system_variables.current_modality`",
+   "`@system_variables.current_connection`",
+   "`@system_variables.user_input`"
+  ],
+  "answers": [
+   "`@system_variables.current_modality`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `@system_variables.current_modality`　これは正解です。テレフォニーでは `voice`、Messaging または Enhanced Chat v2 では `text` が自動設定され、モダリティ別に応答を分岐できます。\n\n□ `@system_variables.current_connection`　これは不正解です。接続クライアントを識別する変数ですが、音声とテキストを判定する専用値ではありません。\n\n□ `@system_variables.user_input`　これは不正解です。直近の顧客発話を保持する変数で、利用中のチャネル種別は示しません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables-system.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "current_modality",
+   "音声チャネル"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 161
+ },
+ {
+  "question": "顧客が会話中にアップロードしたファイルを Agent Script から参照します。`@system_variables.uploaded_files` の仕様として正しいものはどれですか?",
+  "choices": [
+   "ファイルアップロードを有効にすると、セッション中の直近10ファイルを `File` オブジェクトのリストとして保持する。",
+   "設定に関係なく、組織内のすべての Salesforce Files を単一の文字列として保持する。",
+   "現在のターンで送信された1ファイルだけを保持し、次のターン開始時に必ず削除する。"
+  ],
+  "answers": [
+   "ファイルアップロードを有効にすると、セッション中の直近10ファイルを `File` オブジェクトのリストとして保持する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ファイルアップロードを有効にすると、セッション中の直近10ファイルを `File` オブジェクトのリストとして保持する。　これは正解です。各 File には id、file_url、name、mime_type が含まれ、使用には config の file_upload 有効化が必要です。\n\n□ 設定に関係なく、組織内のすべての Salesforce Files を単一の文字列として保持する。　これは不正解です。対象は顧客が当該セッションへアップロードしたファイルで、組織全体のファイルではありません。\n\n□ 現在のターンで送信された1ファイルだけを保持し、次のターン開始時に必ず削除する。　これは不正解です。最大10件がセッションの間保持され、現在ターンだけに限定されません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables-system.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "uploaded_files",
+   "ファイルアップロード"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 162
+ },
+ {
+  "question": "Agentforce Service Agent の Agent Script で、エージェントの実行ユーザーを定義します。現在の正しい設定方法はどれですか?",
+  "choices": [
+   "`access` ブロックに `default_agent_user` を指定し、そのユーザーへ必要最小限の権限を付与する。",
+   "`config` ブロックに `default_agent_user` を指定し、エージェント自身に権限を直接記述する。",
+   "`system` ブロックの自然言語指示にユーザー名を記載し、LLM に実行権限を判断させる。"
+  ],
+  "answers": [
+   "`access` ブロックに `default_agent_user` を指定し、そのユーザーへ必要最小限の権限を付与する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `access` ブロックに `default_agent_user` を指定し、そのユーザーへ必要最小限の権限を付与する。　これは正解です。Service Agent では default agent user が必須で、エージェントが利用できる Salesforce のリソースとデータはそのユーザーの権限で制御されます。\n\n□ `config` ブロックに `default_agent_user` を指定し、エージェント自身に権限を直接記述する。　これは不正解です。config 内のこのプロパティは非推奨で、現在は access ブロックへ指定します。権限もユーザー側で管理します。\n\n□ `system` ブロックの自然言語指示にユーザー名を記載し、LLM に実行権限を判断させる。　これは不正解です。system 指示はエージェントの振る舞いを案内するもので、Salesforce のアクセス制御を付与する仕組みではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-blocks.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "default_agent_user",
+   "accessブロック"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 163
+ },
+ {
+  "question": "エージェントが回答を生成する前に、現在の注文状況を必ず取得してプロンプトへ含めたいと考えています。Agent Script の推奨パターンはどれですか?",
+  "choices": [
+   "推論指示の先頭で未取得かを確認し、アクションを実行して出力を変数へ保存してから参照する。",
+   "アクションを reasoning actions に公開するだけにして、取得するかどうかを毎回 LLM に任せる。",
+   "前回の回答文を直近発話として扱い、注文状況を会話履歴から推測してプロンプトへ追加する。"
+  ],
+  "answers": [
+   "推論指示の先頭で未取得かを確認し、アクションを実行して出力を変数へ保存してから参照する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 推論指示の先頭で未取得かを確認し、アクションを実行して出力を変数へ保存してから参照する。　これは正解です。推論前のデータ取得パターンにより、LLM が回答を生成する前に最新の正確なデータを確実に利用できます。既取得かを確認すれば不要な再呼び出しも避けられます。\n\n□ アクションを reasoning actions に公開するだけにして、取得するかどうかを毎回 LLM に任せる。　これは不正解です。ツール公開だけでは LLM が必ず実行する保証がなく、回答前のデータ取得を決定論的に保証できません。\n\n□ 前回の回答文を直近発話として扱い、注文状況を会話履歴から推測してプロンプトへ追加する。　これは不正解です。変化する業務データを会話から推測すると古い情報を使う可能性があり、記録システムからの取得が必要です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-patterns-fetch-data.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "Fetch Data",
+   "推論前取得"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 164
+ },
+ {
+  "question": "接続済みの Specialist サブエージェントから人間の担当者へのエスカレーションを許可したいと考えています。`delegate_escalation: True` が有効になる条件はどれですか?",
+  "choices": [
+   "接続済みサブエージェントが handoff モードで動作している場合",
+   "オーケストレーターが supervision モードで動作している場合",
+   "接続済みサブエージェントが入力変数を1つも受け取らない場合"
+  ],
+  "answers": [
+   "接続済みサブエージェントが handoff モードで動作している場合"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 接続済みサブエージェントが handoff モードで動作している場合　これは正解です。`delegate_escalation` は handoff モードの接続済みサブエージェントに適用され、True なら人間へのエスカレーションを委譲できます。\n\n□ オーケストレーターが supervision モードで動作している場合　これは不正解です。supervision モードでは、人間へのエスカレーションはオーケストレーター側で行われます。\n\n□ 接続済みサブエージェントが入力変数を1つも受け取らない場合　これは不正解です。入力バインディングの有無は `delegate_escalation` の適用条件ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-blocks.html",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "接続サブエージェント",
+   "delegate_escalation",
+   "handoff"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 165
+ },
+ {
+  "question": "接続済みのサブエージェントが顧客へ応答した後、その結果に応じて次のエージェントへ移るか、呼び出し側の変数を更新したいと考えています。使用するブロックはどれですか?",
+  "choices": [
+   "`after_response`",
+   "`before_reasoning`",
+   "`system.messages.error`"
+  ],
+  "answers": [
+   "`after_response`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `after_response`　これは正解です。接続済みサブエージェントの応答後に実行され、transition、if/then による分岐、set による変数更新をパイプラインへ追加できます。\n\n□ `before_reasoning`　これは不正解です。サブエージェントの推論ループより前に処理を置くブロックで、接続先の応答後を扱う専用フックではありません。\n\n□ `system.messages.error`　これは不正解です。エラー時の顧客向けメッセージを定義する場所で、正常な応答後の制御フローには使いません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-blocks.html",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "接続サブエージェント",
+   "after_response",
+   "パイプライン"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 166
+ },
+ {
+  "question": "ナレッジ中心のエージェントでハルシネーション抑制を優先します。Agent Script の runtime 設定における `groundedness` の扱いとして適切なものはどれですか?",
+  "choices": [
+   "既定のチェックを有効のままにし、応答をソース内容と照合する。",
+   "`groundedness: False` にして、ソース照合を省いて精度を高める。",
+   "`citation: False` にすれば、根拠性チェックだけが強化される。"
+  ],
+  "answers": [
+   "既定のチェックを有効のままにし、応答をソース内容と照合する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 既定のチェックを有効のままにし、応答をソース内容と照合する。　これは正解です。groundedness は既定で LLM 応答をソース内容と照合し、追加時間と引き換えにハルシネーションの可能性を下げます。\n\n□ `groundedness: False` にして、ソース照合を省いて精度を高める。　これは不正解です。False は遅延を減らせますが、根拠性チェックを省くため、精度を優先する要件とは逆です。\n\n□ `citation: False` にすれば、根拠性チェックだけが強化される。　これは不正解です。citation は出典注釈の後処理を制御する別設定で、無効化しても groundedness が強化されるわけではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-blocks.html",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "Agent Script",
+   "groundedness",
+   "ハルシネーション"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 167
+ },
+ {
+  "question": "知識に基づく回答へ出典リンクを付ける一方、追加の後処理による遅延も理解して設計したいと考えています。Agent Script の runtime 設定でこの処理を制御する項目はどれですか?",
+  "choices": [
+   "`citation`",
+   "`streaming`",
+   "`reset_to_initial_node`"
+  ],
+  "answers": [
+   "`citation`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `citation`　これは正解です。知識ベースの回答に出典参照を付加する後処理を制御します。出典を表示できないチャネルや遅延を優先する場合は False にできます。\n\n□ `streaming`　これは不正解です。応答を生成中に段階的に配信するか、完成後に一括配信するかを制御します。出典付加の処理そのものではありません。\n\n□ `reset_to_initial_node`　これは不正解です。新しい顧客ターンごとに start_agent から再開するかを制御し、引用生成とは関係ありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-blocks.html",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "Agent Script",
+   "citation",
+   "出典表示"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 168
+ },
+ {
+  "question": "Agentforce のテストケースで、顧客メールの更新後に返す内容を Expected Response として定義します。最も適切な記述はどれですか?",
+  "choices": [
+   "「メールアドレスを new_email@example.com に更新しました」のような、期待する顧客向け応答そのもの",
+   "「丁寧に答え、メールアドレスに触れること」のような、回答を作るための内部指示",
+   "`UpdateRecordFields` のような、実行を期待するアクションの API 名だけ"
+  ],
+  "answers": [
+   "「メールアドレスを new_email@example.com に更新しました」のような、期待する顧客向け応答そのもの"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 「メールアドレスを new_email@example.com に更新しました」のような、期待する顧客向け応答そのもの　これは正解です。Expected Response は実際の Agent Response と照合されるため、顧客に返ることを期待する具体的な回答を記載します。\n\n□ 「丁寧に答え、メールアドレスに触れること」のような、回答を作るための内部指示　これは不正解です。期待する応答本文ではなく生成指示を書いており、実際の回答との比較基準が曖昧になります。\n\n□ `UpdateRecordFields` のような、実行を期待するアクションの API 名だけ　これは不正解です。アクション名は Expected Actions の基準であり、Expected Response とは別に評価されます。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/view-test-results",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "Expected Response",
+   "応答評価"
+  ],
+  "diff": 2,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 169
+ },
+ {
+  "question": "システム管理者プロファイルを持たないテスト担当者に、新しい Agentforce Studio の Testing Center（Beta）を利用させたいと考えています。必要な権限の組み合わせはどれですか?",
+  "choices": [
+   "Manage Agentforce Grids と Manage Agentforce Testing",
+   "Manage AI Agents と System Administrator プロファイル",
+   "Modify Metadata と Access Agentforce Default Agent"
+  ],
+  "answers": [
+   "Manage Agentforce Grids と Manage Agentforce Testing"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Manage Agentforce Grids と Manage Agentforce Testing　これは正解です。新しい Agentforce Studio の Testing Center は、この2権限を既存の権限セットへ追加することで非管理者も利用できます。\n\n□ Manage AI Agents と System Administrator プロファイル　これは不正解です。これは Setup にある従来の Testing Center で必要となる構成の一つで、新しい Beta の非管理者向け要件ではありません。\n\n□ Modify Metadata と Access Agentforce Default Agent　これは不正解です。Modify Metadata だけの従来アクセスは廃止されており、新しい Testing Center 用の2権限を満たしません。",
+  "reference_url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/set-up-testing-criteria",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "権限セット",
+   "Agentforce Studio"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 170
+ },
+ {
+  "question": "Agentforce DX でエージェントのメタデータを移行します。ドラフト版とコミット済み版の表現として正しいものはどれですか?",
+  "choices": [
+   "ドラフトは `AiAuthoringBundle`、コミット済みはそれに `Bot` と `BotVersion` が加わる。",
+   "ドラフトは `BotVersion` のみ、コミット済みは `AiAuthoringBundle` のみに置き換わる。",
+   "ドラフトとコミット済みのどちらも `GenAiPromptTemplate` だけで表現される。"
+  ],
+  "answers": [
+   "ドラフトは `AiAuthoringBundle`、コミット済みはそれに `Bot` と `BotVersion` が加わる。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ ドラフトは `AiAuthoringBundle`、コミット済みはそれに `Bot` と `BotVersion` が加わる。　これは正解です。ドラフトは編集可能な authoring bundle で表現され、コミット後は Bot と BotVersion も生成されます。\n\n□ ドラフトは `BotVersion` のみ、コミット済みは `AiAuthoringBundle` のみに置き換わる。　これは不正解です。表現が逆であり、ドラフトに BotVersion は必要ありません。\n\n□ ドラフトとコミット済みのどちらも `GenAiPromptTemplate` だけで表現される。　これは不正解です。プロンプトテンプレートは依存メタデータになり得ますが、エージェント本体の authoring bundle を表しません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/agent-dx-deploy-metadata.html",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Agentforce DX",
+   "AiAuthoringBundle",
+   "メタデータ"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 171
+ },
+ {
+  "question": "Salesforce CLI の疑似メタデータ型 `Agent:Agent_API_Name` を使って公開済みエージェントを本番へデプロイします。依存する Apex クラスと Flow の扱いとして正しいものはどれですか?",
+  "choices": [
+   "エージェントのメタデータとは別に、Apex クラスと Flow を明示的にデプロイする。",
+   "`Agent` 疑似型が参照先の Apex クラスと Flow も自動的にすべてデプロイする。",
+   "公開済みエージェントでは Apex と Flow が BotVersion 内へ埋め込まれるためデプロイ不要である。"
+  ],
+  "answers": [
+   "エージェントのメタデータとは別に、Apex クラスと Flow を明示的にデプロイする。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ エージェントのメタデータとは別に、Apex クラスと Flow を明示的にデプロイする。　これは正解です。`Agent` 疑似型によるデプロイは Bot、BotVersion、GenAi 系メタデータを扱いますが、アクション実装の Apex と Flow は含めません。\n\n□ `Agent` 疑似型が参照先の Apex クラスと Flow も自動的にすべてデプロイする。　これは不正解です。取得時には依存する Apex や Flow も取得されますが、疑似型によるデプロイには含まれない点が重要です。\n\n□ 公開済みエージェントでは Apex と Flow が BotVersion 内へ埋め込まれるためデプロイ不要である。　これは不正解です。Apex と Flow は独立したメタデータ型であり、エージェントメタデータに埋め込まれません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/agent-dx-synch.html",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Agentforce DX",
+   "Agent疑似メタデータ",
+   "依存関係"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 172
+ },
+ {
+  "question": "API で Salesforce Knowledge を使う Agentforce Data Library を作成します。作成後に変更できない設定はどれですか?",
+  "choices": [
+   "`primaryIndexField1` と `primaryIndexField2`",
+   "`contentFields` とデータカテゴリ設定",
+   "ライブラリの説明と表示用ラベル"
+  ],
+  "answers": [
+   "`primaryIndexField1` と `primaryIndexField2`"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `primaryIndexField1` と `primaryIndexField2`　これは正解です。2つの主要インデックス項目は作成時に必須で、ライブラリ作成後は変更できません。\n\n□ `contentFields` とデータカテゴリ設定　これは不正解です。ライブラリが READY になった後であれば、これらは更新できます。\n\n□ ライブラリの説明と表示用ラベル　これは不正解です。主要インデックス項目のように作成後不変とされる識別項目の組み合わせではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/adl-get-started-knowledge-library.html",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "Agentforce Data Library",
+   "primaryIndexField",
+   "Knowledge"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 173
+ },
+ {
+  "question": "Agentforce Data Library のライフサイクル制約として正しいものを2つ選んでください。",
+  "choices": [
+   "インデックス作成中はライブラリの設定を更新できない。",
+   "アクティブなエージェントなどから参照中のライブラリは削除できない。",
+   "検索インデックスが READY になる前でも、主要インデックス項目を変更できる。",
+   "データカテゴリ名とデータカテゴリIDは同じ作成要求で併用しなければならない。"
+  ],
+  "answers": [
+   "インデックス作成中はライブラリの設定を更新できない。",
+   "アクティブなエージェントなどから参照中のライブラリは削除できない。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ インデックス作成中はライブラリの設定を更新できない。　これは正解です。構成更新はインデックス処理が完了して READY になってから行います。\n\n□ アクティブなエージェントなどから参照中のライブラリは削除できない。　これは正解です。削除前にアクティブなリソースとの参照を解除する必要があります。\n\n□ 検索インデックスが READY になる前でも、主要インデックス項目を変更できる。　これは不正解です。主要インデックス項目は作成後に変更できず、状態が READY かどうかでこの制約は変わりません。\n\n□ データカテゴリ名とデータカテゴリIDは同じ作成要求で併用しなければならない。　これは不正解です。カテゴリ名またはIDのどちらか一方を指定し、同じ要求で両方は指定できません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/adl-get-started-knowledge-library.html",
+  "multi": true,
+  "domain": "data360",
+  "keywords": [
+   "Agentforce Data Library",
+   "インデックス作成",
+   "ライフサイクル"
+  ],
+  "diff": 3,
+  "source": "gen",
+  "origin": "official-docs",
+  "id": 174
  }
 ]

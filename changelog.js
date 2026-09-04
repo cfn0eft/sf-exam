@@ -1,7 +1,8 @@
 window.SFQ_CHANGELOG = [
-  {id:'2026-09-04', date:'2026-09-04', title:'Agentforce Specialist の問題集を最新版へ更新しました', items:[
-    '🤖 Agentforce Specialist に16問を追加し、138問から154問へ増やしました',
+  {id:'2026-09-04', date:'2026-09-04', title:'Agentforce Specialist を174問へ拡充しました', items:[
+    '🤖 Agentforce Specialist に合計36問を追加し、138問から174問へ増やしました',
     '🧭 Testing Center の評価指標、Agent Script の条件・変数・アクション連鎖、SOMA／MOMA・A2A、Agentforce Observability、多言語検索、Web検索など、最新の論点を追加しています',
+    '🔎 公式資料からさらに20問を追加し、実行前確認、出力の非公開化、システム変数、接続済みサブエージェント、Agentforce DX、Data Library の運用制約を学べるようにしました',
     '✅ 問題集内の重複は追加せず、問題文と選択肢を作り直したうえで、各問の正解をSalesforce公式ドキュメントで確認しました',
     '📝 元の問題集と現行仕様が異なる箇所は公式資料を優先して修正しています。たとえばブランドらしい話し方の評価は、Testing Center の「Voice and Tone」に合わせました',
   ]},
