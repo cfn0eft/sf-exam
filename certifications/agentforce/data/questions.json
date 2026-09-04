@@ -3188,5 +3188,389 @@
   "diff": 2,
   "source": "jpnshiken",
   "id": 138
+ },
+ {
+  "question": "Agentforce Testing Center の結果で、期待したサブエージェントは選ばれている一方、期待した3つのアクションのうち2つしか実行されていません。欠落を直接判定する評価はどれですか?",
+  "choices": [
+   "Action Assertion（アクションアサーション）",
+   "Subagent Assertion（サブエージェントアサーション）",
+   "Response Evaluation（応答評価）"
+  ],
+  "answers": [
+   "Action Assertion（アクションアサーション）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Action Assertion（アクションアサーション）　これは正解です。期待したアクションが選択され、必要なアクションがすべて含まれているかを確認する評価なので、今回の欠落を直接検出できます。\n\n□ Subagent Assertion（サブエージェントアサーション）　これは不正解です。発話から期待したサブエージェントを選べたかを判定します。今回はサブエージェントの選択には成功しています。\n\n□ Response Evaluation（応答評価）　これは不正解です。期待する応答と実際の応答を比較する評価であり、どのアクションが欠けたかを直接切り分ける指標ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.agent_testing_center_evaluations.htm&language=en_US&type=5",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "Action Assertion",
+   "テスト評価"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 139
+ },
+ {
+  "question": "企業固有のブランドらしい話し方がエージェントの応答に反映されているかを、Agentforce Testing Center で重点的に確認したいと考えています。選択すべき応答品質評価はどれですか?",
+  "choices": [
+   "Voice and Tone（声とトーン）",
+   "Coherence（文章の一貫性）",
+   "Latency（応答時間）"
+  ],
+  "answers": [
+   "Voice and Tone（声とトーン）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Voice and Tone（声とトーン）　これは正解です。応答のスタイルやブランドに合う話し方を評価するため、企業固有のブランドボイスを確かめる目的に最も直接対応します。\n\n□ Coherence（文章の一貫性）　これは不正解です。文法的で会話として自然な文章になっているかを評価しますが、特定ブランドの口調に合うかを主眼にはしません。\n\n□ Latency（応答時間）　これは不正解です。テスト実行に要した時間を測る評価で、応答の言葉遣いやスタイルは判定しません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.agent_testing_center_evaluations.htm&language=en_US&type=5",
+  "multi": false,
+  "domain": "deploy",
+  "keywords": [
+   "Testing Center",
+   "Voice and Tone",
+   "応答品質"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 140
+ },
+ {
+  "question": "エージェントから呼び出す Apex アクションが外部 API へ接続します。対話中ユーザーの Salesforce セッション ID に依存せず、接続先と認証を安全に管理する設計はどれですか?",
+  "choices": [
+   "Named Credential に接続先を定義し、External Credential で認証方式とプリンシパルを管理する。",
+   "Remote Site Settings に接続先を登録し、現在のセッション ID を認証ヘッダーへ渡す。",
+   "Apex クラスへのアクセス権を全利用者へ付与し、外部 API 側の認証を省略する。"
+  ],
+  "answers": [
+   "Named Credential に接続先を定義し、External Credential で認証方式とプリンシパルを管理する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Named Credential に接続先を定義し、External Credential で認証方式とプリンシパルを管理する。　これは正解です。Named Credential はコールアウト先を定義し、関連する External Credential が認証プロトコルと利用者の資格情報を扱うため、UI セッションに依存しない再利用可能な接続になります。\n\n□ Remote Site Settings に接続先を登録し、現在のセッション ID を認証ヘッダーへ渡す。　これは不正解です。接続先の許可だけでは外部サービス用の認証管理にならず、実行コンテキストの異なるエージェントで UI セッションへ依存する設計は不安定です。\n\n□ Apex クラスへのアクセス権を全利用者へ付与し、外部 API 側の認証を省略する。　これは不正解です。Apex の実行権限と外部システムの認証は別の制御であり、クラスアクセスを広げてもコールアウトの認証にはなりません。",
+  "reference_url": "https://developer.salesforce.com/docs/platform/named-credentials/guide/get-started.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Named Credential",
+   "External Credential",
+   "Apexコールアウト"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 141
+ },
+ {
+  "question": "Agent Script で、本人確認済みの場合だけ返金アクションを推論エンジンへ公開したいと考えています。正しい条件指定はどれですか?",
+  "choices": [
+   "available when @variables.verified == True",
+   "available when @variables.verified = True",
+   "| Run the refund action only when verified is True"
+  ],
+  "answers": [
+   "available when @variables.verified == True"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ available when @variables.verified == True　これは正解です。`available when` はツールの公開条件を決定論的に制御し、比較には `==` を使用します。条件が満たされない間、LLM はそのアクションへアクセスできません。\n\n□ available when @variables.verified = True　これは不正解です。`=` は値の設定に使う構文で、等価比較の演算子ではありません。条件式では `==` を使います。\n\n□ | Run the refund action only when verified is True　これは不正解です。`|` から始まる行は LLM へ渡す自然言語の指示です。アクション自体を非表示にする決定論的な制御にはなりません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-tools.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "available when",
+   "条件式"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 142
+ },
+ {
+  "question": "Agent Script で、会員ランクに基づく特典付与は必ず同じ規則で判定し、顧客への説明文だけを LLM に自然に生成させたいと考えています。適切な書き分けはどれですか?",
+  "choices": [
+   "判定を `->` のロジック指示に置き、説明文を `|` のプロンプト指示に置く。",
+   "判定を `|` のプロンプト指示に置き、説明文を `->` のロジック指示に置く。",
+   "判定と説明文をともに `|` のプロンプト指示へ置き、LLM に一括して判断させる。"
+  ],
+  "answers": [
+   "判定を `->` のロジック指示に置き、説明文を `|` のプロンプト指示に置く。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 判定を `->` のロジック指示に置き、説明文を `|` のプロンプト指示に置く。　これは正解です。ロジック指示は毎回決定論的に実行され、プロンプト指示は LLM が解釈する自然言語として使われるため、厳格な規則と柔軟な会話を両立できます。\n\n□ 判定を `|` のプロンプト指示に置き、説明文を `->` のロジック指示に置く。　これは不正解です。役割が逆です。業務ルールを LLM の解釈に任せると同じ条件でも結果が揺れる可能性があります。\n\n□ 判定と説明文をともに `|` のプロンプト指示へ置き、LLM に一括して判断させる。　これは不正解です。会話生成には向きますが、必ず守る必要がある特典判定を決定論的に保証できません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-lang.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "決定論的ロジック",
+   "プロンプト指示"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 143
+ },
+ {
+  "question": "Agent Script のアクションで計算した返金手数料を、同じセッションの後続ターンでも正確に再利用する必要があります。最も適切な実装はどれですか?",
+  "choices": [
+   "アクション出力を `set` でカスタム変数へ保存し、後続の指示やアクション入力から参照する。",
+   "計算結果を一度だけ顧客へ表示し、以後は LLM の会話履歴から同じ数値を推測させる。",
+   "計算式をプロンプト指示へ記載し、必要になるたびに LLM に手数料を再計算させる。"
+  ],
+  "answers": [
+   "アクション出力を `set` でカスタム変数へ保存し、後続の指示やアクション入力から参照する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ アクション出力を `set` でカスタム変数へ保存し、後続の指示やアクション入力から参照する。　これは正解です。変数は会話ターンをまたいで状態を決定論的に保持できます。計算をアクションに任せ、その出力を保存すれば、同じ検証済みの値を再利用できます。\n\n□ 計算結果を一度だけ顧客へ表示し、以後は LLM の会話履歴から同じ数値を推測させる。　これは不正解です。会話コンテキストは業務上の状態を正確に保持する仕組みではなく、数値の変形や取り違えが起こり得ます。\n\n□ 計算式をプロンプト指示へ記載し、必要になるたびに LLM に手数料を再計算させる。　これは不正解です。LLM の再計算は丸めや解釈が揺れる可能性があり、決定論的な金額処理には向きません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "変数",
+   "アクション出力"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 144
+ },
+ {
+  "question": "注文作成アクションが成功した直後に確認メールを必ず送信し、LLM の判断や次のユーザー発話を待ちたくありません。Agent Script で使うべきパターンはどれですか?",
+  "choices": [
+   "`run` を使って確認メールアクションを後続処理として連鎖させる。",
+   "確認メールアクションを reasoning actions に公開し、LLM が必要と判断するのを待つ。",
+   "確認メールの送信を自然言語のプロンプトに書き、次のターンで実行するよう依頼する。"
+  ],
+  "answers": [
+   "`run` を使って確認メールアクションを後続処理として連鎖させる。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ `run` を使って確認メールアクションを後続処理として連鎖させる。　これは正解です。アクションチェーンは複数のアクションを保証された順序で実行でき、主アクションの完了後に後続アクションを自動実行できます。\n\n□ 確認メールアクションを reasoning actions に公開し、LLM が必要と判断するのを待つ。　これは不正解です。ツールとして公開するだけでは、LLM が必ず選ぶことも、注文作成直後に実行することも保証されません。\n\n□ 確認メールの送信を自然言語のプロンプトに書き、次のターンで実行するよう依頼する。　これは不正解です。プロンプトは LLM が解釈する指示であり、必須の後続処理を決定論的に連鎖させる仕組みではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-patterns-action-chaining.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "アクションチェーン",
+   "run"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 145
+ },
+ {
+  "question": "Agent Script の推論指示で、条件成立時に別のサブエージェントへ決定論的に transition します。この遷移が発生したときの動作として正しいものはどれですか?",
+  "choices": [
+   "現在のサブエージェントで解決済みのプロンプトを破棄し、遷移先のサブエージェントを処理する。",
+   "現在のプロンプトを遷移先へ結合し、両方のサブエージェントの指示を一度に LLM へ送る。",
+   "遷移先を一時的なツールとして呼び出し、完了後は必ず現在のサブエージェントへ戻る。"
+  ],
+  "answers": [
+   "現在のサブエージェントで解決済みのプロンプトを破棄し、遷移先のサブエージェントを処理する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 現在のサブエージェントで解決済みのプロンプトを破棄し、遷移先のサブエージェントを処理する。　これは正解です。transition は一方向の制御移動で、現在側の解決済みプロンプトを捨てて遷移先を処理します。\n\n□ 現在のプロンプトを遷移先へ結合し、両方のサブエージェントの指示を一度に LLM へ送る。　これは不正解です。遷移前のプロンプトは保持・結合されません。遷移処理を指示の先頭に置くことが推奨されるのも、不要な処理を避けるためです。\n\n□ 遷移先を一時的なツールとして呼び出し、完了後は必ず現在のサブエージェントへ戻る。　これは不正解です。それはサブエージェントを直接ツールとして参照する場合の振る舞いで、transition は元のサブエージェントへ戻らない一方向の移動です。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-patterns-transitions.html",
+  "multi": false,
+  "domain": "agents",
+  "keywords": [
+   "Agent Script",
+   "サブエージェント",
+   "transition"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 146
+ },
+ {
+  "question": "1つの Salesforce 組織内で、Supervisor エージェントを窓口にして複数の Specialist エージェントへ処理を振り分け、ガバナンスとデータを共有したいと考えています。該当するアーキテクチャはどれですか?",
+  "choices": [
+   "SOMA（Single Org, Multiple Agents）",
+   "MOMA（Multi Org, Multiple Agents）",
+   "MCP（Model Context Protocol）だけで構成する単一エージェント"
+  ],
+  "answers": [
+   "SOMA（Single Org, Multiple Agents）"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ SOMA（Single Org, Multiple Agents）　これは正解です。1つの組織内で複数エージェントが共有ガバナンスとデータを使い、Supervisor が単一の窓口として Specialist へルーティングする構成です。\n\n□ MOMA（Multi Org, Multiple Agents）　これは不正解です。複数の Salesforce 組織にまたがってエージェントが連携する構成であり、単一組織という要件に合いません。\n\n□ MCP（Model Context Protocol）だけで構成する単一エージェント　これは不正解です。MCP はツールや外部サービスへ接続するための標準で、組織内の複数エージェントを統括するアーキテクチャそのものではありません。",
+  "reference_url": "https://architect.salesforce.com/docs/architect/fundamentals/guide/enterprise-agentic-architecture",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "SOMA",
+   "Supervisor Agent",
+   "マルチエージェント"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 147
+ },
+ {
+  "question": "複数の Salesforce 組織がそれぞれの自律性を保ったまま、ある組織の Supervisor エージェントから別組織のエージェントへタスクを委譲したいと考えています。公式アーキテクチャで使われる連携方式はどれですか?",
+  "choices": [
+   "MOMA と標準化された A2A プロトコルを使用する。",
+   "SOMA と組織内の直接サブエージェント参照だけを使用する。",
+   "すべての組織を1つのエージェントへ統合し、自然言語の指示だけで委譲する。"
+  ],
+  "answers": [
+   "MOMA と標準化された A2A プロトコルを使用する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ MOMA と標準化された A2A プロトコルを使用する。　これは正解です。MOMA は複数組織の境界を保った協調構成で、Supervisor が A2A を介して別組織のエージェントへ委譲し、組織レベルの信頼やユーザーIDの流れ、会話コンテキストを扱います。\n\n□ SOMA と組織内の直接サブエージェント参照だけを使用する。　これは不正解です。SOMA は1つの Salesforce 組織内でガバナンスとデータを共有する構成で、複数組織をまたぐ今回の要件とは異なります。\n\n□ すべての組織を1つのエージェントへ統合し、自然言語の指示だけで委譲する。　これは不正解です。組織ごとの権限境界や自律性を失い、標準化された安全な組織間連携にもなりません。",
+  "reference_url": "https://architect.salesforce.com/docs/architect/fundamentals/guide/enterprise-agentic-architecture",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "MOMA",
+   "A2A",
+   "組織間連携"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 148
+ },
+ {
+  "question": "Supervisor エージェントが接続済みの Specialist サブエージェントへ顧客IDを渡し、処理後は Supervisor に制御を戻したいと考えています。Agent Script の接続サブエージェント設定として適切なものはどれですか?",
+  "choices": [
+   "接続サブエージェントの inputs で、受け取り側の customer_id を呼び出し側の `@variables.Customer_Id` にバインドする。",
+   "顧客IDを自然言語の指示に埋め込み、Specialist が会話履歴から値を抽出するようにする。",
+   "一方向の transition を使用し、処理後に暗黙的に Supervisor へ戻ることを期待する。"
+  ],
+  "answers": [
+   "接続サブエージェントの inputs で、受け取り側の customer_id を呼び出し側の `@variables.Customer_Id` にバインドする。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 接続サブエージェントの inputs で、受け取り側の customer_id を呼び出し側の `@variables.Customer_Id` にバインドする。　これは正解です。接続サブエージェントの入力は、左辺に受け取り側が期待する変数、右辺に呼び出し側の変数を指定して明示的に渡せます。直接委譲したサブエージェントの完了後は呼び出し側へ戻ります。\n\n□ 顧客IDを自然言語の指示に埋め込み、Specialist が会話履歴から値を抽出するようにする。　これは不正解です。構造化された入力バインディングを使わず LLM の抽出に依存すると、値の正確性や受け渡しを決定論的に保証できません。\n\n□ 一方向の transition を使用し、処理後に暗黙的に Supervisor へ戻ることを期待する。　これは不正解です。transition は一方向で、接続サブエージェントをツールとして委譲する場合のように自動で呼び出し元へ戻る動作ではありません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-blocks.html",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "接続サブエージェント",
+   "入力バインディング",
+   "Supervisor Agent"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 149
+ },
+ {
+  "question": "ヘッドレスアプリが Agent API でセッション開始時に本人確認済みの顧客IDを渡し、開始後は通常のメッセージ処理から変更できないようにしたいと考えています。適切な方法はどれですか?",
+  "choices": [
+   "API から設定可能なコンテキスト変数として顧客IDを開始要求で渡し、開始後は読み取り専用のまま使用する。",
+   "顧客IDを毎回のユーザーメッセージ本文へ追加し、LLM に同じ値として扱うよう指示する。",
+   "編集可能な内部変数だけを作成し、外部アプリから値を渡さずエージェントに推測させる。"
+  ],
+  "answers": [
+   "API から設定可能なコンテキスト変数として顧客IDを開始要求で渡し、開始後は読み取り専用のまま使用する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ API から設定可能なコンテキスト変数として顧客IDを開始要求で渡し、開始後は読み取り専用のまま使用する。　これは正解です。Agent API はセッション開始時に変数を渡せます。コンテキスト変数は原則として開始後に編集できないため、セッション中の識別子を安定して保持できます。\n\n□ 顧客IDを毎回のユーザーメッセージ本文へ追加し、LLM に同じ値として扱うよう指示する。　これは不正解です。自由文に機密識別子を混ぜると不要な露出が増え、構造化されたセッション状態としても管理できません。\n\n□ 編集可能な内部変数だけを作成し、外部アプリから値を渡さずエージェントに推測させる。　これは不正解です。内部変数は API から設定できず、本人確認済みの識別子を LLM の推測に任せることもできません。",
+  "reference_url": "https://developer.salesforce.com/docs/ai/agentforce/guide/agent-api-variables.html",
+  "multi": false,
+  "domain": "orch",
+  "keywords": [
+   "Agent API",
+   "コンテキスト変数",
+   "読み取り専用"
+  ],
+  "diff": 3,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 150
+ },
+ {
+  "question": "運用中のエージェントについて、未解決のやり取り、品質スコアの低いサブエージェント、誤解が起きた会話箇所を横断的に調べ、改善対象を特定したいと考えています。Agentforce Observability のどの機能が適切ですか?",
+  "choices": [
+   "Agent Optimization でセッションを掘り下げ、低品質のパターンと設定上のギャップを特定する。",
+   "Agent Analytics で利用件数だけを集計し、個々のセッションの推論過程は確認しない。",
+   "Testing Center で本番の全セッションを再実行し、運用データを置き換える。"
+  ],
+  "answers": [
+   "Agent Optimization でセッションを掘り下げ、低品質のパターンと設定上のギャップを特定する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Agent Optimization でセッションを掘り下げ、低品質のパターンと設定上のギャップを特定する。　これは正解です。Agent Optimization は未解決の対話やナレッジギャップを分析し、セッショントレースから誤解・品質スコア・問題パターンを追跡して改善につなげます。\n\n□ Agent Analytics で利用件数だけを集計し、個々のセッションの推論過程は確認しない。　これは不正解です。Analytics はエスカレーション率やディフレクション率などの全体指標に向きますが、今回必要な深いトラブルシューティングには Optimization が適しています。\n\n□ Testing Center で本番の全セッションを再実行し、運用データを置き換える。　これは不正解です。Testing Center は事前定義したテストケースで動作を評価する機能で、運用中に収集されたセッションを横断分析する機能ではありません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=005226932&language=en_US&type=1",
+  "multi": false,
+  "domain": "gov",
+  "keywords": [
+   "Agentforce Observability",
+   "Agent Optimization",
+   "セッショントレース"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 151
+ },
+ {
+  "question": "Salesforce Knowledge を使う Agentforce Data Library で「Filter by Knowledge Data Categories」を有効にし、カテゴリを選択しました。検索対象に起きる変化はどれですか?",
+  "choices": [
+   "選択したデータカテゴリに属するナレッジ記事だけが検索可能になる。",
+   "選択したデータカテゴリが記事本文へカスタムメタデータとして追記される。",
+   "すべての記事は検索対象のまま、結果画面だけがカテゴリ別のタブに分割される。"
+  ],
+  "answers": [
+   "選択したデータカテゴリに属するナレッジ記事だけが検索可能になる。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ 選択したデータカテゴリに属するナレッジ記事だけが検索可能になる。　これは正解です。データカテゴリフィルターを有効にすると、選択したカテゴリの記事が Data Library の検索対象になります。\n\n□ 選択したデータカテゴリが記事本文へカスタムメタデータとして追記される。　これは不正解です。この設定は検索対象の記事集合を絞るもので、記事本文やカスタムメタデータを書き換える機能ではありません。\n\n□ すべての記事は検索対象のまま、結果画面だけがカテゴリ別のタブに分割される。　これは不正解です。表示上の整理ではなく、検索可能なナレッジ記事自体をカテゴリで制限します。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=004333412&language=en_US&type=1",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "Agentforce Data Library",
+   "データカテゴリ",
+   "Salesforce Knowledge"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 152
+ },
+ {
+  "question": "Data 360 の検索インデックスで、スペイン語の記事を英語やフランス語の問い合わせから意味検索したいと考えています。選択する埋め込みモデルとして最も適切なものはどれですか?",
+  "choices": [
+   "Multilingual-E5-large",
+   "英語のみを対象とする SFR-v2-small",
+   "埋め込みモデルを使わないキーワード検索だけの構成"
+  ],
+  "answers": [
+   "Multilingual-E5-large"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Multilingual-E5-large　これは正解です。Data 360 がサポートする多言語向けのテキスト埋め込みモデルで、異なる言語の文書と問い合わせを意味的に近いベクトルとして扱う要件に適しています。\n\n□ 英語のみを対象とする SFR-v2-small　これは不正解です。SFR-v2-small は長いコンテキストを扱える一方、公式リファレンスでは対応言語が英語とされており、今回の多言語要件には合いません。\n\n□ 埋め込みモデルを使わないキーワード検索だけの構成　これは不正解です。言語が異なると文字列の一致を期待できないため、文書と質問の意味的な近さを測る多言語埋め込みが必要です。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=c360_a_search_index_reference.htm&language=en_US&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "Multilingual-E5-large",
+   "多言語検索",
+   "埋め込みモデル"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 153
+ },
+ {
+  "question": "サービスエージェントが、社内の製品資料に加えて当日の市場ニュースも参照して回答する必要があります。変化の速い公開情報を取得するための適切な構成はどれですか?",
+  "choices": [
+   "Search the Web アクションを追加するか、同アクション設定済みの General Web Search サブエージェントを利用する。",
+   "社内資料用の Data Library だけを使い、公開ニュースも事前に同じ検索インデックスへ固定保存する。",
+   "General FAQ サブエージェントの通常のナレッジ検索だけで、インターネットへ自動接続されるようにする。"
+  ],
+  "answers": [
+   "Search the Web アクションを追加するか、同アクション設定済みの General Web Search サブエージェントを利用する。"
+  ],
+  "explanation": "それぞれの選択肢の理由について説明します。\n\n□ Search the Web アクションを追加するか、同アクション設定済みの General Web Search サブエージェントを利用する。　これは正解です。Search the Web は実行時に公開インターネットを検索し、ニュースや市場動向など最新情報を取得します。既存サブエージェントへ追加する方法と、設定済みの General Web Search を使う方法があります。\n\n□ 社内資料用の Data Library だけを使い、公開ニュースも事前に同じ検索インデックスへ固定保存する。　これは不正解です。Data Library は事前に索引化した社内・安定情報に向きます。変化の速い公開情報は実行時に取得する Web 検索が適しています。\n\n□ General FAQ サブエージェントの通常のナレッジ検索だけで、インターネットへ自動接続されるようにする。　これは不正解です。通常のナレッジ検索は割り当てた Data Library を参照するもので、Search the Web アクションを構成しない限り公開インターネット検索にはなりません。",
+  "reference_url": "https://help.salesforce.com/s/articleView?id=ai.agent_search_the_web.htm&language=en_US&type=5",
+  "multi": false,
+  "domain": "data360",
+  "keywords": [
+   "Search the Web",
+   "General Web Search",
+   "リアルタイム情報"
+  ],
+  "diff": 2,
+  "source": "jpnshiken",
+  "origin": "jpnshiken.com",
+  "id": 154
  }
 ]

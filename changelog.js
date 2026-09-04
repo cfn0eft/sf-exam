@@ -1,4 +1,10 @@
 window.SFQ_CHANGELOG = [
+  {id:'2026-09-04', date:'2026-09-04', title:'Agentforce Specialist の問題集を最新版へ更新しました', items:[
+    '🤖 Agentforce Specialist に16問を追加し、138問から154問へ増やしました',
+    '🧭 Testing Center の評価指標、Agent Script の条件・変数・アクション連鎖、SOMA／MOMA・A2A、Agentforce Observability、多言語検索、Web検索など、最新の論点を追加しています',
+    '✅ 問題集内の重複は追加せず、問題文と選択肢を作り直したうえで、各問の正解をSalesforce公式ドキュメントで確認しました',
+    '📝 元の問題集と現行仕様が異なる箇所は公式資料を優先して修正しています。たとえばブランドらしい話し方の評価は、Testing Center の「Voice and Tone」に合わせました',
+  ]},
   {id:'2026-09-02', date:'2026-09-02', title:'デベロッパーの問題2問を修正しました（ご報告ありがとうございます）', items:[
     '✅ デベロッパー「lightning:layout でモバイルは3行・デスクトップとタブレットは1行」：正解を size="12" mediumDeviceSize="4" に修正しました。サイズ指定は「指定したデバイス以上」に効くため、medium に 4 を指定すればタブレットにもデスクトップにも 1 行で表示されます。以前の正解（medium="6" large="4"）はタブレットが 2 行になってしまい要件を満たしません',
     '📐 解説も、なぜ他の3つが要件を満たさないのかを1つずつ書き直しました。参照リンクも lightning:layoutItem の公式リファレンスに差し替えています',
