@@ -1711,7 +1711,7 @@
     var exempts = adminUsers.filter(function (u) { return u.maintOk; });
     html += '<div class="sfqc-bc-meta"><span>🛠 メンテ中も利用可：<b>' + exempts.length + '</b> 人' +
         (exempts.length ? '（' + esc(exempts.slice(0, 5).map(function (u) { return u.name || u.uid; }).join('・')) + (exempts.length > 5 ? ' ほか' : '') + '）' : '') +
-      '</span><span style="color:#64748b">申請タブの「🛠 メンテ許可」で切替</span></div>';
+      '</span><span style="color:#64748b">ユーザータブの「🛠 メンテ許可」で切替</span></div>';
     return html + '</div>' + mailSectionHTML();
   }
   function mailSectionHTML() {
@@ -2772,7 +2772,7 @@
     if (!(u && u.req && u.req.ts)) return '';
     var unblock = (u.access === 'blocked');
     return '<span class="sfqc-acc-access pend" title="' + (unblock ? '停止の解除を申請しています' : 'あなたの承認を待っています') + '">' +
-      (unblock ? '📩 解除申請 ' : '📝 申請 ') + esc(fmtDate(u.req.ts)) + '</span>';
+      (unblock ? '👤 解除申請 ' : '👤 申請 ') + esc(fmtDate(u.req.ts)) + '</span>';
   }
   function applicationsSectionHTML() {
     var apps = adminUsers.filter(isApplicant);
@@ -2887,7 +2887,7 @@
         (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
     };
     var html = '<div class="sfqc-tabs">' +
-        tabBtn('users', '👤 申請', adminPendingCount || 0) +
+        tabBtn('users', '👥 ユーザー', adminPendingCount || 0) +
         tabBtn('network', '🔐 接続元・端末', networkWarningCount || 0) +
         tabBtn('dash', '📊 ダッシュボード', 0) +
         tabBtn('ann', '📢 お知らせ', 0) +

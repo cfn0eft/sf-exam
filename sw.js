@@ -1,18 +1,18 @@
-const CACHE = 'sf-exam-v153';
+const CACHE = 'sf-exam-v154';
 const DATA_CACHE = 'sf-exam-data-v1';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=153',
+  './maintenance.js?v=154',
   './manifest.webmanifest',
-  './quiz.css?v=153',
-  './quiz-engine.js?v=153',
-  './changelog.js?v=153',
-  './figures.js?v=153',
-  './progression.js?v=153',
+  './quiz.css?v=154',
+  './quiz-engine.js?v=154',
+  './changelog.js?v=154',
+  './figures.js?v=154',
+  './progression.js?v=154',
   './firebase-config.js',
-  './cloud-sync.js?v=153',
+  './cloud-sync.js?v=154',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   './certifications/developer/index.html',
