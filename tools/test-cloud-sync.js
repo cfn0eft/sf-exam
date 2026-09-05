@@ -232,6 +232,70 @@ t('isApplicant: 通知バッジの母数は「未承認かつ申請あり」', (
   ok(!T.isApplicant({ access: 'approved', req: { name: 'A', ts: NOW } }), '承認済みは対象外');
 });
 
+/* ---- 接続元・端末情報（IP はマスクし、判定は参考表示） ---- */
+t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
+  const x = T.parseTrace('ip=203.0.113.42\nloc=JP\nwarp=off\n');
+  eq(x.ip, '203.0.113.42'); eq(x.loc, 'JP'); eq(x.warp, 'off');
+});
+
+t('maskIp: IPv4/IPv6 のホスト部を保存しない', () => {
+  eq(T.maskIp('203.0.113.42'), '203.0.113.xxx');
+  eq(T.maskIp('2001:db8:abcd:1234:5678:90ab:cdef:1234'), '2001:db8:abcd:1234::');
+  eq(T.maskIp('invalid'), '');
+});
+
+t('ipInCidr: IPv4 CIDR と完全一致を判定する', () => {
+  ok(T.ipInCidr('203.0.113.42', '203.0.113.0/24'));
+  ok(!T.ipInCidr('203.0.114.42', '203.0.113.0/24'));
+  ok(T.ipInCidr('203.0.113.42', '203.0.113.42'));
+  ok(!T.ipInCidr('203.0.113.42', 'broken/24'));
+});
+
+t('classifyNetwork: 登録企業IPを最優先で高信頼表示する', () => {
+  const n = T.classifyNetwork('203.0.113.42', 'Example ISP', { warp: 'off', gateway: 'off' }, [
+    { name: 'テスト社', cidrs: ['203.0.113.0/24'] }
+  ]);
+  eq(n.kind, 'corp'); eq(n.confidence, 'high'); ok(n.label.indexOf('テスト社') >= 0);
+});
+
+t('classifyNetwork: Gateway/WARP・セキュアゲートウェイ・クラウドを参考判定する', () => {
+  eq(T.classifyNetwork('1.1.1.1', '', { gateway: 'on' }, []).kind, 'secure');
+  eq(T.classifyNetwork('1.1.1.1', 'Zscaler Inc.', {}, []).kind, 'secure');
+  eq(T.classifyNetwork('1.1.1.1', 'Amazon Technologies Inc.', {}, []).kind, 'hosting');
+  eq(T.classifyNetwork('1.1.1.1', 'NTT Communications', {}, []).kind, 'normal');
+});
+
+t('pruneNetworkData: 30日を超えた端末・接続履歴を除く', () => {
+  sandbox.window.SFQ_NETWORK_MONITORING = { retainDays: 30 };
+  const p = T.pruneNetworkData({
+    netDevices: { recent: { lastSeen: NOW - DAY }, old: { lastSeen: NOW - 31 * DAY } },
+    netAccess: [{ ts: NOW - DAY }, { ts: NOW - 31 * DAY }]
+  }, NOW);
+  eq(Object.keys(p.devices).length, 1); ok(p.devices.recent); eq(p.access.length, 1); ok(p.changed);
+});
+
+t('networkAlertsOf: 複数端末の同時接続と短時間の回線変更を検出する', () => {
+  const u = {
+    netDevices: { a: { lastSeen: NOW }, b: { lastSeen: NOW - 1000 } },
+    netAccess: [
+      { ts: NOW, deviceId: 'a', ip: '203.0.113.xxx' },
+      { ts: NOW - 60000, deviceId: 'b', ip: '198.51.100.xxx' }
+    ]
+  };
+  const a = T.networkAlertsOf(u);
+  eq(a.length, 2); ok(a[0].indexOf('複数端末') >= 0); ok(a[1].indexOf('別端末・別回線') >= 0);
+});
+
+t('networkDetailHTML: 外部API由来の回線名をHTMLエスケープする', () => {
+  const now = Date.now();
+  const html = T.networkDetailHTML({
+    netDevices: { a: { lastSeen: now, firstSeen: now, org: '<img src=x onerror=alert(1)>', ip: '203.0.113.xxx', os: 'Windows', browser: 'Chrome', label: '通常回線' } },
+    netAccess: []
+  });
+  ok(html.indexOf('&lt;img') >= 0, 'タグ文字列はエスケープされる');
+  ok(html.indexOf('<img src=x') < 0, '生のタグを出さない');
+});
+
 /* ---- 管理者へのメール通知（EmailJS・任意機能） ---- */
 t('mailEnabled: 設定が空なら無効（既存動作に影響しない）', () => {
   sandbox.window.SFQ_EMAILJS = { serviceId: '', templateId: '', publicKey: '' };

@@ -54,14 +54,17 @@ service cloud.firestore {
      *   adminLog    管理者の操作ログ
      * 進捗本体 stores は本人が書く（学習の保存そのもの）。
      * stores.<資格>.acquiredDate（資格の取得済み）も本人が書くが、これは
-     * アプリ上「自分で取得を宣言する」ボタンがある正規の操作＝仕様どおり。 */
+     * アプリ上「自分で取得を宣言する」ボタンがある正規の操作＝仕様どおり。
+     * netDevices / netAccess / netUpdated は静的クライアントが記録する接続情報。
+     * 本人書込なので監査証跡ではなく、管理者画面でも参考情報として扱う。 */
     function selfKeys() {
       return [
         'stores', 'name', 'email', 'updated',
         'access', 'req', 'expiredAt', 'expiredDays',
         'feedback', 'newsSeen', 'read',
         'lastLogin', 'lastSeen', 'logins',
-        'elective', 'chat'
+        'elective', 'chat',
+        'netDevices', 'netAccess', 'netUpdated'
       ];
     }
     // 今回の書込で実際に増減・変更されるキー（作成時は全キー）

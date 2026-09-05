@@ -1,18 +1,18 @@
-const CACHE = 'sf-exam-v149';
+const CACHE = 'sf-exam-v150';
 const DATA_CACHE = 'sf-exam-data-v1';
 const SHELL = [
   './',
   './index.html',
   './maintenance.html',
-  './maintenance.js?v=149',
+  './maintenance.js?v=150',
   './manifest.webmanifest',
-  './quiz.css?v=149',
-  './quiz-engine.js?v=149',
-  './changelog.js?v=149',
-  './figures.js?v=149',
-  './progression.js?v=149',
+  './quiz.css?v=150',
+  './quiz-engine.js?v=150',
+  './changelog.js?v=150',
+  './figures.js?v=150',
+  './progression.js?v=150',
   './firebase-config.js',
-  './cloud-sync.js?v=149',
+  './cloud-sync.js?v=150',
   './certifications/sf-admin/index.html',
   './certifications/app-builder/index.html',
   './certifications/developer/index.html',
@@ -58,6 +58,11 @@ self.addEventListener('fetch', (e) => {
   try { url = new URL(req.url); } catch (_) { return; }
 
   if (url.origin !== self.location.origin) {
+    // 接続元判定の応答には生のIPが含まれるため、Cache Storageへ保存しない。
+    if ((url.hostname === 'www.cloudflare.com' && url.pathname === '/cdn-cgi/trace') || url.hostname === 'ipwho.is') {
+      e.respondWith(fetch(req));
+      return;
+    }
     e.respondWith(
       fetch(req).then((r) => {
         if (cacheableCross(r)) { const cp = r.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, cp)).catch(() => {})); }

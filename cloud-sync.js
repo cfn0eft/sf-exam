@@ -97,6 +97,8 @@
   var adminColUnsub = null, adminRenderTimer = null;
   var hbTimer = null, hbVisHandler = null;
   var ONLINE_MS = 120000;
+  var currentDeviceId = '';
+  var NETWORK_DEFAULT_DAYS = 30;
 
   function injectStyle() {
     var css = '' +
@@ -378,6 +380,14 @@
       '.sfqc-login-no{font-size:10px;font-weight:800;color:#94a3b8;min-width:16px;text-align:right}' +
       '.sfqc-login-latest{margin-left:auto;font-size:10px;font-weight:800;color:#15803d;background:#dcfce7;border-radius:999px;padding:1px 7px}' +
       'body.dark .sfqc-login-row{background:#0f172a;border-color:#334155;color:#cbd5e1}body.dark .sfqc-login-latest{background:#14532d;color:#bbf7d0}' +
+      '.sfqc-net-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;background:#e2e8f0;color:#475569}' +
+      '.sfqc-net-chip.corp{background:#dcfce7;color:#15803d}.sfqc-net-chip.warn{background:#fef3c7;color:#92400e}.sfqc-net-chip.host{background:#ffedd5;color:#9a3412}.sfqc-net-chip.unknown{background:#e2e8f0;color:#475569}' +
+      '.sfqc-net-alert{margin:8px 0;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:700}' +
+      '.sfqc-net-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:7px;margin-top:7px}' +
+      '.sfqc-net-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:8px 10px;font-size:11.5px;color:#475569;line-height:1.55}' +
+      '.sfqc-net-card strong{color:#1e293b}.sfqc-net-card .muted{color:#94a3b8;font-size:10.5px}' +
+      '.sfqc-privacy-note{display:block;margin-top:9px;padding-top:8px;border-top:1px solid #e2e8f0;color:#64748b;font-size:10px;line-height:1.55;text-align:left}' +
+      'body.dark .sfqc-net-card{background:#0f172a;border-color:#334155;color:#cbd5e1}body.dark .sfqc-net-card strong{color:#f1f5f9}body.dark .sfqc-net-alert{background:#431407;border-color:#9a3412;color:#fed7aa}body.dark .sfqc-privacy-note{border-color:#334155;color:#94a3b8}' +
       '#sfqc-maint{position:fixed;inset:0;z-index:100004;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:16px}' +
       '#sfqc-maint.show{display:flex}' +
       '#sfqc-maint .sfqc-card{text-align:center}' +
@@ -466,6 +476,7 @@
         '</div>' +
         '<div id="sfqc-msg" class="sfqc-msg"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
+        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、承認後のログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。生のIPは保存せず、判定結果は管理者だけが確認します。</span>' +
       '</div>';
   }
   function guideCardHTML() {
@@ -493,6 +504,7 @@
       '<div id="sfqc-menu">' +
         '<div class="sfqc-status" id="sfqc-status"></div>' +
         '<button id="sfqc-admin-btn" type="button">👑 管理者ビュー</button>' +
+        '<button id="sfqc-network-info" type="button">🔐 接続情報について</button>' +
         '<button id="sfqc-logout" type="button">ログアウト</button>' +
       '</div>';
     document.body.appendChild(elBadge);
@@ -605,6 +617,10 @@
     document.addEventListener('click', function (e) { if (elBadge && !elBadge.contains(e.target)) elBadge.classList.remove('open'); });
 
     document.getElementById('sfqc-logout').addEventListener('click', function () { elBadge.classList.remove('open'); doLogout(); });
+    document.getElementById('sfqc-network-info').addEventListener('click', function () {
+      elBadge.classList.remove('open');
+      alert('接続情報について\n\n不正利用の確認とアカウント管理のため、承認済みアカウントのログイン時に次の情報を記録します。\n\n・末尾を伏せたIPアドレス（生のIPは保存しません）\n・接続元の国/地域、回線組織、ASN\n・企業回線/VPN/クラウド回線の参考判定\n・ブラウザ、OS、言語、タイムゾーン、画面サイズ\n・アカウントとブラウザの組み合わせごとのランダムな端末識別子\n・アクセス日時\n\n接続判定にはCloudflareとipwho.isを利用し、直近' + networkRetainDays() + '日分を保存対象とします。管理者だけが確認でき、判定だけで利用を自動停止することはありません。');
+    });
     elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
@@ -1075,6 +1091,7 @@
       if (isAdmin) watchAdminPending();
       cacheApproval(user.uid);
       recordLogin(user.uid, data);
+      if (!isAdmin) recordNetworkVisit(user.uid);
       startPresence(user.uid);
       if (!isAdmin) startUserMessaging(user.uid);
 
@@ -2061,6 +2078,7 @@
   var adminPass = false;
   var adminAccess = 'all';
   var adminMaintOk = false;
+  var adminNetwork = 'all';
   var adminPendingCount = 0;
   var adminTab = 'users';
   var dmFilter = '';
@@ -2072,10 +2090,13 @@
   function adminDashboardHTML() {
     var total = adminUsers.length, today = admToday();
     var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumExF = 0, sumExFP = 0, sumStudy = 0;
+    var netTracked = 0, netSpecial = 0, netAlerts = 0;
     adminUsers.forEach(function (u) {
       var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumExF += a.examFull; sumExFP += a.examFullPassed; sumStudy += a.studySec;
       if (a.lastStudyDate === today) actToday++;
       if (admDaysAgo(a.lastStudyDate) <= 6) actWeek++;
+      var n = latestNetworkOf(u); if (n) { netTracked++; if (n.kind === 'corp' || n.kind === 'secure' || n.kind === 'hosting') netSpecial++; }
+      if (networkAlertsOf(u).length) netAlerts++;
     });
     var avgRate = sumAtt ? Math.round(sumCorr / sumAtt * 100) : 0;
     var passRate = sumExF ? Math.round(sumExFP / sumExF * 100) : 0;
@@ -2085,7 +2106,7 @@
       kpi('🟢 ' + onlineNow, '現在オンライン') +
       kpi(total, '総ユーザー') + kpi(actToday, '今日のアクティブ') + kpi(actWeek, '今週のアクティブ') +
       kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumExF, '本番模試 受験') + kpi(passRate + '%', '本番合格率') +
-      kpi(fmtDur(sumStudy), '総学習時間') +
+      kpi(fmtDur(sumStudy), '総学習時間') + kpi(netTracked, '接続情報あり') + kpi(netSpecial, '企業/VPN/クラウド判定') + kpi(netAlerts, '接続確認') +
       '</div>';
 
     html += timeSeriesHTML();
@@ -2325,7 +2346,7 @@
   function ingestAdminDocs(snap) {
     adminFeedback = [];
     adminLogEntries = [];
-    var byUid = {};
+    var byUid = {}, netCleanup = [];
     snap.forEach(function (d) {
       var data = d.data() || {};
       var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
@@ -2337,7 +2358,9 @@
         });
       }
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), certs: [] };
+      var netPruned = pruneNetworkData(data, Date.now());
+      if (netPruned.changed) netCleanup.push({ uid: d.id, devices: netPruned.devices, access: netPruned.access });
+      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: data.netUpdated || 0, certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2348,6 +2371,11 @@
       }
       byUid[d.id] = entry;
     });
+    if (isAdmin && db && netCleanup.length) {
+      netCleanup.forEach(function (x) {
+        db.collection(COLLECTION).doc(x.uid).update('netDevices', x.devices, 'netAccess', x.access).catch(function () {});
+      });
+    }
     adminUsers = Object.keys(byUid).map(function (k) { return refreshUser(byUid[k]); });
     adminFeedback.sort(function (a, b) { return (b.fb.ts || 0) - (a.fb.ts || 0); });
     adminLogEntries.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
@@ -2424,6 +2452,232 @@
     return Math.floor(s / 86400) + '日前';
   }
 
+  /* -----------------------------------------------------------------
+   * 接続元・端末情報
+   * 生の IP は企業回線との照合にだけ使い、Firestore には保存しない。
+   * GitHub Pages はサーバーログを提供しないため、Cloudflare の公開 trace
+   * と ipwho.is の回線情報をベストエフォートで取得する。失敗時もログインは妨げない。
+   * ----------------------------------------------------------------- */
+  function networkConfig() {
+    var c = window.SFQ_NETWORK_MONITORING;
+    return (c && typeof c === 'object') ? c : {};
+  }
+  function networkRetainDays() {
+    var n = Number(networkConfig().retainDays || NETWORK_DEFAULT_DAYS);
+    return (isFinite(n) && n >= 1 && n <= 365) ? Math.round(n) : NETWORK_DEFAULT_DAYS;
+  }
+  function cleanNetText(v, max) {
+    return String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max || 120);
+  }
+  function parseTrace(text) {
+    var out = {};
+    String(text || '').split(/\r?\n/).forEach(function (line) {
+      var i = line.indexOf('='); if (i <= 0) return;
+      out[line.slice(0, i)] = line.slice(i + 1);
+    });
+    return out;
+  }
+  function ipv4Int(ip) {
+    var p = String(ip || '').split('.'); if (p.length !== 4) return null;
+    var n = 0;
+    for (var i = 0; i < 4; i++) {
+      if (!/^\d{1,3}$/.test(p[i])) return null;
+      var x = Number(p[i]); if (x < 0 || x > 255) return null;
+      n = ((n << 8) | x) >>> 0;
+    }
+    return n >>> 0;
+  }
+  function ipInCidr(ip, cidr) {
+    ip = String(ip || '').trim(); cidr = String(cidr || '').trim();
+    if (!ip || !cidr) return false;
+    if (cidr.indexOf('/') < 0) return ip.toLowerCase() === cidr.toLowerCase();
+    var a = cidr.split('/'); if (a.length !== 2) return false;
+    var x = ipv4Int(ip), y = ipv4Int(a[0]), bits = Number(a[1]);
+    if (x == null || y == null || !isFinite(bits) || bits < 0 || bits > 32 || Math.floor(bits) !== bits) return false;
+    var mask = bits === 0 ? 0 : (0xffffffff << (32 - bits)) >>> 0;
+    return ((x & mask) >>> 0) === ((y & mask) >>> 0);
+  }
+  function maskIp(ip) {
+    ip = cleanNetText(ip, 80);
+    var p = ip.split('.');
+    if (p.length === 4 && ipv4Int(ip) != null) return p[0] + '.' + p[1] + '.' + p[2] + '.xxx';
+    if (ip.indexOf(':') >= 0) {
+      var h = ip.split(':').filter(function (x) { return x !== ''; });
+      return h.slice(0, 4).join(':') + '::';
+    }
+    return '';
+  }
+  function safeRegexMatch(text, pattern) {
+    try { return new RegExp(String(pattern), 'i').test(text || ''); } catch (e) { return false; }
+  }
+  function corporateMatch(ip, org, defs) {
+    defs = Array.isArray(defs) ? defs : [];
+    for (var i = 0; i < defs.length; i++) {
+      var d = defs[i] || {}, cidrs = Array.isArray(d.cidrs) ? d.cidrs : [];
+      for (var j = 0; j < cidrs.length; j++) {
+        if (ipInCidr(ip, cidrs[j])) return { name: cleanNetText(d.name || '登録企業', 80), by: 'ip', confidence: 'high' };
+      }
+      var pats = Array.isArray(d.orgPatterns) ? d.orgPatterns : [];
+      for (j = 0; j < pats.length; j++) {
+        if (safeRegexMatch(org, pats[j])) return { name: cleanNetText(d.name || '登録企業', 80), by: 'org', confidence: 'medium' };
+      }
+    }
+    return null;
+  }
+  function classifyNetwork(ip, org, trace, defs) {
+    org = cleanNetText(org, 120); trace = trace || {};
+    var corp = corporateMatch(ip, org, defs);
+    if (corp) return { kind: 'corp', label: '🏢 ' + corp.name + '（' + (corp.by === 'ip' ? 'IP一致' : '回線名一致') + '）', confidence: corp.confidence };
+    if (trace.gateway && trace.gateway !== 'off') return { kind: 'secure', label: '🛡️ Cloudflare Gateway経由', confidence: 'high' };
+    if (trace.warp && trace.warp !== 'off') return { kind: 'secure', label: '🛡️ Cloudflare WARP経由', confidence: 'medium' };
+    if (/zscaler|netskope|palo alto|prisma access|globalprotect|cisco umbrella|cloudflare|iboss|menlo security|fortinet/i.test(org)) {
+      return { kind: 'secure', label: '🛡️ 企業VPN／セキュアゲートウェイの可能性', confidence: 'medium' };
+    }
+    if (/nordvpn|surfshark|mullvad|expressvpn|express technologies|proton|private internet access|cyberghost|windscribe/i.test(org)) {
+      return { kind: 'secure', label: '🛡️ VPN回線の可能性', confidence: 'medium' };
+    }
+    if (/amazon|google cloud|microsoft|azure|digitalocean|linode|vultr|ovh|akamai|oracle cloud|hetzner|choopa/i.test(org)) {
+      return { kind: 'hosting', label: '☁️ クラウド／ホスティング回線の可能性', confidence: 'medium' };
+    }
+    if (org) return { kind: 'normal', label: '🌐 通常回線／判定なし', confidence: 'low' };
+    return { kind: 'unknown', label: '❔ 回線判定なし', confidence: 'low' };
+  }
+  function randomDeviceId() {
+    try {
+      var b = new Uint8Array(12); crypto.getRandomValues(b);
+      return Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    } catch (e) { return 'd' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+  }
+  function deviceId(uid) {
+    var key = 'sfq_device_id_' + cleanNetText(uid || 'anonymous', 80), id = '';
+    try { id = localStorage.getItem(key) || ''; } catch (e) {}
+    if (!/^[a-z0-9_-]{12,64}$/i.test(id)) {
+      id = randomDeviceId();
+      try { localStorage.setItem(key, id); } catch (e2) {}
+    }
+    return id;
+  }
+  function deviceInfo() {
+    var ua = (navigator && navigator.userAgent) || '', browser = '不明', os = '不明', m;
+    if ((m = ua.match(/Edg\/([\d.]+)/))) browser = 'Edge ' + m[1];
+    else if ((m = ua.match(/OPR\/([\d.]+)/))) browser = 'Opera ' + m[1];
+    else if ((m = ua.match(/SamsungBrowser\/([\d.]+)/))) browser = 'Samsung Internet ' + m[1];
+    else if ((m = ua.match(/(?:Chrome|CriOS)\/([\d.]+)/))) browser = 'Chrome ' + m[1];
+    else if ((m = ua.match(/(?:Firefox|FxiOS)\/([\d.]+)/))) browser = 'Firefox ' + m[1];
+    else if ((m = ua.match(/Version\/([\d.]+).*Safari/))) browser = 'Safari ' + m[1];
+    if (/Windows NT 10\.0/.test(ua)) os = 'Windows';
+    else if (/Android\s*([\d.]*)/i.test(ua)) os = 'Android' + (RegExp.$1 ? ' ' + RegExp.$1 : '');
+    else if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS/iPadOS';
+    else if (/Mac OS X\s*([\d_]+)/.test(ua)) os = 'macOS ' + RegExp.$1.replace(/_/g, '.');
+    else if (/CrOS/.test(ua)) os = 'ChromeOS';
+    else if (/Linux/.test(ua)) os = 'Linux';
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    var scr = ''; try { if (screen && screen.width && screen.height) scr = screen.width + '×' + screen.height; } catch (e2) {}
+    return { browser: cleanNetText(browser, 80), os: cleanNetText(os, 80), language: cleanNetText(navigator.language || '', 20), timezone: cleanNetText(tz, 60), screen: cleanNetText(scr, 30), ua: cleanNetText(ua, 300) };
+  }
+  function netFetch(url, asText) {
+    if (!url || typeof fetch !== 'function') return Promise.reject(new Error('fetch unavailable'));
+    var work = fetch(url, { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return asText ? r.text() : r.json();
+    });
+    return Promise.race([work, new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, 7000); })]);
+  }
+  function collectNetworkSnapshot() {
+    var cfg = networkConfig(), dev = deviceInfo();
+    var base = { deviceId: currentDeviceId || deviceId(currentUser && currentUser.uid), browser: dev.browser, os: dev.os, language: dev.language, timezone: dev.timezone, screen: dev.screen, ua: dev.ua,
+      ip: '', org: '', asn: '', country: '', region: '', city: '', kind: 'unknown', label: '❔ 回線判定なし', confidence: 'low', source: 'device-only' };
+    var traceUrl = cleanNetText(cfg.traceUrl || 'https://www.cloudflare.com/cdn-cgi/trace', 300);
+    return netFetch(traceUrl, true).then(function (txt) {
+      var tr = parseTrace(txt), rawIp = cleanNetText(tr.ip, 80);
+      base.ip = maskIp(rawIp); base.country = cleanNetText(tr.loc, 60); base.source = 'cloudflare';
+      var lookupUrl = cleanNetText(cfg.lookupUrl || 'https://ipwho.is/{ip}', 400).replace('{ip}', encodeURIComponent(rawIp));
+      if (!rawIp || !lookupUrl) return { base: base, rawIp: rawIp, trace: tr };
+      return netFetch(lookupUrl, false).then(function (g) {
+        if (!g || g.success === false) return { base: base, rawIp: rawIp, trace: tr };
+        var c = g.connection || {};
+        base.org = cleanNetText(c.org || c.isp || g.company || '', 120);
+        base.asn = cleanNetText(c.asn ? ('AS' + c.asn) : (g.asn || ''), 80);
+        base.country = cleanNetText(g.country || base.country, 60);
+        base.region = cleanNetText(g.region || '', 80); base.city = cleanNetText(g.city || '', 80);
+        base.source = 'cloudflare+ipwhois';
+        return { base: base, rawIp: rawIp, trace: tr };
+      }).catch(function () { return { base: base, rawIp: rawIp, trace: tr }; });
+    }).catch(function () { return { base: base, rawIp: '', trace: {} }; }).then(function (x) {
+      var cls = classifyNetwork(x.rawIp, x.base.org, x.trace, cfg.corporateNetworks);
+      x.base.kind = cls.kind; x.base.label = cls.label; x.base.confidence = cls.confidence;
+      return x.base;
+    });
+  }
+  function pruneNetworkData(data, now) {
+    data = data || {}; now = now || Date.now();
+    var cutoff = now - networkRetainDays() * 86400000, devices = {}, changed = false;
+    var src = (data.netDevices && typeof data.netDevices === 'object') ? data.netDevices : {};
+    Object.keys(src).forEach(function (k) {
+      var d = src[k] || {};
+      if ((d.lastSeen || 0) >= cutoff) devices[k] = d; else changed = true;
+    });
+    var oldLogs = Array.isArray(data.netAccess) ? data.netAccess : [];
+    var logs = oldLogs.filter(function (e) { return e && (e.ts || 0) >= cutoff; })
+      .sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).slice(0, 50);
+    if (logs.length !== oldLogs.length) changed = true;
+    return { devices: devices, access: logs, changed: changed };
+  }
+  function networkRecordedThisSession(uid, setNow) {
+    var k = 'sfq_net_recorded_' + uid;
+    try {
+      if (!setNow) return !!sessionStorage.getItem(k);
+      sessionStorage.setItem(k, '1'); return true;
+    } catch (e) { return false; }
+  }
+  function clearNetworkSessionMark(uid) { try { sessionStorage.removeItem('sfq_net_recorded_' + uid); } catch (e) {} }
+  function recordNetworkVisit(uid) {
+    var cfg = networkConfig();
+    var did = deviceId(uid); currentDeviceId = did;
+    if (!db || !uid || cfg.enabled === false || networkRecordedThisSession(uid, false)) return;
+    collectNetworkSnapshot().then(function (net) {
+      var now = Date.now(), ref = db.collection(COLLECTION).doc(uid);
+      return db.runTransaction(function (tx) {
+        return tx.get(ref).then(function (snap) {
+          var data = (snap.exists && snap.data()) || {}, pruned = pruneNetworkData(data, now);
+          var devices = pruned.devices, prev = devices[did] || {};
+          net.deviceId = did; net.firstSeen = prev.firstSeen || now; net.lastSeen = now; net.loginCount = (prev.loginCount || 0) + 1;
+          devices[did] = net;
+          var ev = { ts: now, deviceId: did, browser: net.browser, os: net.os, ip: net.ip, org: net.org, asn: net.asn,
+            country: net.country, region: net.region, city: net.city, kind: net.kind, label: net.label, confidence: net.confidence };
+          var logs = pruned.access;
+          var newest = logs[0];
+          if (!newest || newest.deviceId !== did || newest.ip !== ev.ip || (now - (newest.ts || 0)) > 60000) logs = [ev].concat(logs);
+          logs = logs.slice(0, 50);
+          tx.set(ref, { netDevices: devices, netAccess: logs, netUpdated: now }, { merge: true });
+        });
+      });
+    }).then(function () { networkRecordedThisSession(uid, true); }).catch(function () { clearNetworkSessionMark(uid); });
+  }
+  function activeDevicesOf(u, now) {
+    now = now || Date.now(); var ds = (u && u.netDevices) || {};
+    return Object.keys(ds).filter(function (k) { return ds[k] && (now - (ds[k].lastSeen || 0)) <= ONLINE_MS; });
+  }
+  function latestNetworkOf(u) {
+    var logs = (u && Array.isArray(u.netAccess)) ? u.netAccess : [];
+    if (logs.length) return logs.slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); })[0];
+    var ds = (u && u.netDevices) || {}, best = null;
+    Object.keys(ds).forEach(function (k) { var d = ds[k]; if (d && (!best || (d.lastSeen || 0) > (best.lastSeen || 0))) best = d; });
+    return best;
+  }
+  function networkAlertsOf(u) {
+    var out = [], active = activeDevicesOf(u);
+    if (active.length > 1) out.push('複数端末が同時にオンライン（' + active.length + '台）');
+    var logs = ((u && u.netAccess) || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+    if (logs.length > 1 && logs[0].ip && logs[1].ip && logs[0].ip !== logs[1].ip && logs[0].deviceId !== logs[1].deviceId && (logs[0].ts - logs[1].ts) <= 600000) {
+      out.push('10分以内に別端末・別回線からアクセス');
+    }
+    return out;
+  }
+  function netChipClass(n) {
+    return n && n.kind === 'corp' ? 'corp' : n && n.kind === 'secure' ? 'warn' : n && n.kind === 'hosting' ? 'host' : 'unknown';
+  }
+
   function recordLogin(uid, data) {
     if (!db || !uid) return;
     var now = Date.now();
@@ -2433,7 +2687,17 @@
   }
   function presenceWrite(uid) {
     if (!db || !uid || document.hidden) return;
-    db.collection(COLLECTION).doc(uid).set({ lastSeen: Date.now() }, { merge: true }).catch(function () {});
+    var now = Date.now(), ref = db.collection(COLLECTION).doc(uid);
+    if (currentDeviceId && networkConfig().enabled !== false) {
+      try {
+        ref.update('lastSeen', now, 'netUpdated', now,
+          new firebase.firestore.FieldPath('netDevices', currentDeviceId, 'lastSeen'), now).catch(function () {
+            ref.set({ lastSeen: now }, { merge: true }).catch(function () {});
+          });
+        return;
+      } catch (e) {}
+    }
+    ref.set({ lastSeen: now }, { merge: true }).catch(function () {});
   }
   function startPresence(uid) {
     stopPresence();
@@ -2462,6 +2726,9 @@
     if (adminPass) list = list.filter(function (u) { return u.agg.examPassed > 0; });
     if (adminAccess !== 'all') list = list.filter(function (u) { return accessStateOf(u) === adminAccess; });
     if (adminMaintOk) list = list.filter(function (u) { return !!u.maintOk; });
+    if (adminNetwork === 'alert') list = list.filter(function (u) { return networkAlertsOf(u).length > 0; });
+    else if (adminNetwork === 'corp') list = list.filter(function (u) { var n = latestNetworkOf(u); return n && n.kind === 'corp'; });
+    else if (adminNetwork === 'secure') list = list.filter(function (u) { var n = latestNetworkOf(u); return n && (n.kind === 'secure' || n.kind === 'hosting'); });
     list.sort(function (a, b) {
       if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
       if (adminSort === 'rate')     return b.agg.rate - a.agg.rate;
@@ -2597,6 +2864,12 @@
           '<button class="sfqc-fchip' + (adminMaintOk ? ' on' : '') + '" data-maintok="1" title="メンテナンス中でも利用できるアカウントだけを表示">🛠 メンテ許可</button>' +
         '</div>';
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
+          '<span class="sfqc-sort-label">接続:</span>' +
+          '<button class="sfqc-fchip' + (adminNetwork === 'alert' ? ' on' : '') + '" data-network="alert">⚠ 接続確認</button>' +
+          '<button class="sfqc-fchip' + (adminNetwork === 'corp' ? ' on' : '') + '" data-network="corp">🏢 登録企業回線</button>' +
+          '<button class="sfqc-fchip' + (adminNetwork === 'secure' ? ' on' : '') + '" data-network="secure">🛡️ VPN/クラウド候補</button>' +
+        '</div>';
+      html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
           '<span class="sfqc-sort-label">並び順:</span>' +
           sortBtn('updated', '最終更新') + sortBtn('answered', '解答数') + sortBtn('rate', '正答率') + sortBtn('days', '学習日数') + sortBtn('name', '名前') +
         '</div>';
@@ -2641,6 +2914,9 @@
         var maintChip = u.maintOk ? '<span class="sfqc-acc-access maint" title="メンテナンス中でもログイン・学習できます">🛠 メンテ中も可</span>' : '';
         var expChipRow = (u.expiredAt && u.access !== 'approved')
           ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効</span>' : '';
+        var latestNet = latestNetworkOf(u), netAlerts = networkAlertsOf(u);
+        var netChip = latestNet ? '<span class="sfqc-net-chip ' + netChipClass(latestNet) + '" title="' + esc((latestNet.org || '') + (latestNet.ip ? ' / ' + latestNet.ip : '')) + '">' + esc(latestNet.label || '接続情報あり') + '</span>' : '';
+        var netAlertChip = netAlerts.length ? '<span class="sfqc-net-chip warn" title="' + esc(netAlerts.join(' / ')) + '">⚠ 接続確認</span>' : '';
         var maintBtn = '<button class="sfqc-act-maint' + (u.maintOk ? ' on' : '') + '" data-mok-uid="' + esc(u.uid) + '" data-mok-name="' + esc(u.name) + '" data-mok-state="' + (u.maintOk ? '0' : '1') + '" title="メンテナンス中でも利用できるアカウントにする">' +
           (u.maintOk ? '🛠 メンテ許可を解除' : '🛠 メンテ許可') + '</button>';
         html +=
@@ -2648,7 +2924,7 @@
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + reqAtChip + maintChip + expChipRow +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + reqAtChip + maintChip + expChipRow + netChip + netAlertChip +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
@@ -2711,6 +2987,9 @@
     });
     body.querySelectorAll('[data-access]').forEach(function (b) {
       b.addEventListener('click', function () { var v = b.getAttribute('data-access'); adminAccess = (adminAccess === v ? 'all' : v); renderAdmin(); });
+    });
+    body.querySelectorAll('[data-network]').forEach(function (b) {
+      b.addEventListener('click', function () { var v = b.getAttribute('data-network'); adminNetwork = (adminNetwork === v ? 'all' : v); renderAdmin(); });
     });
     body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
       b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
@@ -2835,6 +3114,47 @@
       '</div>';
   }
 
+  function networkDetailHTML(u) {
+    var ds = (u && u.netDevices) || {};
+    var devices = Object.keys(ds).map(function (k) { var d = ds[k] || {}; d._id = k; return d; })
+      .sort(function (a, b) { return (b.lastSeen || 0) - (a.lastSeen || 0); });
+    var logs = ((u && u.netAccess) || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+    if (!devices.length && !logs.length) {
+      return '<div class="sfqc-sec">🔐 接続・端末情報</div><div class="sfqc-net-card">まだ接続情報がありません。新版の公開後、承認済みの利用者が次にアクセスすると記録されます。</div>';
+    }
+    var latest = latestNetworkOf(u), alerts = networkAlertsOf(u), active = activeDevicesOf(u);
+    var html = '<div class="sfqc-sec">🔐 接続・端末情報</div>';
+    if (alerts.length) html += '<div class="sfqc-net-alert">⚠️ ' + esc(alerts.join(' ／ ')) + '</div>';
+    html += '<div class="sfqc-kv-grid">' +
+      kv('最新の接続判定', latest ? (latest.label || '判定なし') : '—') +
+      kv('マスク済みIP', latest && latest.ip ? latest.ip : '—') +
+      kv('回線組織 / ASN', latest ? ([latest.org, latest.asn].filter(Boolean).join(' / ') || '—') : '—') +
+      kv('国・地域', latest ? ([latest.country, latest.region, latest.city].filter(Boolean).join(' / ') || '—') : '—') +
+      kv('登録端末', devices.length + ' 台') +
+      kv('現在オンライン端末', active.length + ' 台') +
+      '</div>';
+    html += '<div class="sfqc-net-grid">' + devices.map(function (d) {
+      var loc = [d.country, d.region, d.city].filter(Boolean).join(' / ');
+      var on = active.indexOf(d._id) >= 0;
+      return '<div class="sfqc-net-card"><strong>' + (on ? '🟢 ' : '💻 ') + esc((d.os || '不明') + ' / ' + (d.browser || '不明')) + '</strong><br>' +
+        '<span class="sfqc-net-chip ' + netChipClass(d) + '">' + esc(d.label || '判定なし') + '</span><br>' +
+        'IP: ' + esc(d.ip || '—') + '<br>回線: ' + esc([d.org, d.asn].filter(Boolean).join(' / ') || '—') + '<br>' +
+        '地域: ' + esc(loc || '—') + '<br>言語/時差: ' + esc([d.language, d.timezone].filter(Boolean).join(' / ') || '—') + '<br>' +
+        '画面: ' + esc(d.screen || '—') + '　記録: ' + (d.loginCount || 0) + '回<br>' +
+        '<span class="muted">端末ID ' + esc(String(d._id || '').slice(0, 12)) + '… ／ 初回 ' + esc(fmtDateTime(d.firstSeen)) + ' ／ 最終 ' + esc(fmtDateTime(d.lastSeen)) + '</span></div>';
+    }).join('') + '</div>';
+    if (logs.length) {
+      html += '<details class="sfqc-rd"><summary>🌐 接続履歴（直近' + networkRetainDays() + '日・' + logs.length + '件）</summary><div class="sfqc-login-hist">' +
+        logs.slice(0, 30).map(function (e, idx) {
+          return '<div class="sfqc-login-row"><span class="sfqc-login-no">' + (idx + 1) + '</span><span>🕒 ' + esc(fmtDateTime(e.ts)) + '　' +
+            esc(e.ip || '—') + '　' + esc(e.org || '回線不明') + '　' + esc(e.label || '') + '　' + esc((e.os || '') + (e.browser ? ' / ' + e.browser : '')) + '</span>' +
+            (idx === 0 ? '<span class="sfqc-login-latest">最新</span>' : '') + '</div>';
+        }).join('') + '</div></details>';
+    }
+    html += '<div class="sfqc-itnote">IP・VPN・企業回線の判定は参考情報です。携帯回線、共有回線、VPN、スプリットトンネル等で変わるため、この情報だけで本人性や不正利用を断定しないでください。生のIPは保存していません。</div>';
+    return html;
+  }
+
   function kv(label, val) {
     return '<div class="sfqc-kv"><div class="sfqc-k">' + esc(label) + '</div><div class="sfqc-v">' + esc(String(val)) + '</div></div>';
   }
@@ -2863,6 +3183,7 @@
             (idx === 0 ? '<span class="sfqc-login-latest">最新</span>' : '') + '</div>';
         }).join('') + '</div></details>';
     }
+    html += networkDetailHTML(u);
     html += '<div><button class="sfqc-del-doc" data-deluid="' + esc(u.uid) + '" data-delname="' + esc(u.name) + '">🗑 このアカウントを完全削除（全データ）</button></div>';
     u.certs.forEach(function (c) { html += certDetailHTML(c, u.uid, u.name); });
     var primary = u.certs.slice().sort(function (a, b) { return b.stats.attempts - a.stats.attempts; })[0];
@@ -3412,10 +3733,13 @@
       'SRS総数', 'SRS期限到来',
       '用語習得', '用語学習中', '用語総数',
       '教科書読了', '教科書しおり', 'メモ数',
-      '学習日数', '学習時間(分)', '最終学習日', '受験予定日', '日次目標'
+      '学習日数', '学習時間(分)', '最終学習日', '受験予定日', '日次目標',
+      '接続判定', '判定信頼度', 'マスク済みIP', '回線組織', 'ASN', '接続国', '接続地域', '接続都市',
+      '端末数', 'オンライン端末数', '接続注意'
     ];
     var lines = [head.join(',')];
     adminUsers.forEach(function (u) {
+      var n = latestNetworkOf(u), ds = Object.keys(u.netDevices || {}), active = activeDevicesOf(u), alerts = networkAlertsOf(u);
       u.certs.forEach(function (c) {
         var s = c.stats;
         var row = [
@@ -3426,7 +3750,9 @@
           s.srsTotal, s.srsDue,
           s.vocab, s.vocabLearning, s.vocabTotal,
           s.tbmDone, s.tbmBm, s.notes,
-          s.daysActive, Math.round((s.studySec || 0) / 60), s.lastStudyDate, s.examDate, s.goal
+          s.daysActive, Math.round((s.studySec || 0) / 60), s.lastStudyDate, s.examDate, s.goal,
+          n ? n.label : '', n ? n.confidence : '', n ? n.ip : '', n ? n.org : '', n ? n.asn : '',
+          n ? n.country : '', n ? n.region : '', n ? n.city : '', ds.length, active.length, alerts.join(' / ')
         ];
         lines.push(row.map(csvCell).join(','));
       });
@@ -3445,6 +3771,9 @@
     accessStateOf: accessStateOf, isApplicant: isApplicant,
     mailEnabled: mailEnabled, mailParams: mailParams, mailThrottled: mailThrottled, idOf: idOf,
     sha256Hex: sha256Hex, matchAdmin: matchAdmin, sanitizeId: sanitizeId,
+    parseTrace: parseTrace, ipv4Int: ipv4Int, ipInCidr: ipInCidr, maskIp: maskIp,
+    corporateMatch: corporateMatch, classifyNetwork: classifyNetwork, pruneNetworkData: pruneNetworkData,
+    activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf, networkDetailHTML: networkDetailHTML,
     INACTIVE_DAYS: INACTIVE_DAYS };
 
   function init() {
