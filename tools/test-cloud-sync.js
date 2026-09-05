@@ -232,6 +232,14 @@ t('isApplicant: 通知バッジの母数は「未承認かつ申請あり」', (
   ok(!T.isApplicant({ access: 'approved', req: { name: 'A', ts: NOW } }), '承認済みは対象外');
 });
 
+t('reqChipHTML: 固定文言でなく申請時に入力された名前を表示する', () => {
+  const html = T.reqChipHTML({ name: 'ログインID', access: 'approved', req: { name: '山田太郎', ts: NOW } });
+  ok(html.indexOf('👤 山田太郎') >= 0, '申請名を表示');
+  ok(html.indexOf('👤 申請 ') < 0, '固定の「申請」表示にしない');
+  const escaped = T.reqChipHTML({ req: { name: '<img src=x>', ts: NOW } });
+  ok(escaped.indexOf('&lt;img') >= 0 && escaped.indexOf('<img src=x>') < 0, '申請名をエスケープ');
+});
+
 /* ---- 接続元・端末情報（IP はマスクし、判定は参考表示） ---- */
 t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
   const x = T.parseTrace('ip=203.0.113.42\nloc=JP\nwarp=off\n');

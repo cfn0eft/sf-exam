@@ -2710,6 +2710,7 @@
     var q = (adminFilter || '').toLowerCase().trim();
     if (q) list = list.filter(function (u) {
       return (u.name || '').toLowerCase().indexOf(q) >= 0 ||
+             requestNameOf(u).toLowerCase().indexOf(q) >= 0 ||
              (u.email || '').toLowerCase().indexOf(q) >= 0 ||
              (u.uid || '').toLowerCase().indexOf(q) >= 0;
     });
@@ -2734,6 +2735,7 @@
     if (q) list = list.filter(function (u) {
       var n = latestNetworkOf(u) || {};
       return (u.name || '').toLowerCase().indexOf(q) >= 0 ||
+             requestNameOf(u).toLowerCase().indexOf(q) >= 0 ||
              (u.email || '').toLowerCase().indexOf(q) >= 0 ||
              (u.uid || '').toLowerCase().indexOf(q) >= 0 ||
              (n.ip || '').toLowerCase().indexOf(q) >= 0 ||
@@ -2768,11 +2770,16 @@
     var m = ACCESS_CHIP[accessStateOf(u)] || ACCESS_CHIP.noreq;
     return '<span class="sfqc-acc-access ' + m[0] + '" title="' + esc(m[2]) + '">' + m[1] + '</span>';
   }
+  function requestNameOf(u) {
+    var name = (u && u.req && typeof u.req.name === 'string') ? u.req.name.trim() : '';
+    return name || (u && u.name) || '(名前未入力)';
+  }
   function reqChipHTML(u) {
     if (!(u && u.req && u.req.ts)) return '';
     var unblock = (u.access === 'blocked');
-    return '<span class="sfqc-acc-access pend" title="' + (unblock ? '停止の解除を申請しています' : 'あなたの承認を待っています') + '">' +
-      (unblock ? '👤 解除申請 ' : '👤 申請 ') + esc(fmtDate(u.req.ts)) + '</span>';
+    var reqName = requestNameOf(u);
+    return '<span class="sfqc-acc-access pend" title="申請名: ' + esc(reqName) + '／' + (unblock ? '停止の解除を申請しています' : '利用申請時に入力された名前です') + '">' +
+      '👤 ' + esc(reqName) + (unblock ? '（解除申請） ' : ' ') + esc(fmtDate(u.req.ts)) + '</span>';
   }
   function applicationsSectionHTML() {
     var apps = adminUsers.filter(isApplicant);
@@ -2833,7 +2840,7 @@
         kpi(secure, 'VPN/クラウド候補') + kpi(alerts, '接続確認') + '</div>' +
       '<div class="sfqc-itnote">マスク済みIP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
       '<div class="sfqc-toolbar">' +
-        '<input id="sfqc-net-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UID・IP・回線で絞り込み" value="' + esc(adminNetworkFilter) + '">' +
+        '<input id="sfqc-net-q" class="sfqc-search" type="search" placeholder="🔍 申請名・メール・UID・IP・回線で絞り込み" value="' + esc(adminNetworkFilter) + '">' +
         '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
       '</div>' +
       '<div class="sfqc-toolbar sfqc-toolbar2">' +
@@ -2908,7 +2915,7 @@
       html += applicationsSectionHTML();
       html += '<div class="sfqc-sec">ユーザー</div>';
       html += '<div class="sfqc-toolbar">' +
-          '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
+          '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 申請名・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
           '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
         '</div>';
       var accessCounts = { approved: 0, applied: 0, noreq: 0, blocked: 0, unblockReq: 0 };
@@ -3843,7 +3850,7 @@
   window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
     maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
     accessExpired: accessExpired, inactiveDaysOf: inactiveDaysOf, cacheApproval: cacheApproval, cachedApprovalValid: cachedApprovalValid,
-    accessStateOf: accessStateOf, isApplicant: isApplicant,
+    accessStateOf: accessStateOf, isApplicant: isApplicant, requestNameOf: requestNameOf, reqChipHTML: reqChipHTML,
     mailEnabled: mailEnabled, mailParams: mailParams, mailThrottled: mailThrottled, idOf: idOf,
     sha256Hex: sha256Hex, matchAdmin: matchAdmin, sanitizeId: sanitizeId,
     parseTrace: parseTrace, ipv4Int: ipv4Int, ipInCidr: ipInCidr, maskIp: maskIp,
