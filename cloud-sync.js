@@ -504,7 +504,6 @@
       '<div id="sfqc-menu">' +
         '<div class="sfqc-status" id="sfqc-status"></div>' +
         '<button id="sfqc-admin-btn" type="button">👑 管理者ビュー</button>' +
-        '<button id="sfqc-network-info" type="button">🔐 接続情報について</button>' +
         '<button id="sfqc-logout" type="button">ログアウト</button>' +
       '</div>';
     document.body.appendChild(elBadge);
@@ -617,10 +616,6 @@
     document.addEventListener('click', function (e) { if (elBadge && !elBadge.contains(e.target)) elBadge.classList.remove('open'); });
 
     document.getElementById('sfqc-logout').addEventListener('click', function () { elBadge.classList.remove('open'); doLogout(); });
-    document.getElementById('sfqc-network-info').addEventListener('click', function () {
-      elBadge.classList.remove('open');
-      alert('接続情報について\n\n不正利用の確認とアカウント管理のため、承認済みアカウントのログイン時に次の情報を記録します。\n\n・末尾を伏せたIPアドレス（生のIPは保存しません）\n・接続元の国/地域、回線組織、ASN\n・企業回線/VPN/クラウド回線の参考判定\n・ブラウザ、OS、言語、タイムゾーン、画面サイズ\n・アカウントとブラウザの組み合わせごとのランダムな端末識別子\n・アクセス日時\n\n接続判定にはCloudflareとipwho.isを利用し、直近' + networkRetainDays() + '日分を保存対象とします。管理者だけが確認でき、判定だけで利用を自動停止することはありません。');
-    });
     elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
@@ -2079,6 +2074,7 @@
   var adminAccess = 'all';
   var adminMaintOk = false;
   var adminNetwork = 'all';
+  var adminNetworkFilter = '';
   var adminPendingCount = 0;
   var adminTab = 'users';
   var dmFilter = '';
@@ -2090,13 +2086,10 @@
   function adminDashboardHTML() {
     var total = adminUsers.length, today = admToday();
     var actToday = 0, actWeek = 0, sumAtt = 0, sumCorr = 0, sumExF = 0, sumExFP = 0, sumStudy = 0;
-    var netTracked = 0, netSpecial = 0, netAlerts = 0;
     adminUsers.forEach(function (u) {
       var a = u.agg; sumAtt += a.attempts; sumCorr += a.correct; sumExF += a.examFull; sumExFP += a.examFullPassed; sumStudy += a.studySec;
       if (a.lastStudyDate === today) actToday++;
       if (admDaysAgo(a.lastStudyDate) <= 6) actWeek++;
-      var n = latestNetworkOf(u); if (n) { netTracked++; if (n.kind === 'corp' || n.kind === 'secure' || n.kind === 'hosting') netSpecial++; }
-      if (networkAlertsOf(u).length) netAlerts++;
     });
     var avgRate = sumAtt ? Math.round(sumCorr / sumAtt * 100) : 0;
     var passRate = sumExF ? Math.round(sumExFP / sumExF * 100) : 0;
@@ -2106,7 +2099,7 @@
       kpi('🟢 ' + onlineNow, '現在オンライン') +
       kpi(total, '総ユーザー') + kpi(actToday, '今日のアクティブ') + kpi(actWeek, '今週のアクティブ') +
       kpi(avgRate + '%', '平均正答率') + kpi(sumAtt.toLocaleString(), '総解答数') + kpi(sumExF, '本番模試 受験') + kpi(passRate + '%', '本番合格率') +
-      kpi(fmtDur(sumStudy), '総学習時間') + kpi(netTracked, '接続情報あり') + kpi(netSpecial, '企業/VPN/クラウド判定') + kpi(netAlerts, '接続確認') +
+      kpi(fmtDur(sumStudy), '総学習時間') +
       '</div>';
 
     html += timeSeriesHTML();
@@ -2726,15 +2719,34 @@
     if (adminPass) list = list.filter(function (u) { return u.agg.examPassed > 0; });
     if (adminAccess !== 'all') list = list.filter(function (u) { return accessStateOf(u) === adminAccess; });
     if (adminMaintOk) list = list.filter(function (u) { return !!u.maintOk; });
-    if (adminNetwork === 'alert') list = list.filter(function (u) { return networkAlertsOf(u).length > 0; });
-    else if (adminNetwork === 'corp') list = list.filter(function (u) { var n = latestNetworkOf(u); return n && n.kind === 'corp'; });
-    else if (adminNetwork === 'secure') list = list.filter(function (u) { var n = latestNetworkOf(u); return n && (n.kind === 'secure' || n.kind === 'hosting'); });
     list.sort(function (a, b) {
       if (adminSort === 'answered') return b.agg.answered - a.agg.answered;
       if (adminSort === 'rate')     return b.agg.rate - a.agg.rate;
       if (adminSort === 'days')     return b.agg.daysActive - a.agg.daysActive;
       if (adminSort === 'name')     return (a.name || '').localeCompare(b.name || '', 'ja');
       return (b.updated || 0) - (a.updated || 0);
+    });
+    return list;
+  }
+
+  function filterNetworkUsers() {
+    var list = adminUsers.slice(), q = (adminNetworkFilter || '').toLowerCase().trim();
+    if (q) list = list.filter(function (u) {
+      var n = latestNetworkOf(u) || {};
+      return (u.name || '').toLowerCase().indexOf(q) >= 0 ||
+             (u.email || '').toLowerCase().indexOf(q) >= 0 ||
+             (u.uid || '').toLowerCase().indexOf(q) >= 0 ||
+             (n.ip || '').toLowerCase().indexOf(q) >= 0 ||
+             (n.org || '').toLowerCase().indexOf(q) >= 0 ||
+             (n.asn || '').toLowerCase().indexOf(q) >= 0;
+    });
+    if (adminNetwork === 'alert') list = list.filter(function (u) { return networkAlertsOf(u).length > 0; });
+    else if (adminNetwork === 'corp') list = list.filter(function (u) { var n = latestNetworkOf(u); return n && n.kind === 'corp'; });
+    else if (adminNetwork === 'secure') list = list.filter(function (u) { var n = latestNetworkOf(u); return n && (n.kind === 'secure' || n.kind === 'hosting'); });
+    list.sort(function (a, b) {
+      var aa = networkAlertsOf(a).length, ba = networkAlertsOf(b).length;
+      if (aa !== ba) return ba - aa;
+      return (b.netUpdated || 0) - (a.netUpdated || 0);
     });
     return list;
   }
@@ -2803,6 +2815,58 @@
     return head + bulk + '<div class="sfqc-app-list">' + cards + '</div><div class="sfqc-divider"></div>';
   }
 
+  function networkTabHTML() {
+    var list = filterNetworkUsers();
+    var tracked = 0, corporate = 0, secure = 0, alerts = 0;
+    adminUsers.forEach(function (u) {
+      var n = latestNetworkOf(u);
+      if (n) {
+        tracked++;
+        if (n.kind === 'corp') corporate++;
+        if (n.kind === 'secure' || n.kind === 'hosting') secure++;
+      }
+      if (networkAlertsOf(u).length) alerts++;
+    });
+    var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
+    var html = '<div class="sfqc-sec" style="margin-top:0">🔐 接続元・端末</div>' +
+      '<div class="sfqc-kpis">' + kpi(tracked, '接続情報あり') + kpi(corporate, '登録企業回線') +
+        kpi(secure, 'VPN/クラウド候補') + kpi(alerts, '接続確認') + '</div>' +
+      '<div class="sfqc-itnote">マスク済みIP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
+      '<div class="sfqc-toolbar">' +
+        '<input id="sfqc-net-q" class="sfqc-search" type="search" placeholder="🔍 名前・メール・UID・IP・回線で絞り込み" value="' + esc(adminNetworkFilter) + '">' +
+        '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
+      '</div>' +
+      '<div class="sfqc-toolbar sfqc-toolbar2">' +
+        '<span class="sfqc-sort-label">接続:</span>' +
+        '<button class="sfqc-fchip' + (adminNetwork === 'all' ? ' on' : '') + '" data-network="all">すべて</button>' +
+        '<button class="sfqc-fchip' + (adminNetwork === 'alert' ? ' on' : '') + '" data-network="alert">⚠ 接続確認 ' + alerts + '</button>' +
+        '<button class="sfqc-fchip' + (adminNetwork === 'corp' ? ' on' : '') + '" data-network="corp">🏢 登録企業回線 ' + corporate + '</button>' +
+        '<button class="sfqc-fchip' + (adminNetwork === 'secure' ? ' on' : '') + '" data-network="secure">🛡️ VPN/クラウド候補 ' + secure + '</button>' +
+      '</div>';
+    if (!list.length) return html + '<div class="sfqc-empty">条件に合う接続情報がありません。</div>';
+    list.forEach(function (u, i) {
+      var n = latestNetworkOf(u), warnings = networkAlertsOf(u), devices = Object.keys(u.netDevices || {}), active = activeDevicesOf(u);
+      var netChip = n ? '<span class="sfqc-net-chip ' + netChipClass(n) + '">' + esc(n.label || '判定なし') + '</span>' : '<span class="sfqc-net-chip unknown">未記録</span>';
+      var warningChip = warnings.length ? '<span class="sfqc-net-chip warn" title="' + esc(warnings.join(' / ')) + '">⚠ 接続確認</span>' : '';
+      html += '<div class="sfqc-acc">' +
+        '<div class="sfqc-acc-head">' +
+          '<div class="sfqc-acc-id"><span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + netChip + warningChip +
+            (active.length ? '<span class="sfqc-online"><span class="sfqc-online-dot"></span>' + active.length + '端末オンライン</span>' : '') + '</div>' +
+          (u.email ? '<span class="sfqc-acc-email-line">' + esc(u.email) + '</span>' : '') +
+          '<span class="sfqc-acc-stats">' +
+            '<span>最終接続 <b>' + (n ? esc(fmtDateTime(n.ts || n.lastSeen)) : '—') + '</b></span>' +
+            '<span>IP <b>' + esc(n && n.ip ? n.ip : '—') + '</b></span>' +
+            '<span>回線 <b>' + esc(n && n.org ? n.org : '—') + '</b></span>' +
+            '<span>端末 <b>' + devices.length + '</b>台</span>' +
+          '</span>' +
+          '<span class="sfqc-acc-actions"><button class="sfqc-act-detail sfqc-net-detail" data-net-i="' + i + '">接続詳細 ▾</button></span>' +
+        '</div>' +
+        '<div class="sfqc-detail" id="sfqc-net-det-' + i + '"></div>' +
+      '</div>';
+    });
+    return html;
+  }
+
   function renderAdmin() {
     var body = document.getElementById('sfqc-adm-body');
     rebuildRows();
@@ -2817,12 +2881,14 @@
 
     var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
     var fbPending = adminFeedback.filter(function (r) { return !r.reply; }).length;
+    var networkWarningCount = adminUsers.filter(function (u) { return networkAlertsOf(u).length > 0; }).length;
     var tabBtn = function (k, l, badge) {
       return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
         (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
     };
     var html = '<div class="sfqc-tabs">' +
         tabBtn('users', '👥 ユーザー', adminPendingCount || 0) +
+        tabBtn('network', '🔐 接続元・端末', networkWarningCount || 0) +
         tabBtn('dash', '📊 ダッシュボード', 0) +
         tabBtn('ann', '📢 お知らせ', 0) +
         tabBtn('dm', '💬 DM', (totalUnread + fbPending) || 0) +
@@ -2832,6 +2898,8 @@
       html += maintenanceSectionHTML();
       html += adminDashboardHTML();
       html += auditLogHTML();
+    } else if (adminTab === 'network') {
+      html += networkTabHTML();
     } else if (adminTab === 'ann') {
       html += announcementsSectionHTML();
     } else if (adminTab === 'dm') {
@@ -2862,12 +2930,6 @@
             (accessCounts.unblockReq ? ' title="うち ' + accessCounts.unblockReq + ' 件は解除を申請しています"' : '') +
             '>🚫 停止中 ' + accessCounts.blocked + (accessCounts.unblockReq ? '（📩' + accessCounts.unblockReq + '）' : '') + '</button>' +
           '<button class="sfqc-fchip' + (adminMaintOk ? ' on' : '') + '" data-maintok="1" title="メンテナンス中でも利用できるアカウントだけを表示">🛠 メンテ許可</button>' +
-        '</div>';
-      html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
-          '<span class="sfqc-sort-label">接続:</span>' +
-          '<button class="sfqc-fchip' + (adminNetwork === 'alert' ? ' on' : '') + '" data-network="alert">⚠ 接続確認</button>' +
-          '<button class="sfqc-fchip' + (adminNetwork === 'corp' ? ' on' : '') + '" data-network="corp">🏢 登録企業回線</button>' +
-          '<button class="sfqc-fchip' + (adminNetwork === 'secure' ? ' on' : '') + '" data-network="secure">🛡️ VPN/クラウド候補</button>' +
         '</div>';
       html += '<div class="sfqc-toolbar sfqc-toolbar2">' +
           '<span class="sfqc-sort-label">並び順:</span>' +
@@ -2914,9 +2976,6 @@
         var maintChip = u.maintOk ? '<span class="sfqc-acc-access maint" title="メンテナンス中でもログイン・学習できます">🛠 メンテ中も可</span>' : '';
         var expChipRow = (u.expiredAt && u.access !== 'approved')
           ? '<span class="sfqc-acc-access maint" title="' + INACTIVE_DAYS + '日以上アクセスがなく承認が失効しました">🧹 休眠失効</span>' : '';
-        var latestNet = latestNetworkOf(u), netAlerts = networkAlertsOf(u);
-        var netChip = latestNet ? '<span class="sfqc-net-chip ' + netChipClass(latestNet) + '" title="' + esc((latestNet.org || '') + (latestNet.ip ? ' / ' + latestNet.ip : '')) + '">' + esc(latestNet.label || '接続情報あり') + '</span>' : '';
-        var netAlertChip = netAlerts.length ? '<span class="sfqc-net-chip warn" title="' + esc(netAlerts.join(' / ')) + '">⚠ 接続確認</span>' : '';
         var maintBtn = '<button class="sfqc-act-maint' + (u.maintOk ? ' on' : '') + '" data-mok-uid="' + esc(u.uid) + '" data-mok-name="' + esc(u.name) + '" data-mok-state="' + (u.maintOk ? '0' : '1') + '" title="メンテナンス中でも利用できるアカウントにする">' +
           (u.maintOk ? '🛠 メンテ許可を解除' : '🛠 メンテ許可') + '</button>';
         html +=
@@ -2924,7 +2983,7 @@
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + reqAtChip + maintChip + expChipRow + netChip + netAlertChip +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + reqAtChip + maintChip + expChipRow +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
@@ -2973,6 +3032,10 @@
     if (qIn) {
       qIn.addEventListener('input', function () { adminFilter = qIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
     }
+    var netQIn = document.getElementById('sfqc-net-q');
+    if (netQIn) {
+      netQIn.addEventListener('input', function () { adminNetworkFilter = netQIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-net-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
+    }
     body.querySelectorAll('.sfqc-sort').forEach(function (b) {
       b.addEventListener('click', function () { adminSort = b.getAttribute('data-sort'); renderAdmin(); });
     });
@@ -2989,7 +3052,7 @@
       b.addEventListener('click', function () { var v = b.getAttribute('data-access'); adminAccess = (adminAccess === v ? 'all' : v); renderAdmin(); });
     });
     body.querySelectorAll('[data-network]').forEach(function (b) {
-      b.addEventListener('click', function () { var v = b.getAttribute('data-network'); adminNetwork = (adminNetwork === v ? 'all' : v); renderAdmin(); });
+      b.addEventListener('click', function () { var v = b.getAttribute('data-network'); adminNetwork = (v === 'all' || adminNetwork === v) ? 'all' : v; renderAdmin(); });
     });
     body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
       b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
@@ -3003,8 +3066,11 @@
     body.querySelectorAll('[data-rej-uid]').forEach(function (b) {
       b.addEventListener('click', function () { rejectApplication(b.getAttribute('data-rej-uid'), b.getAttribute('data-rej-name')); });
     });
-    body.querySelectorAll('.sfqc-act-detail').forEach(function (b) {
+    body.querySelectorAll('.sfqc-act-detail:not(.sfqc-net-detail)').forEach(function (b) {
       b.addEventListener('click', function () { toggleDetail(+b.getAttribute('data-i')); });
+    });
+    body.querySelectorAll('.sfqc-net-detail').forEach(function (b) {
+      b.addEventListener('click', function () { toggleNetworkDetail(+b.getAttribute('data-net-i')); });
     });
     body.querySelectorAll('[data-chat-uid]').forEach(function (b) {
       b.addEventListener('click', function () { openChat(b.getAttribute('data-chat-uid'), b.getAttribute('data-chat-name'), 'admin'); });
@@ -3159,6 +3225,16 @@
     return '<div class="sfqc-kv"><div class="sfqc-k">' + esc(label) + '</div><div class="sfqc-v">' + esc(String(val)) + '</div></div>';
   }
 
+  function toggleNetworkDetail(i) {
+    var box = document.getElementById('sfqc-net-det-' + i);
+    if (!box) return;
+    if (box.classList.contains('show')) { box.classList.remove('show'); return; }
+    var u = filterNetworkUsers()[i];
+    if (!u) return;
+    box.innerHTML = '<div class="sfqc-detail-inner">' + networkDetailHTML(u) + '</div>';
+    box.classList.add('show');
+  }
+
   function toggleDetail(i) {
     var box = document.getElementById('sfqc-det-' + i);
     if (!box) return;
@@ -3183,7 +3259,6 @@
             (idx === 0 ? '<span class="sfqc-login-latest">最新</span>' : '') + '</div>';
         }).join('') + '</div></details>';
     }
-    html += networkDetailHTML(u);
     html += '<div><button class="sfqc-del-doc" data-deluid="' + esc(u.uid) + '" data-delname="' + esc(u.name) + '">🗑 このアカウントを完全削除（全データ）</button></div>';
     u.certs.forEach(function (c) { html += certDetailHTML(c, u.uid, u.name); });
     var primary = u.certs.slice().sort(function (a, b) { return b.stats.attempts - a.stats.attempts; })[0];
