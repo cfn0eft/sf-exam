@@ -153,6 +153,7 @@
       '.sfqc-acc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden}' +
       '.sfqc-acc-head{display:flex;align-items:center;gap:12px;padding:12px 14px;flex-wrap:wrap}' +
       '.sfqc-acc-name{font-weight:700;font-size:15px}' +
+      '.sfqc-name-edit{border:0;background:#eef2ff;color:#4338ca;border-radius:6px;padding:3px 7px;font-size:10.5px;font-weight:700;cursor:pointer}' +
       '.sfqc-acc-id{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:90px}' +
       '.sfqc-acc-id .sfqc-acc-access{margin-left:0}' +
       '.sfqc-acc-email-line{font-size:12px;color:#64748b;word-break:break-all}' +
@@ -2342,8 +2343,11 @@
     var byUid = {}, netCleanup = [];
     snap.forEach(function (d) {
       var data = d.data() || {};
-      var nm = data.name || (data.email ? String(data.email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
       var email = data.email || '';
+      var baseName = data.name || (email ? String(email).split('@')[0] : '') || ('(不明 ' + d.id.slice(0, 6) + ')');
+      var requestedName = (data.req && data.req.name) || baseName;
+      var displayName = (typeof data.displayName === 'string') ? data.displayName.trim() : '';
+      var nm = displayName || requestedName || baseName;
       var replies = (data.fbReplies && typeof data.fbReplies === 'object') ? data.fbReplies : {};
       if (Array.isArray(data.feedback)) {
         data.feedback.forEach(function (fb) {
@@ -2353,7 +2357,7 @@
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
       var netPruned = pruneNetworkData(data, Date.now());
       if (netPruned.changed) netCleanup.push({ uid: d.id, devices: netPruned.devices, access: netPruned.access });
-      var entry = { uid: d.id, name: nm, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: data.netUpdated || 0, certs: [] };
+      var entry = { uid: d.id, name: nm, baseName: baseName, displayName: displayName, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: data.netUpdated || 0, certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2772,7 +2776,7 @@
   }
   function requestNameOf(u) {
     var name = (u && u.req && typeof u.req.name === 'string') ? u.req.name.trim() : '';
-    return name || (u && u.name) || '(名前未入力)';
+    return name || (u && u.baseName) || (u && u.name) || '(名前未入力)';
   }
   function reqChipHTML(u) {
     if (!(u && u.req && u.req.ts)) return '';
@@ -2990,7 +2994,9 @@
             '<div class="sfqc-acc-head">' +
               '<div class="sfqc-acc-id">' +
                 '<label class="sfqc-app-check"><input type="checkbox" class="sfqc-usel" data-usel-uid="' + esc(u.uid) + '"' + (adminSelUsers[u.uid] ? ' checked' : '') + '></label>' +
-                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + accChip + reqAtChip + maintChip + expChipRow +
+                '<span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' +
+                '<button class="sfqc-name-edit" data-edit-name-uid="' + esc(u.uid) + '" data-edit-name-current="' + esc(u.name) + '" title="管理者用の表示名を編集">✏ 表示名</button>' +
+                accChip + reqAtChip + maintChip + expChipRow +
                 (isOnline(u) ? '<span class="sfqc-online" title="最終アクセス ' + esc(fmtDateTime(u.lastSeen)) + '"><span class="sfqc-online-dot"></span>オンライン</span>' : '') +
                 dormantLabel +
               '</div>' +
@@ -3063,6 +3069,9 @@
     });
     body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
       b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
+    });
+    body.querySelectorAll('[data-edit-name-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { editDisplayName(b.getAttribute('data-edit-name-uid'), b.getAttribute('data-edit-name-current')); });
     });
     body.querySelectorAll('[data-maintok]').forEach(function (b) {
       b.addEventListener('click', function () { adminMaintOk = !adminMaintOk; renderAdmin(); });
@@ -3350,6 +3359,29 @@
         toastSafe('「' + name + '」を' + verb + 'しました'); renderAdmin();
       })
       .catch(function (e) { alert('変更に失敗しました: ' + (e && e.message)); });
+  }
+
+  function editDisplayName(uid, current) {
+    if (!isAdmin || !db) return;
+    var next = prompt('管理者ビューで使う表示名を入力してください。\n空欄で確定すると、申請時の名前に戻ります。', current || '');
+    if (next === null) return;
+    next = next.trim();
+    if (next.length > 40) { alert('表示名は40文字以内で入力してください。'); return; }
+    var ts = Date.now(), payload = { updated: ts };
+    payload.displayName = next ? next : firebase.firestore.FieldValue.delete();
+    db.collection(COLLECTION).doc(uid).update(payload)
+      .then(function () {
+        var u = findUser(uid), before = current || '';
+        if (u) {
+          u.displayName = next;
+          u.name = next || requestNameOf(u);
+          u.updated = ts;
+        }
+        logAdmin('表示名変更', (before || '未設定') + ' → ' + (next || '申請名へ戻す'));
+        toastSafe(next ? '表示名を「' + next + '」に変更しました' : '表示名を申請時の名前に戻しました');
+        renderAdmin();
+      })
+      .catch(function (e) { alert('表示名の変更に失敗しました: ' + (e && e.message)); });
   }
 
   function setMaintOk(uid, name, on) {

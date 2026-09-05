@@ -233,6 +233,8 @@ t('isApplicant: 通知バッジの母数は「未承認かつ申請あり」', (
 });
 
 t('reqChipHTML: 固定文言でなく申請時に入力された名前を表示する', () => {
+  eq(T.requestNameOf({ name: '管理者表示名', baseName: '登録名', req: { name: '山田太郎' } }), '山田太郎', '申請名を優先');
+  eq(T.requestNameOf({ name: '管理者表示名', baseName: '登録名' }), '登録名', '申請が無い場合は元の登録名');
   const html = T.reqChipHTML({ name: 'ログインID', access: 'approved', req: { name: '山田太郎', ts: NOW } });
   ok(html.indexOf('👤 山田太郎') >= 0, '申請名を表示');
   ok(html.indexOf('👤 申請 ') < 0, '固定の「申請」表示にしない');

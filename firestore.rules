@@ -52,6 +52,7 @@ service cloud.firestore {
      *   notices     個別お知らせ（管理者→利用者）
      *   fbReplies   フィードバックへの管理者返信
      *   adminLog    管理者の操作ログ
+     *   displayName 管理者ビュー用の表示名（申請名は変更しない）
      * 進捗本体 stores は本人が書く（学習の保存そのもの）。
      * stores.<資格>.acquiredDate（資格の取得済み）も本人が書くが、これは
      * アプリ上「自分で取得を宣言する」ボタンがある正規の操作＝仕様どおり。
