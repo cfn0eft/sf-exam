@@ -243,6 +243,12 @@ t('reqChipHTML: 固定文言でなく申請時に入力された名前を表示�
 });
 
 /* ---- 接続元・端末情報（IP はマスクし、判定は参考表示） ---- */
+t('shouldRecordNetwork: admin自身と承認済み利用者を記録する', () => {
+  ok(T.shouldRecordNetwork(true, {}), 'adminはaccessフィールドが無くても記録');
+  ok(T.shouldRecordNetwork(false, { access: 'approved' }), '承認済み利用者を記録');
+  ok(!T.shouldRecordNetwork(false, { access: 'pending' }), '承認前は記録しない');
+});
+
 t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
   const x = T.parseTrace('ip=203.0.113.42\nloc=JP\nwarp=off\n');
   eq(x.ip, '203.0.113.42'); eq(x.loc, 'JP'); eq(x.warp, 'off');

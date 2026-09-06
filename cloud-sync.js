@@ -478,7 +478,7 @@
         '</div>' +
         '<div id="sfqc-msg" class="sfqc-msg"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
-        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、承認後のログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。生のIPは保存せず、判定結果は管理者だけが確認します。</span>' +
+        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、利用可能なアカウントのログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。生のIPは保存せず、判定結果は管理者だけが確認します。</span>' +
       '</div>';
   }
   function guideCardHTML() {
@@ -1090,7 +1090,7 @@
       if (isAdmin) watchAdminPending();
       cacheApproval(user.uid);
       recordLogin(user.uid, data);
-      if (!isAdmin) recordNetworkVisit(user.uid);
+      if (shouldRecordNetwork(isAdmin, data)) recordNetworkVisit(user.uid);
       startPresence(user.uid);
       if (!isAdmin) startUserMessaging(user.uid);
 
@@ -2616,6 +2616,9 @@
       return x.base;
     });
   }
+  function shouldRecordNetwork(admin, data) {
+    return !!admin || !!(data && data.access === 'approved');
+  }
   function pruneNetworkData(data, now) {
     data = data || {}; now = now || Date.now();
     var cutoff = now - networkRetainDays() * 86400000, devices = {}, changed = false;
@@ -3248,7 +3251,7 @@
       .sort(function (a, b) { return (b.lastSeen || 0) - (a.lastSeen || 0); });
     var logs = ((u && u.netAccess) || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
     if (!devices.length && !logs.length) {
-      return '<div class="sfqc-sec">🔐 接続・端末情報</div><div class="sfqc-net-card">まだ接続情報がありません。新版の公開後、承認済みの利用者が次にアクセスすると記録されます。</div>';
+      return '<div class="sfqc-sec">🔐 接続・端末情報</div><div class="sfqc-net-card">まだ接続情報がありません。利用可能なアカウントが次にログインすると記録されます。</div>';
     }
     var latest = latestNetworkOf(u), alerts = networkAlertsOf(u), active = activeDevicesOf(u);
     var html = '<div class="sfqc-sec">🔐 接続・端末情報</div>';
@@ -3931,7 +3934,7 @@
     accessStateOf: accessStateOf, isApplicant: isApplicant, requestNameOf: requestNameOf, reqChipHTML: reqChipHTML,
     mailEnabled: mailEnabled, mailParams: mailParams, mailThrottled: mailThrottled, idOf: idOf,
     sha256Hex: sha256Hex, matchAdmin: matchAdmin, sanitizeId: sanitizeId,
-    parseTrace: parseTrace, ipv4Int: ipv4Int, ipInCidr: ipInCidr, maskIp: maskIp,
+    parseTrace: parseTrace, ipv4Int: ipv4Int, ipInCidr: ipInCidr, maskIp: maskIp, shouldRecordNetwork: shouldRecordNetwork,
     corporateMatch: corporateMatch, classifyNetwork: classifyNetwork, pruneNetworkData: pruneNetworkData,
     networkDataSource: networkDataSource, buildNetworkRecord: buildNetworkRecord,
     activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf, networkDetailHTML: networkDetailHTML,
