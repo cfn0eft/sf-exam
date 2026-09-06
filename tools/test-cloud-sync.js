@@ -284,6 +284,22 @@ t('pruneNetworkData: 30日を超えた端末・接続履歴を除く', () => {
   eq(Object.keys(p.devices).length, 1); ok(p.devices.recent); eq(p.access.length, 1); ok(p.changed);
 });
 
+t('networkDataSource: 旧ルール用の互換保存から最新データを読める', () => {
+  eq(T.NETWORK_STORE_KEY, '__sfq_network__');
+  const data = {
+    netDevices: { old: { lastSeen: NOW - DAY } }, netAccess: [], netUpdated: NOW - DAY,
+    stores: { __sfq_network__: { devices: { current: { lastSeen: NOW } }, access: [{ ts: NOW }], updated: NOW } }
+  };
+  const src = T.networkDataSource(data);
+  ok(src.fallback, '新しい互換保存を優先'); ok(src.netDevices.current); eq(src.netAccess.length, 1);
+});
+
+t('buildNetworkRecord: 互換保存を引き継いで端末と履歴を更新する', () => {
+  const data = { stores: { __sfq_network__: { devices: { a: { firstSeen: NOW - DAY, lastSeen: NOW - DAY, loginCount: 2 } }, access: [], updated: NOW - DAY } } };
+  const next = T.buildNetworkRecord(data, 'a', { browser: 'Chrome', os: 'Windows', ip: '203.0.113.xxx' }, NOW);
+  eq(next.devices.a.firstSeen, NOW - DAY); eq(next.devices.a.loginCount, 3); eq(next.devices.a.lastSeen, NOW); eq(next.access.length, 1);
+});
+
 t('networkAlertsOf: 複数端末の同時接続と短時間の回線変更を検出する', () => {
   const u = {
     netDevices: { a: { lastSeen: NOW }, b: { lastSeen: NOW - 1000 } },

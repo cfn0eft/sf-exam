@@ -99,6 +99,7 @@
   var ONLINE_MS = 120000;
   var currentDeviceId = '';
   var NETWORK_DEFAULT_DAYS = 30;
+  var NETWORK_STORE_KEY = '__sfq_network__';
 
   function injectStyle() {
     var css = '' +
@@ -904,6 +905,8 @@
   }
   function doLogout() {
     if (!auth) return;
+    if (currentUser && currentUser.uid) clearNetworkSessionMark(currentUser.uid);
+    currentDeviceId = '';
     closeAdmin();
     stopAccessWatch();
     stopAdminPending();
@@ -1134,6 +1137,7 @@
       var acq = {}, lk = {};
       var stores = (data && data.stores) || {};
       Object.keys(stores).forEach(function (slug) {
+        if (slug === NETWORK_STORE_KEY) return;
         var s = stores[slug];
         if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; }
       });
@@ -2355,22 +2359,28 @@
         });
       }
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
-      var netPruned = pruneNetworkData(data, Date.now());
-      if (netPruned.changed) netCleanup.push({ uid: d.id, devices: netPruned.devices, access: netPruned.access });
-      var entry = { uid: d.id, name: nm, baseName: baseName, displayName: displayName, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: data.netUpdated || 0, certs: [] };
+      var netSource = networkDataSource(data), netPruned = pruneNetworkData(netSource, Date.now());
+      if (netPruned.changed) netCleanup.push({ uid: d.id, devices: netPruned.devices, access: netPruned.access, fallback: netSource.fallback, updated: netSource.netUpdated || Date.now() });
+      var entry = { uid: d.id, name: nm, baseName: baseName, displayName: displayName, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: netSource.netUpdated || 0, certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
-        Object.keys(stores).forEach(function (ck) { entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
-      } else if (data.store) {
+        Object.keys(stores).forEach(function (ck) { if (ck !== NETWORK_STORE_KEY) entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
+      }
+      if (!entry.certs.length && data.store) {
         entry.certs.push({ cert: '(旧)', store: data.store });
-      } else {
+      } else if (!entry.certs.length) {
         entry.certs.push({ cert: '—', store: emptyStore() });
       }
       byUid[d.id] = entry;
     });
     if (isAdmin && db && netCleanup.length) {
       netCleanup.forEach(function (x) {
-        db.collection(COLLECTION).doc(x.uid).update('netDevices', x.devices, 'netAccess', x.access).catch(function () {});
+        var ref = db.collection(COLLECTION).doc(x.uid);
+        if (x.fallback) {
+          ref.update(new firebase.firestore.FieldPath('stores', NETWORK_STORE_KEY), { devices: x.devices, access: x.access, updated: x.updated }).catch(function () {});
+        } else {
+          ref.update('netDevices', x.devices, 'netAccess', x.access).catch(function () {});
+        }
       });
     }
     adminUsers = Object.keys(byUid).map(function (k) { return refreshUser(byUid[k]); });
@@ -2620,6 +2630,46 @@
     if (logs.length !== oldLogs.length) changed = true;
     return { devices: devices, access: logs, changed: changed };
   }
+  function networkDataSource(data) {
+    data = data || {};
+    var legacy = data.stores && data.stores[NETWORK_STORE_KEY];
+    var directHas = !!(data.netUpdated || Object.keys(data.netDevices || {}).length || (data.netAccess || []).length);
+    var legacyHas = !!(legacy && (legacy.updated || Object.keys(legacy.devices || {}).length || (legacy.access || []).length));
+    if (legacyHas && (!directHas || (legacy.updated || 0) > (data.netUpdated || 0))) {
+      return { netDevices: legacy.devices || {}, netAccess: legacy.access || [], netUpdated: legacy.updated || 0, fallback: true };
+    }
+    return { netDevices: data.netDevices || {}, netAccess: data.netAccess || [], netUpdated: data.netUpdated || 0, fallback: false };
+  }
+  function buildNetworkRecord(data, did, net, now) {
+    var source = networkDataSource(data), pruned = pruneNetworkData(source, now);
+    var devices = pruned.devices, prev = devices[did] || {}, saved = {};
+    Object.keys(net || {}).forEach(function (k) { saved[k] = net[k]; });
+    saved.deviceId = did; saved.firstSeen = prev.firstSeen || now; saved.lastSeen = now; saved.loginCount = (prev.loginCount || 0) + 1;
+    devices[did] = saved;
+    var ev = { ts: now, deviceId: did, browser: saved.browser, os: saved.os, ip: saved.ip, org: saved.org, asn: saved.asn,
+      country: saved.country, region: saved.region, city: saved.city, kind: saved.kind, label: saved.label, confidence: saved.confidence };
+    var logs = pruned.access, newest = logs[0];
+    if (!newest || newest.deviceId !== did || newest.ip !== ev.ip || (now - (newest.ts || 0)) > 60000) logs = [ev].concat(logs);
+    return { devices: devices, access: logs.slice(0, 50), updated: now };
+  }
+  function writeNetworkDirect(uid, did, net, now) {
+    var ref = db.collection(COLLECTION).doc(uid);
+    return db.runTransaction(function (tx) {
+      return tx.get(ref).then(function (snap) {
+        var next = buildNetworkRecord((snap.exists && snap.data()) || {}, did, net, now);
+        tx.set(ref, { netDevices: next.devices, netAccess: next.access, netUpdated: next.updated }, { merge: true });
+      });
+    });
+  }
+  function writeNetworkFallback(uid, did, net, now) {
+    var ref = db.collection(COLLECTION).doc(uid), FP = firebase.firestore.FieldPath;
+    return db.runTransaction(function (tx) {
+      return tx.get(ref).then(function (snap) {
+        var next = buildNetworkRecord((snap.exists && snap.data()) || {}, did, net, now);
+        tx.update(ref, new FP('stores', NETWORK_STORE_KEY), { devices: next.devices, access: next.access, updated: next.updated });
+      });
+    });
+  }
   function networkRecordedThisSession(uid, setNow) {
     var k = 'sfq_net_recorded_' + uid;
     try {
@@ -2633,23 +2683,15 @@
     var did = deviceId(uid); currentDeviceId = did;
     if (!db || !uid || cfg.enabled === false || networkRecordedThisSession(uid, false)) return;
     collectNetworkSnapshot().then(function (net) {
-      var now = Date.now(), ref = db.collection(COLLECTION).doc(uid);
-      return db.runTransaction(function (tx) {
-        return tx.get(ref).then(function (snap) {
-          var data = (snap.exists && snap.data()) || {}, pruned = pruneNetworkData(data, now);
-          var devices = pruned.devices, prev = devices[did] || {};
-          net.deviceId = did; net.firstSeen = prev.firstSeen || now; net.lastSeen = now; net.loginCount = (prev.loginCount || 0) + 1;
-          devices[did] = net;
-          var ev = { ts: now, deviceId: did, browser: net.browser, os: net.os, ip: net.ip, org: net.org, asn: net.asn,
-            country: net.country, region: net.region, city: net.city, kind: net.kind, label: net.label, confidence: net.confidence };
-          var logs = pruned.access;
-          var newest = logs[0];
-          if (!newest || newest.deviceId !== did || newest.ip !== ev.ip || (now - (newest.ts || 0)) > 60000) logs = [ev].concat(logs);
-          logs = logs.slice(0, 50);
-          tx.set(ref, { netDevices: devices, netAccess: logs, netUpdated: now }, { merge: true });
-        });
+      var now = Date.now();
+      return writeNetworkDirect(uid, did, net, now).catch(function (err) {
+        try { console.warn('[cloud-sync] 接続情報の専用フィールド保存に失敗したため互換保存を試します。', err && err.code || err); } catch (e) {}
+        return writeNetworkFallback(uid, did, net, now);
       });
-    }).then(function () { networkRecordedThisSession(uid, true); }).catch(function () { clearNetworkSessionMark(uid); });
+    }).then(function () { networkRecordedThisSession(uid, true); }).catch(function (err) {
+      clearNetworkSessionMark(uid);
+      try { console.warn('[cloud-sync] 接続情報を保存できませんでした。', err && err.code || err); } catch (e) {}
+    });
   }
   function activeDevicesOf(u, now) {
     now = now || Date.now(); var ds = (u && u.netDevices) || {};
@@ -2689,7 +2731,11 @@
       try {
         ref.update('lastSeen', now, 'netUpdated', now,
           new firebase.firestore.FieldPath('netDevices', currentDeviceId, 'lastSeen'), now).catch(function () {
-            ref.set({ lastSeen: now }, { merge: true }).catch(function () {});
+            try {
+              ref.update('lastSeen', now,
+                new firebase.firestore.FieldPath('stores', NETWORK_STORE_KEY, 'devices', currentDeviceId, 'lastSeen'), now)
+                .catch(function () { ref.set({ lastSeen: now }, { merge: true }).catch(function () {}); });
+            } catch (e) { ref.set({ lastSeen: now }, { merge: true }).catch(function () {}); }
           });
         return;
       } catch (e) {}
@@ -3887,8 +3933,9 @@
     sha256Hex: sha256Hex, matchAdmin: matchAdmin, sanitizeId: sanitizeId,
     parseTrace: parseTrace, ipv4Int: ipv4Int, ipInCidr: ipInCidr, maskIp: maskIp,
     corporateMatch: corporateMatch, classifyNetwork: classifyNetwork, pruneNetworkData: pruneNetworkData,
+    networkDataSource: networkDataSource, buildNetworkRecord: buildNetworkRecord,
     activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf, networkDetailHTML: networkDetailHTML,
-    INACTIVE_DAYS: INACTIVE_DAYS };
+    INACTIVE_DAYS: INACTIVE_DAYS, NETWORK_STORE_KEY: NETWORK_STORE_KEY };
 
   function init() {
     ROLE = window.SFQ_PAGE_ROLE || (window.__setStore ? 'client' : 'gateway');
@@ -3938,6 +3985,8 @@
       if (user) {
         onLogin(user);
       } else {
+        if (currentUser && currentUser.uid) clearNetworkSessionMark(currentUser.uid);
+        currentDeviceId = '';
         currentUser = null; isAdmin = false;
         stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();

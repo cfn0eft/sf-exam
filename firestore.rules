@@ -56,6 +56,8 @@ service cloud.firestore {
      * 進捗本体 stores は本人が書く（学習の保存そのもの）。
      * stores.<資格>.acquiredDate（資格の取得済み）も本人が書くが、これは
      * アプリ上「自分で取得を宣言する」ボタンがある正規の操作＝仕様どおり。
+     * stores.__sfq_network__ は、下記の接続情報フィールドが旧ルールで拒否された
+     * 場合だけ使う後方互換用の予約領域。管理画面では資格として扱わない。
      * netDevices / netAccess / netUpdated は静的クライアントが記録する接続情報。
      * 本人書込なので監査証跡ではなく、管理者画面でも参考情報として扱う。 */
     function selfKeys() {

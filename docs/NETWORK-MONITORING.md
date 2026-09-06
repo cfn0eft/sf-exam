@@ -16,6 +16,8 @@
 接続元IPと国は Cloudflare の公開 trace、回線組織・ASN・地域は ipwho.is からベストエフォートで取得する。
 どちらかが失敗してもログインと学習は妨げない。
 
+通常は Firestore の `netDevices` / `netAccess` / `netUpdated` に保存する。Firebase側が旧ルールでこれらを拒否した場合は、既存ルールでも書き込める予約領域 `stores.__sfq_network__` へ自動的に切り替える。管理者ビューは両方を比較し、新しい方を表示する。
+
 ## 会社VPNの登録
 
 `firebase-config.js` の `window.SFQ_NETWORK_MONITORING.corporateNetworks` に追加する。
@@ -56,7 +58,7 @@ corporateNetworks: [
 
 改ざん耐性が必要な場合は、Firebase Callable Functionsなどサーバー側でFirebase IDトークンを検証し、接続元IPと端末情報を管理者専用フィールドへ記録する構成へ移行する。
 
-## 公開前の必須作業
+## Firestoreルール
 
 `firestore.rules` に `netDevices` / `netAccess` / `netUpdated` が本人書込可能フィールドとして追加されている。
-既存Firebaseプロジェクトでは、ルートの `firestore.rules` をFirebaseコンソールへ貼り直して公開すること。
+既存Firebaseプロジェクトでは、ルートの `firestore.rules` をFirebaseコンソールへ貼り直して公開することを推奨する。未反映でも互換保存へ自動的に切り替わるため、接続情報の記録は継続できる。
