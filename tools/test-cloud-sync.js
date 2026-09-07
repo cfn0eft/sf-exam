@@ -272,6 +272,27 @@ t('一斉ログアウト: 管理者ダッシュボードに実行ボタンを備
   ok(src.indexOf("logAdmin('一斉ログアウト'") >= 0, '管理者操作ログ');
 });
 
+t('管理画面: 目的別ナビと概要から各対応画面へ移動できる', () => {
+  ['概要', 'アクセス申請', '利用者', '学習分析', '接続元・端末', 'DM', 'フィードバック', 'お知らせ', '運用'].forEach((label) => {
+    ok(src.indexOf("'" + label + "'") >= 0 || src.indexOf(label) >= 0, label + ' タブ');
+  });
+  ok(src.indexOf('function adminOverviewHTML()') >= 0, '概要画面');
+  ok(src.indexOf("action('access'") >= 0 && src.indexOf("action('feedback'") >= 0, '対応項目から直接移動');
+});
+
+t('管理画面: 30日間の解答数と利用人数を別々に表示する', () => {
+  ok(src.indexOf('30日間の解答数と利用人数') >= 0, 'グラフのアクセシブルな名称');
+  ok(src.indexOf('30日間の解答') >= 0, '期間内の総解答数');
+  ok(src.indexOf('期間内に利用') >= 0, '期間内の利用人数');
+  ok(src.indexOf('利用人数＝その日に1問以上解答した人数') >= 0, '利用人数の定義');
+});
+
+t('管理画面: メンテナンス予定をキューと呼ばない', () => {
+  ok(src.indexOf('登録済みの予定') >= 0, '予定の表示名');
+  ok(src.indexOf('📋 予定一覧') >= 0, '予定一覧ボタン');
+  ok(src.indexOf('キューを管理') < 0 && src.indexOf('都度メンテ：キュー') < 0, '旧キュー表記を除去');
+});
+
 t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
   const x = T.parseTrace('ip=203.0.113.42\nloc=JP\nwarp=off\n');
   eq(x.ip, '203.0.113.42'); eq(x.loc, 'JP'); eq(x.warp, 'off');

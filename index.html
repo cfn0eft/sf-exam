@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=160"></script>
+<script src="maintenance.js?v=161"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0176d3">
+<meta name="theme-color" content="#167565">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
@@ -119,6 +119,14 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 .lp-etitle{font-size:15px;font-weight:800}
 .lp-items{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
 .lp-items li{font-size:13px;line-height:1.6;color:var(--text)}
+/* Focus Flow gateway */
+:root{--bg:#f5f4ef;--card:#fffefa;--text:#17211f;--text-sub:#64706d;--border:#d9ddd7;--accent:#167565;--primary:#167565;--accent-hover:#0b5d51;--muted:#eef1ec;--muted-text:#68736f;--shadow:0 1px 2px rgba(23,33,31,.05);--shadow-hover:0 14px 34px rgba(23,33,31,.1)}
+@media (prefers-color-scheme:dark){:root{--bg:#111816;--card:#18211f;--text:#edf6f2;--text-sub:#aebcb8;--border:#34433f;--accent:#61c3b2;--primary:#61c3b2;--accent-hover:#8bd9c5;--muted:#202a27;--muted-text:#8fa09b;--shadow:0 1px 2px rgba(0,0,0,.25);--shadow-hover:0 14px 34px rgba(0,0,0,.32)}}
+.container{max-width:1180px;padding:52px 28px 72px}.hero{text-align:left;padding:8px 0 34px}.hero h1{font-size:clamp(30px,4vw,46px);letter-spacing:-.045em}.hero p{font-size:15px;margin-top:9px}.sec-label{margin:26px 0 14px;color:var(--text-sub)}
+.lp-news{border-radius:18px;padding:16px 18px;margin-bottom:30px;box-shadow:var(--shadow)}.lp-news:hover{transform:none;border-color:var(--accent);box-shadow:var(--shadow-hover)}.lp-news.unseen{box-shadow:inset 4px 0 0 var(--accent),var(--shadow)}.lp-news-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#e3f4ef;font-size:20px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{min-height:250px;padding:24px 22px;border-radius:22px;box-shadow:var(--shadow)}.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}.card-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:#e3f4ef;font-size:25px;margin-bottom:18px}.card-title{font-size:18px}.card-desc{font-size:13.5px}.cur-badge,.choose-badge,.cram-pill{background:var(--accent);box-shadow:none}.card.choosable{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent),var(--shadow)}.card.acq{border-color:#c8a83e;box-shadow:inset 0 0 0 1px #c8a83e,var(--shadow)}.lp-modal-box{border-radius:22px}
+@media (prefers-color-scheme:dark){.lp-news-ic,.card-icon{background:#173e35}.acq-badge{background:#725c12;color:#fff0a3}}
+@media (min-width:1080px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:620px){.container{padding:24px 16px 52px}.hero{padding:8px 0 24px}.grid{grid-template-columns:1fr;gap:12px}.card{min-height:0;padding:20px 18px}.lp-news{padding:14px;margin-bottom:24px}.lp-news-arrow{display:none}}
 </style>
 </head>
 <body>
@@ -156,7 +164,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </div>
 </div>
 
-<script src="progression.js?v=160"></script>
+<script src="progression.js?v=161"></script>
 <script>
   const CERTS = [
     { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
@@ -248,8 +256,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="changelog.js?v=160"></script>
-<script src="cloud-sync.js?v=160"></script>
+<script src="changelog.js?v=161"></script>
+<script src="cloud-sync.js?v=161"></script>
 <script>
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
   function lpHasUnseen(){try{return (window.SFQ_CHANGELOG||[]).length>0 && localStorage.getItem('sfq_news_seen')!==lpNewsLatest();}catch(e){return false;}}

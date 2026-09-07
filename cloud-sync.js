@@ -463,7 +463,29 @@
       '.sfqc-admin-badge{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle}' +
       '.sfqc-acc-head{gap:10px}' +
       '.sfqc-acc-stats{gap:6px 12px;font-size:11.5px}' +
-      '.sfqc-del-doc{margin:6px 0 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}';
+      '.sfqc-del-doc{margin:6px 0 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}' +
+      '.sfqc-adminwrap{background:#f5f4ef;color:#17211f;border-radius:20px;overflow:hidden}' +
+      '.sfqc-adminhead{background:#fffefa;border-color:#d9ddd7;padding:14px 18px}' +
+      '.sfqc-adminbody{padding:0;background:#f5f4ef}' +
+      '.sfqc-adminlayout{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100%}' +
+      '.sfqc-tabs{display:flex;flex-direction:column;gap:4px;margin:0;padding:16px 12px;background:#fffefa;border-right:1px solid #d9ddd7;overflow:visible;position:sticky;top:0;align-self:start;min-height:100%}' +
+      '.sfqc-tab{width:100%;min-height:44px;text-align:left;border:0;border-radius:12px;background:transparent;color:#64706d;padding:9px 12px;font-weight:800;white-space:normal}' +
+      '.sfqc-tab:hover{background:#eef1ec;color:#17211f}.sfqc-tab.on{background:#e3f4ef;color:#0b5d51;border-color:transparent}' +
+      '.sfqc-admincontent{min-width:0;padding:22px}' +
+      '.sfqc-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}' +
+      '.sfqc-kpi,.sfqc-dash-card,.sfqc-acc,.sfqc-bc-card,.sfqc-fb-item,.sfqc-app-item{background:#fffefa;border-color:#d9ddd7;border-radius:16px;box-shadow:0 1px 2px rgba(23,33,31,.05)}' +
+      '.sfqc-pagelead{display:flex;justify-content:space-between;gap:18px;align-items:end;margin:0 0 18px}.sfqc-pagelead h2{margin:0;color:#17211f;font-size:22px}.sfqc-pagelead p{margin:5px 0 0;color:#64706d;font-size:13px}' +
+      '.sfqc-overview-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:16px;margin:16px 0}' +
+      '.sfqc-overview-panel{background:#fffefa;border:1px solid #d9ddd7;border-radius:18px;padding:16px;box-shadow:0 1px 2px rgba(23,33,31,.05)}' +
+      '.sfqc-panelhead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.sfqc-panelhead h3{margin:0;font-size:15px}.sfqc-panelhead span{color:#64706d;font-size:12px}' +
+      '.sfqc-actions{display:flex;flex-direction:column;gap:8px}.sfqc-action{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;min-height:58px;padding:9px 10px;text-align:left;background:#f7f8f4;border:1px solid #d9ddd7;border-radius:13px;color:#17211f;cursor:pointer}.sfqc-action:hover{border-color:#167565;background:#eef8f5}.sfqc-action.urgent{border-left:4px solid #d97706}.sfqc-action-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#e3f4ef;color:#0b5d51;font-weight:900}.sfqc-action-copy{min-width:0}.sfqc-action-copy b,.sfqc-action-copy small{display:block}.sfqc-action-copy small{margin-top:2px;color:#64706d}.sfqc-action-go{color:#167565;font-weight:900}' +
+      '.sfqc-ops-list{display:grid;gap:8px}.sfqc-op-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #e7e9e4}.sfqc-op-row:last-child{border-bottom:0}.sfqc-op-row span{color:#64706d;font-size:12px}.sfqc-op-row b{font-size:13px}' +
+      '.sfqc-ts-totals{display:flex;justify-content:flex-end;gap:24px;margin:-4px 0 8px}.sfqc-ts-totals span{display:grid;text-align:right}.sfqc-ts-totals b{font-size:18px;color:#17211f}.sfqc-ts-totals small{font-size:11px;color:#64706d}' +
+      '.sfqc-mini,.sfqc-fchip,.sfqc-sort,.sfqc-act-detail,.sfqc-act-chat,.sfqc-app-actions button{min-height:44px}' +
+      '.sfqc-mini.reload,.sfqc-fchip.on,.sfqc-sort.on{background:#167565;color:#fff;border-color:#167565}' +
+      'body.dark .sfqc-adminwrap,body.dark .sfqc-adminbody{background:#111816;color:#edf6f2}body.dark .sfqc-adminhead,body.dark .sfqc-tabs,body.dark .sfqc-kpi,body.dark .sfqc-dash-card,body.dark .sfqc-acc,body.dark .sfqc-bc-card,body.dark .sfqc-fb-item,body.dark .sfqc-overview-panel{background:#18211f;border-color:#34433f}body.dark .sfqc-tab{color:#aebcb8}body.dark .sfqc-tab:hover{background:#202d29;color:#edf6f2}body.dark .sfqc-tab.on{background:#173e35;color:#8bd9c5}body.dark .sfqc-pagelead h2,body.dark .sfqc-ts-totals b{color:#edf6f2}body.dark .sfqc-pagelead p,body.dark .sfqc-panelhead span,body.dark .sfqc-action-copy small,body.dark .sfqc-op-row span,body.dark .sfqc-ts-totals small{color:#aebcb8}body.dark .sfqc-action{background:#151d1b;border-color:#34433f;color:#edf6f2}body.dark .sfqc-action:hover{background:#1b302a;border-color:#61c3b2}body.dark .sfqc-action-ic{background:#173e35;color:#8bd9c5}body.dark .sfqc-op-row{border-color:#34433f}' +
+      '@media(max-width:900px){.sfqc-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sfqc-overview-grid{grid-template-columns:1fr}}' +
+      '@media(max-width:760px){.sfqc-adminlayout{display:block}.sfqc-tabs{position:sticky;top:0;z-index:5;display:flex;flex-direction:row;gap:6px;overflow-x:auto;min-height:0;padding:10px 12px;border-right:0;border-bottom:1px solid #d9ddd7}.sfqc-tab{width:auto;min-width:max-content;white-space:nowrap}.sfqc-admincontent{padding:12px}.sfqc-pagelead{align-items:start}.sfqc-action{grid-template-columns:36px minmax(0,1fr)}.sfqc-action-go{grid-column:2}.sfqc-ts-totals{justify-content:flex-start}.sfqc-adminhead{padding:12px}}';
     var s = document.createElement('style');
     s.textContent = css;
     document.head.appendChild(s);
@@ -1776,9 +1798,9 @@
     var rec = (m && m.recurring && m.recurring.enabled)
       ? '毎週 ' + (m.recurring.dows || []).map(dowLabel).join('・') + ' ' + esc(m.recurring.start) + 'から' + m.recurring.durMin + '分'
       : '無効';
-    html += '<div class="sfqc-bc-meta"><span>🗓 都度メンテ：キュー <b>' + future.length + '</b> 件</span>' +
+    html += '<div class="sfqc-bc-meta"><span>🗓 登録済みの予定：<b>' + future.length + '</b> 件</span>' +
         '<span style="display:flex;gap:6px"><button class="sfqc-mini" id="sfqc-maint-new">➕ 新規作成</button>' +
-        '<button class="sfqc-mini" id="sfqc-maint-queue">📋 キューを管理</button></span></div>' +
+        '<button class="sfqc-mini" id="sfqc-maint-queue">📋 予定一覧</button></span></div>' +
       '<div class="sfqc-bc-meta"><span>🔁 定期メンテ：' + esc(rec) + '</span>' +
         '<button class="sfqc-mini" id="sfqc-maint-edit-recur">⚙️ 定期メンテを管理</button></div>';
     var exempts = adminUsers.filter(function (u) { return u.maintOk; });
@@ -2161,7 +2183,7 @@
   var adminNetwork = 'all';
   var adminNetworkFilter = '';
   var adminPendingCount = 0;
-  var adminTab = 'users';
+  var adminTab = 'overview';
   var dmFilter = '';
   var adminDashCert = '';
 
@@ -2307,6 +2329,51 @@
     return map;
   }
 
+  function adminOverviewHTML() {
+    var today = admToday();
+    var totalAnswers = 0, totalCorrect = 0, todayActive = 0, weekActive = 0;
+    adminUsers.forEach(function (u) {
+      totalAnswers += u.agg.attempts || 0;
+      totalCorrect += u.agg.correct || 0;
+      if (u.agg.lastStudyDate === today) todayActive++;
+      if (admDaysAgo(u.agg.lastStudyDate) <= 6) weekActive++;
+    });
+    var onlineNow = adminUsers.filter(isOnline).length;
+    var applicants = adminUsers.filter(function (u) { return accessStateOf(u) === 'applied'; }).length;
+    var unblockRequests = adminUsers.filter(function (u) { return u.access === 'blocked' && u.req && u.req.ts; }).length;
+    var unreadDM = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
+    var pendingFeedback = adminFeedback.filter(function (r) { return !r.reply; }).length;
+    var actionTotal = applicants + unblockRequests + unreadDM + pendingFeedback;
+    var maint = lastMaint || {};
+    var maintNow = maintStatus(maint, Date.now());
+    var scheduled = maintQueue(maint).filter(function (w) { return w && w.end > Date.now(); }).length;
+    var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
+    var action = function (tab, icon, title, detail, count, urgent) {
+      return '<button class="sfqc-action' + (urgent ? ' urgent' : '') + '" data-tab="' + tab + '">' +
+        '<span class="sfqc-action-ic">' + icon + '</span><span class="sfqc-action-copy"><b>' + title + '</b><small>' + detail + '</small></span>' +
+        '<span class="sfqc-action-go">' + count + ' ›</span></button>';
+    };
+    var html = '<div class="sfqc-pagelead"><div><h2>運用概要</h2><p>学習状況と、いま対応が必要な項目を一画面で確認できます。</p></div></div>';
+    html += '<div class="sfqc-kpis sfqc-kpis-main">' +
+      kpi('🟢 ' + onlineNow, '現在オンライン') +
+      kpi(todayActive, '今日の利用人数') +
+      kpi(weekActive, '7日間の利用人数') +
+      kpi(totalAnswers.toLocaleString(), '累計解答数') +
+      '</div>';
+    html += '<div class="sfqc-overview-grid"><section class="sfqc-overview-panel"><div class="sfqc-panelhead"><h3>対応が必要です</h3><span>合計 ' + actionTotal + '件</span></div><div class="sfqc-actions">' +
+      action('access', '✓', 'アクセス申請', '新規承認 ' + applicants + '件・停止解除 ' + unblockRequests + '件', applicants + unblockRequests, applicants + unblockRequests > 0) +
+      action('dm', '✉', '未読DM', '利用者から届いた未読メッセージ', unreadDM, unreadDM > 0) +
+      action('feedback', '◇', '未対応フィードバック', '返信または対応判断が必要な報告', pendingFeedback, pendingFeedback > 0) +
+      '</div></section>' +
+      '<section class="sfqc-overview-panel"><div class="sfqc-panelhead"><h3>運用状態</h3><button class="sfqc-mini" data-tab="operations">運用を開く</button></div><div class="sfqc-ops-list">' +
+      '<div class="sfqc-op-row"><span>メンテナンス</span><b>' + (maintNow.active ? '実施中' : '通常運用') + '</b></div>' +
+      '<div class="sfqc-op-row"><span>登録済みの予定</span><b>' + scheduled + '件</b></div>' +
+      '<div class="sfqc-op-row"><span>登録ユーザー</span><b>' + adminUsers.length + '人</b></div>' +
+      '<div class="sfqc-op-row"><span>累計正答率</span><b>' + (totalAnswers ? Math.round(totalCorrect / totalAnswers * 100) : 0) + '%</b></div>' +
+      '</div></section></div>';
+    return html + timeSeriesHTML();
+  }
+
   function timeSeriesHTML() {
     var DAYS = 30;
     var p = function (n) { return ('0' + n).slice(-2); };
@@ -2338,23 +2405,26 @@
       var x = idx * CW;
       rects += '<rect class="bar" x="' + (x + 2.2).toFixed(1) + '" y="' + (100 - hn) + '" width="5.6" height="' + hn + '" rx="0.8"></rect>';
       pts.push((x + CW / 2).toFixed(1) + ',' + (100 - ha));
-      var lab = k + '：アクティブ ' + act[k] + '人 / 解答 ' + ans[k] + '件';
+      var lab = k + '：利用 ' + act[k] + '人 / 解答 ' + ans[k] + '件';
       hits += '<rect class="hit" x="' + x + '" y="0" width="' + CW + '" height="100" role="button" tabindex="0" data-ts-label="' + esc(lab) + '"><title>' + esc(lab) + '</title></rect>';
     });
-    var svg = '<svg class="sfqc-ts" viewBox="0 0 ' + VW + ' 100" preserveAspectRatio="none" role="img" aria-label="日別アクティブの推移">' +
+    var svg = '<svg class="sfqc-ts" viewBox="0 0 ' + VW + ' 100" preserveAspectRatio="none" role="img" aria-label="30日間の解答数と利用人数">' +
       rects + '<polyline class="ln" vector-effect="non-scaling-stroke" points="' + pts.join(' ') + '"></polyline>' + hits + '</svg>';
     var axis = labels.map(function (k, idx) {
       return '<div class="sfqc-ts-xc">' + (idx % step === 0 ? esc(k.slice(5)) : '') + '</div>';
     }).join('');
     var totAns = labels.reduce(function (s, k) { return s + ans[k]; }, 0);
     var actDays = labels.filter(function (k) { return act[k] > 0; }).length;
-    var legend = '<div class="sfqc-ts-legend"><span><i class="swl"></i>アクティブ人数（最大 ' + maxAct + '人）</span>' +
-      '<span><i class="sw" style="background:#16a34a"></i>解答数（最大 ' + maxAns.toLocaleString() + '件）</span></div>';
-    return '<div class="sfqc-sec">日別アクティブ（直近' + DAYS + '日・人数と解答数）</div>' +
-      '<div class="sfqc-dash-card">' + legend + svg +
+    var periodUsers = adminUsers.filter(function (u) {
+      return u.certs.some(function (c) { var daily = (c.store && c.store.daily) || {}; return labels.some(function (k) { return (daily[k] || 0) > 0; }); });
+    }).length;
+    var legend = '<div class="sfqc-ts-legend"><span><i class="sw" style="background:#16a34a"></i>日別の解答数</span>' +
+      '<span><i class="swl"></i>日別の利用人数</span><span>利用人数＝その日に1問以上解答した人数</span></div>';
+    return '<div class="sfqc-sec">30日間の利用状況</div>' +
+      '<div class="sfqc-dash-card"><div class="sfqc-ts-totals"><span><b>' + totAns.toLocaleString() + '問</b><small>30日間の解答</small></span><span><b>' + periodUsers + '人</b><small>期間内に利用</small></span></div>' + legend + svg +
       '<div class="sfqc-ts-axis">' + axis + '</div>' +
-      '<div class="sfqc-ts-readout" id="sfqc-ts-readout">各日にカーソルを乗せる／タップすると、その日の人数・解答数が出ます。</div>' +
-      '<div class="sfqc-itnote">期間の総解答 ' + totAns.toLocaleString() + ' 件・学習があった日 ' + actDays + '/' + DAYS + '日。緑の棒＝解答数／青い折れ線＝アクティブ人数（各系列はそれぞれの最大値を基準に高さを正規化）。</div></div>';
+      '<div class="sfqc-ts-readout" id="sfqc-ts-readout">各日にカーソルを乗せる／タップすると、その日の解答数・利用人数が出ます。</div>' +
+      '<div class="sfqc-itnote">学習があった日 ' + actDays + '/' + DAYS + '日。各系列はそれぞれの最大値（解答 ' + maxAns.toLocaleString() + '件・利用 ' + maxAct + '人）を基準に高さを表示します。</div></div>';
   }
 
   function auditLogHTML() {
@@ -3031,7 +3101,6 @@
     var body = document.getElementById('sfqc-adm-body');
     rebuildRows();
     syncPendingBadge();
-    if (!adminUsers.length) { body.innerHTML = '<div class="sfqc-empty">アカウントがまだありません。</div>'; return; }
     var list = filterSortUsers();
 
     var certSet = {}; adminRows.forEach(function (r) { certSet[r.cert] = 1; });
@@ -3046,26 +3115,23 @@
       return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
         (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
     };
-    var html = '<div class="sfqc-tabs">' +
-        tabBtn('users', '👥 ユーザー', adminPendingCount || 0) +
-        tabBtn('network', '🔐 接続元・端末', networkWarningCount || 0) +
-        tabBtn('dash', '📊 ダッシュボード', 0) +
-        tabBtn('ann', '📢 お知らせ', 0) +
-        tabBtn('dm', '💬 DM', (totalUnread + fbPending) || 0) +
-      '</div>';
+    var html = '<div class="sfqc-adminlayout"><nav class="sfqc-tabs" aria-label="管理画面メニュー">' +
+        tabBtn('overview', '⌂ 概要', 0) +
+        tabBtn('access', '✓ アクセス申請', adminPendingCount || 0) +
+        tabBtn('users', '♙ 利用者', 0) +
+        tabBtn('analytics', '▥ 学習分析', 0) +
+        tabBtn('network', '◎ 接続元・端末', networkWarningCount || 0) +
+        tabBtn('dm', '✉ DM', totalUnread || 0) +
+        tabBtn('feedback', '◇ フィードバック', fbPending || 0) +
+        tabBtn('ann', '◉ お知らせ', 0) +
+        tabBtn('operations', '⚙ 運用', 0) +
+      '</nav><main class="sfqc-admincontent">';
 
-    if (adminTab === 'dash') {
-      html += maintenanceSectionHTML();
-      html += adminDashboardHTML();
-      html += auditLogHTML();
-    } else if (adminTab === 'network') {
-      html += networkTabHTML();
-    } else if (adminTab === 'ann') {
-      html += announcementsSectionHTML();
-    } else if (adminTab === 'dm') {
-      html += dmSectionHTML();
-    } else {
+    if (adminTab === 'overview') {
+      html += adminOverviewHTML();
+    } else if (adminTab === 'access') {
       html += applicationsSectionHTML();
+    } else if (adminTab === 'users') {
       html += '<div class="sfqc-sec">ユーザー</div>';
       html += '<div class="sfqc-toolbar">' +
           '<input id="sfqc-q" class="sfqc-search" type="search" placeholder="🔍 申請名・メール・UIDで絞り込み" value="' + esc(adminFilter) + '">' +
@@ -3167,7 +3233,21 @@
             '<div class="sfqc-detail" id="sfqc-det-' + i + '"></div>' +
           '</div>';
       });
+    } else if (adminTab === 'analytics') {
+      html += adminDashboardHTML();
+    } else if (adminTab === 'network') {
+      html += networkTabHTML();
+    } else if (adminTab === 'dm') {
+      html += dmSectionHTML();
+    } else if (adminTab === 'feedback') {
+      html += feedbackSectionHTML();
+    } else if (adminTab === 'ann') {
+      html += announcementsSectionHTML();
+    } else if (adminTab === 'operations') {
+      html += maintenanceSectionHTML();
+      html += auditLogHTML();
     }
+    html += '</main></div>';
     var prevScroll = body.scrollTop;
     body.innerHTML = html;
     try { body.scrollTop = prevScroll; } catch (e) {}
@@ -3841,7 +3921,6 @@
             '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button></div>' +
         '</div>';
     });
-    html += '<div class="sfqc-divider"></div>' + feedbackSectionHTML();
     return html;
   }
   function feedbackSectionHTML() {

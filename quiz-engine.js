@@ -27,6 +27,254 @@ function cshufOn(){return localStorage.getItem('sfq_cshuf')!=='0';}
 const REPO_URL=(CFG.repoUrl)||'https://github.com/cfn0eft/sf-exam';
 let dcActive=false;
 
+
+/* Focus Flow production layout */
+(function () {
+  'use strict';
+
+  function el(tag, className, html) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (html) node.innerHTML = html;
+    return node;
+  }
+
+  function countOf(id) {
+    var node = document.getElementById(id);
+    var match = node && node.textContent.match(/\d+/);
+    return match ? Number(match[0]) : 0;
+  }
+
+  function runLearningAction(action, resume) {
+    var actions = {
+      srs: 'startSRS',
+      daily: 'startDaily',
+      review: 'startReview',
+      study: 'startStudy'
+    };
+    if (action === 'resume') {
+      var button = resume && resume.querySelector('button');
+      if (button) button.click();
+      return;
+    }
+    var fn = window[actions[action]];
+    if (typeof fn === 'function') fn();
+  }
+
+  function arrangeHome() {
+    var home = document.getElementById('pg-home');
+    if (!home || home.dataset.ffLayout === '1') return;
+    home.dataset.ffLayout = '1';
+
+    var plan = el('section', 'ff-plan-panel');
+    plan.setAttribute('aria-label', '学習プラン');
+    var hero = home.querySelector(':scope > .home-hero');
+    var resume = document.getElementById('resume-banner');
+    if (hero) plan.appendChild(hero);
+    if (resume) plan.appendChild(resume);
+
+    var grid = el('div', 'ff-home-grid');
+    var today = el('section', 'ff-today-col');
+    today.setAttribute('aria-labelledby', 'ff-today-title');
+    today.appendChild(el('div', 'ff-section-head', '<div><span class="ff-eyebrow">今日の優先項目</span><h2 id="ff-today-title">今日の学習</h2></div><p>復習タイミングから自動で選びます</p>'));
+
+    var next = home.querySelector(':scope > .next-card');
+    var primary = home.querySelector(':scope > .primary2');
+    var custom = home.querySelector(':scope > .exam-custom-btn');
+    var srs = document.getElementById('srs-count');
+    var recommendation = el('button', 'ff-next-best', '<span class="ff-next-icon" aria-hidden="true">⏳</span><span class="ff-next-copy"><span class="ff-next-kicker">次にやること</span><strong id="ff-next-title">学習データを準備中</strong><span id="ff-next-reason">少しお待ちください</span></span><span class="ff-next-go" id="ff-next-go">開始</span>');
+    recommendation.type = 'button';
+    recommendation.disabled = true;
+    recommendation.setAttribute('aria-live', 'polite');
+    today.appendChild(recommendation);
+    if (primary) today.appendChild(primary);
+    var secondary = el('div', 'ff-secondary-actions');
+    if (custom) secondary.appendChild(custom);
+    if (srs) secondary.appendChild(srs);
+    today.appendChild(secondary);
+    var review = el('details', 'ff-review-panel');
+    review.appendChild(el('summary', '', '<span>復習メニュー</span><span class="ff-review-count" id="ff-review-count">すべて表示</span>'));
+    if (next) review.appendChild(next);
+    today.appendChild(review);
+
+    var rail = el('aside', 'ff-progress-col');
+    rail.setAttribute('aria-label', '学習状況と学習メニュー');
+    rail.appendChild(el('div', 'ff-section-head ff-progress-head', '<div><span class="ff-eyebrow">現在地</span><h2>学習状況</h2></div>'));
+    var stats = home.querySelector(':scope > .stats-grid');
+    var game = document.getElementById('gamecard');
+    if (stats) rail.appendChild(stats);
+    if (game) rail.appendChild(game);
+    rail.appendChild(el('div', 'ff-section-head ff-tools-head', '<div><span class="ff-eyebrow">教材と補助機能</span><h2>学び方を選ぶ</h2></div>'));
+    var tools = el('div', 'ff-tool-list');
+    Array.prototype.slice.call(home.querySelectorAll(':scope > .quick-entry')).forEach(function (node) {
+      tools.appendChild(node);
+    });
+    rail.appendChild(tools);
+
+    grid.appendChild(today);
+    grid.appendChild(rail);
+
+    var find = el('section', 'ff-find-panel');
+    find.setAttribute('aria-labelledby', 'ff-find-title');
+    find.appendChild(el('div', 'ff-section-head ff-find-head', '<div><span class="ff-eyebrow">詳細設定</span><h2 id="ff-find-title">問題を探す・出題を調整</h2></div>'));
+    var search = home.querySelector(':scope > .qsearch');
+    var settings = home.querySelector(':scope > .settings-acc');
+    if (search) find.appendChild(search);
+    if (settings) find.appendChild(settings);
+    var certProgress = el('details', 'ff-cert-progress');
+    certProgress.style.display = 'none';
+    certProgress.appendChild(el('summary', '', '<span>資格の進行・取得設定</span><span aria-hidden="true">›</span>'));
+    var certProgressBody = el('div', 'ff-cert-progress-body');
+    certProgress.appendChild(certProgressBody);
+    find.appendChild(certProgress);
+
+    home.appendChild(plan);
+    home.appendChild(grid);
+    home.appendChild(find);
+
+    function placeDynamicProgress() {
+      var progress = plan.querySelector(':scope > .home-progress') || home.querySelector(':scope > .home-progress');
+      if (progress && progress.parentNode !== certProgressBody) {
+        certProgressBody.appendChild(progress);
+        certProgress.style.display = '';
+      }
+    }
+
+    function renderRecommendation() {
+      if (!next) return;
+      var rows = {
+        daily: next.querySelector('[onclick*="startDaily"]'),
+        srs: next.querySelector('[onclick*="startSRS"]'),
+        review: next.querySelector('[onclick*="startReview"]'),
+        weak: next.querySelector('[onclick*="startWeakDomains"]'),
+        leech: next.querySelector('[onclick*="startLeech"]')
+      };
+      var counts = {
+        daily: countOf('next-dc'),
+        srs: countOf('next-srs'),
+        review: countOf('next-wrong'),
+        weak: countOf('next-weak'),
+        leech: countOf('next-leech')
+      };
+      Object.keys(rows).forEach(function (key) {
+        if (!rows[key]) return;
+        rows[key].hidden = false;
+        rows[key].classList.toggle('ff-empty', counts[key] === 0);
+      });
+
+      var resumeButton = resume && resume.querySelector('button');
+      var spec;
+      if (resumeButton && resume.textContent.trim() && resume.style.display !== 'none') {
+        spec = { action: 'resume', icon: '▶️', title: '中断した模試を再開', reason: '前回の続きから集中を戻しましょう', go: '続きから' };
+      } else if (counts.srs > 0) {
+        spec = { action: 'srs', icon: '🧠', title: 'SRS復習 ' + counts.srs + '問', reason: '忘れやすくなる直前の問題を優先します', go: '復習する' };
+      } else if (counts.daily > 0) {
+        spec = { action: 'daily', icon: '🗓️', title: 'デイリーチャレンジ', reason: '短い10問で記憶を呼び起こします', go: '10問始める' };
+      } else if (counts.review > 0) {
+        spec = { action: 'review', icon: '🔁', title: '間違えた問題を復習', reason: counts.review + '問の誤答を先に修正しましょう', go: '復習する' };
+      } else {
+        spec = { action: 'study', icon: '📖', title: '新しい問題を進める', reason: '出題設定に沿って未学習範囲を広げます', go: '学習する' };
+      }
+      if (rows[spec.action]) rows[spec.action].hidden = true;
+      recommendation.dataset.action = spec.action;
+      recommendation.querySelector('.ff-next-icon').textContent = spec.icon;
+      recommendation.querySelector('#ff-next-title').textContent = spec.title;
+      recommendation.querySelector('#ff-next-reason').textContent = spec.reason;
+      recommendation.querySelector('#ff-next-go').textContent = spec.go;
+      recommendation.disabled = false;
+      var dueKinds = Object.keys(counts).filter(function (key) { return counts[key] > 0 && key !== spec.action; }).length;
+      document.getElementById('ff-review-count').textContent = dueKinds ? '要対応 ' + dueKinds + '種類' : 'すべて表示';
+    }
+    recommendation.addEventListener('click', function () {
+      runLearningAction(recommendation.dataset.action, resume);
+    });
+    placeDynamicProgress();
+    renderRecommendation();
+    if (typeof MutationObserver !== 'undefined') {
+      var homeObserver = new MutationObserver(placeDynamicProgress);
+      homeObserver.observe(home, { childList: true, subtree: true });
+      if (next) {
+        var nextObserver = new MutationObserver(renderRecommendation);
+        nextObserver.observe(next, { childList: true, subtree: true, characterData: true });
+      }
+      if (resume) {
+        var resumeObserver = new MutationObserver(renderRecommendation);
+        resumeObserver.observe(resume, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+      }
+    }
+    window.setTimeout(renderRecommendation, 500);
+    window.setTimeout(renderRecommendation, 1500);
+  }
+
+  function arrangeStats() {
+    var stats = document.getElementById('pg-stats');
+    if (!stats || stats.dataset.ffLayout === '1') return;
+    stats.dataset.ffLayout = '1';
+    var intro = el('header', 'ff-page-intro', '<span class="ff-eyebrow">学習分析</span><h1>弱点から、次にやることを決める</h1><p>合格ラインとの差と学習履歴をひとつの画面で確認できます。</p>');
+    var cards = stats.querySelectorAll(':scope > .card');
+    var names = ['ff-domain-card', 'ff-weekly-card', 'ff-calendar-card', 'ff-badges-card'];
+    Array.prototype.forEach.call(cards, function (card, index) {
+      if (names[index]) card.classList.add(names[index]);
+    });
+
+    var overview = el('section', 'ff-stats-overview');
+    overview.setAttribute('aria-label', '合格までの全体状況');
+    ['stats-summary', 'coverage', 'analysis'].forEach(function (id) {
+      var node = document.getElementById(id);
+      if (node) overview.appendChild(node);
+    });
+
+    var layout = el('div', 'ff-stats-layout');
+    var main = el('section', 'ff-stats-main');
+    main.setAttribute('aria-label', '弱点と学習履歴');
+    var rail = el('aside', 'ff-stats-rail');
+    rail.setAttribute('aria-label', '次の操作と週次状況');
+    var domain = stats.querySelector('.ff-domain-card');
+    var calendar = stats.querySelector('.ff-calendar-card');
+    if (domain) main.appendChild(domain);
+    if (calendar) main.appendChild(calendar);
+    var cram = stats.querySelector(':scope > .btn');
+    var metrics = stats.querySelector(':scope > .stats-grid');
+    var weekly = stats.querySelector('.ff-weekly-card');
+    var badges = stats.querySelector('.ff-badges-card');
+    if (cram) rail.appendChild(cram);
+    if (metrics) rail.appendChild(metrics);
+    if (weekly) rail.appendChild(weekly);
+    if (badges) {
+      var badgeDisclosure = el('details', 'ff-badges-disclosure');
+      badgeDisclosure.appendChild(el('summary', '', '<span>実績バッジを見る</span><span aria-hidden="true">›</span>'));
+      badgeDisclosure.appendChild(badges);
+      badgeDisclosure.open = window.matchMedia('(min-width: 900px)').matches;
+      rail.appendChild(badgeDisclosure);
+      var wide = window.matchMedia('(min-width: 900px)');
+      wide.addEventListener('change', function (event) { badgeDisclosure.open = event.matches; });
+    }
+    layout.appendChild(main);
+    layout.appendChild(rail);
+
+    var details = stats.querySelector(':scope > .more-stats');
+    stats.appendChild(intro);
+    stats.appendChild(overview);
+    stats.appendChild(layout);
+    if (details) stats.appendChild(details);
+  }
+
+  function arrangeGateway() {
+    if (!document.getElementById('cert-grid')) return;
+    document.body.classList.add('ff-gateway');
+  }
+
+  function init() {
+    arrangeHome();
+    arrangeStats();
+    arrangeGateway();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+
+
 let allQ=[], filtQ=[];
 let certName=CFG.certName||'';
 let store=loadStore();
