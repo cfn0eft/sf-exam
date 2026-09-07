@@ -252,6 +252,26 @@ t('shouldRecordNetwork: 管理者・承認済み・申請待ち・停止中の�
   eq(T.shouldRecordNetwork(false, { access: 'unexpected' }), false, '未知の状態');
 });
 
+t('一斉ログアウト: 古いセッションだけを対象にし再ログイン後は対象外にする', () => {
+  eq(T.SESSION_CONTROL_DOC, 'session-control');
+  eq(T.shouldForceLogout(NOW, NOW - 60000, 0), true, '命令より古い認証はログアウト');
+  eq(T.shouldForceLogout(NOW, NOW + 60000, 0), false, '命令後の再ログインは維持');
+  eq(T.shouldForceLogout(NOW + 500, NOW, 0), false, '同じ秒の再ログインを再度落とさない');
+  eq(T.shouldForceLogout(NOW, NOW - 60000, NOW), false, '処理済み端末は重複ログアウトしない');
+  eq(T.shouldForceLogout(0, NOW - 60000, 0), false, '命令なし');
+});
+
+t('一斉ログアウト: Firestore Timestamp をミリ秒へ変換する', () => {
+  eq(T.timestampMillis({ seconds: 123, nanoseconds: 456000000 }), 123456);
+  eq(T.timestampMillis({ toMillis: () => 789 }), 789);
+  eq(T.timestampMillis(456), 456);
+});
+
+t('一斉ログアウト: 管理者ダッシュボードに実行ボタンを備える', () => {
+  ok(src.indexOf('id="sfqc-force-logout"') >= 0, '全員ログアウトボタン');
+  ok(src.indexOf("logAdmin('一斉ログアウト'") >= 0, '管理者操作ログ');
+});
+
 t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
   const x = T.parseTrace('ip=203.0.113.42\nloc=JP\nwarp=off\n');
   eq(x.ip, '203.0.113.42'); eq(x.loc, 'JP'); eq(x.warp, 'off');

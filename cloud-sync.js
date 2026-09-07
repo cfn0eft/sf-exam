@@ -82,13 +82,14 @@
   var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
 
   var BROADCAST_COL = 'broadcast';
-  var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null;
+  var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null, sessionControlUnsub = null;
   var accessUnsub = null, watchedAccess = null, accessLocked = false;
   var lockedAccess = '';
   var adminPendingUnsub = null;
   var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
   var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user';
   var MAINT_DOC = 'maintenance';
+  var SESSION_CONTROL_DOC = 'session-control';
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null;
   var maintExempt = false;
   var noticeBoundaryTimer = null;
@@ -101,6 +102,7 @@
   var networkRecordInFlight = {};
   var NETWORK_DEFAULT_DAYS = 30;
   var NETWORK_STORE_KEY = '__sfq_network__';
+  var forcedLogoutNotice = false, forcedLogoutRunning = false;
 
   function injectStyle() {
     var css = '' +
@@ -907,15 +909,78 @@
   function doLogout() {
     if (!auth) return;
     if (currentUser && currentUser.uid) clearNetworkSessionMark(currentUser.uid);
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    cloudDirty = false; saveRetry = 0;
     currentDeviceId = '';
     closeAdmin();
     stopAccessWatch();
     stopAdminPending();
     stopUserMessaging();
+    stopSessionControl();
     stopPresence();
     if (window.__setStore) window.__setStore(emptyStore());
     if (window.__refreshUI) window.__refreshUI();
     auth.signOut();
+  }
+
+  function timestampMillis(v) {
+    if (!v) return 0;
+    if (typeof v === 'number') return isFinite(v) ? v : 0;
+    try { if (typeof v.toMillis === 'function') return v.toMillis() || 0; } catch (e) {}
+    if (v.seconds != null) return Number(v.seconds) * 1000 + Math.floor(Number(v.nanoseconds || 0) / 1000000);
+    var parsed = Date.parse(v); return isFinite(parsed) ? parsed : 0;
+  }
+  function forceLogoutSeenAt(uid) {
+    try { return Number(localStorage.getItem('sfq_force_logout_seen_' + uid) || 0) || 0; } catch (e) { return 0; }
+  }
+  function markForceLogoutSeen(uid, ms) {
+    try { localStorage.setItem('sfq_force_logout_seen_' + uid, String(ms || 0)); } catch (e) {}
+  }
+  function shouldForceLogout(commandMs, authMs, seenMs) {
+    commandMs = Number(commandMs) || 0; authMs = Number(authMs) || 0; seenMs = Number(seenMs) || 0;
+    var commandSec = Math.floor(commandMs / 1000), authSec = Math.floor(authMs / 1000);
+    return commandMs > 0 && (!authMs || commandSec > authSec) && commandMs > seenMs;
+  }
+  function userAuthMillis(user) {
+    var fallback = timestampMillis(user && user.metadata && user.metadata.lastSignInTime);
+    if (!user || typeof user.getIdTokenResult !== 'function') return Promise.resolve(fallback);
+    try {
+      return user.getIdTokenResult().then(function (r) {
+        var sec = r && r.claims && Number(r.claims.auth_time);
+        return (isFinite(sec) && sec > 0) ? sec * 1000 : fallback;
+      }).catch(function () { return fallback; });
+    } catch (e) { return Promise.resolve(fallback); }
+  }
+  function flushBeforeForcedLogout(uid) {
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    var st = null; try { st = window.__getStore ? window.__getStore() : null; } catch (e) {}
+    if (!st || !uid || !db) return Promise.resolve();
+    var save = saveCertStore(uid, st).catch(function () {});
+    return Promise.race([save, new Promise(function (resolve) { setTimeout(resolve, 1500); })]);
+  }
+  function performForcedLogout(user, commandMs) {
+    if (!user || isAdmin || forcedLogoutRunning || !currentUser || currentUser.uid !== user.uid) return;
+    forcedLogoutRunning = true;
+    markForceLogoutSeen(user.uid, commandMs);
+    forcedLogoutNotice = true;
+    setStatus('管理者操作によりログアウト中…');
+    flushBeforeForcedLogout(user.uid).then(function () { doLogout(); });
+  }
+  function startSessionControl(user) {
+    stopSessionControl();
+    if (!db || !user || isAdmin) return;
+    var uid = user.uid;
+    userAuthMillis(user).then(function (authMs) {
+      if (!currentUser || currentUser.uid !== uid || isAdmin) return;
+      sessionControlUnsub = db.collection(BROADCAST_COL).doc(SESSION_CONTROL_DOC).onSnapshot(function (snap) {
+        if (!snap.exists || !currentUser || currentUser.uid !== uid || isAdmin) return;
+        var commandMs = timestampMillis((snap.data() || {}).forceLogoutAt);
+        if (shouldForceLogout(commandMs, authMs, forceLogoutSeenAt(uid))) performForcedLogout(user, commandMs);
+      }, function () {});
+    });
+  }
+  function stopSessionControl() {
+    if (sessionControlUnsub) { sessionControlUnsub(); sessionControlUnsub = null; }
   }
 
 
@@ -1056,6 +1121,7 @@
     currentEmail = user.email || '';
     currentName = currentEmail.split('@')[0];
     isAdmin = matchAdmin(ADMIN_HASHES, ADMIN_IDS, currentName);
+    if (!isAdmin) startSessionControl(user); else stopSessionControl();
     setBadge(currentName); showAdminBtn(isAdmin);
     busy(false);
     flushPendingFeedback();
@@ -1698,6 +1764,7 @@
     var full = !!(m && m.fullStop);
     html += '<div class="sfqc-bc-meta" style="margin-bottom:8px">' +
         '<button class="sfqc-mini" id="sfqc-fullstop" style="background:' + (full ? '#16a34a' : '#dc2626') + ';color:#fff">' + (full ? '✅ 全停止を解除' : '🚨 今すぐ全停止') + '</button>' +
+        '<button class="sfqc-mini" id="sfqc-force-logout" style="margin-left:6px;background:#7f1d1d;color:#fff">🚪 全員ログアウト</button>' +
         '<span style="font-weight:700;color:' + (full ? '#dc2626' : '#15803d') + '">' + (full ? '🔴 緊急全停止中（全利用者をロック）' : '🟢 通常稼働中') + '</span>' +
       '</div>';
     var nowMs = Date.now();
@@ -1742,6 +1809,18 @@
         if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
       })
       .catch(function (e) { alert('変更に失敗しました（Firestoreルールで broadcast を許可してください）: ' + (e && e.message)); });
+  }
+  function forceLogoutAll() {
+    if (!isAdmin || !db) return;
+    if (!confirm('🚪 admin を除く全利用者をログアウトします。\nオンライン中の利用者は即時、オフライン端末は次回接続時にログアウトします。\n実行後は通常どおり再ログインできます。よろしいですか？')) return;
+    var FV = firebase.firestore.FieldValue;
+    db.collection(BROADCAST_COL).doc(SESSION_CONTROL_DOC).set({
+      forceLogoutAt: FV.serverTimestamp(), updated: FV.serverTimestamp(), by: currentName || 'admin'
+    }, { merge: true }).then(function () {
+      logAdmin('一斉ログアウト', 'adminを除く全利用者');
+      toastSafe('全利用者へログアウト命令を送信しました');
+      if (elAdmin && elAdmin.classList.contains('show')) renderAdmin();
+    }).catch(function (e) { alert('一斉ログアウトに失敗しました: ' + (e && e.message)); });
   }
   function buildMaintDraft() {
     var m = lastMaint || {};
@@ -3106,6 +3185,7 @@
     var maintQ = document.getElementById('sfqc-maint-queue'); if (maintQ) maintQ.addEventListener('click', openQueueList);
     var maintEditR = document.getElementById('sfqc-maint-edit-recur'); if (maintEditR) maintEditR.addEventListener('click', openRecurringEditor);
     var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
+    var forceLogoutBtn = document.getElementById('sfqc-force-logout'); if (forceLogoutBtn) forceLogoutBtn.addEventListener('click', forceLogoutAll);
     var mailTestBtn = document.getElementById('sfqc-mailtest'); if (mailTestBtn) mailTestBtn.addEventListener('click', sendMailTest);
     var dmIn = document.getElementById('sfqc-dm-q');
     if (dmIn) {
@@ -3959,7 +4039,8 @@
     corporateMatch: corporateMatch, classifyNetwork: classifyNetwork, pruneNetworkData: pruneNetworkData,
     networkDataSource: networkDataSource, buildNetworkRecord: buildNetworkRecord,
     activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf, networkDetailHTML: networkDetailHTML,
-    INACTIVE_DAYS: INACTIVE_DAYS, NETWORK_STORE_KEY: NETWORK_STORE_KEY };
+    timestampMillis: timestampMillis, shouldForceLogout: shouldForceLogout,
+    INACTIVE_DAYS: INACTIVE_DAYS, NETWORK_STORE_KEY: NETWORK_STORE_KEY, SESSION_CONTROL_DOC: SESSION_CONTROL_DOC };
 
   function init() {
     ROLE = window.SFQ_PAGE_ROLE || (window.__setStore ? 'client' : 'gateway');
@@ -4012,10 +4093,14 @@
         if (currentUser && currentUser.uid) clearNetworkSessionMark(currentUser.uid);
         currentDeviceId = '';
         currentUser = null; isAdmin = false;
-        stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopPresence();
+        stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopSessionControl(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
         hideLock(); showOverlay();
-        if (expiredNotice) {
+        forcedLogoutRunning = false;
+        if (forcedLogoutNotice) {
+          forcedLogoutNotice = false;
+          setMsg('管理者の一斉ログアウトによりログアウトしました。必要な場合は、もう一度ログインしてください。', 'err');
+        } else if (expiredNotice) {
           expiredNotice = false;
           setMsg(INACTIVE_DAYS + '日以上ご利用がなかったため、自動的にログアウトしました。ログインのうえ、もう一度利用を申請してください。', 'err');
         }
