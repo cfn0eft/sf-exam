@@ -1782,3 +1782,105 @@ body:has(#m-title) .bar-fill, body:has(#m-title) .btn { background: #167565; }
   body:has(#cert-grid) .grid { grid-template-columns: 1fr; }
   body:has(#cert-grid) .card { min-height: 0; }
 }
+
+/* Study Manual refinement: editorial, flat, and deliberately non-template-like. */
+:root { --radius: 10px; --shadow: none; }
+body { background: #f4f3ee; letter-spacing: 0; }
+[data-theme=dark] { --shadow: none; }
+.topbar { background: color-mix(in srgb, var(--card) 97%, var(--bg)); }
+.topbar-btn,
+.hh-gear,
+.btn,
+.fsel,
+.chip,
+.td-nav-btn,
+.td-mark-btn,
+.dom-focus-btn,
+.nb-go,
+.mp-mini,
+.mp-field input { border-radius: 7px; }
+.card,
+.stat-card,
+.next-card,
+.quick-entry,
+.settings-acc > summary,
+.qsearch,
+.navpal,
+.tb-card,
+.les-card,
+.case-card,
+.admin-card,
+.game-card,
+.ff-review-panel,
+.ff-cert-progress,
+.ff-badges-disclosure,
+.td-view .card,
+#pg-stats .card,
+#pg-mypage .card,
+.cram-card,
+.les-slide,
+.vdone,
+.cface { border-radius: 10px; box-shadow: none; }
+.home-hero {
+  border-radius: 12px;
+  background: #116458;
+  background-image: none;
+}
+.home-progress { border-radius: 8px; background: #f3ecd9; }
+.home-progress .hp-acqbtn,
+.acq-actions .acq-ok { background: #c79724; background-image: none; border-radius: 6px; }
+.ff-section-head { margin-inline: 0; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.ff-eyebrow { letter-spacing: .08em; }
+.ff-next-best {
+  min-height: 98px;
+  border-radius: 10px;
+  background: #116458;
+  background-image: none;
+}
+.ff-next-icon { width: 38px; height: 38px; border-radius: 0; background: transparent; }
+.ff-next-go { border-radius: 6px; }
+.pbtn { min-height: 104px; border-radius: 9px; }
+.pbtn.study { background: #167565; }
+.pbtn.exam { background: #9a650e; }
+.exam-custom-btn { border-radius: 8px; }
+.next-row { border-radius: 6px; }
+.todo-ico { border-radius: 6px; }
+.quick-entry { min-height: 62px; border-radius: 8px; }
+.quick-entry:hover { background: color-mix(in srgb, var(--primary-light) 45%, var(--card)); }
+.lesson-entry,
+.les-card { border-left-width: 1px; }
+.stat-card { border-radius: 7px; }
+.qbadge,
+.next-badge,
+.ss-pill,
+.badge-item { border-radius: 6px; }
+#pg-study > .card,
+#pg-exam > .card,
+.qk-card { border-radius: 10px; }
+.choice { border-radius: 8px; background: color-mix(in srgb, var(--bg) 65%, var(--card)); }
+.cmark { border-radius: 5px; }
+.exp-box { border-radius: 8px; }
+.study-actbar,
+.bottom-nav { backdrop-filter: none; box-shadow: none; background: var(--card); }
+.study-actbar .btn { border-radius: 7px; }
+.nb-card,
+.sum-card,
+.modal-card,
+.guide-card,
+.cs-card,
+.acq-box { border-radius: 10px; box-shadow: none; }
+.plan-card { border-radius: 10px; background: var(--teal); background-image: none; }
+.cram-pill,
+.cur-badge,
+.choose-badge,
+.acq-badge,
+.lock-badge,
+.coming-badge { border-radius: 5px; box-shadow: none; background-image: none; }
+@media (min-width: 900px) {
+  body:has(#pg-home) .nav-btn { border-radius: 6px; }
+  body:has(#pg-home) .nav-btn.active { background: color-mix(in srgb, var(--primary-light) 72%, var(--card)); }
+}
+@media (max-width: 899px) {
+  .home-hero { border-radius: 10px; }
+  .ff-next-best { border-radius: 9px; }
+}
