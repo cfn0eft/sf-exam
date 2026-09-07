@@ -801,18 +801,21 @@
     if (x) x.addEventListener('click', function () { t.classList.remove('show'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 300); });
   }
   function setupSWUpdate() {
-    if (!('serviceWorker' in navigator)) return;
     try {
-      navigator.serviceWorker.ready.then(function (reg) {
-        if (!reg) return;
-        if (reg.waiting && navigator.serviceWorker.controller) showSWUpdateToast();
-        reg.addEventListener('updatefound', function () {
-          var nw = reg.installing; if (!nw) return;
-          nw.addEventListener('statechange', function () {
-            if (nw.state === 'installed' && navigator.serviceWorker.controller) showSWUpdateToast();
-          });
-        });
-      }).catch(function () {});
+      if (window.caches && window.caches.keys) {
+        window.caches.keys().then(function (keys) {
+          return Promise.all(keys.filter(function (key) { return /^sf-exam(?:-|$)/.test(key); }).map(function (key) { return window.caches.delete(key); }));
+        }).catch(function () {});
+      }
+      if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
+        navigator.serviceWorker.getRegistrations().then(function (regs) {
+          var home = new URL(window.SFQ_HOME_URL || './index.html', location.href);
+          var appPath = home.pathname.replace(/\/index\.html$/, '/');
+          return Promise.all(regs.filter(function (reg) {
+            try { return new URL(reg.scope).pathname === appPath; } catch (e) { return false; }
+          }).map(function (reg) { return reg.unregister(); }));
+        }).catch(function () {});
+      }
     } catch (e) {}
   }
 

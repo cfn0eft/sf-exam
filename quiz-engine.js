@@ -3095,7 +3095,7 @@ function renderOnlineState(){
   let bar=document.getElementById('offline-bar');
   const off=(typeof navigator!=='undefined')&&navigator.onLine===false;
   if(off){
-    if(!bar){bar=document.createElement('div');bar.id='offline-bar';bar.className='offline-bar';bar.textContent='📴 オフライン — 保存済みデータで学習できます';document.body.appendChild(bar);}
+    if(!bar){bar=document.createElement('div');bar.id='offline-bar';bar.className='offline-bar';bar.textContent='📴 オフラインです。インターネット接続を確認してください';document.body.appendChild(bar);}
     bar.classList.add('on');
   }else if(bar){bar.classList.remove('on');}
 }
@@ -3304,9 +3304,17 @@ function startUnseen(){
 async function updateApp(){
   toast('🔄 最新版に更新しています…');
   try{
-    if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}
-    if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.update().catch(function(){})));}
+    if(window.caches){const ks=await caches.keys();await Promise.all(ks.filter(k=>/^sf-exam(?:-|$)/.test(k)).map(k=>caches.delete(k)));}
+    if('serviceWorker' in navigator){
+      const home=new URL(window.SFQ_HOME_URL||'./index.html',location.href);
+      const appPath=home.pathname.replace(/\/index\.html$/,'/');
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.filter(r=>{try{return new URL(r.scope).pathname===appPath;}catch(e){return false;}}).map(r=>r.unregister().catch(function(){})));
+    }
   }catch(e){}
-  setTimeout(function(){location.reload();},900);
+  setTimeout(function(){
+    try{const u=new URL(location.href);u.searchParams.set('refresh',Date.now());location.replace(u.toString());}
+    catch(e){location.reload();}
+  },500);
 }
 

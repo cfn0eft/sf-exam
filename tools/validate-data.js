@@ -11,8 +11,8 @@
  *    diff(1-3) / reference_url 形式 / fig・expFig が figures.js に実在 /
  *    case⇔scenario の対応
  *  - vocab.json の fig 参照 / domains.json のウェイト合計
- *  - キャッシュ版数の3点セット整合（sw.js CACHE / SHELL の ?v= / 各HTMLの ?v=）
- *  - sw.js の SHELL[] プリキャッシュ対象がディスクに実在するか
+ *  - 配信版数の整合（sw.js RELEASE / 各HTMLの ?v=）
+ *  - Service Workerによるfetch横取り・Cache Storage書込・再登録が無いこと
  *  - manifest.webmanifest の必須キー・shortcuts の遷移先・icons の実在
  *  - LP の CERTS[].meta（問題数/用語数/合格%）とシェルの CERT_CONFIG がデータ実数と一致するか
  *  - 主要 JS の構文チェック（node --check）
@@ -314,18 +314,18 @@ function validateCert(slug, figKeys) {
   }
 }
 
-/* ---- キャッシュ版数の3点セット整合 ---- */
+/* ---- 配信アセット版数と旧Service Worker除去版の整合 ---- */
 function validateVersions() {
-  info('\n== キャッシュ版数 ==');
+  info('\n== 配信版数 ==');
   const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
-  const cm = sw.match(/const CACHE\s*=\s*'sf-exam-v(\d+)'/);
-  if (!cm) { err('sw.js の CACHE が見つからない'); return; }
+  const rm = sw.match(/const RELEASE\s*=\s*'sf-exam-v(\d+)'/);
+  if (!rm) { err('sw.js の RELEASE が見つからない'); return; }
   const versions = new Set();
   const collect = (file) => {
     const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
     (src.match(/\?v=(\d+)/g) || []).forEach((m) => versions.add(file + ' → ' + m));
   };
-  ['sw.js', 'index.html'].forEach(collect);
+  collect('index.html');
   fs.readdirSync(path.join(ROOT, 'certifications')).forEach((slug) => {
     const f = path.join('certifications', slug, 'index.html');
     if (fs.existsSync(path.join(ROOT, f))) collect(f);
@@ -337,45 +337,31 @@ function validateVersions() {
     return;
   }
   const assetV = [...nums][0];
-  // 3点セット＝CACHE 文字列・SHELL の ?v=・各HTMLの ?v= がすべて一致すること。
-  // 以前は ?v= 同士の一致しか見ておらず、CACHE だけがドリフトしていても素通りしていた（実際に v132 対 ?v=130 が緑になっていた）。
-  if (cm[1] !== assetV) {
-    err('CACHE(sf-exam-v' + cm[1] + ') とアセット ?v=' + assetV + ' の版数が不一致（tools/bump-version.js で3点セットを揃える）');
+  if (rm[1] !== assetV) {
+    err('RELEASE(sf-exam-v' + rm[1] + ') とアセット ?v=' + assetV + ' の版数が不一致（tools/bump-version.js で揃える）');
   } else {
-    info('  CACHE=v' + cm[1] + ' / アセット ?v=' + assetV + ' … 整合OK');
+    info('  RELEASE=v' + rm[1] + ' / アセット ?v=' + assetV + ' … 整合OK');
   }
 }
 
-/* ---- sw.js の SHELL[] プリキャッシュ対象が実在するか ----
- * install の `Promise.allSettled` は個々の `cache.add()` 失敗を握り潰すため、
- * SHELL にタイプミスや消したファイルが残っていても静かに素通りし、
- * 「初回訪問からオフラインで使える」前提だけが崩れる。ここで実在を保証する。 */
-function validateShell() {
-  info('\n== SW プリキャッシュ(SHELL) ==');
+/* ---- ハードキャッシュを再導入していないこと ---- */
+function validateNoHardCache() {
+  info('\n== Service Worker / ハードキャッシュ廃止 ==');
   const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
-  const m = sw.match(/const SHELL\s*=\s*\[([\s\S]*?)\];/);
-  if (!m) { err('sw.js の SHELL 配列が見つからない'); return; }
-  const entries = (m[1].match(/'([^']+)'/g) || []).map((x) => x.slice(1, -1));
-  if (!entries.length) { err('sw.js の SHELL が空'); return; }
-  let missing = 0;
-  const seen = new Set();
-  entries.forEach((e) => {
-    if (seen.has(e)) warn('SHELL に重複エントリ: ' + e);
-    else seen.add(e);
-    // './' はディレクトリ（=index.html）を指すエントリ。?v= は実ファイル名に含まれない
-    const rel = e.replace(/^\.\//, '').replace(/\?.*$/, '');
-    const target = rel === '' ? 'index.html' : rel;
-    if (!fs.existsSync(path.join(ROOT, target))) { err('SHELL の参照先が存在しない: ' + e); missing++; }
-  });
-  // 公開中の資格シェルが漏れていないか（プリキャッシュ漏れ＝その資格だけ初回オフライン不可）
+  if (/addEventListener\s*\(\s*['"]fetch['"]/.test(sw)) err('sw.js が fetch を横取りしている');
+  if (/caches\.open\s*\(/.test(sw)) err('sw.js がCache Storageへ書き込んでいる');
+  if (!/caches\.delete\s*\(/.test(sw)) err('sw.js に旧キャッシュ削除処理がない');
+  if (!/registration\.unregister\s*\(/.test(sw)) err('sw.js に自己登録解除処理がない');
+  const htmlFiles = ['index.html'];
   fs.readdirSync(path.join(ROOT, 'certifications')).forEach((slug) => {
-    const shell = 'certifications/' + slug + '/index.html';
-    if (!fs.existsSync(path.join(ROOT, shell))) return;
-    if (!entries.some((e) => e.replace(/^\.\//, '').replace(/\?.*$/, '') === shell)) {
-      warn('SHELL に資格シェルが無い（初回オフラインで開けない）: ' + shell);
-    }
+    const f = path.join('certifications', slug, 'index.html');
+    if (fs.existsSync(path.join(ROOT, f))) htmlFiles.push(f);
   });
-  info('  ' + entries.length + '件検査' + (missing ? ' / 欠落 ' + missing + '件' : ' … すべて実在'));
+  htmlFiles.forEach((file) => {
+    const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    if (/serviceWorker\.register\s*\(/.test(src)) err(file + ' がService Workerを再登録している');
+  });
+  info('  fetch横取りなし / Cache Storage書込なし / 全ページで再登録なし');
 }
 
 /* ---- manifest.webmanifest の形式・参照整合 ---- */
@@ -549,7 +535,7 @@ fs.readdirSync(path.join(ROOT, 'certifications')).forEach((slug) => {
   if (fs.existsSync(path.join(ROOT, 'certifications', slug, 'data'))) validateCert(slug, figKeys);
 });
 validateVersions();
-validateShell();
+validateNoHardCache();
 validateManifest();
 validateLanding();
 validateBlueprint();
