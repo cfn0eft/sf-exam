@@ -243,10 +243,13 @@ t('reqChipHTML: 固定文言でなく申請時に入力された名前を表示�
 });
 
 /* ---- 接続元・端末情報（IP はマスクし、判定は参考表示） ---- */
-t('shouldRecordNetwork: admin自身と承認済み利用者を記録する', () => {
-  ok(T.shouldRecordNetwork(true, {}), 'adminはaccessフィールドが無くても記録');
-  ok(T.shouldRecordNetwork(false, { access: 'approved' }), '承認済み利用者を記録');
-  ok(!T.shouldRecordNetwork(false, { access: 'pending' }), '承認前は記録しない');
+t('shouldRecordNetwork: 管理者・承認済み・申請待ち・停止中のログインを記録する', () => {
+  eq(T.shouldRecordNetwork(true, {}), true, '管理者');
+  eq(T.shouldRecordNetwork(false, { access: 'approved' }), true, '承認済み');
+  eq(T.shouldRecordNetwork(false, { access: 'pending' }), true, '申請待ち');
+  eq(T.shouldRecordNetwork(false, { access: 'blocked' }), true, '停止中');
+  eq(T.shouldRecordNetwork(false, {}), true, '旧アカウント');
+  eq(T.shouldRecordNetwork(false, { access: 'unexpected' }), false, '未知の状態');
 });
 
 t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
@@ -304,6 +307,15 @@ t('buildNetworkRecord: 互換保存を引き継いで端末と履歴を更新す
   const data = { stores: { __sfq_network__: { devices: { a: { firstSeen: NOW - DAY, lastSeen: NOW - DAY, loginCount: 2 } }, access: [], updated: NOW - DAY } } };
   const next = T.buildNetworkRecord(data, 'a', { browser: 'Chrome', os: 'Windows', ip: '203.0.113.xxx' }, NOW);
   eq(next.devices.a.firstSeen, NOW - DAY); eq(next.devices.a.loginCount, 3); eq(next.devices.a.lastSeen, NOW); eq(next.access.length, 1);
+});
+
+t('buildNetworkRecord: 同じログインの回線追記は記録回数と履歴を重複させない', () => {
+  const first = T.buildNetworkRecord({}, 'a', { visitId: 'visit-1', browser: 'Chrome', os: 'Windows', ip: '', source: 'device-only' }, NOW);
+  const data = { netDevices: first.devices, netAccess: first.access, netUpdated: first.updated };
+  const enriched = T.buildNetworkRecord(data, 'a', { visitId: 'visit-1', browser: 'Chrome', os: 'Windows', ip: '203.0.113.xxx', org: 'Example ISP', source: 'cloudflare+ipwhois' }, NOW + 1000);
+  eq(enriched.devices.a.loginCount, 1, '同一ログインなので1回のまま');
+  eq(enriched.access.length, 1, '履歴を増やさず更新');
+  eq(enriched.access[0].ip, '203.0.113.xxx', '回線情報を追記');
 });
 
 t('networkAlertsOf: 複数端末の同時接続と短時間の回線変更を検出する', () => {

@@ -98,6 +98,7 @@
   var hbTimer = null, hbVisHandler = null;
   var ONLINE_MS = 120000;
   var currentDeviceId = '';
+  var networkRecordInFlight = {};
   var NETWORK_DEFAULT_DAYS = 30;
   var NETWORK_STORE_KEY = '__sfq_network__';
 
@@ -478,7 +479,7 @@
         '</div>' +
         '<div id="sfqc-msg" class="sfqc-msg"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
-        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、利用可能なアカウントのログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。生のIPは保存せず、判定結果は管理者だけが確認します。</span>' +
+        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。生のIPは保存せず、判定結果は管理者だけが確認します。</span>' +
       '</div>';
   }
   function guideCardHTML() {
@@ -1063,6 +1064,7 @@
     if (!isAdmin) startAccessWatch(user.uid);
     db.collection(COLLECTION).doc(user.uid).get().then(function (doc) {
       var data = (doc.exists && doc.data()) || {};
+      if (shouldRecordNetwork(isAdmin, data)) recordNetworkVisit(user.uid);
 
       if (!isAdmin) {
         var acc = data.access;
@@ -1090,7 +1092,6 @@
       if (isAdmin) watchAdminPending();
       cacheApproval(user.uid);
       recordLogin(user.uid, data);
-      if (shouldRecordNetwork(isAdmin, data)) recordNetworkVisit(user.uid);
       startPresence(user.uid);
       if (!isAdmin) startUserMessaging(user.uid);
 
@@ -2590,10 +2591,14 @@
     });
     return Promise.race([work, new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, 7000); })]);
   }
-  function collectNetworkSnapshot() {
-    var cfg = networkConfig(), dev = deviceInfo();
-    var base = { deviceId: currentDeviceId || deviceId(currentUser && currentUser.uid), browser: dev.browser, os: dev.os, language: dev.language, timezone: dev.timezone, screen: dev.screen, ua: dev.ua,
+  function baseNetworkSnapshot() {
+    var dev = deviceInfo();
+    return { deviceId: currentDeviceId || deviceId(currentUser && currentUser.uid), browser: dev.browser, os: dev.os, language: dev.language, timezone: dev.timezone, screen: dev.screen, ua: dev.ua,
       ip: '', org: '', asn: '', country: '', region: '', city: '', kind: 'unknown', label: '❔ 回線判定なし', confidence: 'low', source: 'device-only' };
+  }
+  function collectNetworkSnapshot(base) {
+    var cfg = networkConfig();
+    base = base || baseNetworkSnapshot();
     var traceUrl = cleanNetText(cfg.traceUrl || 'https://www.cloudflare.com/cdn-cgi/trace', 300);
     return netFetch(traceUrl, true).then(function (txt) {
       var tr = parseTrace(txt), rawIp = cleanNetText(tr.ip, 80);
@@ -2617,7 +2622,9 @@
     });
   }
   function shouldRecordNetwork(admin, data) {
-    return !!admin || !!(data && data.access === 'approved');
+    if (admin) return true;
+    var access = data && data.access;
+    return !access || access === 'approved' || access === 'pending' || access === 'blocked';
   }
   function pruneNetworkData(data, now) {
     data = data || {}; now = now || Date.now();
@@ -2645,14 +2652,15 @@
   }
   function buildNetworkRecord(data, did, net, now) {
     var source = networkDataSource(data), pruned = pruneNetworkData(source, now);
-    var devices = pruned.devices, prev = devices[did] || {}, saved = {};
+    var devices = pruned.devices, prev = devices[did] || {}, saved = {}, sameVisit = !!(net && net.visitId && prev.visitId === net.visitId);
     Object.keys(net || {}).forEach(function (k) { saved[k] = net[k]; });
-    saved.deviceId = did; saved.firstSeen = prev.firstSeen || now; saved.lastSeen = now; saved.loginCount = (prev.loginCount || 0) + 1;
+    saved.deviceId = did; saved.firstSeen = prev.firstSeen || now; saved.lastSeen = now; saved.loginCount = (prev.loginCount || 0) + (sameVisit ? 0 : 1);
     devices[did] = saved;
     var ev = { ts: now, deviceId: did, browser: saved.browser, os: saved.os, ip: saved.ip, org: saved.org, asn: saved.asn,
-      country: saved.country, region: saved.region, city: saved.city, kind: saved.kind, label: saved.label, confidence: saved.confidence };
+      country: saved.country, region: saved.region, city: saved.city, kind: saved.kind, label: saved.label, confidence: saved.confidence, visitId: saved.visitId || '' };
     var logs = pruned.access, newest = logs[0];
-    if (!newest || newest.deviceId !== did || newest.ip !== ev.ip || (now - (newest.ts || 0)) > 60000) logs = [ev].concat(logs);
+    if (sameVisit && newest && newest.visitId === ev.visitId) logs[0] = ev;
+    else if (!newest || newest.deviceId !== did || newest.ip !== ev.ip || (now - (newest.ts || 0)) > 60000) logs = [ev].concat(logs);
     return { devices: devices, access: logs.slice(0, 50), updated: now };
   }
   function writeNetworkDirect(uid, did, net, now) {
@@ -2681,17 +2689,29 @@
     } catch (e) { return false; }
   }
   function clearNetworkSessionMark(uid) { try { sessionStorage.removeItem('sfq_net_recorded_' + uid); } catch (e) {} }
+  function writeNetworkRecord(uid, did, net, now) {
+    return writeNetworkDirect(uid, did, net, now).catch(function (err) {
+      try { console.warn('[cloud-sync] 接続情報の専用フィールド保存に失敗したため互換保存を試します。', err && err.code || err); } catch (e) {}
+      return writeNetworkFallback(uid, did, net, now);
+    });
+  }
   function recordNetworkVisit(uid) {
     var cfg = networkConfig();
     var did = deviceId(uid); currentDeviceId = did;
-    if (!db || !uid || cfg.enabled === false || networkRecordedThisSession(uid, false)) return;
-    collectNetworkSnapshot().then(function (net) {
-      var now = Date.now();
-      return writeNetworkDirect(uid, did, net, now).catch(function (err) {
-        try { console.warn('[cloud-sync] 接続情報の専用フィールド保存に失敗したため互換保存を試します。', err && err.code || err); } catch (e) {}
-        return writeNetworkFallback(uid, did, net, now);
+    if (!db || !uid || cfg.enabled === false || networkRecordedThisSession(uid, false) || networkRecordInFlight[uid]) return;
+    networkRecordInFlight[uid] = true;
+    var base = baseNetworkSnapshot();
+    base.visitId = did.slice(0, 8) + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+    writeNetworkRecord(uid, did, base, Date.now()).then(function () {
+      networkRecordedThisSession(uid, true);
+      delete networkRecordInFlight[uid];
+      collectNetworkSnapshot(base).then(function (net) {
+        return writeNetworkRecord(uid, did, net, Date.now());
+      }).catch(function (err) {
+        try { console.warn('[cloud-sync] 回線情報の追記に失敗しました。端末情報の記録は完了しています。', err && err.code || err); } catch (e) {}
       });
-    }).then(function () { networkRecordedThisSession(uid, true); }).catch(function (err) {
+    }).catch(function (err) {
+      delete networkRecordInFlight[uid];
       clearNetworkSessionMark(uid);
       try { console.warn('[cloud-sync] 接続情報を保存できませんでした。', err && err.code || err); } catch (e) {}
     });
@@ -2729,6 +2749,7 @@
   }
   function presenceWrite(uid) {
     if (!db || !uid || document.hidden) return;
+    if (!networkRecordedThisSession(uid, false)) recordNetworkVisit(uid);
     var now = Date.now(), ref = db.collection(COLLECTION).doc(uid);
     if (currentDeviceId && networkConfig().enabled !== false) {
       try {
