@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=167"></script>
+<script src="maintenance.js?v=168"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -138,12 +138,13 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 .lp-news{margin:0 0 34px}.lp-rule{margin:0}.lp-news-t{font-size:14px}.lp-news-sub{line-height:1.5}
 .path-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin:0 0 18px}.path-intro h2{font-size:22px;margin:0 0 5px}.path-intro p{font-size:13px;color:var(--text-sub);line-height:1.6;margin:0}.path-intro .lp-rule{width:min(100%,420px);flex:0 0 420px;padding:12px 14px}
 .catalog{display:grid;gap:34px}.cert-group{min-width:0}.group-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border)}.group-title{font-size:16px;font-weight:800}.group-desc{font-size:12px;color:var(--text-sub);text-align:right}
-.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.specialist-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.specialist-grid,.planned-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .card{display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:12px;min-height:0;padding:17px 16px;border-radius:8px}.card:hover,.card.choosable:hover{transform:none;box-shadow:none}.card-icon{grid-row:1 / 4;font-size:23px;margin:2px 0 0}.card-title{font-size:15px;line-height:1.4;margin:0 76px 4px 0}.card-desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.55;margin:0 0 10px}.card-meta{gap:10px;font-size:10.5px}.card-meta span::before{width:3px;height:3px;margin-right:4px}.card-state{position:absolute;top:13px;right:13px;padding:3px 6px;border-radius:3px;font-size:10px;font-weight:800;line-height:1.2}.state-current{background:#dcefe9;color:#0b5d51}.state-choice{background:#e7eefc;color:#29559a}.state-acquired{background:#f3ebcf;color:#745a08}.state-locked{background:var(--muted);color:var(--muted-text)}.card.acq,.card.choosable{box-shadow:none}.card.choosable{border-color:#7399d1}.card.current{border-color:var(--accent);background:color-mix(in srgb,var(--card) 96%,var(--accent))}.lock-reason{grid-column:2;font-size:11px;line-height:1.5;margin-top:0;padding-top:9px}.card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{filter:none;opacity:.62}.card.locked{border-style:dashed}.card:focus-visible,.lp-news:focus-visible,.lp-focus-action:focus-visible,.lp-modal-x:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:3px}
 @media (prefers-color-scheme:dark){.state-current{background:#173e35;color:#8bd9c5}.state-choice{background:#263b5b;color:#b8d2ff}.state-acquired{background:#4b411f;color:#f0dc8e}}
 @media (max-width:900px){.grid,.specialist-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.path-intro{display:block}.path-intro .lp-rule{width:100%;margin-top:14px}.lp-focus{grid-template-columns:1fr}.lp-focus-action{width:100%}}
 @media (max-width:620px){.container{padding:22px 15px 50px}.hero{display:block;padding-bottom:20px}.hero h1{font-size:28px}.lp-progress{display:flex;align-items:baseline;gap:8px;margin-top:18px;padding:12px 0 0;border-left:0;border-top:1px solid var(--border)}.lp-progress-label{margin:0}.lp-progress-value{font-size:20px}.lp-focus{margin-top:18px;padding:18px 16px;gap:16px}.lp-focus-main{align-items:flex-start}.lp-focus h2{font-size:18px}.lp-news{margin-bottom:26px}.path-intro h2{font-size:19px}.grid,.specialist-grid{grid-template-columns:1fr}.catalog{gap:28px}.group-head{display:block}.group-desc{display:block;text-align:left;margin-top:4px}.card{padding:16px 14px;min-height:0}.card-title{margin-right:72px}}
 .card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{opacity:.78}.lp-focus{border-left:1px solid var(--border)}
+.card.planned{cursor:default}.card.planned .card-icon,.card.planned .card-title,.card.planned .card-desc,.card.planned .card-meta{opacity:.82}.planned-source{margin:0 0 12px;font-size:11px;line-height:1.6;color:var(--text-sub)}
 </style>
 </head>
 <body>
@@ -190,6 +191,19 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
       <div class="group-head"><span class="group-title" id="specialist-title">2. 専門資格</span><span class="group-desc">コア3資格の後に、1資格ずつ選んで解除する</span></div>
       <div class="grid specialist-grid" id="specialist-grid"></div>
     </section>
+    <section class="cert-group" aria-labelledby="recommended-title">
+      <div class="group-head"><span class="group-title" id="recommended-title">3. 推奨資格（追加予定）</span><span class="group-desc">実務領域を広げるため、優先して教材化する資格</span></div>
+      <p class="planned-source">Salesforce公式資格カタログで、2026年9月8日時点の名称と対象スキルを確認しています。</p>
+      <div class="grid planned-grid" id="recommended-grid"></div>
+    </section>
+    <section class="cert-group" aria-labelledby="additional-title">
+      <div class="group-head"><span class="group-title" id="additional-title">4. その他資格（追加予定）</span><span class="group-desc">上級管理・開発・コンサルタント・アーキテクト領域</span></div>
+      <div class="grid planned-grid" id="additional-grid"></div>
+    </section>
+    <section class="cert-group" aria-labelledby="architect-title">
+      <div class="group-head"><span class="group-title" id="architect-title">5. 上位認定（追加予定）</span><span class="group-desc">4つの前提資格をそろえると自動的に認定される複合資格</span></div>
+      <div class="grid planned-grid" id="architect-grid"></div>
+    </section>
   </div>
 
 </div>
@@ -201,7 +215,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </div>
 </div>
 
-<script src="progression.js?v=167"></script>
+<script src="progression.js?v=168"></script>
 <script>
   const CERTS = [
     { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', short:'Platform アドミニストレーター', title:'Salesforce 認定<br>Platform アドミニストレーター',
@@ -229,6 +243,53 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
       desc:'権限・OWD・ロール階層・共有ルール・レコードアクセス・大規模データの可視性設計を網羅。公式4分野に対応。',
       meta:['132問','54用語','合格67%'] }
   ];
+  const PLANNED_CERT_GROUPS = {
+    recommended: [
+      { slug:'mulesoft-integration-foundations', icon:'🔌', title:'Salesforce 認定<br>MuleSoft Integration Foundations',
+        desc:'インテグレーションの基礎用語とAPI主導の接続性を学び、MuleSoftプロジェクトに参加するための土台を固める。',
+        meta:['MuleSoft・API基礎'] },
+      { slug:'mulesoft-developer', icon:'🛠️', title:'Salesforce 認定<br>MuleSoft Developer',
+        desc:'Mule 4を使った基本的なAPIとインテグレーションの設計・構築・テスト・デバッグ・デプロイ・運用を学ぶ。',
+        meta:['旧 MCD-Level 1'] },
+      { slug:'data-360-consultant', icon:'🧭', title:'Salesforce 認定<br>Data 360 Consultant',
+        desc:'企業データ基盤の設計・構成・実装を、顧客向けのコンサルティング視点で学ぶ。',
+        meta:['Data 360','コンサルタント'] }
+    ],
+    additional: [
+      { slug:'platform-administrator-ii', icon:'⚙️', title:'Salesforce 認定<br>Platform Administrator II',
+        desc:'高度な管理機能を組み合わせ、複雑な業務課題を解決するための設定・運用力を深める。',
+        meta:['旧 上級アドミニストレーター'] },
+      { slug:'agentforce-field-service-operations', icon:'🚚', title:'Salesforce 認定<br>Agentforce Field Service and Operations コンサルタント',
+        desc:'Salesforce Platformの管理・構成に加え、フィールドサービスとカスタマーサービスの業務プロセスを学ぶ。',
+        meta:['Field Service','コンサルタント'] },
+      { slug:'platform-developer-ii', icon:'🧑‍💻', title:'Salesforce 認定<br>Platform Developer II',
+        desc:'高度なプログラミング機能、データモデリング、複雑なビジネスロジックとインターフェースの設計・開発を学ぶ。',
+        meta:['旧 Platformデベロッパー上級'] },
+      { slug:'javascript-developer', icon:'JS', title:'Salesforce 認定<br>JavaScript Developer',
+        desc:'Webのフロントエンド／バックエンドJavaScriptと、Lightning Web Componentsに関係する技術を学ぶ。',
+        meta:['旧 JavaScript Developer I'] },
+      { slug:'platform-data-architect', icon:'🗄️', title:'Salesforce 認定<br>Platform Data Architect',
+        desc:'エンタープライズデータ管理に適した、堅牢で拡張性と性能を備えたSalesforceデータ設計を学ぶ。',
+        meta:['アーキテクト','Application要件'] },
+      { slug:'platform-integration-architect', icon:'🔗', title:'Salesforce 認定<br>Platform Integration Architect',
+        desc:'エンドツーエンドの連携要件を満たす、堅牢で拡張可能なSalesforce統合アーキテクチャを学ぶ。',
+        meta:['アーキテクト','System要件'] },
+      { slug:'platform-identity-access-management-architect', icon:'🪪', title:'Salesforce 認定<br>Platform Identity and Access Management Architect',
+        desc:'シングルサインオンを含むID・認証・アクセス管理要件に対応する、安全で高性能な設計を学ぶ。',
+        meta:['アーキテクト','System要件'] },
+      { slug:'platform-development-lifecycle-deployment-architect', icon:'🚀', title:'Salesforce 認定<br>Platform Development Lifecycle and Deployment Architect',
+        desc:'開発ライフサイクル、ガバナンス、テスト、リリースと継続的な変更管理の設計を学ぶ。',
+        meta:['アーキテクト','System要件'] }
+    ],
+    architect: [
+      { slug:'application-architect', icon:'🏛️', title:'Salesforce 認定<br>Application Architect',
+        desc:'Platform App Builder、Platform Data Architect、Platform Developer、Platform Sharing and Visibility Architectの取得で自動認定される。',
+        meta:['複合資格','4資格で自動認定'] },
+      { slug:'system-architect', icon:'🏗️', title:'Salesforce 認定<br>System Architect',
+        desc:'Platform Developer、Development Lifecycle and Deployment、Identity and Access Management、Integration Architectの取得で自動認定される。',
+        meta:['複合資格','4資格で自動認定'] }
+    ]
+  };
   function lpChooseElective(slug){
     var P = window.SFQ_PROG, name = (P && P.NAME[slug]) || slug;
     if (!confirm(name + ' を解除しますか？\n\n一度に学習できるのは1資格です。取得済みにすると、残りからまた1つ選べます。')) return;
@@ -260,6 +321,14 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     return '<div class="card locked" data-slug="'+c.slug+'" aria-disabled="true"><span class="card-state state-locked">ロック中</span>'+inner+(reason?'<div class="lock-reason">'+reason+'</div>':'')+'</div>';
   }
 
+  function plannedCard(c){
+    var meta=(c.meta||[]).map(function(m){return '<span>'+m+'</span>';}).join('');
+    return '<div class="card locked planned" data-slug="'+c.slug+'" aria-disabled="true">'
+      +'<span class="card-state state-locked">追加予定</span><div class="card-icon" aria-hidden="true">'+(c.icon||'📘')+'</div>'
+      +'<h3 class="card-title">'+c.title+'</h3><p class="card-desc">'+(c.desc||'')+'</p><div class="card-meta">'+meta+'</div>'
+      +'<div class="lock-reason">教材・問題はこれから追加します。</div></div>';
+  }
+
   function renderFocus(P,acquired){
     var box=document.getElementById('lp-focus'),progress=document.getElementById('lp-progress-value');if(!box)return;
     if(progress)progress.innerHTML=acquired+' <small>/ '+CERTS.length+'資格</small>';
@@ -281,6 +350,10 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     var P = window.SFQ_PROG;
     core.innerHTML=CERTS.slice(0,3).map(function(c){return certCard(c,P);}).join('');
     specialist.innerHTML=CERTS.slice(3).map(function(c){return certCard(c,P);}).join('');
+    Object.keys(PLANNED_CERT_GROUPS).forEach(function(group){
+      var grid=document.getElementById(group+'-grid');
+      if(grid)grid.innerHTML=PLANNED_CERT_GROUPS[group].map(plannedCard).join('');
+    });
     var acquired=P?CERTS.filter(function(c){return P.acquiredOf(c.slug);}).length:0;
     renderFocus(P,acquired);
   }
@@ -300,8 +373,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="changelog.js?v=167"></script>
-<script src="cloud-sync.js?v=167"></script>
+<script src="changelog.js?v=168"></script>
+<script src="cloud-sync.js?v=168"></script>
 <script>
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
   function lpHasUnseen(){try{return (window.SFQ_CHANGELOG||[]).length>0 && localStorage.getItem('sfq_news_seen')!==lpNewsLatest();}catch(e){return false;}}
