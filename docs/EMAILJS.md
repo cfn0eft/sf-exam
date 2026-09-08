@@ -1,7 +1,7 @@
 # メール通知の設定（EmailJS・任意）
 
 `firebase-config.js` の `window.SFQ_EMAILJS` に3つのIDを入れると、
-**利用申請 / 停止解除の申請 / 利用者からのDM** が発生したときに管理者のメールへ通知が届く。
+**利用申請 / 停止解除の申請** が発生したときに管理者のメールへ通知が届く。
 **空のままなら何も送らない**（既存の動作には影響しない）。サーバ不要・Firebase の Blaze プラン不要。
 
 > ⚠️ 宛先（管理者のメールアドレス）は EmailJS のテンプレート側にだけ書く。
@@ -38,10 +38,8 @@
 
 ## 実装メモ
 
-- 送信口は `cloud-sync.js` の `notifyAdminMail(kind, info, cb)` 1本だけ（`kind` は `apply`/`unblock`/`dm`/`test`）。
+- 送信口は `cloud-sync.js` の `notifyAdminMail(kind, info, cb)` 1本だけ（`kind` は `apply`/`unblock`/`test`）。
 - 送信は「操作した利用者のブラウザ」から EmailJS の REST API を直接叩く fire-and-forget。
-  失敗しても申請やDMの保存は成功させる。DM のみ端末ローカルで5分に1通へ間引く。
-- DM の通知には本文の先頭120字を含める（EmailJS を経由する）。含めたくない場合は
-  `notifyAdminMail` の呼び出しから `detail` を外す。
+  失敗しても申請の保存は成功させる。同じ種類の通知は端末ローカルで5分に1通へ間引く。
 - 取りこぼしが問題になる場合は `notifyAdminMail` の中身だけを Cloud Functions や
   GitHub Actions 方式に差し替えればよい（呼び出し側は不変）。

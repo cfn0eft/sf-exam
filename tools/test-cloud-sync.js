@@ -273,11 +273,17 @@ t('一斉ログアウト: 管理者ダッシュボードに実行ボタンを備
 });
 
 t('管理画面: 目的別ナビと概要から各対応画面へ移動できる', () => {
-  ['概要', 'アクセス申請', '利用者', '学習分析', '接続元・端末', 'DM', 'フィードバック', 'お知らせ', '運用'].forEach((label) => {
+  ['概要', 'アクセス申請', '利用者', '学習分析', '接続元・端末', 'フィードバック', 'お知らせ', '運用'].forEach((label) => {
     ok(src.indexOf("'" + label + "'") >= 0 || src.indexOf(label) >= 0, label + ' タブ');
   });
   ok(src.indexOf('function adminOverviewHTML()') >= 0, '概要画面');
   ok(src.indexOf("action('access'") >= 0 && src.indexOf("action('feedback'") >= 0, '対応項目から直接移動');
+});
+
+t('DM機能: 利用者画面・管理画面・メール通知から削除されている', () => {
+  ['sfqc-chat-fab', 'sfqc-chat-text', 'dmSectionHTML', "notifyAdminMail('dm'", "tabBtn('dm'"].forEach((token) => {
+    ok(src.indexOf(token) < 0, token + ' が残っていない');
+  });
 });
 
 t('管理画面: 30日間の解答数と利用人数を別々に表示する', () => {
@@ -425,20 +431,18 @@ t('mailParams: 種類ごとの件名と本文パラメータ', () => {
   eq(p.subject, '📩 利用申請がありました');
   eq(p.user_name, '山田太郎'); eq(p.user_id, 'taro'); eq(p.at, '2026-07-30 10:00');
   eq(T.mailParams('unblock', {}).subject, '📩 停止解除の申請がありました');
-  eq(T.mailParams('dm', {}).subject, '💬 利用者からメッセージが届きました');
   eq(T.mailParams('apply', {}).user_name, '(名前未入力)', '名前が無いときの既定');
   eq(T.mailParams('unknown', {}).subject, 'お知らせ', '未知の種類でも落ちない');
 });
 
 t('mailThrottled: test以外は5分に1通・testは毎回通す', () => {
-  storage.delete('sfq_mailed_dm');
   storage.delete('sfq_mailed_apply');
   var now = Date.now();
   eq(T.mailThrottled('apply', now), false, '申請の1通目は通る');
   eq(T.mailThrottled('apply', now + 1000), true, '直後の連投は抑止（DoS対策）');
   eq(T.mailThrottled('apply', now + 6 * 60000), false, '5分経過後は再び通る');
-  eq(T.mailThrottled('dm', now), false, 'DMの1通目は通る');
-  eq(T.mailThrottled('dm', now + 1000), true, '直後の2通目は抑止');
+  eq(T.mailThrottled('unblock', now), false, '停止解除申請の1通目は通る');
+  eq(T.mailThrottled('unblock', now + 1000), true, '直後の2通目は抑止');
   eq(T.mailThrottled('test', now), false, '管理者のテスト送信は throttle しない');
   eq(T.mailThrottled('test', now + 1000), false, 'テスト送信は連続でも通す');
 });

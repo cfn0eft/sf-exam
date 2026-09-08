@@ -82,12 +82,11 @@
   var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
 
   var BROADCAST_COL = 'broadcast';
-  var ownDocUnsub = null, broadcastUnsub = null, adminChatUnsub = null, sessionControlUnsub = null;
+  var ownDocUnsub = null, broadcastUnsub = null, sessionControlUnsub = null;
   var accessUnsub = null, watchedAccess = null, accessLocked = false;
   var lockedAccess = '';
   var adminPendingUnsub = null;
-  var lastBroadcasts = [], lastNotices = [], lastChat = [], lastRead = {}, ownLoaded = false;
-  var chatOpen = false, chatUid = '', chatName = '', chatMode = 'user';
+  var lastBroadcasts = [], lastNotices = [], lastRead = {}, ownLoaded = false;
   var MAINT_DOC = 'maintenance';
   var SESSION_CONTROL_DOC = 'session-control';
   var maintUnsub = null, maintTimer = null, maintBoundaryTimer = null, lastMaint = null;
@@ -318,31 +317,6 @@
       '.sfqc-rep-ts{font-size:11px;color:#0891b2;margin-bottom:3px}' +
       '.sfqc-rep-msg{font-size:13.5px;color:#0e4a5b;white-space:pre-wrap;word-break:break-word;line-height:1.55}' +
       'body.dark .sfqc-rep-item{background:#083344;border-color:#155e75}body.dark .sfqc-rep-msg{color:#cffafe}body.dark .sfqc-rep-ts{color:#67e8f9}' +
-      '#sfqc-chat-fab{position:fixed;right:16px;bottom:calc(var(--tab,0px) + 14px);z-index:99990;display:none;width:54px;height:54px;border:none;border-radius:50%;background:#6366f1;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(79,70,229,.45);font-family:inherit}' +
-      '#sfqc-chat-fab.show{display:flex;align-items:center;justify-content:center}' +
-      '#sfqc-chat-fab:hover{filter:brightness(1.08)}' +
-      '#sfqc-chat-fab .sfqc-chat-badge{position:absolute;top:-3px;right:-3px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff}' +
-      '#sfqc-chat-fab.has-unread .sfqc-chat-badge{display:flex}' +
-      '#sfqc-chat{position:fixed;right:16px;bottom:calc(var(--tab,0px) + 14px);z-index:100001;display:none;width:min(94vw,360px);height:min(72vh,520px);background:#fff;color:#1e293b;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);flex-direction:column;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif}' +
-      '#sfqc-chat.show{display:flex}' +
-      '.sfqc-chat-head{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#6366f1;color:#fff;font-weight:700;font-size:14px}' +
-      '.sfqc-chat-head .sfqc-chat-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
-      '.sfqc-chat-head button{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:15px}' +
-      '.sfqc-chat-msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#f1f5f9}' +
-      '.sfqc-chat-empty{margin:auto;color:#94a3b8;font-size:12.5px;text-align:center;line-height:1.6}' +
-      '.sfqc-chat-b{max-width:80%;padding:8px 11px;border-radius:13px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}' +
-      '.sfqc-chat-b .sfqc-chat-t{display:block;font-size:10px;opacity:.6;margin-top:3px}' +
-      '.sfqc-chat-b.mine{align-self:flex-end;background:#6366f1;color:#fff;border-bottom-right-radius:4px}' +
-      '.sfqc-chat-b.theirs{align-self:flex-start;background:#fff;color:#1e293b;border:1px solid #e2e8f0;border-bottom-left-radius:4px}' +
-      '.sfqc-chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid #e2e8f0;background:#fff}' +
-      '.sfqc-chat-input textarea{flex:1;resize:none;border:1px solid #cbd5e1;border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;max-height:84px;color:#1e293b;background:#fff}' +
-      '.sfqc-chat-input button{border:none;background:#6366f1;color:#fff;border-radius:10px;padding:0 14px;font-weight:700;cursor:pointer;font-size:13px}' +
-      '.sfqc-chat-input button:disabled{opacity:.5;cursor:default}' +
-      'body.dark #sfqc-chat{background:#1e293b;color:#e2e8f0}' +
-      'body.dark .sfqc-chat-msgs{background:#0f172a}' +
-      'body.dark .sfqc-chat-b.theirs{background:#1e293b;color:#e2e8f0;border-color:#334155}' +
-      'body.dark .sfqc-chat-input{background:#1e293b;border-color:#334155}' +
-      'body.dark .sfqc-chat-input textarea{background:#0f172a;color:#e2e8f0;border-color:#334155}' +
       '#sfqc-compose{position:fixed;inset:0;z-index:100003;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.7);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:14px}' +
       '#sfqc-compose.show{display:flex}' +
       '.sfqc-cmp-card{width:min(94vw,460px);max-height:90vh;overflow:auto;background:#fff;color:#1e293b;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:left}' +
@@ -399,23 +373,12 @@
       '#sfqc-maint .sfqc-card{text-align:center}' +
       '#sfqc-maint-banner{position:fixed;left:0;right:0;top:0;z-index:99980;display:none;background:#b45309;color:#fff;font-size:12.5px;font-weight:700;text-align:center;padding:8px 12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.2)}' +
       '#sfqc-maint-banner.show{display:block}' +
-      '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
       '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
-      '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
       '.sfqc-tabs{display:flex;gap:6px;margin:0 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}' +
       '.sfqc-tab{flex:0 0 auto;border:1px solid #e2e8f0;background:#fff;color:#475569;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;position:relative}' +
       '.sfqc-tab.on{background:#6366f1;color:#fff;border-color:#6366f1}' +
       '.sfqc-tab-badge{display:inline-block;min-width:18px;margin-left:6px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;vertical-align:middle}' +
       'body.dark .sfqc-tab{background:#1e293b;color:#cbd5e1;border-color:#334155}' +
-      '.sfqc-dm{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;margin-bottom:8px}' +
-      '.sfqc-dm.unread{border-color:#c7d2fe;background:#f5f7ff}' +
-      '.sfqc-dm-main{display:flex;align-items:center;gap:8px;min-width:0;flex:1}' +
-      '.sfqc-dm-name{font-weight:700;font-size:14px;white-space:nowrap;color:#0f172a;flex:0 0 auto}' +
-      '.sfqc-dm-badge{flex:0 0 auto;min-width:18px;padding:0 6px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;text-align:center}' +
-      '.sfqc-dm-prev{color:#64748b;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}' +
-      '.sfqc-dm-act{display:flex;align-items:center;gap:6px;flex:0 0 auto}' +
-      '.sfqc-dm-act button{border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap}' +
-      '.sfqc-dm-time{font-size:10px;color:#94a3b8;white-space:nowrap}' +
       '@media(max-width:560px){' +
         '.sfqc-adminwrap{inset:6px;border-radius:12px}' +
         '.sfqc-adminhead{padding:9px 11px;gap:6px}' +
@@ -430,8 +393,6 @@
         '.sfqc-kpis{grid-template-columns:repeat(2,1fr)}' +
         '.sfqc-tab{padding:7px 12px;font-size:12px}' +
         '.sfqc-toolbar{padding:8px 10px}' +
-        '.sfqc-dm{flex-wrap:wrap}' +
-        '.sfqc-dm-time{display:none}' +
         '.sfqc-acc-stats span{white-space:nowrap}' +
       '}' +
       '.sfqc-acc-access{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px;white-space:nowrap}' +
@@ -476,12 +437,12 @@
       '.sfqc-actions{display:flex;flex-direction:column;gap:8px}.sfqc-action{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;min-height:58px;padding:9px 10px;text-align:left;background:#f7f8f4;border:1px solid #d9ddd7;border-radius:13px;color:#17211f;cursor:pointer}.sfqc-action:hover{border-color:#167565;background:#eef8f5}.sfqc-action.urgent{border-left:4px solid #d97706}.sfqc-action-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#e3f4ef;color:#0b5d51;font-weight:900}.sfqc-action-copy{min-width:0}.sfqc-action-copy b,.sfqc-action-copy small{display:block}.sfqc-action-copy small{margin-top:2px;color:#64706d}.sfqc-action-go{color:#167565;font-weight:900}' +
       '.sfqc-ops-list{display:grid;gap:8px}.sfqc-op-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #e7e9e4}.sfqc-op-row:last-child{border-bottom:0}.sfqc-op-row span{color:#64706d;font-size:12px}.sfqc-op-row b{font-size:13px}' +
       '.sfqc-ts-totals{display:flex;justify-content:flex-end;gap:24px;margin:-4px 0 8px}.sfqc-ts-totals span{display:grid;text-align:right}.sfqc-ts-totals b{font-size:18px;color:#17211f}.sfqc-ts-totals small{font-size:11px;color:#64706d}' +
-      '.sfqc-mini,.sfqc-fchip,.sfqc-sort,.sfqc-act-detail,.sfqc-act-chat,.sfqc-app-actions button{min-height:44px}' +
+      '.sfqc-mini,.sfqc-fchip,.sfqc-sort,.sfqc-act-detail,.sfqc-app-actions button{min-height:44px}' +
       '.sfqc-mini.reload,.sfqc-fchip.on,.sfqc-sort.on{background:#167565;color:#fff;border-color:#167565}' +
       'body.dark .sfqc-adminwrap,body.dark .sfqc-adminbody{background:#111816;color:#edf6f2}body.dark .sfqc-adminhead,body.dark .sfqc-tabs,body.dark .sfqc-kpi,body.dark .sfqc-dash-card,body.dark .sfqc-acc,body.dark .sfqc-bc-card,body.dark .sfqc-fb-item,body.dark .sfqc-overview-panel{background:#18211f;border-color:#34433f}body.dark .sfqc-tab{color:#aebcb8}body.dark .sfqc-tab:hover{background:#202d29;color:#edf6f2}body.dark .sfqc-tab.on{background:#173e35;color:#8bd9c5}body.dark .sfqc-pagelead h2,body.dark .sfqc-ts-totals b{color:#edf6f2}body.dark .sfqc-pagelead p,body.dark .sfqc-panelhead span,body.dark .sfqc-action-copy small,body.dark .sfqc-op-row span,body.dark .sfqc-ts-totals small{color:#aebcb8}body.dark .sfqc-action{background:#151d1b;border-color:#34433f;color:#edf6f2}body.dark .sfqc-action:hover{background:#1b302a;border-color:#61c3b2}body.dark .sfqc-action-ic{background:#173e35;color:#8bd9c5}body.dark .sfqc-op-row{border-color:#34433f}' +
       '@media(max-width:900px){.sfqc-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sfqc-overview-grid{grid-template-columns:1fr}}' +
       '@media(max-width:760px){.sfqc-adminlayout{display:block}.sfqc-tabs{position:sticky;top:0;z-index:5;display:flex;flex-direction:row;gap:6px;overflow-x:auto;min-height:0;padding:10px 12px;border-right:0;border-bottom:1px solid #d9ddd7}.sfqc-tab{width:auto;min-width:max-content;white-space:nowrap}.sfqc-admincontent{padding:12px}.sfqc-pagelead{align-items:start}.sfqc-action{grid-template-columns:36px minmax(0,1fr)}.sfqc-action-go{grid-column:2}.sfqc-ts-totals{justify-content:flex-start}.sfqc-adminhead{padding:12px}}' +
-      '.sfqc-adminwrap{border-radius:10px;box-shadow:none}.sfqc-tab{border-radius:6px}.sfqc-kpi,.sfqc-dash-card,.sfqc-acc,.sfqc-bc-card,.sfqc-fb-item,.sfqc-app-item,.sfqc-overview-panel{border-radius:9px;box-shadow:none}.sfqc-action{border-radius:7px}.sfqc-action-ic{width:28px;height:28px;border-radius:0;background:transparent}.sfqc-mini,.sfqc-fchip,.sfqc-sort,.sfqc-act-detail,.sfqc-act-chat,.sfqc-app-actions button,.sfqc-act-approve,.sfqc-act-block,.sfqc-act-maint,.sfqc-act-reject{border-radius:6px}.sfqc-acc-access,.sfqc-tab-badge,.sfqc-fb-count,.sfqc-read,.sfqc-online,.sfqc-inactive{border-radius:4px}.sfqc-tabs{gap:2px}.sfqc-pagelead{padding-bottom:12px;border-bottom:1px solid #d9ddd7}' +
+      '.sfqc-adminwrap{border-radius:10px;box-shadow:none}.sfqc-tab{border-radius:6px}.sfqc-kpi,.sfqc-dash-card,.sfqc-acc,.sfqc-bc-card,.sfqc-fb-item,.sfqc-app-item,.sfqc-overview-panel{border-radius:9px;box-shadow:none}.sfqc-action{border-radius:7px}.sfqc-action-ic{width:28px;height:28px;border-radius:0;background:transparent}.sfqc-mini,.sfqc-fchip,.sfqc-sort,.sfqc-act-detail,.sfqc-app-actions button,.sfqc-act-approve,.sfqc-act-block,.sfqc-act-maint,.sfqc-act-reject{border-radius:6px}.sfqc-acc-access,.sfqc-tab-badge,.sfqc-fb-count,.sfqc-read,.sfqc-online,.sfqc-inactive{border-radius:4px}.sfqc-tabs{gap:2px}.sfqc-pagelead{padding-bottom:12px;border-bottom:1px solid #d9ddd7}' +
       'body.dark .sfqc-pagelead{border-color:#34433f}' +
       '.sfqc-card{width:min(92vw,380px);background:#fffefa;color:#17211f;border:1px solid #d9ddd7;border-radius:10px;padding:24px;box-shadow:none}' +
       '.sfqc-title{letter-spacing:0}.sfqc-sub,.sfqc-hint{color:#64706d}' +
@@ -574,30 +535,6 @@
         '<p class="sfqc-hint">⚠️ サーバーの関係で、管理・制限を行う場合があります。<br>詳しくは管理者にお尋ねください。</p>' +
       '</div>';
     document.body.appendChild(elLock);
-
-    var fab = document.createElement('button');
-    fab.id = 'sfqc-chat-fab'; fab.type = 'button';
-    fab.innerHTML = '💬<span class="sfqc-chat-badge" id="sfqc-chat-badge"></span>';
-    document.body.appendChild(fab);
-    var chat = document.createElement('div');
-    chat.id = 'sfqc-chat';
-    chat.innerHTML =
-      '<div class="sfqc-chat-head">' +
-        '<span class="sfqc-chat-title" id="sfqc-chat-title">管理者とのチャット</span>' +
-        '<button type="button" id="sfqc-chat-close" title="閉じる">✕</button>' +
-      '</div>' +
-      '<div class="sfqc-chat-msgs" id="sfqc-chat-msgs"></div>' +
-      '<div class="sfqc-chat-input">' +
-        '<textarea id="sfqc-chat-text" rows="1" maxlength="1000" placeholder="メッセージを入力…"></textarea>' +
-        '<button type="button" id="sfqc-chat-send">送信</button>' +
-      '</div>';
-    document.body.appendChild(chat);
-    fab.addEventListener('click', function () { openChat(currentUser ? currentUser.uid : '', currentName, 'user'); });
-    document.getElementById('sfqc-chat-close').addEventListener('click', closeChat);
-    document.getElementById('sfqc-chat-send').addEventListener('click', sendChat);
-    document.getElementById('sfqc-chat-text').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
-    });
 
     var compose = document.createElement('div');
     compose.id = 'sfqc-compose';
@@ -1004,7 +941,6 @@
   var MAIL_KINDS = {
     apply:   '📩 利用申請がありました',
     unblock: '📩 停止解除の申請がありました',
-    dm:      '💬 利用者からメッセージが届きました',
     test:    '✅ メール通知のテストです'
   };
   var MAIL_THROTTLE_MS = 5 * 60000;
@@ -1342,7 +1278,6 @@
   function startUserMessaging(uid) {
     if (!db || !uid || isAdmin) return;
     ownLoaded = false;
-    showChatFab(true);
     if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
     ownDocUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
       if (snap.metadata && snap.metadata.hasPendingWrites) return;
@@ -1350,14 +1285,11 @@
       var mok = !!d.maintOk;
       if (mok !== maintExempt) { maintExempt = mok; checkMaintenance(); }
       lastNotices = Array.isArray(d.notices) ? d.notices : [];
-      lastChat = Array.isArray(d.chat) ? d.chat : [];
       lastRead = (d.read && typeof d.read === 'object') ? d.read : {};
       ownLoaded = true;
       surfaceNotices();
       scheduleNoticeBoundary();
       surfaceReplies(d.fbReplies);
-      refreshChatBadge();
-      if (chatOpen && chatMode === 'user') renderChatMsgs();
 
       if (d.access && d.access !== 'approved') return;
       if (cloudDirty) return;
@@ -1391,22 +1323,15 @@
   function stopUserMessaging() {
     if (ownDocUnsub) { ownDocUnsub(); ownDocUnsub = null; }
     if (broadcastUnsub) { broadcastUnsub(); broadcastUnsub = null; }
-    if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
     if (maintUnsub) { maintUnsub(); maintUnsub = null; }
     if (maintTimer) { clearInterval(maintTimer); maintTimer = null; }
     if (maintBoundaryTimer) { clearTimeout(maintBoundaryTimer); maintBoundaryTimer = null; }
     if (noticeBoundaryTimer) { clearTimeout(noticeBoundaryTimer); noticeBoundaryTimer = null; }
-    lastBroadcasts = []; lastNotices = []; lastChat = []; lastRead = {}; lastMaint = null; ownLoaded = false;
+    lastBroadcasts = []; lastNotices = []; lastRead = {}; lastMaint = null; ownLoaded = false;
     maintExempt = false;
-    chatOpen = false; closeChat(); showChatFab(false);
     var mo = document.getElementById('sfqc-maint'); if (mo) mo.classList.remove('show');
     var mb = document.getElementById('sfqc-maint-banner'); if (mb) mb.classList.remove('show');
     applyBannerOffset(0);
-  }
-
-  function showChatFab(on) {
-    var fab = document.getElementById('sfqc-chat-fab');
-    if (fab) fab.classList[on ? 'add' : 'remove']('show');
   }
 
   function annDue(x, now) { return (x.publishAt || x.ts || 0) <= now; }
@@ -1474,24 +1399,6 @@
     if (ok) { ok.addEventListener('click', dismiss); try { ok.focus(); } catch (e) {} }
   }
 
-  function chatUnreadCount(msgs, mode, uid) {
-    var seen;
-    if (mode === 'admin') seen = num(localStorage.getItem('sfq_chat_seen_adm_' + uid));
-    else seen = Math.max(num(localStorage.getItem(uidKey('sfq_chat_seen'))), (lastRead && lastRead.chat) || 0);
-    var fromSide = (mode === 'admin') ? 'user' : 'admin';
-    var n = 0;
-    (msgs || []).forEach(function (m) { if (m && m.from === fromSide && (m.ts || 0) > seen) n++; });
-    return n;
-  }
-  function markChatSeen(msgs, mode, uid) {
-    try {
-      var key = (mode === 'admin') ? ('sfq_chat_seen_adm_' + uid) : uidKey('sfq_chat_seen');
-      var max = num(localStorage.getItem(key));
-      (msgs || []).forEach(function (m) { if (m && (m.ts || 0) > max) max = m.ts; });
-      localStorage.setItem(key, String(max));
-      if (mode === 'user') writeRead({ chat: max });
-    } catch (e) {}
-  }
   function writeRead(patch) {
     if (!db || !currentUser || isAdmin) return;
     var cur = lastRead || {}, out = {}, changed = false;
@@ -1504,84 +1411,10 @@
       });
       if (Object.keys(outMap).length) { out[mk] = outMap; cur[mk] = curMap; changed = true; }
     });
-    if (patch.chat && patch.chat > (cur.chat || 0)) { out.chat = patch.chat; cur.chat = patch.chat; changed = true; }
     if (!changed) return;
     lastRead = cur;
     db.collection(COLLECTION).doc(currentUser.uid).set({ read: out }, { merge: true }).catch(function () {});
   }
-  function refreshChatBadge() {
-    var fab = document.getElementById('sfqc-chat-fab');
-    var badge = document.getElementById('sfqc-chat-badge');
-    if (!fab || !badge) return;
-    var n = chatUnreadCount(lastChat, 'user', '');
-    badge.textContent = n > 99 ? '99+' : String(n);
-    fab.classList[n > 0 ? 'add' : 'remove']('has-unread');
-  }
-
-  function openChat(uid, name, mode) {
-    if (!uid) return;
-    chatOpen = true; chatUid = uid; chatName = name || ''; chatMode = mode || 'user';
-    var panel = document.getElementById('sfqc-chat');
-    var title = document.getElementById('sfqc-chat-title');
-    if (title) title.textContent = (mode === 'admin') ? ('💬 ' + (name || '利用者')) : '管理者とのチャット';
-    if (panel) panel.classList.add('show');
-    if (mode === 'admin') {
-      if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
-      var msgsEl = document.getElementById('sfqc-chat-msgs');
-      if (msgsEl) msgsEl.innerHTML = '<div class="sfqc-chat-empty">読み込み中…</div>';
-      adminChatUnsub = db.collection(COLLECTION).doc(uid).onSnapshot(function (snap) {
-        var d = (snap.exists && snap.data()) || {};
-        lastChat = Array.isArray(d.chat) ? d.chat : [];
-        renderChatMsgs();
-      }, function () {});
-    } else {
-      renderChatMsgs();
-    }
-    var ta = document.getElementById('sfqc-chat-text'); if (ta) try { ta.focus(); } catch (e) {}
-  }
-  function closeChat() {
-    chatOpen = false;
-    var panel = document.getElementById('sfqc-chat'); if (panel) panel.classList.remove('show');
-    if (adminChatUnsub) { adminChatUnsub(); adminChatUnsub = null; }
-    if (chatMode === 'admin' && typeof renderAdmin === 'function' && elAdmin && elAdmin.classList.contains('show')) {
-      renderAdmin();
-    }
-    chatMode = 'user';
-  }
-  function renderChatMsgs() {
-    var el = document.getElementById('sfqc-chat-msgs'); if (!el) return;
-    var msgs = (lastChat || []).slice().sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
-    if (!msgs.length) {
-      el.innerHTML = '<div class="sfqc-chat-empty">まだメッセージはありません。<br>' +
-        (chatMode === 'admin' ? 'この利用者へメッセージを送れます。' : 'ご質問・ご要望をお送りください。') + '</div>';
-    } else {
-      var mineSide = (chatMode === 'admin') ? 'admin' : 'user';
-      el.innerHTML = msgs.map(function (m) {
-        var mine = (m.from === mineSide);
-        var who = (m.from === 'admin') ? '管理者' : (m.from === 'user' ? (chatMode === 'admin' ? (chatName || '利用者') : 'あなた') : '');
-        return '<div class="sfqc-chat-b ' + (mine ? 'mine' : 'theirs') + '">' + esc(m.msg || '') +
-          '<span class="sfqc-chat-t">' + esc(who) + '・' + esc(fmtDate(m.ts)) + '</span></div>';
-      }).join('');
-    }
-    el.scrollTop = el.scrollHeight;
-    markChatSeen(lastChat, chatMode, chatUid);
-    if (chatMode === 'user') refreshChatBadge();
-  }
-  function sendChat() {
-    var ta = document.getElementById('sfqc-chat-text'); if (!ta) return;
-    var msg = (ta.value || '').trim(); if (!msg || !db || !chatUid) return;
-    var from = (chatMode === 'admin') ? 'admin' : 'user';
-    var rec = { from: from, msg: msg.slice(0, 1000), ts: Date.now(), by: currentName || from };
-    var FV = firebase.firestore.FieldValue;
-    ta.value = '';
-    lastChat = (lastChat || []).concat([rec]); renderChatMsgs();
-    var ref = db.collection(COLLECTION).doc(chatUid);
-    ref.set({ chat: FV.arrayUnion(rec) }, { merge: true }).then(function () {
-      if (chatMode === 'admin') { try { logAdmin('チャット', (chatName || '') + '：' + rec.msg.slice(0, 20)); } catch (e) {} }
-      else notifyAdminMail('dm', { name: currentName || '', id: idOf(currentEmail), detail: rec.msg.slice(0, 120), at: fmtDateTime(rec.ts) });
-    }).catch(function (e) { alert('送信に失敗しました: ' + (e && e.message)); });
-  }
-
   function msToLocalInput(ms) {
     if (!ms) return '';
     var d = new Date(ms), p = function (n) { return ('0' + n).slice(-2); };
@@ -1811,8 +1644,8 @@
         '<span style="font-weight:700;color:' + (on ? '#15803d' : '#b45309') + '">' + (on ? '🟢 有効' : '🟡 未設定') + '</span>' +
         '<button class="sfqc-mini" id="sfqc-mailtest"' + (on ? '' : ' disabled') + '>✉️ テスト送信</button>' +
       '</div>' +
-      '<div class="sfqc-bc-msg">利用申請・停止解除の申請・利用者からのDM を管理者のメールへ知らせます。' +
-        (on ? 'DMの通知は5分に1通までにまとめます。' : '有効にするには <b>firebase-config.js</b> の <b>SFQ_EMAILJS</b>（Service ID / Template ID / Public Key）を設定してください（手順はそのファイルのコメント）。') +
+      '<div class="sfqc-bc-msg">利用申請と停止解除の申請を管理者のメールへ知らせます。' +
+        (on ? '同じ種類の通知は5分間隔で送信します。' : '有効にするには <b>firebase-config.js</b> の <b>SFQ_EMAILJS</b>（Service ID / Template ID / Public Key）を設定してください（手順はそのファイルのコメント）。') +
       '</div></div>';
   }
   function toggleFullStop() {
@@ -2179,7 +2012,6 @@
   var adminNetworkFilter = '';
   var adminPendingCount = 0;
   var adminTab = 'overview';
-  var dmFilter = '';
   var adminDashCert = '';
 
   function admToday() { var d = new Date(), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
@@ -2336,9 +2168,8 @@
     var onlineNow = adminUsers.filter(isOnline).length;
     var applicants = adminUsers.filter(function (u) { return accessStateOf(u) === 'applied'; }).length;
     var unblockRequests = adminUsers.filter(function (u) { return u.access === 'blocked' && u.req && u.req.ts; }).length;
-    var unreadDM = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
     var pendingFeedback = adminFeedback.filter(function (r) { return !r.reply; }).length;
-    var actionTotal = applicants + unblockRequests + unreadDM + pendingFeedback;
+    var actionTotal = applicants + unblockRequests + pendingFeedback;
     var maint = lastMaint || {};
     var maintNow = maintStatus(maint, Date.now());
     var scheduled = maintQueue(maint).filter(function (w) { return w && w.end > Date.now(); }).length;
@@ -2357,7 +2188,6 @@
       '</div>';
     html += '<div class="sfqc-overview-grid"><section class="sfqc-overview-panel"><div class="sfqc-panelhead"><h3>対応が必要です</h3><span>合計 ' + actionTotal + '件</span></div><div class="sfqc-actions">' +
       action('access', '✓', 'アクセス申請', '新規承認 ' + applicants + '件・停止解除 ' + unblockRequests + '件', applicants + unblockRequests, applicants + unblockRequests > 0) +
-      action('dm', '✉', '未読DM', '利用者から届いた未読メッセージ', unreadDM, unreadDM > 0) +
       action('feedback', '◇', '未対応フィードバック', '返信または対応判断が必要な報告', pendingFeedback, pendingFeedback > 0) +
       '</div></section>' +
       '<section class="sfqc-overview-panel"><div class="sfqc-panelhead"><h3>運用状態</h3><button class="sfqc-mini" data-tab="operations">運用を開く</button></div><div class="sfqc-ops-list">' +
@@ -2462,7 +2292,6 @@
   function openAdmin() { if (!isAdmin) return; elAdmin.classList.add('show'); loadAdmin(); }
   function closeAdmin() {
     if (elAdmin) elAdmin.classList.remove('show');
-    if (chatMode === 'admin') closeChat();
     if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; }
     if (adminRenderTimer) { clearTimeout(adminRenderTimer); adminRenderTimer = null; }
   }
@@ -2506,7 +2335,7 @@
       if (currentUser && d.id === currentUser.uid && Array.isArray(data.adminLog)) adminLogEntries = data.adminLog.slice();
       var netSource = networkDataSource(data), netPruned = pruneNetworkData(netSource, Date.now());
       if (netPruned.changed) netCleanup.push({ uid: d.id, devices: netPruned.devices, access: netPruned.access, fallback: netSource.fallback, updated: netSource.netUpdated || Date.now() });
-      var entry = { uid: d.id, name: nm, baseName: baseName, displayName: displayName, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), chat: (Array.isArray(data.chat) ? data.chat : []), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: netSource.netUpdated || 0, certs: [] };
+      var entry = { uid: d.id, name: nm, baseName: baseName, displayName: displayName, email: email, updated: data.updated || 0, access: (data.access || 'pending'), req: (data.req || null), maintOk: !!data.maintOk, expiredAt: data.expiredAt || 0, approvedAt: data.approvedAt || 0, elective: (data.elective || ''), notices: (Array.isArray(data.notices) ? data.notices : []), read: (data.read && typeof data.read === 'object' ? data.read : {}), lastLogin: data.lastLogin || 0, lastSeen: data.lastSeen || 0, logins: (Array.isArray(data.logins) ? data.logins : []), netDevices: netPruned.devices, netAccess: netPruned.access, netUpdated: netSource.netUpdated || 0, certs: [] };
       var stores = data.stores;
       if (stores && typeof stores === 'object' && Object.keys(stores).length) {
         Object.keys(stores).forEach(function (ck) { if (ck !== NETWORK_STORE_KEY) entry.certs.push({ cert: ck, store: stores[ck] || emptyStore() }); });
@@ -2562,7 +2391,7 @@
       if (!elAdmin || !elAdmin.classList.contains('show')) return;
       syncPendingBadge();
       var ae = document.activeElement;
-      if (ae && (ae.id === 'sfqc-dm-q' || ae.id === 'sfqc-q' || ae.id === 'sfqc-cmp-text' || ae.id === 'sfqc-chat-text')) return;
+      if (ae && (ae.id === 'sfqc-q' || ae.id === 'sfqc-cmp-text')) return;
       var cmp = document.getElementById('sfqc-compose'); if (cmp && cmp.classList.contains('show')) return;
       if (document.querySelector('.sfqc-detail.show')) return;
       renderAdmin();
@@ -3141,7 +2970,6 @@
     Object.keys(certSet).forEach(function (ck) { certChips += '<button class="sfqc-fchip' + (adminCert === ck ? ' on' : '') + '" data-cert="' + esc(ck) + '">' + esc(ck) + '</button>'; });
     var sortBtn = function (k, l) { return '<button class="sfqc-sort' + (adminSort === k ? ' on' : '') + '" data-sort="' + k + '">' + l + '</button>'; };
 
-    var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
     var fbPending = adminFeedback.filter(function (r) { return !r.reply; }).length;
     var networkSeen = networkSeenMap();
     var networkWarningCount = adminUsers.filter(function (u) { return networkAlertUnread(u, networkSeen); }).length;
@@ -3155,7 +2983,6 @@
         tabBtn('users', '♙ 利用者', 0) +
         tabBtn('analytics', '▥ 学習分析', 0) +
         tabBtn('network', '◎ 接続元・端末', networkWarningCount || 0) +
-        tabBtn('dm', '✉ DM', totalUnread || 0) +
         tabBtn('feedback', '◇ フィードバック', fbPending || 0) +
         tabBtn('ann', '◉ お知らせ', 0) +
         tabBtn('operations', '⚙ 運用', 0) +
@@ -3271,8 +3098,6 @@
       html += adminDashboardHTML();
     } else if (adminTab === 'network') {
       html += networkTabHTML();
-    } else if (adminTab === 'dm') {
-      html += dmSectionHTML();
     } else if (adminTab === 'feedback') {
       html += feedbackSectionHTML();
     } else if (adminTab === 'ann') {
@@ -3301,10 +3126,6 @@
     var fullStopBtn = document.getElementById('sfqc-fullstop'); if (fullStopBtn) fullStopBtn.addEventListener('click', toggleFullStop);
     var forceLogoutBtn = document.getElementById('sfqc-force-logout'); if (forceLogoutBtn) forceLogoutBtn.addEventListener('click', forceLogoutAll);
     var mailTestBtn = document.getElementById('sfqc-mailtest'); if (mailTestBtn) mailTestBtn.addEventListener('click', sendMailTest);
-    var dmIn = document.getElementById('sfqc-dm-q');
-    if (dmIn) {
-      dmIn.addEventListener('input', function () { dmFilter = dmIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-dm-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
-    }
     var qIn = document.getElementById('sfqc-q');
     if (qIn) {
       qIn.addEventListener('input', function () { adminFilter = qIn.value; renderAdmin(); setTimeout(function () { var n = document.getElementById('sfqc-q'); if (n) { n.focus(); n.selectionStart = n.selectionEnd = n.value.length; } }, 0); });
@@ -3356,9 +3177,6 @@
     });
     body.querySelectorAll('.sfqc-net-detail').forEach(function (b) {
       b.addEventListener('click', function () { toggleNetworkDetail(+b.getAttribute('data-net-i')); });
-    });
-    body.querySelectorAll('[data-chat-uid]').forEach(function (b) {
-      b.addEventListener('click', function () { openChat(b.getAttribute('data-chat-uid'), b.getAttribute('data-chat-name'), 'admin'); });
     });
     var fbJson = document.getElementById('sfqc-fb-json'); if (fbJson) fbJson.addEventListener('click', exportFeedbackJson);
     var fbCsv = document.getElementById('sfqc-fb-csv'); if (fbCsv) fbCsv.addEventListener('click', exportFeedbackCsv);
@@ -3871,11 +3689,6 @@
     var m = { bug: '🐞 不具合', answer: '❌ 正解誤り', exp: '📝 解説誤り', choice: '🔀 選択肢', japanese: '🗾 日本語', request: '💡 要望', other: '＊ その他' };
     return m[k] || k || '—';
   }
-  function lastChatMsg(chat) {
-    if (!Array.isArray(chat) || !chat.length) return null;
-    var m = null; chat.forEach(function (x) { if (x && (!m || (x.ts || 0) > (m.ts || 0))) m = x; });
-    return m;
-  }
   function annAudience() { var myUid = (currentUser && currentUser.uid) || ''; return adminUsers.filter(function (u) { return u.uid !== myUid; }); }
 
   function announcementsSectionHTML() {
@@ -3936,32 +3749,6 @@
     return html;
   }
 
-  function dmSectionHTML() {
-    var users = adminUsers.map(function (u) {
-      var last = lastChatMsg(u.chat);
-      return { u: u, unread: chatUnreadCount(u.chat, 'admin', u.uid), last: last, lastTs: (last && last.ts) || 0 };
-    });
-    var totalUnread = users.reduce(function (s, x) { return s + x.unread; }, 0);
-    users.sort(function (a, b) { return (b.unread > 0) - (a.unread > 0) || b.lastTs - a.lastTs || (b.u.updated || 0) - (a.u.updated || 0); });
-    var q = dmFilter.trim().toLowerCase();
-    var list = q ? users.filter(function (x) { return (x.u.name || '').toLowerCase().indexOf(q) >= 0 || (x.u.email || '').toLowerCase().indexOf(q) >= 0; }) : users;
-    var html = '<div class="sfqc-sec">💬 ダイレクトメッセージ' + (totalUnread ? ' <span class="sfqc-fb-count">未読 ' + totalUnread + '</span>' : '') + '</div>';
-    html += '<div class="sfqc-toolbar"><input id="sfqc-dm-q" class="sfqc-search" type="search" placeholder="🔍 名前・メールで絞り込み" value="' + esc(dmFilter) + '"><span class="sfqc-count">' + list.length + ' / ' + users.length + '人</span></div>';
-    if (!list.length) html += '<div class="sfqc-empty">該当する利用者がいません。</div>';
-    list.forEach(function (x) {
-      var u = x.u, last = x.last;
-      var prev = last ? ((last.from === 'admin' ? 'あなた: ' : '') + (last.msg || '')) : 'メッセージはまだありません';
-      if (prev.length > 42) prev = prev.slice(0, 42) + '…';
-      var readChip = '';
-      if (last && last.from === 'admin') { var rd = (u.read && u.read.chat || 0) >= (last.ts || 0); readChip = '<span class="sfqc-read ' + (rd ? 'yes' : 'no') + '">💬' + (rd ? '既読' : '未読') + '</span>'; }
-      html += '<div class="sfqc-dm' + (x.unread ? ' unread' : '') + '">' +
-          '<div class="sfqc-dm-main"><span class="sfqc-dm-name">👤 ' + esc(u.name) + '</span>' + (x.unread ? '<span class="sfqc-dm-badge">' + x.unread + '</span>' : '') + '<span class="sfqc-dm-prev">' + esc(prev) + '</span></div>' +
-          '<div class="sfqc-dm-act">' + readChip + (last ? '<span class="sfqc-dm-time">' + esc(fmtDate(last.ts)) + '</span>' : '') +
-            '<button class="sfqc-act-chat' + (x.unread ? ' has-unread' : '') + '" data-chat-uid="' + esc(u.uid) + '" data-chat-name="' + esc(u.name) + '">💬 開く</button></div>' +
-        '</div>';
-    });
-    return html;
-  }
   function feedbackSectionHTML() {
     var all = adminFeedback;
     var pending = all.filter(function (r) { return !r.reply; }).length;

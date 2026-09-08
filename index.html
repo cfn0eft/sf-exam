@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=165"></script>
+<script src="maintenance.js?v=166"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -129,15 +129,39 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 @media (max-width:620px){.container{padding:24px 16px 52px}.hero{padding:8px 0 24px}.grid{grid-template-columns:1fr;gap:12px}.card{min-height:0;padding:20px 18px}.lp-news{padding:14px;margin-bottom:24px}.lp-news-arrow{display:none}}
 /* Study Manual refinement */
 .lp-news{border-radius:10px;box-shadow:none}.lp-news:hover,.lp-news.unseen{box-shadow:none}.lp-news-ic{width:auto;height:auto;border-radius:0;background:transparent;font-size:21px}.lp-news-new{border-radius:4px}.card{border-radius:10px;box-shadow:none}.card:hover{transform:none;box-shadow:none;background:color-mix(in srgb,var(--card) 94%,var(--accent))}.card-icon{width:auto;height:auto;border-radius:0;background:transparent;font-size:23px}.coming-badge,.cram-pill,.acq-badge,.adminonly-badge,.lock-badge,.choose-badge,.cur-badge{border-radius:4px;box-shadow:none;background-image:none}.lp-modal-box{border-radius:10px;box-shadow:none}.lp-date{border-radius:4px}
+/* Qualification roadmap */
+.container{max-width:1120px;padding:42px 28px 72px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:4px 0 26px;border-bottom:1px solid var(--border)}
+.hero-copy{max-width:680px}.hero-kicker{margin-bottom:10px;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.06em}.hero h1{font-size:clamp(29px,4vw,42px);margin:0;letter-spacing:-.04em}.hero p{font-size:14px;line-height:1.7;margin-top:10px}
+.lp-progress{flex:0 0 auto;min-width:150px;padding-left:22px;border-left:1px solid var(--border)}.lp-progress-label{display:block;font-size:11px;color:var(--text-sub);margin-bottom:3px}.lp-progress-value{font-size:24px;font-weight:800;letter-spacing:-.03em}.lp-progress-value small{font-size:12px;color:var(--text-sub);font-weight:600}
+.lp-focus{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;margin:24px 0 16px;padding:24px 26px;background:var(--card);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:8px}.lp-focus-label{display:block;margin-bottom:6px;font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.05em}.lp-focus-main{display:flex;align-items:center;gap:15px;min-width:0}.lp-focus-icon{font-size:30px;line-height:1}.lp-focus h2{font-size:21px;line-height:1.35;margin:0 0 5px}.lp-focus p{font-size:13px;line-height:1.55;color:var(--text-sub);margin:0}.lp-focus-action{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border:1px solid var(--accent);border-radius:6px;background:var(--accent);color:#fff;text-decoration:none;font:inherit;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap}.lp-focus-action:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.lp-news{margin:0 0 34px}.lp-rule{margin:0}.lp-news-t{font-size:14px}.lp-news-sub{line-height:1.5}
+.path-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin:0 0 18px}.path-intro h2{font-size:22px;margin:0 0 5px}.path-intro p{font-size:13px;color:var(--text-sub);line-height:1.6;margin:0}.path-intro .lp-rule{width:min(100%,420px);flex:0 0 420px;padding:12px 14px}
+.catalog{display:grid;gap:34px}.cert-group{min-width:0}.group-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border)}.group-title{font-size:16px;font-weight:800}.group-desc{font-size:12px;color:var(--text-sub);text-align:right}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.specialist-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:12px;min-height:0;padding:17px 16px;border-radius:8px}.card:hover,.card.choosable:hover{transform:none;box-shadow:none}.card-icon{grid-row:1 / 4;font-size:23px;margin:2px 0 0}.card-title{font-size:15px;line-height:1.4;margin:0 76px 4px 0}.card-desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.55;margin:0 0 10px}.card-meta{gap:10px;font-size:10.5px}.card-meta span::before{width:3px;height:3px;margin-right:4px}.card-state{position:absolute;top:13px;right:13px;padding:3px 6px;border-radius:3px;font-size:10px;font-weight:800;line-height:1.2}.state-current{background:#dcefe9;color:#0b5d51}.state-choice{background:#e7eefc;color:#29559a}.state-acquired{background:#f3ebcf;color:#745a08}.state-locked{background:var(--muted);color:var(--muted-text)}.card.acq,.card.choosable{box-shadow:none}.card.choosable{border-color:#7399d1}.card.current{border-color:var(--accent);background:color-mix(in srgb,var(--card) 96%,var(--accent))}.lock-reason{grid-column:2;font-size:11px;line-height:1.5;margin-top:0;padding-top:9px}.card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{filter:none;opacity:.62}.card.locked{border-style:dashed}.card:focus-visible,.lp-news:focus-visible,.lp-focus-action:focus-visible,.lp-modal-x:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:3px}
+@media (prefers-color-scheme:dark){.state-current{background:#173e35;color:#8bd9c5}.state-choice{background:#263b5b;color:#b8d2ff}.state-acquired{background:#4b411f;color:#f0dc8e}}
+@media (max-width:900px){.grid,.specialist-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.path-intro{display:block}.path-intro .lp-rule{width:100%;margin-top:14px}.lp-focus{grid-template-columns:1fr}.lp-focus-action{width:100%}}
+@media (max-width:620px){.container{padding:22px 15px 50px}.hero{display:block;padding-bottom:20px}.hero h1{font-size:28px}.lp-progress{display:flex;align-items:baseline;gap:8px;margin-top:18px;padding:12px 0 0;border-left:0;border-top:1px solid var(--border)}.lp-progress-label{margin:0}.lp-progress-value{font-size:20px}.lp-focus{margin-top:18px;padding:18px 16px;gap:16px}.lp-focus-main{align-items:flex-start}.lp-focus h2{font-size:18px}.lp-news{margin-bottom:26px}.path-intro h2{font-size:19px}.grid,.specialist-grid{grid-template-columns:1fr}.catalog{gap:28px}.group-head{display:block}.group-desc{display:block;text-align:left;margin-top:4px}.card{padding:16px 14px;min-height:0}.card-title{margin-right:72px}}
+.card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{opacity:.78}.lp-focus{border-left:1px solid var(--border)}
 </style>
 </head>
 <body>
 <div class="container">
 
   <header class="hero">
-    <h1>資格学習アプリ</h1>
-    <p>学習したい資格を選択してください</p>
+    <div class="hero-copy">
+      <div class="hero-kicker">資格ロードマップ</div>
+      <h1>次に学ぶ資格を選ぶ</h1>
+      <p>基礎の3資格から専門分野へ。取得状況に合わせて、いま取り組む資格を表示します。</p>
+    </div>
+    <div class="lp-progress" aria-live="polite">
+      <span class="lp-progress-label">取得状況</span>
+      <span class="lp-progress-value" id="lp-progress-value">0 <small>/ 8資格</small></span>
+    </div>
   </header>
+
+  <section class="lp-focus" id="lp-focus" aria-live="polite"></section>
 
   <button class="lp-news" id="lp-news" onclick="lpOpenNews()">
     <span class="lp-news-ic">📣</span>
@@ -149,13 +173,24 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     <span class="lp-news-arrow">›</span>
   </button>
 
-  <div class="sec-label">利用可能な資格</div>
-  <button class="lp-news lp-rule" type="button" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">
-    <span class="lp-news-ic">🎓</span>
-    <span class="lp-news-main"><span class="lp-news-t">資格はステップ制で順番に解除します</span><span class="lp-news-sub">前の資格を「取得済み」にすると次が解除。進め方をくわしく見る</span></span>
-    <span class="lp-news-arrow">›</span>
-  </button>
-  <div class="grid" id="cert-grid"></div>
+  <div class="path-intro">
+    <div><h2>学習ルート</h2><p>カードの状態を見れば、現在地と次の条件が分かります。</p></div>
+    <button class="lp-news lp-rule" type="button" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">
+      <span class="lp-news-ic">ⓘ</span>
+      <span class="lp-news-main"><span class="lp-news-t">取得と解除のルール</span><span class="lp-news-sub">取得済みにする前に、順番と注意点を確認する</span></span>
+      <span class="lp-news-arrow">›</span>
+    </button>
+  </div>
+  <div class="catalog" id="cert-grid">
+    <section class="cert-group" aria-labelledby="core-title">
+      <div class="group-head"><span class="group-title" id="core-title">1. コア資格</span><span class="group-desc">管理・設計・開発の基礎を順番に学ぶ</span></div>
+      <div class="grid" id="core-grid"></div>
+    </section>
+    <section class="cert-group" id="specialist-group" aria-labelledby="specialist-title">
+      <div class="group-head"><span class="group-title" id="specialist-title">2. 専門資格</span><span class="group-desc">コア3資格の後に、1資格ずつ選んで解除する</span></div>
+      <div class="grid specialist-grid" id="specialist-grid"></div>
+    </section>
+  </div>
 
 </div>
 
@@ -166,34 +201,33 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </div>
 </div>
 
-<script src="progression.js?v=165"></script>
+<script src="progression.js?v=166"></script>
 <script>
   const CERTS = [
-    { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', title:'Salesforce 認定<br>Platform アドミニストレーター',
+    { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', short:'Platform アドミニストレーター', title:'Salesforce 認定<br>Platform アドミニストレーター',
       desc:'2025/12改訂の公式8分野（Agentforce 8%対応）。学習・試験・SRS・教科書・用語帳・統計をフル搭載。',
       meta:['437問','94用語','合格65%'] },
-    { slug:'app-builder', storageKey:'sfqab_v1', icon:'🧩', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
+    { slug:'app-builder', storageKey:'sfqab_v1', icon:'🧩', short:'Platform アプリケーションビルダー', title:'Salesforce 認定<br>Platform アプリケーションビルダー',
       desc:'宣言的なアプリ構築・データモデル・自動化・UI・リリース。公式5分野対応。',
       meta:['445問','83用語','合格63%'] },
-    { slug:'developer', storageKey:'sfqdev_v1', icon:'⚡', title:'Salesforce 認定<br>Platform デベロッパー',
+    { slug:'developer', storageKey:'sfqdev_v1', icon:'⚡', short:'Platform デベロッパー', title:'Salesforce 認定<br>Platform デベロッパー',
       desc:'Apex・SOQL/SOSL・トリガ・LWC/Aura/Visualforce・テスト/リリースを網羅。公式4分野対応。',
       meta:['499問','75用語','合格68%'] },
-    { slug:'agentforce', storageKey:'sfqaf_v1', icon:'🤖', title:'Salesforce 認定<br>Agentforce Specialist',
+    { slug:'agentforce', storageKey:'sfqaf_v1', icon:'🤖', short:'Agentforce Specialist', title:'Salesforce 認定<br>Agentforce Specialist',
       desc:'AIエージェント・プロンプト・Data 360・Trust Layer・テスト/ガバナンスを網羅。最新の公式6分野に対応。',
       meta:['174問','26用語','合格73%'] },
-    { slug:'sales-cloud', storageKey:'sfqsales_v1', icon:'📈', title:'Salesforce 認定<br>Agentforce Sales コンサルタント',
+    { slug:'sales-cloud', storageKey:'sfqsales_v1', icon:'📈', short:'Agentforce Sales コンサルタント', title:'Salesforce 認定<br>Agentforce Sales コンサルタント',
       desc:'旧「Sales Cloud コンサルタント」。リード・商談・売上予測・価格表・テリトリ・Sales Cloud AI を網羅。公式分野に対応し、教科書・用語帳・比較表も搭載。',
       meta:['200問','67用語','合格69%'] },
-    { slug:'service-cloud', storageKey:'sfqservice_v1', icon:'🎧', title:'Salesforce 認定<br>Agentforce Service コンサルタント',
+    { slug:'service-cloud', storageKey:'sfqservice_v1', icon:'🎧', short:'Agentforce Service コンサルタント', title:'Salesforce 認定<br>Agentforce Service コンサルタント',
       desc:'旧「Service Cloud コンサルタント」。ケース管理・Omni-Channel・ナレッジ・エンタイトルメント・チャネル・分析を網羅。公式8分野に対応。',
       meta:['123問','75用語','合格67%'] },
-    { slug:'experience-cloud', storageKey:'sfqexp_v1', icon:'🌐', title:'Salesforce 認定<br>Experience Cloud コンサルタント',
+    { slug:'experience-cloud', storageKey:'sfqexp_v1', icon:'🌐', short:'Experience Cloud コンサルタント', title:'Salesforce 認定<br>Experience Cloud コンサルタント',
       desc:'サイト構築・共有・ゲストユーザー・認証/SSO・ブランド・テンプレートを網羅。公式8分野に対応。',
       meta:['131問','63用語','合格62%'] },
-    { slug:'sharing-visibility', storageKey:'sfqsva_v1', icon:'🔐', title:'Salesforce 認定<br>Sharing and Visibility アーキテクト',
+    { slug:'sharing-visibility', storageKey:'sfqsva_v1', icon:'🔐', short:'Sharing and Visibility アーキテクト', title:'Salesforce 認定<br>Sharing and Visibility アーキテクト',
       desc:'権限・OWD・ロール階層・共有ルール・レコードアクセス・大規模データの可視性設計を網羅。公式4分野に対応。',
-      meta:['132問','54用語','合格67%'] },
-    { coming:true }
+      meta:['132問','54用語','合格67%'] }
   ];
   function lpChooseElective(slug){
     var P = window.SFQ_PROG, name = (P && P.NAME[slug]) || slug;
@@ -206,41 +240,49 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   }
   window.lpChooseElective = lpChooseElective;
 
+  function lpScrollSpecialist(){
+    var el=document.getElementById('specialist-group');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  window.lpScrollSpecialist=lpScrollSpecialist;
+
+  function certCard(c,P){
+    var meta=(c.meta||[]).map(function(m){return '<span>'+m+'</span>';}).join('');
+    var inner='<div class="card-icon" aria-hidden="true">'+(c.icon||'📘')+'</div>'
+      +'<h3 class="card-title">'+c.title+'</h3><p class="card-desc">'+(c.desc||'')+'</p><div class="card-meta">'+meta+'</div>';
+    var href='certifications/'+c.slug+'/index.html';
+    if(!P)return '<a class="card current" data-slug="'+c.slug+'" href="'+href+'"><span class="card-state state-current">学習可</span>'+inner+'</a>';
+    var st=P.stateOf(c.slug);
+    if(st==='coming')return '<div class="card locked" data-slug="'+c.slug+'" aria-disabled="true"><span class="card-state state-locked">準備中</span>'+inner+'<div class="lock-reason">現在準備中です。</div></div>';
+    if(P.acquiredOf(c.slug))return '<a class="card acq" data-slug="'+c.slug+'" href="'+href+'"><span class="card-state state-acquired">取得済み</span>'+inner+'</a>';
+    if(st==='open')return '<a class="card current" data-slug="'+c.slug+'" href="'+href+'"><span class="card-state state-current">'+(P.isAdmin()?'確認可':'学習中')+'</span>'+inner+'</a>';
+    if(P.canChoose(c.slug))return '<button type="button" class="card choosable" data-slug="'+c.slug+'" onclick="lpChooseElective(\''+c.slug+'\')"><span class="card-state state-choice">選択できる</span>'+inner+'</button>';
+    var reason=P.lockReason(c.slug);
+    return '<div class="card locked" data-slug="'+c.slug+'" aria-disabled="true"><span class="card-state state-locked">ロック中</span>'+inner+(reason?'<div class="lock-reason">'+reason+'</div>':'')+'</div>';
+  }
+
+  function renderFocus(P,acquired){
+    var box=document.getElementById('lp-focus'),progress=document.getElementById('lp-progress-value');if(!box)return;
+    if(progress)progress.innerHTML=acquired+' <small>/ '+CERTS.length+'資格</small>';
+    var current=null,choices=[];
+    CERTS.forEach(function(c){if(!P){if(!current)current=c;return;}if(!P.acquiredOf(c.slug)&&P.stateOf(c.slug)==='open'&&!P.isAdmin()&&!current)current=c;if(P.canChoose(c.slug))choices.push(c);});
+    if(P&&P.isAdmin()){
+      box.innerHTML='<div><span class="lp-focus-label">管理者モード</span><div class="lp-focus-main"><span class="lp-focus-icon">⚙</span><div><h2>全8資格を確認できます</h2><p>学習者のロック状態に関係なく、各資格を開けます。</p></div></div></div><a class="lp-focus-action" href="certifications/sf-admin/index.html">最初の資格を開く</a>';
+    }else if(current){
+      box.innerHTML='<div><span class="lp-focus-label">現在の学習</span><div class="lp-focus-main"><span class="lp-focus-icon">'+current.icon+'</span><div><h2>'+current.short+'</h2><p>前回の続きから学習を再開できます。</p></div></div></div><a class="lp-focus-action" href="certifications/'+current.slug+'/index.html">学習を続ける</a>';
+    }else if(choices.length){
+      box.innerHTML='<div><span class="lp-focus-label">次のステップ</span><div class="lp-focus-main"><span class="lp-focus-icon">→</span><div><h2>専門資格を1つ選ぶ</h2><p>'+choices.length+'資格から、次に取り組む分野を選択できます。</p></div></div></div><button class="lp-focus-action" type="button" onclick="lpScrollSpecialist()">選択肢を見る</button>';
+    }else{
+      box.innerHTML='<div><span class="lp-focus-label">学習ロードマップ</span><div class="lp-focus-main"><span class="lp-focus-icon">✓</span><div><h2>全資格を取得済みです</h2><p>これまでの学習結果は、各資格カードから確認できます。</p></div></div></div><button class="lp-focus-action" type="button" onclick="if(window.SFQ_PROG)SFQ_PROG.openInfo()">ルールを確認</button>';
+    }
+  }
+
   function renderCerts(){
-    var grid = document.getElementById('cert-grid'); if (!grid) return;
+    var core=document.getElementById('core-grid'),specialist=document.getElementById('specialist-grid');if(!core||!specialist)return;
     var P = window.SFQ_PROG;
-    grid.innerHTML = CERTS.map(function (c) {
-      if (c.coming) return '<div class="card coming"><span class="coming-badge">追加予定</span>'
-        + '<div class="card-icon">🛠️</div><h2 class="card-title">資格枠（未設定）</h2>'
-        + '<p class="card-desc">次に追加する資格の枠です。準備中。</p>'
-        + '<div class="card-meta"><span>Coming Soon</span></div></div>';
-      var meta = (c.meta || []).map(function (m) { return '<span>' + m + '</span>'; }).join('');
-      var inner = '<div class="card-icon">' + (c.icon || '📘') + '</div>'
-        + '<h2 class="card-title">' + c.title + '</h2>'
-        + '<p class="card-desc">' + (c.desc || '') + '</p>'
-        + '<div class="card-meta">' + meta + '</div>';
-      if (!P) return '<a class="card" href="certifications/' + c.slug + '/index.html">' + inner + '</a>';
-      var st = P.stateOf(c.slug);
-      if (st === 'coming') {
-        return '<div class="card coming"><span class="coming-badge">🔜 いずれ公開</span>' + inner
-          + '<div class="lock-reason">現在準備中です。順次公開予定。</div></div>';
-      }
-      if (P.acquiredOf(c.slug)) {
-        return '<a class="card acq" href="certifications/' + c.slug + '/index.html"><span class="acq-badge">🎓 取得済み</span>' + inner + '</a>';
-      }
-      if (st === 'open') {
-        var badge = '';
-        if (P.isAdmin() && !P.isReleased(c.slug)) badge = '<span class="adminonly-badge">🔧 準備中（管理者）</span>';
-        else if (!P.isAdmin()) badge = '<span class="cur-badge">▶ 学習中</span>';
-        return '<a class="card" href="certifications/' + c.slug + '/index.html">' + badge + inner + '</a>';
-      }
-      if (P.canChoose(c.slug)) {
-        return '<button type="button" class="card choosable" onclick="lpChooseElective(\'' + c.slug + '\')"><span class="choose-badge">🔓 選択して解除</span>' + inner + '</button>';
-      }
-      var reason = P.lockReason(c.slug);
-      return '<div class="card locked" aria-disabled="true"><span class="lock-badge">🔒 ロック中</span>' + inner
-        + (reason ? '<div class="lock-reason">' + reason + '</div>' : '') + '</div>';
-    }).join('');
+    core.innerHTML=CERTS.slice(0,3).map(function(c){return certCard(c,P);}).join('');
+    specialist.innerHTML=CERTS.slice(3).map(function(c){return certCard(c,P);}).join('');
+    var acquired=P?CERTS.filter(function(c){return P.acquiredOf(c.slug);}).length:0;
+    renderFocus(P,acquired);
   }
   window.renderCerts = renderCerts;
   renderCerts();
@@ -258,8 +300,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="changelog.js?v=165"></script>
-<script src="cloud-sync.js?v=165"></script>
+<script src="changelog.js?v=166"></script>
+<script src="cloud-sync.js?v=166"></script>
 <script>
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
   function lpHasUnseen(){try{return (window.SFQ_CHANGELOG||[]).length>0 && localStorage.getItem('sfq_news_seen')!==lpNewsLatest();}catch(e){return false;}}
