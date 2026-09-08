@@ -645,6 +645,7 @@ function setBmBtn(btn,on){
 
 function applyDark(on){
   document.documentElement.setAttribute('data-theme',on?'dark':'');
+  if(document.body)document.body.classList.toggle('dark',!!on);
   const b=document.getElementById('btn-dark');
   if(b){b.textContent=on?'☀️':'🌙';b.setAttribute('aria-pressed',on?'true':'false');}
 }
@@ -1718,7 +1719,7 @@ const GUIDE=[
     {ic:'⌨️',name:'キーボード操作',desc:'PCのショートカット一覧（? キーでも開きます）。',act:'shortcut'},
     {ic:'🔔',name:'お知らせ',desc:'新機能の更新履歴をいつでも確認。',act:'news'},
     {ic:'🛠️',name:'不具合・ご意見の報告',desc:'問題の誤りや不具合、要望をアプリ内から送信できます（GitHub不要）。',act:'feedback'},
-    {ic:'📲',name:'オフライン／アプリ追加',desc:'圏外でも学習でき、ホーム画面にアプリとして追加できます。'}
+    {ic:'📲',name:'ホーム画面に追加',desc:'対応ブラウザでは、ホーム画面やアプリ一覧からすばやく起動できます。'}
   ]}
 ];
 function openGuide(){

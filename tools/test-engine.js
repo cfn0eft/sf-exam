@@ -439,12 +439,19 @@ t('setBmBtn: ★/☆・on クラス・aria-pressed を同時に更新', () => {
 t('applyDark: テーマ属性とボタンの状態（絵文字・aria-pressed）が連動', () => {
   run('applyDark(true)');
   eq(run("document.documentElement.getAttribute('data-theme')"), 'dark', 'ダーク時のテーマ属性');
+  ok(sandbox.document.body.classList.contains('dark'), '管理画面を含む body に dark クラスが付く');
   eq(byId('btn-dark').textContent, '☀️', 'ダーク時は太陽アイコン');
   eq(byId('btn-dark').getAttribute('aria-pressed'), 'true', 'ダーク時の aria-pressed');
   run('applyDark(false)');
   eq(run("document.documentElement.getAttribute('data-theme')"), '', 'ライト時はテーマ属性が空');
+  eq(sandbox.document.body.classList.contains('dark'), false, 'ライト時は body の dark クラスを外す');
   eq(byId('btn-dark').textContent, '🌙', 'ライト時は月アイコン');
   eq(byId('btn-dark').getAttribute('aria-pressed'), 'false', 'ライト時の aria-pressed');
+});
+
+t('使い方ガイド: 終了したオフライン学習を案内しない', () => {
+  eq(run("JSON.stringify(GUIDE).includes('オフライン')"), false);
+  ok(run("JSON.stringify(GUIDE).includes('ホーム画面に追加')"), '現在の追加機能は案内する');
 });
 
 t('bindChHead: 折りたたみ見出しがマウスでもキーボードでも開閉できる', () => {

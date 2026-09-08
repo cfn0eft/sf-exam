@@ -388,22 +388,17 @@
       '.sfqc-net-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;background:#e2e8f0;color:#475569}' +
       '.sfqc-net-chip.corp{background:#dcfce7;color:#15803d}.sfqc-net-chip.warn{background:#fef3c7;color:#92400e}.sfqc-net-chip.host{background:#ffedd5;color:#9a3412}.sfqc-net-chip.unknown{background:#e2e8f0;color:#475569}' +
       '.sfqc-net-alert{margin:8px 0;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:700}' +
+      '.sfqc-net-seen{border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:6px;min-height:44px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}.sfqc-net-seen:hover{border-color:#167565;color:#0b5d51}.sfqc-net-seen-done{font-size:10px;color:#64706d;font-weight:700}' +
       '.sfqc-net-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:7px;margin-top:7px}' +
       '.sfqc-net-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:8px 10px;font-size:11.5px;color:#475569;line-height:1.55}' +
       '.sfqc-net-card strong{color:#1e293b}.sfqc-net-card .muted{color:#94a3b8;font-size:10.5px}' +
       '.sfqc-privacy-note{display:block;margin-top:9px;padding-top:8px;border-top:1px solid #e2e8f0;color:#64748b;font-size:10px;line-height:1.55;text-align:left}' +
-      'body.dark .sfqc-net-card{background:#0f172a;border-color:#334155;color:#cbd5e1}body.dark .sfqc-net-card strong{color:#f1f5f9}body.dark .sfqc-net-alert{background:#431407;border-color:#9a3412;color:#fed7aa}body.dark .sfqc-privacy-note{border-color:#334155;color:#94a3b8}' +
+      'body.dark .sfqc-net-card{background:#0f172a;border-color:#334155;color:#cbd5e1}body.dark .sfqc-net-card strong{color:#f1f5f9}body.dark .sfqc-net-alert{background:#431407;border-color:#9a3412;color:#fed7aa}body.dark .sfqc-net-seen{background:#18211f;border-color:#465651;color:#d8e5e1}body.dark .sfqc-net-seen:hover{border-color:#61c3b2;color:#8bd9c5}body.dark .sfqc-net-seen-done{color:#aebcb8}body.dark .sfqc-privacy-note{border-color:#334155;color:#94a3b8}' +
       '#sfqc-maint{position:fixed;inset:0;z-index:100004;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;padding:16px}' +
       '#sfqc-maint.show{display:flex}' +
       '#sfqc-maint .sfqc-card{text-align:center}' +
       '#sfqc-maint-banner{position:fixed;left:0;right:0;top:0;z-index:99980;display:none;background:#b45309;color:#fff;font-size:12.5px;font-weight:700;text-align:center;padding:8px 12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.2)}' +
       '#sfqc-maint-banner.show{display:block}' +
-      '#sfqc-swtoast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(24px);z-index:99986;display:flex;align-items:center;gap:10px;background:#0176d3;color:#fff;font-size:13px;font-weight:700;padding:10px 10px 10px 16px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);opacity:0;transition:opacity .25s,transform .25s;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;max-width:92vw}' +
-      '#sfqc-swtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}' +
-      '.sfqc-swtoast-btn{background:#fff;color:#0176d3;border:none;border-radius:9px;padding:6px 13px;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap}' +
-      '.sfqc-swtoast-btn:hover{background:#eaf4ff}' +
-      '.sfqc-swtoast-x{background:transparent;border:none;color:#fff;font-size:18px;line-height:1;cursor:pointer;padding:0 4px;opacity:.85}' +
-      '.sfqc-swtoast-x:hover{opacity:1}' +
       '.sfqc-act-chat{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}' +
       '.sfqc-act-notice{background:#fef3c7;color:#92400e;border:1px solid #fde68a}' +
       '.sfqc-act-chat.has-unread{background:#6366f1;color:#fff;border-color:#6366f1}' +
@@ -787,19 +782,6 @@
   }
   function busy(b) { if (elLogin) elLogin.disabled = b; if (elSignup) elSignup.disabled = b; }
 
-  function showSWUpdateToast() {
-    if (document.getElementById('sfqc-swtoast')) return;
-    var t = document.createElement('div'); t.id = 'sfqc-swtoast';
-    t.innerHTML = '<span>🔄 新しいバージョンがあります</span>' +
-      '<button class="sfqc-swtoast-btn" id="sfqc-swtoast-go">今すぐ更新</button>' +
-      '<button class="sfqc-swtoast-x" id="sfqc-swtoast-x" aria-label="閉じる">×</button>';
-    document.body.appendChild(t);
-    try { requestAnimationFrame(function () { t.classList.add('show'); }); } catch (e) { t.classList.add('show'); }
-    var go = document.getElementById('sfqc-swtoast-go');
-    if (go) go.addEventListener('click', function () { try { location.reload(); } catch (e) { location.href = location.href; } });
-    var x = document.getElementById('sfqc-swtoast-x');
-    if (x) x.addEventListener('click', function () { t.classList.remove('show'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 300); });
-  }
   function setupSWUpdate() {
     try {
       if (window.caches && window.caches.keys) {
@@ -2889,14 +2871,48 @@
     Object.keys(ds).forEach(function (k) { var d = ds[k]; if (d && (!best || (d.lastSeen || 0) > (best.lastSeen || 0))) best = d; });
     return best;
   }
-  function networkAlertsOf(u) {
-    var out = [], active = activeDevicesOf(u);
+  function networkAlertsOf(u, now) {
+    var out = [], active = activeDevicesOf(u, now);
     if (active.length > 1) out.push('複数端末が同時にオンライン（' + active.length + '台）');
     var logs = ((u && u.netAccess) || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
     if (logs.length > 1 && logs[0].ip && logs[1].ip && logs[0].ip !== logs[1].ip && logs[0].deviceId !== logs[1].deviceId && (logs[0].ts - logs[1].ts) <= 600000) {
       out.push('10分以内に別端末・別回線からアクセス');
     }
     return out;
+  }
+  var NETWORK_SEEN_KEY = 'sfq_admin_network_seen';
+  function networkAlertSignature(u, now) {
+    var warnings = networkAlertsOf(u, now);
+    if (!warnings.length) return '';
+    var active = activeDevicesOf(u, now).sort();
+    var logs = ((u && u.netAccess) || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).slice(0, 2);
+    var recent = logs.map(function (e) {
+      return e.visitId || [e.deviceId || '', e.ip || '', e.ts || 0].join('@');
+    });
+    return warnings.join('|') + '#active=' + active.join(',') + '#recent=' + recent.join(',');
+  }
+  function networkSeenMap() {
+    try {
+      var m = JSON.parse(localStorage.getItem(NETWORK_SEEN_KEY) || '{}');
+      return m && typeof m === 'object' && !Array.isArray(m) ? m : {};
+    } catch (e) { return {}; }
+  }
+  function networkAlertUnread(u, seen, now) {
+    var sig = networkAlertSignature(u, now);
+    if (!sig) return false;
+    seen = seen || networkSeenMap();
+    return seen[u.uid] !== sig;
+  }
+  function markNetworkAlertsSeen(uid) {
+    var seen = networkSeenMap(), keep = {};
+    adminUsers.forEach(function (u) {
+      var sig = networkAlertSignature(u);
+      if (!sig) return;
+      if (!uid || u.uid === uid) seen[u.uid] = sig;
+      if (seen[u.uid]) keep[u.uid] = seen[u.uid];
+    });
+    try { localStorage.setItem(NETWORK_SEEN_KEY, JSON.stringify(keep)); } catch (e) {}
+    renderAdmin();
   }
   function netChipClass(n) {
     return n && n.kind === 'corp' ? 'corp' : n && n.kind === 'secure' ? 'warn' : n && n.kind === 'hosting' ? 'host' : 'unknown';
@@ -3060,7 +3076,7 @@
 
   function networkTabHTML() {
     var list = filterNetworkUsers();
-    var tracked = 0, corporate = 0, secure = 0, alerts = 0;
+    var tracked = 0, corporate = 0, secure = 0, alerts = 0, unseen = 0, seenMap = networkSeenMap();
     adminUsers.forEach(function (u) {
       var n = latestNetworkOf(u);
       if (n) {
@@ -3069,11 +3085,13 @@
         if (n.kind === 'secure' || n.kind === 'hosting') secure++;
       }
       if (networkAlertsOf(u).length) alerts++;
+      if (networkAlertUnread(u, seenMap)) unseen++;
     });
     var kpi = function (n, l) { return '<div class="sfqc-kpi"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; };
     var html = '<div class="sfqc-sec" style="margin-top:0">🔐 接続元・端末</div>' +
       '<div class="sfqc-kpis">' + kpi(tracked, '接続情報あり') + kpi(corporate, '登録企業回線') +
         kpi(secure, 'VPN/クラウド候補') + kpi(alerts, '接続確認') + '</div>' +
+      (unseen ? '<div class="sfqc-toolbar"><span class="sfqc-count">未確認の通知 ' + unseen + '件</span><button class="sfqc-net-seen" id="sfqc-net-seen-all">通知をすべて消す</button></div>' : '') +
       '<div class="sfqc-itnote">マスク済みIP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
       '<div class="sfqc-toolbar">' +
         '<input id="sfqc-net-q" class="sfqc-search" type="search" placeholder="🔍 申請名・メール・UID・IP・回線で絞り込み" value="' + esc(adminNetworkFilter) + '">' +
@@ -3089,8 +3107,10 @@
     if (!list.length) return html + '<div class="sfqc-empty">条件に合う接続情報がありません。</div>';
     list.forEach(function (u, i) {
       var n = latestNetworkOf(u), warnings = networkAlertsOf(u), devices = Object.keys(u.netDevices || {}), active = activeDevicesOf(u);
+      var unread = networkAlertUnread(u, seenMap);
       var netChip = n ? '<span class="sfqc-net-chip ' + netChipClass(n) + '">' + esc(n.label || '判定なし') + '</span>' : '<span class="sfqc-net-chip unknown">未記録</span>';
-      var warningChip = warnings.length ? '<span class="sfqc-net-chip warn" title="' + esc(warnings.join(' / ')) + '">⚠ 接続確認</span>' : '';
+      var warningChip = warnings.length ? '<span class="sfqc-net-chip warn" title="' + esc(warnings.join(' / ')) + '">⚠ 接続確認</span>' +
+        (unread ? '<button class="sfqc-net-seen" data-net-seen-uid="' + esc(u.uid) + '">通知を消す</button>' : '<span class="sfqc-net-seen-done">✓ 確認済み</span>') : '';
       html += '<div class="sfqc-acc">' +
         '<div class="sfqc-acc-head">' +
           '<div class="sfqc-acc-id"><span class="sfqc-acc-name">👤 ' + esc(u.name) + '</span>' + netChip + warningChip +
@@ -3123,7 +3143,8 @@
 
     var totalUnread = adminUsers.reduce(function (s, u) { return s + chatUnreadCount(u.chat, 'admin', u.uid); }, 0);
     var fbPending = adminFeedback.filter(function (r) { return !r.reply; }).length;
-    var networkWarningCount = adminUsers.filter(function (u) { return networkAlertsOf(u).length > 0; }).length;
+    var networkSeen = networkSeenMap();
+    var networkWarningCount = adminUsers.filter(function (u) { return networkAlertUnread(u, networkSeen); }).length;
     var tabBtn = function (k, l, badge) {
       return '<button class="sfqc-tab' + (adminTab === k ? ' on' : '') + '" data-tab="' + k + '">' + l +
         (badge ? '<span class="sfqc-tab-badge">' + badge + '</span>' : '') + '</button>';
@@ -3309,6 +3330,11 @@
     });
     body.querySelectorAll('[data-network]').forEach(function (b) {
       b.addEventListener('click', function () { var v = b.getAttribute('data-network'); adminNetwork = (v === 'all' || adminNetwork === v) ? 'all' : v; renderAdmin(); });
+    });
+    var netSeenAll = document.getElementById('sfqc-net-seen-all');
+    if (netSeenAll) netSeenAll.addEventListener('click', function () { markNetworkAlertsSeen(''); });
+    body.querySelectorAll('[data-net-seen-uid]').forEach(function (b) {
+      b.addEventListener('click', function () { markNetworkAlertsSeen(b.getAttribute('data-net-seen-uid')); });
     });
     body.querySelectorAll('[data-acc-uid]').forEach(function (b) {
       b.addEventListener('click', function () { setAccess(b.getAttribute('data-acc-uid'), b.getAttribute('data-acc-name'), b.getAttribute('data-acc-state')); });
@@ -4130,7 +4156,8 @@
     parseTrace: parseTrace, ipv4Int: ipv4Int, ipInCidr: ipInCidr, maskIp: maskIp, shouldRecordNetwork: shouldRecordNetwork,
     corporateMatch: corporateMatch, classifyNetwork: classifyNetwork, pruneNetworkData: pruneNetworkData,
     networkDataSource: networkDataSource, buildNetworkRecord: buildNetworkRecord,
-    activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf, networkDetailHTML: networkDetailHTML,
+    activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf,
+    networkAlertSignature: networkAlertSignature, networkAlertUnread: networkAlertUnread, networkDetailHTML: networkDetailHTML,
     timestampMillis: timestampMillis, shouldForceLogout: shouldForceLogout,
     INACTIVE_DAYS: INACTIVE_DAYS, NETWORK_STORE_KEY: NETWORK_STORE_KEY, SESSION_CONTROL_DOC: SESSION_CONTROL_DOC };
 

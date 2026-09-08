@@ -1579,6 +1579,7 @@ button, a { touch-action: manipulation; }
 
 .stat-summary { gap: 16px; }
 .ss-ring { width: 70px; height: 70px; }
+.ss-ring svg { display: block; width: 100%; height: 100%; }
 .ss-pill { border-radius: 14px; padding: 12px; }
 .dom-row, .kw-row, .stq-row { min-height: 48px; }
 .dom-focus-btn { min-height: 44px; border-radius: 12px; }

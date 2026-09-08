@@ -293,6 +293,12 @@ t('管理画面: メンテナンス予定をキューと呼ばない', () => {
   ok(src.indexOf('キューを管理') < 0 && src.indexOf('都度メンテ：キュー') < 0, '旧キュー表記を除去');
 });
 
+t('管理画面: 接続通知を個別またはまとめて消せる', () => {
+  ok(src.indexOf('id="sfqc-net-seen-all"') >= 0, '一括で通知を消す操作');
+  ok(src.indexOf('data-net-seen-uid=') >= 0, '個別に通知を消す操作');
+  ok(src.indexOf('networkAlertUnread(u, networkSeen)') >= 0, 'サイドバーは未確認通知だけを数える');
+});
+
 t('parseTrace: Cloudflare trace をキーと値に分解する', () => {
   const x = T.parseTrace('ip=203.0.113.42\nloc=JP\nwarp=off\n');
   eq(x.ip, '203.0.113.42'); eq(x.loc, 'JP'); eq(x.warp, 'off');
@@ -369,6 +375,29 @@ t('networkAlertsOf: 複数端末の同時接続と短時間の回線変更を検
   };
   const a = T.networkAlertsOf(u);
   eq(a.length, 2); ok(a[0].indexOf('複数端末') >= 0); ok(a[1].indexOf('別端末・別回線') >= 0);
+});
+
+t('networkAlertUnread: 同じ接続通知は確認後に消え、新しい接続で再通知する', () => {
+  const u = {
+    uid: 'u1',
+    netDevices: { a: { lastSeen: NOW }, b: { lastSeen: NOW - 1000 } },
+    netAccess: [
+      { ts: NOW, deviceId: 'a', ip: '203.0.113.xxx', visitId: 'visit-a' },
+      { ts: NOW - 60000, deviceId: 'b', ip: '198.51.100.xxx', visitId: 'visit-b' }
+    ]
+  };
+  const sig = T.networkAlertSignature(u, NOW);
+  ok(sig, '通知署名が生成される');
+  ok(T.networkAlertUnread(u, {}, NOW), '未確認なら通知する');
+  eq(T.networkAlertUnread(u, { u1: sig }, NOW), false, '同じ通知は確認済みになる');
+  u.netAccess[0].visitId = 'visit-new';
+  ok(T.networkAlertUnread(u, { u1: sig }, NOW), '新しい接続は再通知する');
+});
+
+t('networkAlertSignature: 接続確認が解消したら通知対象から外れる', () => {
+  const u = { uid: 'u1', netDevices: { a: { lastSeen: NOW } }, netAccess: [] };
+  eq(T.networkAlertSignature(u, NOW), '');
+  eq(T.networkAlertUnread(u, {}, NOW), false);
 });
 
 t('networkDetailHTML: 外部API由来の回線名をHTMLエスケープする', () => {
