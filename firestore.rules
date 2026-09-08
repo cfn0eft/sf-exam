@@ -11,7 +11,7 @@ rules_version = '2';
  * 設計:
  *   progress/{uid} … 利用者ごとの進捗ドキュメント。読めるのは本人と管理者だけ。
  *                    本人の書込は「本人が書いてよいフィールド」だけに限定する
- *                    （ホワイトリスト方式）。管理者は全権。削除は管理者だけ。
+ *                    （ホワイトリスト方式）。管理者は全権。本人の退会時は削除可。
  *   broadcast/*    … 一斉お知らせ＋メンテナンス状態。全ログインユーザーが読め、
  *                    書けるのは管理者だけ。
  * ===================================================================== */
@@ -102,10 +102,11 @@ service cloud.firestore {
         (request.auth.uid == uid && selfFieldsOnly() && accessOk())
       );
 
-      // 削除: 管理者だけ。
-      // （本人に許すと、停止中の人が自分の doc を消して blocked を帳消しにし、
-      //   次のログインで「承認待ち」の列に並び直せてしまう）
-      allow delete: if isAdmin();
+      // 削除: 本人の退会、または管理者の完全削除だけ。
+      // 本人向けUIではパスワード再認証後にこのdocとAuthenticationを続けて削除する。
+      // docだけを直接削除されても、次のログインでは未承認docが再作成されるため、
+      // approved/blocked の権限を自己付与することはできない。
+      allow delete: if request.auth != null && (request.auth.uid == uid || isAdmin());
     }
 
     /* 一斉お知らせ（broadcast/*）とメンテナンス状態（broadcast/maintenance）。

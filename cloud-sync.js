@@ -79,7 +79,8 @@
 
   var auth = null, db = null, currentUser = null, saveTimer = null, cloudDirty = false;
   var currentName = '', currentEmail = '', isAdmin = false;
-  var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock;
+  var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock, elDelete;
+  var accountDeleteBusy = false, accountDeleteDocRemoved = false;
 
   var BROADCAST_COL = 'broadcast';
   var ownDocUnsub = null, broadcastUnsub = null, sessionControlUnsub = null;
@@ -310,6 +311,17 @@
       'body.dark .sfqc-sub{color:#94a3b8}' +
       '#sfqc-lock{position:fixed;inset:0;z-index:100001;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.85);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '#sfqc-lock.show{display:flex}' +
+      '#sfqc-delete{position:fixed;inset:0;z-index:100005;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.78);padding:16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfqc-delete.show{display:flex}' +
+      '.sfqc-delete-card{width:min(94vw,440px);text-align:left}' +
+      '.sfqc-delete-list{margin:0 0 16px;padding-left:20px;color:#475569;font-size:12.5px;line-height:1.8}' +
+      '.sfqc-delete-warn{margin:0 0 14px;padding:10px 12px;border:1px solid #fecaca;border-radius:8px;background:#fef2f2;color:#991b1b;font-size:12px;line-height:1.65}' +
+      '.sfqc-delete-label{display:block;margin-top:10px;color:#475569;font-size:12px;font-weight:700}' +
+      '.sfqc-delete-actions{display:flex;gap:8px;margin-top:14px}' +
+      '.sfqc-delete-submit{background:#b91c1c;color:#fff}' +
+      '.sfqc-legal-link{color:#475569;text-decoration:underline;text-underline-offset:2px}' +
+      '.sfqc-legal-line{margin:12px 0 0;text-align:center;font-size:11px;line-height:1.6}' +
+      '#sfqc-account-delete{display:none;color:#b91c1c}' +
       '#sfqc-replies{position:fixed;inset:0;z-index:100002;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.7);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '.sfqc-rep-card{text-align:left;width:min(92vw,420px)}' +
       '.sfqc-rep-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow:auto;margin-top:6px}' +
@@ -458,7 +470,7 @@
       '.sfqc-msg.err,.sfqc-msg.ok{padding:8px 10px;border:1px solid;border-radius:6px}.sfqc-msg.err{background:#fff3f2;border-color:#e4b8b5;color:#9f2018}.sfqc-msg.ok{background:#edf8f4;border-color:#abd8cb;color:#0b6758}' +
       '.sfqc-error-detail{max-width:620px;margin:10px auto 0;color:#64706d;font-size:11px;text-align:left}.sfqc-error-detail summary{min-height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer}.sfqc-error-detail code{display:block;padding:10px;border:1px solid #d9ddd7;border-radius:6px;background:#fffefa;color:#64706d;white-space:pre-wrap;overflow-wrap:anywhere}' +
       '#sfqc-lock,#sfqc-maint,#sfqc-admin{backdrop-filter:none}#sfqc-lock,#sfqc-maint{background:rgba(17,24,23,.76)}#sfqc-lock[data-state="error"] .sfqc-card,#sfqc-lock[data-state="blocked"] .sfqc-card{border-color:#e4b8b5}' +
-      'body.dark .sfqc-adminwrap,body.dark .sfqc-adminbody{background:#111817;color:#eff8f5}body.dark .sfqc-adminhead,body.dark .sfqc-tabs,body.dark .sfqc-kpi,body.dark .sfqc-dash-card,body.dark .sfqc-acc,body.dark .sfqc-bc-card,body.dark .sfqc-fb-item,body.dark .sfqc-overview-panel,body.dark .sfqc-card,body.dark .sfqc-state,body.dark .sfqc-empty{background:#1b2422;color:#eff8f5;border-color:#394643}body.dark .sfqc-state-detail,body.dark .sfqc-error-detail{color:#aab9b5}body.dark .sfqc-state.error{border-color:#7f4742}body.dark .sfqc-field{background:#111817;color:#eff8f5;border-color:#465651}body.dark .sfqc-field:focus{border-color:#61c3b2;box-shadow:0 0 0 2px rgba(97,195,178,.14)}body.dark .sfqc-btn-primary{background:#2d8f7c}body.dark .sfqc-btn-ghost{background:#25312e;color:#d8e5e1}body.dark .sfqc-msg.err{background:#351d1b;border-color:#7f4742;color:#ffb4ac}body.dark .sfqc-msg.ok{background:#153029;border-color:#326c5e;color:#91dbc7}body.dark .sfqc-error-detail code{background:#111817;border-color:#394643;color:#aab9b5}';
+      'body.dark .sfqc-adminwrap,body.dark .sfqc-adminbody{background:#111817;color:#eff8f5}body.dark .sfqc-adminhead,body.dark .sfqc-tabs,body.dark .sfqc-kpi,body.dark .sfqc-dash-card,body.dark .sfqc-acc,body.dark .sfqc-bc-card,body.dark .sfqc-fb-item,body.dark .sfqc-overview-panel,body.dark .sfqc-card,body.dark .sfqc-state,body.dark .sfqc-empty{background:#1b2422;color:#eff8f5;border-color:#394643}body.dark .sfqc-state-detail,body.dark .sfqc-error-detail,body.dark .sfqc-delete-list,body.dark .sfqc-delete-label,body.dark .sfqc-legal-link{color:#aab9b5}body.dark .sfqc-delete-warn{background:#351d1b;border-color:#7f4742;color:#ffb4ac}body.dark .sfqc-state.error{border-color:#7f4742}body.dark .sfqc-field{background:#111817;color:#eff8f5;border-color:#465651}body.dark .sfqc-field:focus{border-color:#61c3b2;box-shadow:0 0 0 2px rgba(97,195,178,.14)}body.dark .sfqc-btn-primary{background:#2d8f7c}body.dark .sfqc-btn-ghost{background:#25312e;color:#d8e5e1}body.dark .sfqc-msg.err{background:#351d1b;border-color:#7f4742;color:#ffb4ac}body.dark .sfqc-msg.ok{background:#153029;border-color:#326c5e;color:#91dbc7}body.dark .sfqc-error-detail code{background:#111817;border-color:#394643;color:#aab9b5}';
     var s = document.createElement('style');
     s.textContent = css;
     document.head.appendChild(s);
@@ -476,7 +488,8 @@
         '</div>' +
         '<div id="sfqc-msg" class="sfqc-msg"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
-        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。生のIPは保存せず、判定結果は管理者だけが確認します。</span>' +
+        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用し、生のIPは保存しません。</span>' +
+        '<p class="sfqc-legal-line"><a class="sfqc-legal-link" href="' + esc(legalUrl()) + '">利用規約・運営情報</a></p>' +
       '</div>';
   }
   function guideCardHTML() {
@@ -486,7 +499,12 @@
         '<div class="sfqc-row">' +
           '<button id="sfqc-gohome" class="sfqc-btn sfqc-btn-primary">ホームへ移動してログイン</button>' +
         '</div>' +
+        '<p class="sfqc-legal-line"><a class="sfqc-legal-link" href="' + esc(legalUrl()) + '">利用規約・運営情報</a></p>' +
       '</div>';
+  }
+
+  function legalUrl() {
+    return String(HOME_URL || 'index.html').replace(/index\.html(?:[?#].*)?$/, 'legal.html');
   }
 
   function buildUI() {
@@ -504,6 +522,8 @@
       '<div id="sfqc-menu">' +
         '<div class="sfqc-status" id="sfqc-status"></div>' +
         '<button id="sfqc-admin-btn" type="button">👑 管理者ビュー</button>' +
+        '<button id="sfqc-legal" type="button">利用規約・運営情報</button>' +
+        '<button id="sfqc-account-delete" type="button">アカウントを削除</button>' +
         '<button id="sfqc-logout" type="button">ログアウト</button>' +
       '</div>';
     document.body.appendChild(elBadge);
@@ -540,8 +560,26 @@
           '<button id="sfqc-lock-logout" class="sfqc-btn sfqc-btn-ghost">ログアウト</button>' +
         '</div>' +
         '<p class="sfqc-hint">⚠️ サーバーの関係で、管理・制限を行う場合があります。<br>詳しくは管理者にお尋ねください。</p>' +
+        '<p class="sfqc-legal-line"><a class="sfqc-legal-link" href="' + esc(legalUrl()) + '">利用規約・運営情報</a> ・ <button id="sfqc-lock-delete" type="button" class="sfqc-legal-link" style="border:0;background:none;padding:0;font:inherit;color:#b91c1c;cursor:pointer">アカウントを削除</button></p>' +
       '</div>';
     document.body.appendChild(elLock);
+
+    elDelete = document.createElement('div');
+    elDelete.id = 'sfqc-delete';
+    elDelete.innerHTML =
+      '<div class="sfqc-card sfqc-delete-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-delete-title">' +
+        '<p class="sfqc-title" id="sfqc-delete-title">アカウントを完全に削除</p>' +
+        '<p class="sfqc-sub">本人確認後、次の情報を削除します。</p>' +
+        '<ul class="sfqc-delete-list"><li>全資格の進捗・模試・メモ</li><li>接続元・端末・アクセス履歴</li><li>利用申請・フィードバック</li><li>ログイン用アカウント</li></ul>' +
+        '<p class="sfqc-delete-warn">この操作は取り消せません。必要な進捗は先にマイページの「バックアップ」から書き出してください。</p>' +
+        '<label class="sfqc-delete-label" for="sfqc-delete-pw">現在のパスワード</label>' +
+        '<input id="sfqc-delete-pw" class="sfqc-field" type="password" autocomplete="current-password" placeholder="パスワード" />' +
+        '<label class="sfqc-delete-label" for="sfqc-delete-word">確認のため「削除」と入力</label>' +
+        '<input id="sfqc-delete-word" class="sfqc-field" type="text" autocomplete="off" placeholder="削除" />' +
+        '<div id="sfqc-delete-msg" class="sfqc-msg" aria-live="polite"></div>' +
+        '<div class="sfqc-delete-actions"><button id="sfqc-delete-cancel" class="sfqc-btn sfqc-btn-ghost">キャンセル</button><button id="sfqc-delete-submit" class="sfqc-btn sfqc-delete-submit">完全に削除</button></div>' +
+      '</div>';
+    document.body.appendChild(elDelete);
 
     var compose = document.createElement('div');
     compose.id = 'sfqc-compose';
@@ -560,6 +598,7 @@
         '<div class="sfqc-row" style="margin-top:8px">' +
           '<button class="sfqc-btn sfqc-btn-ghost" id="sfqc-maint-logout" style="width:100%">ログアウト（管理者で入り直す）</button>' +
         '</div>' +
+        '<p class="sfqc-legal-line"><a class="sfqc-legal-link" href="' + esc(legalUrl()) + '">利用規約・運営情報</a></p>' +
       '</div>';
     document.body.appendChild(maint);
     document.getElementById('sfqc-maint-reload').addEventListener('click', checkMaintenance);
@@ -592,6 +631,8 @@
     document.addEventListener('click', function (e) { if (elBadge && !elBadge.contains(e.target)) elBadge.classList.remove('open'); });
 
     document.getElementById('sfqc-logout').addEventListener('click', function () { elBadge.classList.remove('open'); doLogout(); });
+    document.getElementById('sfqc-legal').addEventListener('click', function () { location.href = legalUrl(); });
+    document.getElementById('sfqc-account-delete').addEventListener('click', function () { elBadge.classList.remove('open'); openDeleteAccount(); });
     elAdminBtn.addEventListener('click', function () { elBadge.classList.remove('open'); openAdmin(); });
     document.getElementById('sfqc-adm-close').addEventListener('click', closeAdmin);
     document.getElementById('sfqc-adm-reload').addEventListener('click', loadAdmin);
@@ -602,8 +643,13 @@
     document.getElementById('sfqc-lock-reload').addEventListener('click', function () { if (currentUser) onLogin(currentUser); });
     document.getElementById('sfqc-lock-home').addEventListener('click', function () { location.href = HOME_URL; });
     document.getElementById('sfqc-lock-apply').addEventListener('click', doApplyAccess);
+    document.getElementById('sfqc-lock-delete').addEventListener('click', openDeleteAccount);
     var lockName = document.getElementById('sfqc-lock-name');
     if (lockName) lockName.addEventListener('keydown', function (e) { if (e.key === 'Enter') doApplyAccess(); });
+    document.getElementById('sfqc-delete-cancel').addEventListener('click', closeDeleteAccount);
+    document.getElementById('sfqc-delete-submit').addEventListener('click', doDeleteAccount);
+    elDelete.addEventListener('click', function (e) { if (e.target === elDelete) closeDeleteAccount(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && elDelete.classList.contains('show')) closeDeleteAccount(); });
   }
 
   function showOverlay() { if (elOverlay) elOverlay.classList.add('show'); }
@@ -894,6 +940,115 @@
     auth.signOut();
   }
 
+  var ACCOUNT_STORE_KEYS = [
+    'sfq_v4', 'sfqab_v1', 'sfqdev_v1', 'sfqaf_v1',
+    'sfqsales_v1', 'sfqservice_v1', 'sfqexp_v1', 'sfqsva_v1'
+  ];
+  var ACCOUNT_CERT_SLUGS = [
+    'sf-admin', 'app-builder', 'developer', 'agentforce',
+    'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'
+  ];
+  function accountLocalKeys(uid) {
+    var out = [];
+    ACCOUNT_STORE_KEYS.forEach(function (key) {
+      out.push(key, key + '_examstate', key + '_recentexam', key + '_filters');
+    });
+    ACCOUNT_CERT_SLUGS.forEach(function (slug) { out.push('sfq_migrated_' + slug); });
+    out.push('sfq_elective', 'sfq_feedback_pending', 'sfq_fbreply_seen');
+    if (uid) {
+      out.push('sfq_access_' + uid, 'sfq_force_logout_seen_' + uid, 'sfq_device_id_' + uid);
+    }
+    return out;
+  }
+  function clearAccountLocalData(uid) {
+    accountLocalKeys(uid).forEach(function (key) { try { localStorage.removeItem(key); } catch (e) {} });
+    clearNetworkSessionMark(uid);
+  }
+  function setDeleteBusy(v) {
+    accountDeleteBusy = !!v;
+    var submit = document.getElementById('sfqc-delete-submit');
+    var cancel = document.getElementById('sfqc-delete-cancel');
+    var pw = document.getElementById('sfqc-delete-pw');
+    var word = document.getElementById('sfqc-delete-word');
+    if (submit) { submit.disabled = !!v; submit.textContent = v ? '削除しています…' : '完全に削除'; }
+    if (cancel) cancel.disabled = !!v;
+    if (pw) pw.disabled = !!v;
+    if (word) word.disabled = !!v;
+  }
+  function setDeleteMsg(text, kind) {
+    var msg = document.getElementById('sfqc-delete-msg');
+    if (!msg) return;
+    msg.textContent = text || '';
+    msg.className = 'sfqc-msg' + (kind ? ' ' + kind : '');
+  }
+  function openDeleteAccount() {
+    if (!currentUser || isAdmin || !elDelete) return;
+    accountDeleteDocRemoved = false;
+    var pw = document.getElementById('sfqc-delete-pw');
+    var word = document.getElementById('sfqc-delete-word');
+    if (pw) pw.value = '';
+    if (word) word.value = '';
+    setDeleteMsg(''); setDeleteBusy(false);
+    elDelete.classList.add('show');
+    try { if (pw) pw.focus(); } catch (e) {}
+  }
+  function closeDeleteAccount() {
+    if (!elDelete || accountDeleteBusy) return;
+    elDelete.classList.remove('show');
+  }
+  function doDeleteAccount() {
+    if (!currentUser || !db || !auth || accountDeleteBusy) return;
+    if (isAdmin) { setDeleteMsg('管理者アカウントは、この画面から削除できません。', 'err'); return; }
+    var pw = document.getElementById('sfqc-delete-pw');
+    var word = document.getElementById('sfqc-delete-word');
+    var password = pw ? pw.value : '';
+    if (!password) { setDeleteMsg('現在のパスワードを入力してください。', 'err'); return; }
+    if (!word || word.value.trim() !== '削除') { setDeleteMsg('確認欄に「削除」と入力してください。', 'err'); return; }
+
+    var user = currentUser, uid = user.uid, email = user.email || currentEmail;
+    var provider = firebase.auth && firebase.auth.EmailAuthProvider;
+    if (!provider || !provider.credential) { setDeleteMsg('本人確認を開始できません。ページを再読み込みしてください。', 'err'); return; }
+    setDeleteBusy(true); setDeleteMsg('パスワードを確認しています…');
+    var credential = provider.credential(email, password);
+    user.reauthenticateWithCredential(credential)
+      .then(function () {
+        setDeleteMsg('クラウド上の学習データを削除しています…');
+        if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+        cloudDirty = false; saveRetry = 0;
+        stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopSessionControl(); stopPresence();
+        return db.collection(COLLECTION).doc(uid).delete();
+      })
+      .then(function () {
+        accountDeleteDocRemoved = true;
+        setDeleteMsg('ログイン用アカウントを削除しています…');
+        return user.delete();
+      })
+      .then(function () {
+        if (window.__setStore) window.__setStore(emptyStore());
+        clearAccountLocalData(uid);
+        currentUser = null; currentDeviceId = ''; currentName = ''; currentEmail = ''; isAdmin = false;
+        window.SFQ_IS_ADMIN = false;
+        window.SFQ_PROGRESS = { acquired: {}, locked: {}, elective: '' };
+        try { sessionStorage.setItem('sfq_account_deleted', '1'); } catch (e) {}
+        accountDeleteBusy = false;
+        location.href = HOME_URL;
+      })
+      .catch(function (e) {
+        setDeleteBusy(false);
+        var code = e && e.code || 'error';
+        if (accountDeleteDocRemoved) {
+          setDeleteMsg('学習データは削除しましたが、ログイン用アカウントの削除を完了できませんでした。ページを再読み込みして、もう一度お試しください。', 'err');
+        } else if (/wrong-password|invalid-credential|invalid-login-credentials/.test(code)) {
+          setDeleteMsg('パスワードが違います。確認してもう一度入力してください。', 'err');
+        } else if (code === 'permission-denied') {
+          setDeleteMsg('データを削除できませんでした。運営へお問い合わせください。', 'err');
+        } else {
+          setDeleteMsg(friendlyErr(code), 'err');
+        }
+      });
+  }
+  window.__sfqOpenDeleteAccount = openDeleteAccount;
+
   function timestampMillis(v) {
     if (!v) return 0;
     if (typeof v === 'number') return isFinite(v) ? v : 0;
@@ -1091,6 +1246,8 @@
     currentEmail = user.email || '';
     currentName = currentEmail.split('@')[0];
     isAdmin = matchAdmin(ADMIN_HASHES, ADMIN_IDS, currentName);
+    var deleteBtn = document.getElementById('sfqc-account-delete');
+    if (deleteBtn) deleteBtn.style.display = isAdmin ? 'none' : 'block';
     if (!isAdmin) startSessionControl(user); else stopSessionControl();
     setBadge(currentName); showAdminBtn(isAdmin);
     busy(false);
@@ -3968,7 +4125,7 @@
     networkDataSource: networkDataSource, buildNetworkRecord: buildNetworkRecord,
     activeDevicesOf: activeDevicesOf, latestNetworkOf: latestNetworkOf, networkAlertsOf: networkAlertsOf,
     networkAlertSignature: networkAlertSignature, networkAlertUnread: networkAlertUnread, networkDetailHTML: networkDetailHTML,
-    timestampMillis: timestampMillis, shouldForceLogout: shouldForceLogout,
+    timestampMillis: timestampMillis, shouldForceLogout: shouldForceLogout, accountLocalKeys: accountLocalKeys,
     INACTIVE_DAYS: INACTIVE_DAYS, NETWORK_STORE_KEY: NETWORK_STORE_KEY, SESSION_CONTROL_DOC: SESSION_CONTROL_DOC };
 
   function init() {
@@ -3976,6 +4133,12 @@
     HOME_URL = window.SFQ_HOME_URL || 'index.html';
 
     buildUI();
+    try {
+      if (ROLE !== 'client' && sessionStorage.getItem('sfq_account_deleted') === '1') {
+        sessionStorage.removeItem('sfq_account_deleted');
+        setMsg('アカウントと保存データを削除しました。', 'ok');
+      }
+    } catch (e) {}
     setupSWUpdate();
 
     window.__sfqAccount = function () {
@@ -4019,11 +4182,14 @@
       if (user) {
         onLogin(user);
       } else {
+        if (accountDeleteBusy) return;
         if (currentUser && currentUser.uid) clearNetworkSessionMark(currentUser.uid);
         currentDeviceId = '';
         currentUser = null; isAdmin = false;
         stopAccessWatch(); stopAdminPending(); stopUserMessaging(); stopSessionControl(); stopPresence();
         setBadge(''); setStatus(''); showAdminBtn(false); setAdminPending(0); closeAdmin();
+        var deleteBtn = document.getElementById('sfqc-account-delete');
+        if (deleteBtn) deleteBtn.style.display = 'none';
         hideLock(); showOverlay();
         forcedLogoutRunning = false;
         if (forcedLogoutNotice) {

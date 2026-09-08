@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script src="maintenance.js?v=169"></script>
+<script src="maintenance.js?v=170"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <meta name="description" content="Salesforce 認定資格8種（アドミニストレーター・Platform アプリビルダー・デベロッパー・Agentforce Specialist・Sales Cloud／Service Cloud／Experience Cloud コンサルタント・Sharing and Visibility アーキテクト）の無料学習クイズ。本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格まで伴走します。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -145,6 +145,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 @media (max-width:620px){.container{padding:22px 15px 50px}.hero{display:block;padding-bottom:20px}.hero h1{font-size:28px}.lp-progress{display:flex;align-items:baseline;gap:8px;margin-top:18px;padding:12px 0 0;border-left:0;border-top:1px solid var(--border)}.lp-progress-label{margin:0}.lp-progress-value{font-size:20px}.lp-focus{margin-top:18px;padding:18px 16px;gap:16px}.lp-focus-main{align-items:flex-start}.lp-focus h2{font-size:18px}.lp-news{margin-bottom:26px}.path-intro h2{font-size:19px}.grid,.specialist-grid{grid-template-columns:1fr}.catalog{gap:28px}.group-head{display:block}.group-desc{display:block;text-align:left;margin-top:4px}.card{padding:16px 14px;min-height:0}.card-title{margin-right:72px}}
 .card.locked .card-icon,.card.locked .card-title,.card.locked .card-desc,.card.locked .card-meta{opacity:.78}.lp-focus{border-left:1px solid var(--border)}
 .card.planned{cursor:default}.card.planned .card-icon,.card.planned .card-title,.card.planned .card-desc,.card.planned .card-meta{opacity:.82}.planned-source{margin:0 0 12px;font-size:11px;line-height:1.6;color:var(--text-sub)}
+.lp-footer{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-top:42px;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--text-sub)}.lp-footer a{color:inherit;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -206,6 +207,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
     </section>
   </div>
 
+  <footer class="lp-footer"><span>個人運営の非公式学習サービス</span><a href="legal.html">利用規約・運営情報</a><a href="legal.html#contact">問い合わせ</a></footer>
+
 </div>
 
 <div class="lp-modal" id="lp-modal" onclick="if(event.target===this)lpCloseNews()">
@@ -215,7 +218,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
   </div>
 </div>
 
-<script src="progression.js?v=169"></script>
+<script src="progression.js?v=170"></script>
 <script>
   const CERTS = [
     { slug:'sf-admin', storageKey:'sfq_v4', icon:'☁️', short:'Platform アドミニストレーター', title:'Salesforce 認定<br>Platform アドミニストレーター',
@@ -373,8 +376,8 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<script src="changelog.js?v=169"></script>
-<script src="cloud-sync.js?v=169"></script>
+<script src="changelog.js?v=170"></script>
+<script src="cloud-sync.js?v=170"></script>
 <script>
   function lpNewsLatest(){var c=window.SFQ_CHANGELOG||[];return c.length?c[0].id:'';}
   function lpHasUnseen(){try{return (window.SFQ_CHANGELOG||[]).length>0 && localStorage.getItem('sfq_news_seen')!==lpNewsLatest();}catch(e){return false;}}

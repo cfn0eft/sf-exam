@@ -103,12 +103,13 @@
 ```
 sf-exam/
 ├─ index.html              # LP（ゲートウェイ）＋資格レジストリ CERTS[]
+├─ legal.html              # 利用規約・運営情報・問い合わせ窓口
 ├─ quiz-engine.js          # 全資格共通エンジン
 ├─ quiz.css                # 共通スタイル
 ├─ changelog.js            # アップデート履歴（LP・全資格で共有・唯一の出典）
 ├─ figures.js              # 図解データ（全資格共有・インライン SVG）
 ├─ firebase-config.js      # Firebase 設定（任意・ログイン/同期用）
-├─ cloud-sync.js           # クラウド同期＋アクセス承認＋管理者ビュー（Auth + Firestore）
+├─ cloud-sync.js           # クラウド同期＋アクセス承認＋本人退会＋管理者ビュー（Auth + Firestore）
 ├─ progression.js          # 資格のロック解除（直列進行）— LP・全資格ページ共通の判定
 ├─ firestore.rules         # Firestore セキュリティルール（唯一の出典・コンソールへ貼る）
 ├─ manifest.webmanifest    # PWA マニフェスト
@@ -205,7 +206,8 @@ git push origin main
 - 進捗は `progress/{uid}` に保存し、doc 直下の `access` フラグで利用可否を制御します（`approved`=利用可 / `pending`=承認待ち / `blocked`=停止）。
 - **`approved` のアカウントだけが問題にアクセス可能**。未承認は全面ロック画面になり、**お名前を入力して利用申請**できます（新規登録も既定で承認待ち）。
 - **管理者ID（既定 `admin`）** でログインすると管理者ビューが開き、全アカウントの進捗・統計の閲覧、**承認 / 停止 / 申請の却下 / 完全削除**、新規申請の通知バッジ、フィードバックの集約、CSV/JSON 書き出しができます。
-- `access` を `approved` にできるのは **管理者だけ**（Firestore ルールで本人は自分を承認できないよう制限）。本人が書けるフィールドはホワイトリスト方式で限定され、doc の削除も管理者だけです。ルールの実体は root の `firestore.rules`（貼り方は `certifications/sf-admin/Firebaseセットアップ手順.md` のステップ 5）。
+- 一般ユーザーはマイページでパスワードを再入力し、自分の全資格の進捗・接続履歴・フィードバック・Firebase Authenticationアカウントをまとめて削除できます。管理者アカウントは対象外です。
+- `access` を `approved` にできるのは **管理者だけ**（Firestore ルールで本人は自分を承認できないよう制限）。本人が書けるフィールドはホワイトリスト方式で限定され、doc の削除は本人の退会または管理者操作だけです。ルールの実体は root の `firestore.rules`（貼り方は `certifications/sf-admin/Firebaseセットアップ手順.md` のステップ 5）。
 
 > ⚠️ 問題データ（`questions.json`）は静的公開ファイルのため、この承認制は**体験・UI レベルのアクセス制限**です（URL 直アクセスでのファイル取得までは防ぎません）。
 

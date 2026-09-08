@@ -2464,6 +2464,7 @@ function renderMypage(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
   const seg=(on,label,fn)=>'<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+label+'</button>';
   const fs=(function(){try{return localStorage.getItem('sfq_fontsize')||'normal';}catch(e){return 'normal';}})();
+  const legalUrl=String(window.SFQ_HOME_URL||'../../index.html').replace(/index\.html(?:[?#].*)?$/,'legal.html');
   const installRow=window.__deferredInstall
     ? '<div class="mp-opt"><span class="mp-ic">📲</span><span class="mp-main">アプリを追加<div class="mp-osub">ホーム画面に追加してすばやく起動</div></span><span class="mp-seg"><button onclick="installPWA()">追加</button></span></div>'
     : '';
@@ -2499,7 +2500,9 @@ function renderMypage(){
     +(planInfo?'<div class="mp-planinfo">'+escH(planInfo)+'</div>':'')
     +'<div class="mp-saverow"><button class="mp-b mp-save" onclick="saveMyPlan()">保存</button><button class="mp-b mp-clear" onclick="clearMyPlan()">クリア</button></div></div>'
     +'<div class="sec-label">サポート</div>'
-    +'<div class="card"><div class="mp-opt"><span class="mp-ic">🛠️</span><span class="mp-main">不具合・ご意見を報告<div class="mp-osub">問題の誤り・バグ・要望をアプリ内から送信（運営が確認します）</div></span><span class="mp-seg"><button onclick="openFeedback()">報告</button></span></div></div>'
+    +'<div class="card"><div class="mp-opt"><span class="mp-ic">🛠️</span><span class="mp-main">不具合・ご意見を報告<div class="mp-osub">問題の誤り・バグ・要望をアプリ内から送信（運営が確認します）</div></span><span class="mp-seg"><button onclick="openFeedback()">報告</button></span></div>'
+    +'<div class="mp-opt"><span class="mp-ic">📄</span><span class="mp-main">利用規約・運営情報<div class="mp-osub">非公式サービスであること、免責、著作権・商標、問い合わせ先</div></span><span class="mp-seg"><button onclick="location.href=\''+escH(legalUrl)+'\'">確認</button></span></div></div>'
+    +(acc.loggedIn&&!acc.isAdmin?'<div class="sec-label">アカウント管理</div><div class="card"><div class="mp-opt"><span class="mp-ic">⚠️</span><span class="mp-main">アカウントを削除<div class="mp-osub">全資格の進捗・接続履歴・フィードバック・ログイン用アカウントを完全に削除</div></span><button class="mp-danger" onclick="window.__sfqOpenDeleteAccount&&window.__sfqOpenDeleteAccount()">削除手続き</button></div></div>':'')
     +'<div class="sec-label">表示・データ</div>'
     +'<div class="card">'
     +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'

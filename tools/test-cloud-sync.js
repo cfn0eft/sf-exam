@@ -77,6 +77,21 @@ t('テストフックが公開されている', () => {
   ok(T && typeof T.statsOf === 'function', '__sfqcTest.statsOf が無い');
   ok(typeof T.aggregateUser === 'function' && typeof T.emptyStore === 'function');
   ok(typeof T.adminStateHTML === 'function' && typeof T.showLock === 'function');
+  ok(typeof T.accountLocalKeys === 'function', '__sfqcTest.accountLocalKeys が無い');
+});
+
+t('退会時の端末データ削除対象: 全8資格とアカウント固有キーを網羅する', () => {
+  const keys = T.accountLocalKeys('user-1');
+  ['sfq_v4', 'sfqab_v1', 'sfqdev_v1', 'sfqaf_v1', 'sfqsales_v1', 'sfqservice_v1', 'sfqexp_v1', 'sfqsva_v1'].forEach((key) => {
+    ok(keys.includes(key), key + ' がない');
+    ok(keys.includes(key + '_examstate'), key + '_examstate がない');
+    ok(keys.includes(key + '_recentexam'), key + '_recentexam がない');
+    ok(keys.includes(key + '_filters'), key + '_filters がない');
+  });
+  ok(keys.includes('sfq_access_user-1') && keys.includes('sfq_force_logout_seen_user-1') && keys.includes('sfq_device_id_user-1'));
+  ok(keys.includes('sfq_feedback_pending') && keys.includes('sfq_fbreply_seen') && keys.includes('sfq_elective'));
+  eq(new Set(keys).size, keys.length, '削除対象キーに重複がある');
+  ok(!keys.includes('dark') && !keys.includes('sfq_fontsize'), '表示設定は退会データに含めない');
 });
 
 t('例外状態: 承認待ち・停止・通信失敗・管理者専用を安全に表示できる', () => {
