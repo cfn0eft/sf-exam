@@ -499,7 +499,7 @@ function validateBlueprint() {
 /* ---- 主要 JS の構文チェック ---- */
 function validateSyntax() {
   info('\n== JS 構文 ==');
-  const files = ['quiz-engine.js', 'cloud-sync.js', 'changelog.js', 'figures.js', 'progression.js', 'firebase-config.js', 'sw.js']
+  const files = ['quiz-engine.js', 'cloud-sync.js', 'analytics.js', 'changelog.js', 'figures.js', 'progression.js', 'firebase-config.js', 'sw.js']
     .concat(fs.readdirSync(path.join(ROOT, 'tools')).filter((f) => f.endsWith('.js')).map((f) => 'tools/' + f));
   files.forEach((f) => {
     try { execFileSync(process.execPath, ['--check', path.join(ROOT, f)], { stdio: 'pipe' }); }
