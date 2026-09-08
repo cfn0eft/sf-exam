@@ -723,7 +723,7 @@ function renderFigGallery(){
     const m=svg.match(/aria-label="([^"]*)"/);
     items.push({name:name,cap:(m&&m[1])?m[1]:name});
   });
-  if(!items.length){el.innerHTML='<div class="cram-empty">🖼️ この資格の図解は準備中です。</div>';return;}
+  if(!items.length){el.innerHTML=uiState('neutral','—','図解は準備中です','この資格では、ほかの教材と問題演習を利用できます。');return;}
   items.sort((a,b)=>a.cap.localeCompare(b.cap,'ja'));
   let h='<div class="fig-gallery-note">この資格で使われている図解 '+items.length+' 点。タップで拡大できます。</div><div class="fig-gallery">';
   items.forEach(it=>{h+='<div class="fig-gcard">'+figHTML(it.name,it.cap)+'</div>';});
@@ -748,7 +748,7 @@ function syncChExpanded(wrap){
 
 function renderCompare(){
   const el=document.getElementById('tb-cmp'); if(!el)return;
-  if(!COMPDATA||!COMPDATA.length){el.innerHTML='<div class="cram-empty">📊 この資格の比較表は準備中です。</div>';return;}
+  if(!COMPDATA||!COMPDATA.length){el.innerHTML=uiState('neutral','—','比較表は準備中です','この資格では、ほかの教材と問題演習を利用できます。');return;}
   el.innerHTML='';
 
   const navWrap=document.createElement('div');
@@ -970,6 +970,15 @@ function renderTextbook(){
   renderChapNav();
 }
 function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function uiState(kind,symbol,title,desc,actionHtml){
+  const k=/^(positive|warning|error)$/.test(kind)?kind:'neutral';
+  return '<div class="ui-state '+k+'" role="status">'
+    +'<span class="ui-state-symbol" aria-hidden="true">'+escH(symbol||'—')+'</span>'
+    +'<strong class="ui-state-title">'+escH(title||'')+'</strong>'
+    +(desc?'<span class="ui-state-desc">'+escH(desc)+'</span>':'')
+    +(actionHtml?'<div class="ui-state-action">'+actionHtml+'</div>':'')
+    +'</div>';
+}
 
 const FIGS=(typeof window!=='undefined'&&window.SFQ_FIGURES)||{};
 function figMarkup(name){if(!name)return '';return FIGS[(CFG.slug||'')+'/'+name]||FIGS[name]||'';}
@@ -1059,7 +1068,7 @@ function cramMd(text){
 function renderCram(){
   const el=document.getElementById('cram-body'); if(!el)return;
   if(!CRAMDATA||!CRAMDATA.length){
-    el.innerHTML='<div class="cram-empty">📋 この資格の「直前まとめ」は準備中です。</div>';
+    el.innerHTML=uiState('neutral','—','直前まとめは準備中です','教科書・用語帳・問題演習は引き続き利用できます。');
     return;
   }
   el.innerHTML='';
@@ -1542,7 +1551,7 @@ function openNotebook(){
   if(!ov){ov=document.createElement('div');ov.id='nb-ov';ov.className='nb-ov';ov.addEventListener('click',function(e){if(e.target===ov)closeNotebook();});document.body.appendChild(ov);}
   const rl={unknown:'🤔 知らなかった',careless:'😵 ケアレス',narrow:'🔀 迷った'};
   let body;
-  if(!entries.length){body='<div class="nb-empty">まだ間違いはありません。間違えた問題・「自信なし」で正解した問題がここにまとまります。</div>';}
+  if(!entries.length){body=uiState('positive','✓','間違いノートは空です','間違えた問題と「自信なし」で正解した問題が、ここにまとまります。');}
   else{
     body=entries.map(function(e){const q=e.q;
       return '<div class="nb-item"><div class="nb-q">Q'+q.id+'　'+escH(q.question)+'</div>'
@@ -1657,7 +1666,7 @@ function openCases(){
   var ov=document.getElementById('cs-ov');
   if(!ov){ov=document.createElement('div');ov.id='cs-ov';ov.className='nb-ov';ov.addEventListener('click',function(e){if(e.target===ov)closeCases();});document.body.appendChild(ov);}
   var body;
-  if(!cs.length){body='<div class="nb-empty">ケーススタディはまだありません。</div>';}
+  if(!cs.length){body=uiState('neutral','—','ケーススタディはありません','この資格では、通常の問題演習を利用してください。');}
   else{body=cs.map(function(c){return '<div class="nb-item"><div class="scn-tag">📋 ケーススタディ（'+c.qs.length+'問）</div><div class="nb-q" style="font-weight:500">'+escH(c.scenario)+'</div><button class="btn bp" style="width:100%;margin-top:8px" onclick="beginCase(\''+c.id+'\')">この設定で'+c.qs.length+'問に挑戦 →</button></div>';}).join('');}
   ov.innerHTML='<div class="nb-card"><div class="nb-head"><span>📋 ケーススタディ</span><button class="nb-close" onclick="closeCases()">✕</button></div><div class="nb-scroll">'+body+'</div></div>';
   ov.classList.add('show');
@@ -2039,7 +2048,7 @@ function renderExamResultList(){
     });
     wrap.appendChild(row);wrap.appendChild(det);list.appendChild(wrap);
   });
-  if(shown===0){list.innerHTML='<div style="text-align:center;color:var(--text-sub);font-size:13px;padding:20px 0">🎉 間違えた問題はありません！</div>';}
+  if(shown===0){list.innerHTML=uiState('positive','✓','間違えた問題はありません','この結果では、すべての問題に正解しています。');}
 }
 function examReviewHTML(q,i,isOk){
   const sel=eAns[i]||[];
@@ -2099,7 +2108,7 @@ function renderStats(){
   allQ.forEach(q=>{const h=getH(q.id);(q.keywords||[]).forEach(k=>{if(!kws[k])kws[k]={c:0,w:0};kws[k].c+=h.c;kws[k].w+=h.w;});});
   const kwList=Object.entries(kws).filter(([,v])=>v.c+v.w>0).sort((a,b)=>{const pa=a[1].c/(a[1].c+a[1].w),pb=b[1].c/(b[1].c+b[1].w);return pa-pb;});
   const kwEl=document.getElementById('st-kw');kwEl.innerHTML='';
-  if(!kwList.length){kwEl.innerHTML='<div style="color:var(--text-sub);font-size:13px;padding:16px 0;text-align:center">まだデータがありません</div>';}
+  if(!kwList.length){kwEl.innerHTML=uiState('neutral','—','分析データはまだありません','問題を解くと、苦手なキーワードが表示されます。');}
   kwList.forEach(([kw,h])=>{
     const t=h.c+h.w,pct=Math.round(h.c/t*100);
     const col=pct>=80?'var(--success)':pct>=60?'var(--warning)':'var(--danger)';
@@ -2109,7 +2118,7 @@ function renderStats(){
   });
   const qList=document.getElementById('st-q');qList.innerHTML='';
   const answered=allQ.filter(q=>{const h=getH(q.id);return h.c+h.w>0;});
-  if(!answered.length){qList.innerHTML='<div style="color:var(--text-sub);font-size:13px;padding:16px 0;text-align:center">まだデータがありません</div>';return;}
+  if(!answered.length){qList.innerHTML=uiState('neutral','—','解答履歴はまだありません','問題を解くと、問題ごとの正答率が表示されます。');return;}
   answered.sort((a,b)=>{const ha=getH(a.id),hb=getH(b.id);return ha.c/(ha.c+ha.w)-hb.c/(hb.c+hb.w);});
   answered.forEach(q=>{
     const h=getH(q.id),t=h.c+h.w,pct=Math.round(h.c/t*100);
@@ -2592,7 +2601,7 @@ function renderLessonList(){
   const el=document.getElementById('les-list'); if(!el)return;
   const player=document.getElementById('les-player'); if(player)player.style.display='none';
   el.style.display='';
-  if(!lessonsAvailable()){el.innerHTML='<div class="cram-empty">🎓 この資格の授業は準備中です。</div>';return;}
+  if(!lessonsAvailable()){el.innerHTML=uiState('neutral','—','授業は準備中です','教科書・用語帳・問題演習は引き続き利用できます。');return;}
   let h='<div class="les-intro">🎓 スライドを順番にめくって、基礎からイチから学べます。各レッスンの最後に理解度チェックがあります。</div>';
   LESSDATA.forEach(function(l){
     if(!l||!l.id)return;

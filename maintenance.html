@@ -63,16 +63,16 @@ h1{margin:0 0 10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
   .contact a{color:#38bdf8}
   .mid{color:#475569}
 }
-/* Focus Flow maintenance */
-body{background:#f5f4ef;color:#17211f}.card{background:#fffefa;border-color:#d9ddd7;border-radius:24px;box-shadow:0 14px 36px rgba(23,33,31,.09)}.sub,.count-label,.box-row .k,.recheck{color:#64706d}.count,.contact a{color:#167565}.bar{background:#e1e7e2}.bar-fill{background:#167565}.box{background:#f7f8f4;border-color:#d9ddd7;border-radius:14px}.box-row .v{color:#17211f}.tasks li{color:#33413d}.tasks li::before,.btn{background:#167565}.btn{min-height:46px;border-radius:12px}.dot{background:#167565}
-@media (prefers-color-scheme:dark){body{background:#111816;color:#edf6f2}.card{background:#18211f;border-color:#34433f}.sub,.count-label,.box-row .k,.recheck{color:#aebcb8}.count,.contact a{color:#61c3b2}.bar{background:#34433f}.box{background:#151d1b;border-color:#34433f}.box-row .v{color:#edf6f2}.tasks li{color:#cedbd7}.tasks li::before,.btn{background:#2d8f7c}}
-/* Study Manual refinement */
-.card{border-radius:10px;box-shadow:none}.box{border-radius:7px}.btn{border-radius:7px}.bar,.bar-fill{border-radius:4px}
+/* Shared UI rules */
+body{background:#f5f4ef;color:#17211f}.card{background:#fffefa;border-color:#d9ddd7;border-radius:10px;box-shadow:none}.sub,.count-label,.box-row .k,.recheck{color:#64706d}.count,.contact a{color:#167565}.bar{background:#e1e7e2}.bar-fill{background:#167565}.box{background:#f7f8f4;border-color:#d9ddd7;border-radius:7px}.box-row .v{color:#17211f}.tasks li{color:#33413d}.tasks li::before,.btn{background:#167565}.btn{min-height:46px;border-radius:7px}.dot{background:#167565}.bar,.bar-fill{border-radius:4px}
+.btn:focus-visible,.contact a:focus-visible{outline:3px solid rgba(22,117,101,.32);outline-offset:2px}
+@media (prefers-color-scheme:dark){body{background:#111817;color:#eff8f5}.card{background:#1b2422;border-color:#394643}.sub,.count-label,.box-row .k,.recheck{color:#aab9b5}.count,.contact a{color:#61c3b2}.bar{background:#394643}.box{background:#161e1c;border-color:#394643}.box-row .v{color:#eff8f5}.tasks li{color:#d3dfdb}.tasks li::before,.btn{background:#2d8f7c}}
+@media (prefers-reduced-motion:reduce){.gear,.dot{animation:none}.bar-fill{transition:none}}
 </style>
 </head>
 <body>
-  <div class="card">
-    <div class="icon"><span class="gear">🛠️</span></div>
+  <main class="card">
+    <div class="icon" aria-hidden="true"><span class="gear">🛠️</span></div>
     <h1 id="m-title">ただいまメンテナンス中です</h1>
     <p class="sub" id="m-sub">
       システムメンテナンスのため、一時的にサービスを停止しています。<br>
@@ -81,7 +81,7 @@ body{background:#f5f4ef;color:#17211f}.card{background:#fffefa;border-color:#d9d
 
     <div id="m-count-wrap">
       <div class="count-label" id="m-count-label">復旧予定まで</div>
-      <div class="count" id="m-count">--:--:--</div>
+      <div class="count" id="m-count" role="timer" aria-label="復旧予定までの残り時間">--:--:--</div>
       <div class="bar" id="m-bar-wrap"><div class="bar-fill" id="m-bar"></div></div>
       <div class="bar-cap" id="m-bar-cap"></div>
     </div>
@@ -97,11 +97,11 @@ body{background:#f5f4ef;color:#17211f}.card{background:#fffefa;border-color:#d9d
     </div>
 
     <button class="btn" id="m-recheck-btn">再読み込みして確認</button>
-    <div class="recheck" id="m-recheck"><span class="dot"></span><span>サービスの再開を自動で確認しています…</span></div>
+    <div class="recheck" id="m-recheck" role="status"><span class="dot"></span><span>サービスの再開を自動で確認しています…</span></div>
 
     <p class="contact" id="m-contact" style="display:none"></p>
     <p class="mid" id="m-now"></p>
-  </div>
+  </main>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>

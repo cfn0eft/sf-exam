@@ -451,15 +451,22 @@
       '.sfqc-btn{min-height:46px;border-radius:6px;box-shadow:none;transform:none}.sfqc-btn:active{transform:none}' +
       '.sfqc-btn-primary{background:#167565;color:#fff}.sfqc-btn-ghost{background:#eef1ec;color:#33413d}' +
       '#sfqc-overlay{background:rgba(17,24,22,.62);backdrop-filter:none}' +
-      'body.dark .sfqc-card{background:#18211f;color:#edf6f2;border-color:#34433f}body.dark .sfqc-field{background:#111816;color:#edf6f2;border-color:#465651}body.dark .sfqc-field:focus{border-color:#61c3b2;box-shadow:0 0 0 2px rgba(97,195,178,.14)}body.dark .sfqc-btn-primary{background:#2d8f7c}body.dark .sfqc-btn-ghost{background:#25312e;color:#d8e5e1}';
+      '.sfqc-btn:focus-visible,.sfqc-mini:focus-visible,.sfqc-tab:focus-visible,.sfqc-field:focus-visible,#sfqc-badge-toggle:focus-visible{outline:3px solid rgba(22,117,101,.32);outline-offset:2px}' +
+      '.sfqc-state{display:grid;justify-items:center;gap:6px;padding:24px 18px;border:1px solid #d9ddd7;border-radius:8px;background:#fffefa;color:#17211f;text-align:center}' +
+      '.sfqc-state-symbol{display:grid;place-items:center;width:28px;height:28px;color:#64706d;font-size:18px;font-weight:900;line-height:1}.sfqc-state-title{font-size:14px;line-height:1.5}.sfqc-state-detail{max-width:520px;color:#64706d;font-size:12.5px;line-height:1.7}.sfqc-state-action{margin-top:7px}.sfqc-state.error{border-color:#e4b8b5}.sfqc-state.error .sfqc-state-symbol{color:#b42318}.sfqc-state.loading .sfqc-state-symbol{animation:sfqc-turn 1s linear infinite}@keyframes sfqc-turn{to{transform:rotate(360deg)}}' +
+      '.sfqc-empty{margin:8px 0;padding:22px 16px;border:1px solid #d9ddd7;border-radius:8px;background:#fffefa;color:#64706d;line-height:1.7}' +
+      '.sfqc-msg.err,.sfqc-msg.ok{padding:8px 10px;border:1px solid;border-radius:6px}.sfqc-msg.err{background:#fff3f2;border-color:#e4b8b5;color:#9f2018}.sfqc-msg.ok{background:#edf8f4;border-color:#abd8cb;color:#0b6758}' +
+      '.sfqc-error-detail{max-width:620px;margin:10px auto 0;color:#64706d;font-size:11px;text-align:left}.sfqc-error-detail summary{min-height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer}.sfqc-error-detail code{display:block;padding:10px;border:1px solid #d9ddd7;border-radius:6px;background:#fffefa;color:#64706d;white-space:pre-wrap;overflow-wrap:anywhere}' +
+      '#sfqc-lock,#sfqc-maint,#sfqc-admin{backdrop-filter:none}#sfqc-lock,#sfqc-maint{background:rgba(17,24,23,.76)}#sfqc-lock[data-state="error"] .sfqc-card,#sfqc-lock[data-state="blocked"] .sfqc-card{border-color:#e4b8b5}' +
+      'body.dark .sfqc-adminwrap,body.dark .sfqc-adminbody{background:#111817;color:#eff8f5}body.dark .sfqc-adminhead,body.dark .sfqc-tabs,body.dark .sfqc-kpi,body.dark .sfqc-dash-card,body.dark .sfqc-acc,body.dark .sfqc-bc-card,body.dark .sfqc-fb-item,body.dark .sfqc-overview-panel,body.dark .sfqc-card,body.dark .sfqc-state,body.dark .sfqc-empty{background:#1b2422;color:#eff8f5;border-color:#394643}body.dark .sfqc-state-detail,body.dark .sfqc-error-detail{color:#aab9b5}body.dark .sfqc-state.error{border-color:#7f4742}body.dark .sfqc-field{background:#111817;color:#eff8f5;border-color:#465651}body.dark .sfqc-field:focus{border-color:#61c3b2;box-shadow:0 0 0 2px rgba(97,195,178,.14)}body.dark .sfqc-btn-primary{background:#2d8f7c}body.dark .sfqc-btn-ghost{background:#25312e;color:#d8e5e1}body.dark .sfqc-msg.err{background:#351d1b;border-color:#7f4742;color:#ffb4ac}body.dark .sfqc-msg.ok{background:#153029;border-color:#326c5e;color:#91dbc7}body.dark .sfqc-error-detail code{background:#111817;border-color:#394643;color:#aab9b5}';
     var s = document.createElement('style');
     s.textContent = css;
     document.head.appendChild(s);
   }
 
   function loginCardHTML() {
-    return '<div class="sfqc-card">' +
-        '<p class="sfqc-title">📚 学習アカウント</p>' +
+    return '<div class="sfqc-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-login-title">' +
+        '<p class="sfqc-title" id="sfqc-login-title">学習アカウント</p>' +
         '<p class="sfqc-sub">ログインすると進捗がクラウドに保存され、<br>どの端末でも同じ続きから学習できます。</p>' +
         '<input id="sfqc-id" class="sfqc-field" type="text" autocomplete="username" placeholder="ID（半角英数字）" />' +
         '<input id="sfqc-pw" class="sfqc-field" type="password" autocomplete="current-password" placeholder="パスワード（6文字以上）" />' +
@@ -473,8 +480,8 @@
       '</div>';
   }
   function guideCardHTML() {
-    return '<div class="sfqc-card">' +
-        '<p class="sfqc-title">🔑 ログインが必要です</p>' +
+    return '<div class="sfqc-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-guide-title">' +
+        '<p class="sfqc-title" id="sfqc-guide-title">ログインが必要です</p>' +
         '<p class="sfqc-sub">進捗を保存・同期するにはログインが必要です。<br>ホーム画面からログインしてください。</p>' +
         '<div class="sfqc-row">' +
           '<button id="sfqc-gohome" class="sfqc-btn sfqc-btn-primary">ホームへ移動してログイン</button>' +
@@ -512,14 +519,14 @@
           '<button class="sfqc-mini csv" id="sfqc-adm-csv">CSV書き出し</button>' +
           '<button class="sfqc-mini close" id="sfqc-adm-close">閉じる</button>' +
         '</div>' +
-        '<div class="sfqc-adminbody" id="sfqc-adm-body"><div class="sfqc-empty">読み込み中…</div></div>' +
+        '<div class="sfqc-adminbody" id="sfqc-adm-body">' + adminStateHTML('loading', '読み込み中', 'アカウント情報を取得しています。') + '</div>' +
       '</div>';
     document.body.appendChild(elAdmin);
 
     elLock = document.createElement('div');
     elLock.id = 'sfqc-lock';
     elLock.innerHTML =
-      '<div class="sfqc-card">' +
+      '<div class="sfqc-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-lock-title">' +
         '<p class="sfqc-title" id="sfqc-lock-title">⏳ 承認待ちです</p>' +
         '<p class="sfqc-sub" id="sfqc-lock-sub"></p>' +
         '<div id="sfqc-lock-form">' +
@@ -545,8 +552,8 @@
     var maint = document.createElement('div');
     maint.id = 'sfqc-maint';
     maint.innerHTML =
-      '<div class="sfqc-card">' +
-        '<p class="sfqc-title">🛠 メンテナンス中</p>' +
+      '<div class="sfqc-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-maint-title">' +
+        '<p class="sfqc-title" id="sfqc-maint-title">メンテナンス中</p>' +
         '<p class="sfqc-sub" id="sfqc-maint-msg"></p>' +
         '<p class="sfqc-sub" id="sfqc-maint-end" style="font-weight:700;color:#b45309"></p>' +
         '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-maint-reload" style="width:100%">再確認</button>' +
@@ -603,8 +610,8 @@
   function hideOverlay() { if (elOverlay) elOverlay.classList.remove('show'); }
   function showLock(state, info) {
     if (!elLock) return;
-    showChatFab(false);
     info = info || {};
+    elLock.setAttribute('data-state', state || 'pending');
     var t = document.getElementById('sfqc-lock-title');
     var s = document.getElementById('sfqc-lock-sub');
     var form = document.getElementById('sfqc-lock-form');
@@ -620,24 +627,24 @@
     if (reloadBtn) reloadBtn.style.display = adminOnly ? 'none' : '';
     if (homeBtn) homeBtn.style.display = adminOnly ? '' : 'none';
     if (state === 'blocked') {
-      if (t) t.textContent = '🚫 利用が停止されています';
+      if (t) t.textContent = '利用が停止されています';
       if (s) s.innerHTML = info.applied
         ? 'このアカウントは現在ご利用いただけません。<br>解除の申請を受け付けています。管理者の対応をお待ちください。'
         : 'このアカウントは現在ご利用いただけません。<br>解除をご希望の場合は、下のフォームにお名前を入れて「解除を申請」してください。';
     } else if (state === 'error') {
-      if (t) t.textContent = '⚠️ 確認できませんでした';
+      if (t) t.textContent = '確認できませんでした';
       if (s) s.innerHTML = 'アクセス権を確認できませんでした。<br>通信環境を確認して「再確認」を押してください。';
     } else if (state === 'adminonly') {
-      if (t) t.textContent = '🔒 この資格は管理者専用です';
+      if (t) t.textContent = 'この資格は管理者専用です';
       if (s) s.innerHTML = 'この資格は現在、管理者のみご利用いただけます。<br>ホームに戻って他の資格をご利用ください。';
     } else if (info.expired && !info.applied) {
-      if (t) t.textContent = '⏳ 利用承認が失効しました';
+      if (t) t.textContent = '利用承認が失効しました';
       if (s) s.innerHTML = INACTIVE_DAYS + '日以上ご利用がなかったため、利用承認が解除されました。<br>下のフォームにお名前を入れて、もう一度「利用を申請」してください（学習の進捗は残っています）。';
     } else if (info.applied) {
-      if (t) t.textContent = '⏳ 承認をお待ちください';
+      if (t) t.textContent = '承認をお待ちください';
       if (s) s.innerHTML = 'ご利用の申請を受け付けています。<br>管理者が承認するとご利用いただけます（承認されたら「再確認」）。';
     } else {
-      if (t) t.textContent = '✋ 利用の申請をしてください';
+      if (t) t.textContent = '利用の申請をしてください';
       if (s) s.innerHTML = 'ご利用には管理者の承認が必要です。<br>下のフォームにお名前を入れて「利用を申請」してください。';
     }
     if (form) form.style.display = showForm ? '' : 'none';
@@ -747,6 +754,16 @@
   function emptyStore() { return { bm: [], hist: {}, streak: 0, vm: {}, tbm: {} }; }
   function toastSafe(t) { try { if (typeof window.toast === 'function') window.toast(t); } catch (e) {} }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function adminStateHTML(kind, title, detail, actionHtml) {
+    var k = kind === 'error' ? 'error' : (kind === 'loading' ? 'loading' : 'neutral');
+    var symbol = k === 'error' ? '!' : (k === 'loading' ? '↻' : '—');
+    return '<div class="sfqc-state ' + k + '" role="status" aria-live="polite">' +
+      '<span class="sfqc-state-symbol" aria-hidden="true">' + symbol + '</span>' +
+      '<strong class="sfqc-state-title">' + esc(title || '') + '</strong>' +
+      (detail ? '<span class="sfqc-state-detail">' + esc(detail) + '</span>' : '') +
+      (actionHtml ? '<div class="sfqc-state-action">' + actionHtml + '</div>' : '') +
+      '</div>';
+  }
   function safeUrl(u) {
     try { var p = new URL(String(u == null ? '' : u), self.location ? self.location.href : 'https://x/'); return /^https?:$/.test(p.protocol) ? p.href : ''; }
     catch (e) { return ''; }
@@ -2365,7 +2382,7 @@
   function loadAdmin() {
     if (!isAdmin || !db) return;
     var body = document.getElementById('sfqc-adm-body');
-    if (body && !adminUsers.length) body.innerHTML = '<div class="sfqc-empty">読み込み中…</div>';
+    if (body && !adminUsers.length) body.innerHTML = adminStateHTML('loading', '読み込み中', 'アカウント情報を取得しています。');
     adminSelApps = {};
     if (adminColUnsub) { adminColUnsub(); adminColUnsub = null; }
     var first = true;
@@ -2382,7 +2399,12 @@
       }
       scheduleAdminRender();
     }, function (e) {
-      if (body && !adminUsers.length) body.innerHTML = '<div class="sfqc-empty">読み込みに失敗しました。<br>管理者として権限（Firestoreルール）が設定されているか確認してください。<br><small>' + esc(e && e.message) + '</small></div>';
+      if (body && !adminUsers.length) {
+        body.innerHTML = adminStateHTML('error', '読み込みに失敗しました', '通信環境と管理者権限を確認して、もう一度お試しください。', '<button class="sfqc-mini reload" id="sfqc-admin-retry" type="button">再試行</button>') +
+          '<details class="sfqc-error-detail"><summary>エラー詳細</summary><code>' + esc(e && e.message || 'unknown error') + '</code></details>';
+        var retry = document.getElementById('sfqc-admin-retry');
+        if (retry) retry.addEventListener('click', loadAdmin);
+      }
     });
   }
   function scheduleAdminRender() {
@@ -3935,6 +3957,7 @@
   }
 
   window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
+    adminStateHTML: adminStateHTML, showLock: showLock,
     maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
     accessExpired: accessExpired, inactiveDaysOf: inactiveDaysOf, cacheApproval: cacheApproval, cachedApprovalValid: cachedApprovalValid,
     accessStateOf: accessStateOf, isApplicant: isApplicant, requestNameOf: requestNameOf, reqChipHTML: reqChipHTML,

@@ -76,6 +76,18 @@ console.log('== cloud-sync.js 集計ロジック スモークテスト ==');
 t('テストフックが公開されている', () => {
   ok(T && typeof T.statsOf === 'function', '__sfqcTest.statsOf が無い');
   ok(typeof T.aggregateUser === 'function' && typeof T.emptyStore === 'function');
+  ok(typeof T.adminStateHTML === 'function' && typeof T.showLock === 'function');
+});
+
+t('例外状態: 承認待ち・停止・通信失敗・管理者専用を安全に表示できる', () => {
+  ['pending', 'blocked', 'error', 'adminonly'].forEach((state) => T.showLock(state, {}));
+  ok(!src.includes('showChatFab('), '削除済みDM UIの呼び出しが残っている');
+});
+
+t('管理画面の状態表示: 文言をエスケープし再試行領域を持てる', () => {
+  const h = T.adminStateHTML('error', '<失敗>', '詳細&確認', '<button>再試行</button>');
+  ok(h.includes('sfqc-state error') && h.includes('&lt;失敗&gt;') && h.includes('詳細&amp;確認'));
+  ok(h.includes('<button>再試行</button>'), '管理された操作HTMLは表示する');
 });
 
 t('statsOf: 模試合否は e.pass で数える（e.ok=正解数を合格と誤認しない）', () => {

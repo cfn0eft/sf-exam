@@ -121,6 +121,12 @@ t('mdInline: HTML をエスケープし強調を変換', () => {
   ok(s.includes('<strong>強調</strong>'), '強調が変換されない');
 });
 
+t('uiState: 例外状態を共通表示し、利用者文言をエスケープする', () => {
+  const h = run("uiState('error','!','<失敗>','詳細&確認','<button>再試行</button>')");
+  ok(h.includes('ui-state error') && h.includes('&lt;失敗&gt;') && h.includes('詳細&amp;確認'));
+  ok(h.includes('role="status"') && h.includes('<button>再試行</button>'));
+});
+
 t('qDiff: データの diff を最優先、無ければ正答率から推定', () => {
   eq(run('qDiff({id:1,diff:3})'), 3);
   eq(run('qDiff({id:1,diff:"易"})'), 1);

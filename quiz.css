@@ -1885,3 +1885,53 @@ body { background: var(--bg); letter-spacing: 0; }
   .home-hero { border-radius: 10px; }
   .ff-next-best { border-radius: 9px; }
 }
+
+/* Shared UI rules: controls and exceptional states use one visual language. */
+:root {
+  --ui-card-radius: 10px;
+  --ui-control-radius: 6px;
+  --ui-control-min: 44px;
+}
+button,
+a.btn,
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea { min-height: var(--ui-control-min); }
+:where(button,a,input,select,textarea,[role="button"]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 38%, transparent);
+  outline-offset: 2px;
+}
+.topbar-btn { min-width: var(--ui-control-min); min-height: var(--ui-control-min); }
+.ui-state {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 24px 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card) 72%, var(--bg));
+  color: var(--text);
+  text-align: center;
+}
+.ui-state-symbol {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text-sub);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+.ui-state-title { font-size: 14px; line-height: 1.5; }
+.ui-state-desc { max-width: 460px; color: var(--text-sub); font-size: 12.5px; line-height: 1.7; }
+.ui-state-action { margin-top: 6px; }
+.ui-state.positive { border-color: color-mix(in srgb, var(--success) 38%, var(--border)); }
+.ui-state.positive .ui-state-symbol { color: var(--success); }
+.ui-state.warning { border-color: color-mix(in srgb, var(--warning) 45%, var(--border)); }
+.ui-state.warning .ui-state-symbol { color: var(--warning); }
+.ui-state.error { border-color: color-mix(in srgb, var(--danger) 42%, var(--border)); }
+.ui-state.error .ui-state-symbol { color: var(--danger); }
+.cram-empty,
+.nb-empty { padding: 0; }
