@@ -2272,15 +2272,16 @@ function renderStreakBanner(){
   const hs=document.getElementById('hh-streak');
   if(hs){ if(n>=1){hs.style.display='';hs.textContent='🔥 '+n+'日連続';} else hs.style.display='none'; return; }
 }
-const OB_VERSION='2';
+const OB_VERSION='3';
 const OB_STEPS=[
-  {ic:'🎉',t:'ようこそ！',d:'このアプリひとつで合格まで。「学ぶ → 実力を測る → 復習で定着 → 続ける」をまるごとサポートします。まずは流れを30秒で。'},
-  {ic:'📖',t:'学ぶ',d:'学習モードは1問ずつ解いて、解説で「なぜ正解／不正解か」を確認。迷ったらヒント、教科書・用語帳・高速めくりも使えます。'},
-  {ic:'⏱️',t:'実力を測る',d:'本番形式の試験、分野や問題数を選ぶカスタム模試、実務シナリオのケーススタディで合格力をチェックできます。'},
-  {ic:'🔁',t:'復習で定着',d:'間違えた問題は自動で復習キューへ。間違いノート・重点ループ・SRS・デイリーチャレンジで、間違えるほど賢くなります。'},
-  {ic:'🎮',t:'続ける＆ぜんぶ見る',d:'XP・レベルや今週のミッションで楽しく継続。統計で弱点も丸わかり。すべての機能は「使い方ガイド」でいつでも確認できます。'}
+  {ic:'🎯',t:'迷ったら「今日やること」',d:'ホームの先頭が、中断した模試・SRS復習・今日の10問・間違い復習から、いま優先する1つを自動で選びます。まずはここから始めましょう。'},
+  {ic:'📖',t:'理解してから解く',d:'教科書・用語帳・対応資格の授業で全体像をつかめます。学習モードでは1問ずつ解き、ヒントと詳しい解説で理由まで確認できます。'},
+  {ic:'⏱️',t:'試験形式で実力を測る',d:'本番形式の模試に加え、分野・問題数・時間を選べるカスタム模試もあります。結果から合格可能性と弱点を確認できます。'},
+  {ic:'🔁',t:'間違いを次の得点に',d:'誤答や自信のない問題は自動で復習対象になります。SRS・重点ループ・間違いノートが、忘れやすい論点を優先して出し直します。'},
+  {ic:'🗺️',t:'記録を引き継ぎ、次の資格へ',d:'ログイン中の進捗は自動保存され、端末を変えても続けられます。取得済みにすると資格ロードマップで次の資格が開きます。詳しい機能は使い方ガイドでいつでも確認できます。'}
 ];
 let _obI=0;
+let _obReturnFocus=null;
 function maybeOnboard(){
   try{if(localStorage.getItem('sfq_onboarded')===OB_VERSION)return;}catch(e){return;}
   _obI=0;showOnboard();
@@ -2289,29 +2290,38 @@ function replayOnboarding(){_obI=0;showOnboard();}
 function showOnboard(){
   let dim=document.getElementById('ob-dim');
   if(!dim){
-    dim=document.createElement('div');dim.id='ob-dim';
-    dim.style.cssText='position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:24px';
-    dim.innerHTML='<div id="ob-card" style="background:var(--card);color:var(--text);border-radius:16px;max-width:340px;width:100%;padding:24px 20px;box-shadow:0 12px 40px rgba(0,0,0,.35);text-align:center"></div>';
+    _obReturnFocus=document.activeElement||null;
+    dim=document.createElement('div');dim.id='ob-dim';dim.className='ob-dim';
+    dim.addEventListener('click',function(e){if(e.target===dim)obClose();});
+    dim.innerHTML='<div id="ob-card" class="ob-card" role="dialog" aria-modal="true" aria-labelledby="ob-title" aria-describedby="ob-desc"></div>';
     document.body.appendChild(dim);
+    document.addEventListener('keydown',obKeyDown);
   }
   obRender();
+  window.setTimeout(function(){const b=document.getElementById('ob-close');if(b)b.focus();},0);
 }
 function obRender(){
   const c=document.getElementById('ob-card');if(!c)return;const s=OB_STEPS[_obI];
-  let dots='';for(let i=0;i<OB_STEPS.length;i++){dots+='<span style="height:7px;border-radius:4px;background:'+(i===_obI?'var(--primary)':'var(--border)')+';width:'+(i===_obI?'18px':'7px')+'"></span>';}
+  let dots='';for(let i=0;i<OB_STEPS.length;i++){dots+='<span class="ob-dot'+(i===_obI?' on':'')+'"></span>';}
   const last=_obI===OB_STEPS.length-1;
-  c.innerHTML='<div style="font-size:46px;margin-bottom:8px">'+s.ic+'</div>'
-    +'<div style="font-size:17px;font-weight:800;margin-bottom:8px">'+escH(s.t)+'</div>'
-    +'<div style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:18px">'+escH(s.d)+'</div>'
-    +'<div style="display:flex;gap:6px;justify-content:center;margin-bottom:18px">'+dots+'</div>'
-    +(last?'<button onclick="obClose();openGuide()" style="width:100%;background:var(--primary-light);color:var(--primary-dark);border:1px solid var(--primary);border-radius:8px;font-size:13px;font-weight:700;padding:10px;cursor:pointer;margin-bottom:12px">📖 使い方ガイドで全機能を見る</button>':'')
-    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'
-    +'<button onclick="obClose()" style="background:none;border:none;color:var(--text-sub);font-size:13px;cursor:pointer">スキップ</button>'
-    +'<button onclick="obNext()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px 20px;cursor:pointer">'+(last?'はじめる 🚀':'次へ →')+'</button>'
-    +'</div>';
+  c.innerHTML='<div class="ob-top"><span class="ob-step">ステップ '+(_obI+1)+' / '+OB_STEPS.length+'</span><button id="ob-close" class="ob-close" type="button" onclick="obClose()" aria-label="ツアーを閉じる">✕</button></div>'
+    +'<div class="ob-main" aria-live="polite"><div class="ob-icon" aria-hidden="true">'+s.ic+'</div>'
+    +'<h2 class="ob-title" id="ob-title">'+escH(s.t)+'</h2><p class="ob-desc" id="ob-desc">'+escH(s.d)+'</p></div>'
+    +'<div class="ob-progress" aria-hidden="true">'+dots+'</div>'
+    +(last?'<button class="ob-guide" type="button" onclick="obClose();openGuide()">📖 使い方ガイドで全機能を見る</button>':'')
+    +'<div class="ob-actions"><button class="ob-skip" type="button" onclick="obClose()">スキップ</button><div class="ob-nav">'
+    +(_obI?'<button class="ob-back" type="button" onclick="obPrev()">← 戻る</button>':'')
+    +'<button id="ob-next" class="ob-next" type="button" onclick="obNext()">'+(last?'ツアーを終える':'次へ →')+'</button>'
+    +'</div></div>';
 }
 function obNext(){if(_obI<OB_STEPS.length-1){_obI++;obRender();}else obClose();}
-function obClose(){try{localStorage.setItem('sfq_onboarded',OB_VERSION);}catch(e){}const d=document.getElementById('ob-dim');if(d)d.remove();}
+function obPrev(){if(_obI>0){_obI--;obRender();}}
+function obKeyDown(e){if(e.key==='Escape')obClose();else if(e.key==='ArrowLeft')obPrev();else if(e.key==='ArrowRight')obNext();}
+function obClose(){
+  try{localStorage.setItem('sfq_onboarded',OB_VERSION);}catch(e){}
+  const d=document.getElementById('ob-dim');if(d)d.remove();document.removeEventListener('keydown',obKeyDown);
+  const f=_obReturnFocus;_obReturnFocus=null;try{if(f&&f.focus)f.focus();}catch(e){}
+}
 function renderWeekly(){
   const host=document.getElementById('weekly');if(!host)return;
   const daily=store.daily||{};

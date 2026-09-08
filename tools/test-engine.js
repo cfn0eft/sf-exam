@@ -460,6 +460,13 @@ t('使い方ガイド: 終了したオフライン学習を案内しない', () 
   ok(run("JSON.stringify(GUIDE).includes('ホーム画面に追加')"), '現在の追加機能は案内する');
 });
 
+t('かんたんツアー: 現在の学習フローと資格ロードマップを案内する', () => {
+  eq(run('OB_VERSION'), '3', '内容更新時の再表示バージョン');
+  eq(run('OB_STEPS.length'), 5, '短い5ステップ構成');
+  ok(run("JSON.stringify(OB_STEPS).includes('今日やること')"), 'Focus Flowの案内がない');
+  ok(run("JSON.stringify(OB_STEPS).includes('資格ロードマップ')"), '次の資格への案内がない');
+});
+
 t('bindChHead: 折りたたみ見出しがマウスでもキーボードでも開閉できる', () => {
   const head = makeElement(), wrap = makeElement();
   sandbox.__head = head; sandbox.__wrap = wrap;
