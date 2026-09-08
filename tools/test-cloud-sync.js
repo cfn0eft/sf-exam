@@ -58,6 +58,7 @@ sandbox.window.CERT_CONFIG = { slug: 'sf-admin', shortName: 'Admin', examN: 60, 
 vm.createContext(sandbox);
 
 const src = fs.readFileSync(path.join(__dirname, '..', 'cloud-sync.js'), 'utf8');
+const rulesSrc = fs.readFileSync(path.join(__dirname, '..', 'firestore.rules'), 'utf8');
 vm.runInContext(src, sandbox, { filename: 'cloud-sync.js' });
 
 const T = sandbox.window.__sfqcTest;
@@ -78,6 +79,14 @@ t('テストフックが公開されている', () => {
   ok(typeof T.aggregateUser === 'function' && typeof T.emptyStore === 'function');
   ok(typeof T.adminStateHTML === 'function' && typeof T.showLock === 'function');
   ok(typeof T.accountLocalKeys === 'function', '__sfqcTest.accountLocalKeys が無い');
+});
+
+t('Firestoreルール: 新規申請と既存更新を別の判定経路で許可する', () => {
+  ok(/allow create:[\s\S]*selfCreateFieldsOnly\(\)[\s\S]*createAccessOk\(\)/.test(rulesSrc),
+    'create 専用の本人フィールド・access判定が無い');
+  ok(/allow update:[\s\S]*selfUpdateFieldsOnly\(\)[\s\S]*updateAccessOk\(\)/.test(rulesSrc),
+    'update 専用の本人フィールド・access判定が無い');
+  ok(!/allow create, update:/.test(rulesSrc), 'create/update を共通判定へ戻さない');
 });
 
 t('退会時の端末データ削除対象: 全8資格とアカウント固有キーを網羅する', () => {

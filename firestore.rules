@@ -70,14 +70,13 @@ service cloud.firestore {
         'netDevices', 'netAccess', 'netUpdated'
       ];
     }
-    // 今回の書込で実際に増減・変更されるキー（作成時は全キー）
-    function touchedKeys() {
-      return resource == null
-        ? request.resource.data.keys()
-        : request.resource.data.diff(resource.data).affectedKeys();
+    // 作成時は全キー、更新時は実際に増減・変更されるキーだけを検査する。
+    // resource が存在しない create で更新用の diff を評価しないよう、関数を分ける。
+    function selfCreateFieldsOnly() {
+      return request.resource.data.keys().hasOnly(selfKeys());
     }
-    function selfFieldsOnly() {
-      return touchedKeys().hasOnly(selfKeys());
+    function selfUpdateFieldsOnly() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(selfKeys());
     }
 
     /* access（利用承認フラグ）の自己書込ルール
@@ -85,21 +84,33 @@ service cloud.firestore {
      *   - 既存の access を維持したままの保存 … 可（停止中の人が出す「解除の申請」がこれ）
      *   - 自分で 'pending' にする           … 可（休眠失効の自己降格）。ただし停止中からは不可
      *   - 'approved' / 'blocked' へ        … 不可（管理者だけ） */
-    function accessOk() {
+    function createAccessOk() {
       return !('access' in request.resource.data)
-        || (resource != null && request.resource.data.access == resource.data.access)
-        || (request.resource.data.access == 'pending' &&
-            (resource == null || resource.data.access != 'blocked'));
+        || request.resource.data.access == 'pending';
+    }
+    function updateAccessOk() {
+      return (!('access' in request.resource.data) && !('access' in resource.data))
+        || (('access' in request.resource.data) && ('access' in resource.data) &&
+            request.resource.data.access == resource.data.access)
+        || (('access' in request.resource.data) &&
+            request.resource.data.access == 'pending' &&
+            (!('access' in resource.data) || resource.data.access != 'blocked'));
     }
 
     match /progress/{uid} {
       // 読み取り: 本人 または 管理者
       allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
 
-      // 作成・更新: 管理者は全権。本人はホワイトリストのフィールドのみ。
-      allow create, update: if request.auth != null && (
+      // 作成: 管理者は全権。本人はホワイトリスト内かつ未承認状態だけ。
+      allow create: if request.auth != null && (
         isAdmin() ||
-        (request.auth.uid == uid && selfFieldsOnly() && accessOk())
+        (request.auth.uid == uid && selfCreateFieldsOnly() && createAccessOk())
+      );
+
+      // 更新: 管理者は全権。本人は変更したフィールドと access の遷移を検査する。
+      allow update: if request.auth != null && (
+        isAdmin() ||
+        (request.auth.uid == uid && selfUpdateFieldsOnly() && updateAccessOk())
       );
 
       // 削除: 本人の退会、または管理者の完全削除だけ。
