@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<script src="../../analytics.js?v=173"></script>
-<script src="../../maintenance.js?v=173"></script>
+<script src="../../analytics.js?v=174"></script>
+<script src="../../maintenance.js?v=174"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta name="description" content="Salesforce 認定アドミニストレーター試験の無料学習クイズ。公式8分野の練習問題・本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格を目指せます。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,15 +13,16 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=173">
+<link rel="stylesheet" href="../../quiz.css?v=174">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-config.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#app-main">メインコンテンツへ移動</a>
 
-<div class="topbar">
+<header class="topbar">
   <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none" title="戻る" aria-label="戻る">&#8592;</button>
   <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" aria-label="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
   <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
@@ -29,8 +30,11 @@
   <button class="topbar-btn topbar-news" id="btn-news" onclick="openNews()" title="お知らせ" aria-label="お知らせ">🔔<span class="news-dot" id="news-dot" style="display:none"></span></button>
   <button class="topbar-btn" id="btn-mypage" onclick="goTo('mypage')" title="マイページ" aria-label="マイページ">👤</button>
   <button class="topbar-btn" id="btn-dark" onclick="toggleDark()" title="ダークモードの切り替え" aria-label="ダークモードの切り替え" aria-pressed="false">🌙</button>
-</div>
-<div class="toast" id="toast"></div>
+</header>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<main id="app-main" tabindex="-1">
+<h1 class="sr-only" id="app-page-title" tabindex="-1">資格学習ホーム</h1>
 
 <div class="page active" id="pg-home">
   <div class="home-hero">
@@ -51,9 +55,9 @@
     <div class="hh-cd" id="plan-cd" style="margin-top:8px"><span class="big">受験日 未設定</span><span class="sub">⚙️ から受験日と目標を設定</span></div>
     <span class="hh-acq" id="hh-acq" style="display:none"></span>
     <div class="plan-edit" id="plan-edit">
-      <label>🎯 受験予定日</label>
+      <label for="exam-date-in">🎯 受験予定日</label>
       <input type="date" id="exam-date-in">
-      <label>📅 1日の目標問題数</label>
+      <label for="goal-in">📅 1日の目標問題数</label>
       <div class="prow">
         <input type="number" id="goal-in" min="0" max="999" placeholder="例: 20">
         <button class="plan-save" onclick="savePlan()">保存</button>
@@ -133,18 +137,18 @@
       </div>
       <div class="sec-label">出題対象</div>
       <div class="filter-bar">
-        <label class="chip" id="chip-new"><input type="checkbox" id="f-new" onchange="applyFilters()" style="display:none">🆕 未回答<span id="new-count"></span></label>
-        <label class="chip" id="chip-wrong"><input type="checkbox" id="f-wrong" onchange="applyFilters()" style="display:none">❌ 間違えた<span id="wrong-count"></span></label>
-        <label class="chip" id="chip-bm"><input type="checkbox" id="f-bm" onchange="applyFilters()" style="display:none">★ ブックマーク</label>
-        <label class="chip" id="chip-lc"><input type="checkbox" id="f-lc" onchange="applyFilters()" style="display:none">🤔 自信なし<span id="lc-count"></span></label>
-        <label class="chip" id="chip-multi"><input type="checkbox" id="f-multi" onchange="applyFilters()" style="display:none">複数正解のみ</label>
+        <label class="chip" id="chip-new"><input class="chip-input" type="checkbox" id="f-new" onchange="applyFilters()">🆕 未回答<span id="new-count"></span></label>
+        <label class="chip" id="chip-wrong"><input class="chip-input" type="checkbox" id="f-wrong" onchange="applyFilters()">❌ 間違えた<span id="wrong-count"></span></label>
+        <label class="chip" id="chip-bm"><input class="chip-input" type="checkbox" id="f-bm" onchange="applyFilters()">★ ブックマーク</label>
+        <label class="chip" id="chip-lc"><input class="chip-input" type="checkbox" id="f-lc" onchange="applyFilters()">🤔 自信なし<span id="lc-count"></span></label>
+        <label class="chip" id="chip-multi"><input class="chip-input" type="checkbox" id="f-multi" onchange="applyFilters()">複数正解のみ</label>
         <button type="button" class="chip" id="chip-d1" onclick="toggleDiffFilter(1)">🟢 易<span id="d1-count"></span></button>
         <button type="button" class="chip" id="chip-d2" onclick="toggleDiffFilter(2)">🟡 標準<span id="d2-count"></span></button>
         <button type="button" class="chip" id="chip-d3" onclick="toggleDiffFilter(3)">🔴 難<span id="d3-count"></span></button>
-        <label class="chip on" id="chip-shuf"><input type="checkbox" id="f-shuf" checked onchange="applyFilters()" style="display:none">🔀 出題順</label>
+        <label class="chip on" id="chip-shuf"><input class="chip-input" type="checkbox" id="f-shuf" checked onchange="applyFilters()">🔀 出題順</label>
         <button type="button" class="chip on" id="chip-cshuf" onclick="toggleCShuf()">🔀 選択肢順</button>
       </div>
-      <select class="fsel" id="f-kw" onchange="applyFilters()">
+      <select class="fsel" id="f-kw" onchange="applyFilters()" aria-label="キーワードで絞り込み">
         <option value="">🏷️ キーワードで絞り込み（全て）</option>
       </select>
       <div id="f-count" style="font-size:12px;color:var(--text-sub);margin:6px 0 10px"></div>
@@ -175,7 +179,7 @@
     <div class="exp-box" id="s-exp"></div>
     <details class="memo-details">
       <summary>📝 メモ <span class="memo-saved" id="memo-saved">✓ 保存</span></summary>
-      <textarea class="memo-box" id="s-memo" placeholder="この問題の覚え書き（自動保存・端末間で同期）" oninput="onMemoInput()"></textarea>
+      <textarea class="memo-box" id="s-memo" aria-label="この問題の覚え書き" placeholder="この問題の覚え書き（自動保存・端末間で同期）" oninput="onMemoInput()"></textarea>
     </details>
   </div>
   <div id="s-end" style="display:none">
@@ -193,7 +197,7 @@
   <div class="study-actbar" id="study-actbar" style="display:none"><div class="inner">
     <div class="action-row" id="s-act" style="flex:1;display:flex;gap:10px">
       <button class="btn bp" id="s-check" onclick="checkAnswer()" disabled>解答する</button>
-      <button type="button" class="conf-toggle" id="s-conf" onclick="toggleConf()" title="自信がなければONに。正解でも復習に回ります">🤔 自信なし</button>
+      <button type="button" class="conf-toggle" id="s-conf" onclick="toggleConf()" title="自信がなければONに。正解でも復習に回ります" aria-pressed="false">🤔 自信なし</button>
     </div>
     <div class="action-row" id="s-next-row" style="flex:1;display:none">
       <button class="btn bp" onclick="nextSQ()">次の問題 →</button>
@@ -211,7 +215,7 @@
     <div class="card">
       <div class="qhead">
         <div class="qbadge" id="e-badge">Q1</div>
-        <button class="flagbtn" id="e-flag" onclick="toggleEFlag()" title="後で見直す問題に印を付ける（Fキー）">🚩 後で</button>
+        <button class="flagbtn" id="e-flag" onclick="toggleEFlag()" title="後で見直す問題に印を付ける（Fキー）" aria-pressed="false">🚩 後で</button>
       </div>
       <div class="qtext" id="e-qtext"></div>
       <div id="e-qfig" style="display:none"></div>
@@ -260,7 +264,7 @@
 
 <div class="page" id="pg-textbook">
   <div class="sum-overlay" id="sum-overlay" onclick="closeSummary()"></div>
-  <div class="sum-modal" id="sum-modal">
+  <div class="sum-modal" id="sum-modal" role="dialog" aria-modal="true" aria-labelledby="sum-title">
     <div class="sum-header">
       <span id="sum-title">まとめ</span>
       <button class="sum-close" onclick="closeSummary()" title="閉じる" aria-label="閉じる">✕</button>
@@ -269,15 +273,15 @@
   </div>
 
   <div id="tb-list">
-    <div class="filter-bar" style="margin-bottom:10px">
-      <button class="chip on" id="tt-guide" onclick="switchTbTab('guide')">📚 学習ガイド</button>
-      <button class="chip" id="tt-nav" onclick="switchTbTab('nav')">🗺️ 設定マップ</button>
-      <button class="chip" id="tt-cmp" onclick="switchTbTab('cmp')">📊 比較表</button>
-      <button class="chip" id="tt-figs" onclick="switchTbTab('figs')">🖼️ 図解</button>
+    <div class="filter-bar" id="tb-tabs" role="tablist" aria-label="教科書の表示内容" onkeydown="tbTabKey(event)" style="margin-bottom:10px">
+      <button class="chip on" role="tab" aria-selected="true" aria-controls="tb-guide" id="tt-guide" onclick="switchTbTab('guide')">📚 学習ガイド</button>
+      <button class="chip" role="tab" aria-selected="false" aria-controls="tb-nav" tabindex="-1" id="tt-nav" onclick="switchTbTab('nav')">🗺️ 設定マップ</button>
+      <button class="chip" role="tab" aria-selected="false" aria-controls="tb-cmp" tabindex="-1" id="tt-cmp" onclick="switchTbTab('cmp')">📊 比較表</button>
+      <button class="chip" role="tab" aria-selected="false" aria-controls="tb-figs" tabindex="-1" id="tt-figs" onclick="switchTbTab('figs')">🖼️ 図解</button>
     </div>
 
     <div class="search-wrap">
-      <input class="search-box" id="tb-search" placeholder="🔍 用語・定義を検索..." oninput="tbSearch(this.value)">
+      <input class="search-box" id="tb-search" aria-label="用語・定義を検索" placeholder="🔍 用語・定義を検索..." oninput="tbSearch(this.value)">
       <button class="search-clear" id="tb-clear" onclick="clearTbSearch()" style="display:none" title="検索をクリア" aria-label="検索をクリア">✕</button>
     </div>
     <div class="search-count" id="search-count" style="display:none"></div>
@@ -293,10 +297,10 @@
       </div>
     </details>
 
-    <div id="tb-guide"></div>
-    <div id="tb-nav" style="display:none"></div>
-    <div id="tb-cmp" style="display:none"></div>
-    <div id="tb-figs" style="display:none"></div>
+    <div id="tb-guide" role="tabpanel" aria-labelledby="tt-guide"></div>
+    <div id="tb-nav" role="tabpanel" aria-labelledby="tt-nav" style="display:none"></div>
+    <div id="tb-cmp" role="tabpanel" aria-labelledby="tt-cmp" style="display:none"></div>
+    <div id="tb-figs" role="tabpanel" aria-labelledby="tt-figs" style="display:none"></div>
   </div>
 
   <div class="td-view" id="td-view">
@@ -311,7 +315,7 @@
           <h2 id="td-title"></h2>
           <p id="td-en"></p>
         </div>
-        <button class="td-mark-btn" id="td-mark-btn" onclick="cycleTDMark()">●</button>
+        <button class="td-mark-btn" id="td-mark-btn" onclick="cycleTDMark()" aria-label="読了状態を変更">●</button>
       </div>
     </div>
     <div class="card">
@@ -475,8 +479,10 @@
   </div></div>
 </div>
 
-<nav class="bottom-nav">
-  <button class="nav-btn active" id="nb-home" onclick="goTo('home')"><span class="nav-icon">🏠</span>ホーム</button>
+</main>
+
+<nav class="bottom-nav" aria-label="主要メニュー">
+  <button class="nav-btn active" id="nb-home" onclick="goTo('home')" aria-current="page"><span class="nav-icon">🏠</span>ホーム</button>
   <button class="nav-btn" id="nb-study" onclick="startStudy()"><span class="nav-icon">📖</span>学習</button>
   <button class="nav-btn" id="nb-textbook" onclick="goTo('textbook')"><span class="nav-icon">📚</span>教科書</button>
   <button class="nav-btn" id="nb-vocab" onclick="goTo('vocab')"><span class="nav-icon">🔤</span>用語帳</button>
@@ -497,10 +503,10 @@
   window.SFQ_PAGE_ROLE = 'client';
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
-<script src="../../changelog.js?v=173"></script>
-<script src="../../figures.js?v=173"></script>
-<script src="../../quiz-engine.js?v=173"></script>
-<script src="../../progression.js?v=173"></script>
-<script src="../../cloud-sync.js?v=173"></script>
+<script src="../../changelog.js?v=174"></script>
+<script src="../../figures.js?v=174"></script>
+<script src="../../quiz-engine.js?v=174"></script>
+<script src="../../progression.js?v=174"></script>
+<script src="../../cloud-sync.js?v=174"></script>
 </body>
 </html>

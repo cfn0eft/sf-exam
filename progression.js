@@ -122,9 +122,10 @@
       '#sfq-prog-info{position:fixed;inset:0;z-index:99995;display:none;align-items:center;justify-content:center;padding:20px;' +
       'background:rgba(15,23,42,.6);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '#sfq-prog-info.show{display:flex}' +
+      'html.sfq-prog-modal-open,body.sfq-prog-modal-open{overflow:hidden}' +
       '#sfq-prog-info .pgi-card{width:min(96vw,520px);max-height:86vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35)}' +
       '#sfq-prog-info .pgi-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-weight:800;font-size:16px;color:#0f172a}' +
-      '#sfq-prog-info .pgi-x{background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;line-height:1}' +
+      '#sfq-prog-info .pgi-x{display:grid;place-items:center;width:44px;height:44px;background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;line-height:1}' +
       '#sfq-prog-info .pgi-body{padding:16px 18px 20px}' +
       '#sfq-prog-info .pgi-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}' +
       '#sfq-prog-info .pgi-step{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700}' +
@@ -210,6 +211,12 @@
       '</ul>' +
       '<div class="pgi-how"><b>「取得済みにする」場所：</b> 各資格ホームの「🎓 資格の取得」カード／👤マイページ／合格した模試の結果画面。</div>';
   }
+  var infoReturn = null, infoInert = [];
+  function infoFocusable(ov) {
+    return Array.prototype.slice.call(ov.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(function (el) {
+      return !el.disabled && el.getAttribute('aria-hidden') !== 'true';
+    });
+  }
   function openInfo() {
     injectStyle();
     var ov = document.getElementById('sfq-prog-info');
@@ -219,16 +226,37 @@
       ov.addEventListener('click', function (e) { if (e.target === ov) closeInfo(); });
       document.body.appendChild(ov);
     }
-    ov.innerHTML = '<div class="pgi-card"><div class="pgi-head"><span>🎓 資格はステップ制で解除します</span>' +
+    ov.innerHTML = '<div class="pgi-card" role="dialog" aria-modal="true" aria-labelledby="pgi-title"><div class="pgi-head"><span id="pgi-title">🎓 資格はステップ制で解除します</span>' +
       '<button class="pgi-x" id="pgi-x" aria-label="閉じる">✕</button></div>' +
       '<div class="pgi-body">' + ruleHtml() + '</div></div>';
     document.getElementById('pgi-x').onclick = closeInfo;
+    infoReturn = document.activeElement;
+    infoInert = [];
+    Array.prototype.forEach.call(document.body.children, function (el) { if (el !== ov && !el.inert) { el.inert = true; infoInert.push(el); } });
+    document.documentElement.classList.add('sfq-prog-modal-open'); document.body.classList.add('sfq-prog-modal-open');
     ov.classList.add('show');
+    setTimeout(function () { var x = document.getElementById('pgi-x'); if (x) x.focus(); }, 0);
   }
-  function closeInfo() { var ov = document.getElementById('sfq-prog-info'); if (ov) ov.classList.remove('show'); }
+  function closeInfo() {
+    var ov = document.getElementById('sfq-prog-info'); if (!ov || !ov.classList.contains('show')) return;
+    ov.classList.remove('show');
+    infoInert.forEach(function (el) { el.inert = false; }); infoInert = [];
+    document.documentElement.classList.remove('sfq-prog-modal-open'); document.body.classList.remove('sfq-prog-modal-open');
+    if (infoReturn && infoReturn.isConnected) infoReturn.focus(); infoReturn = null;
+  }
   window.SFQ_PROG.ruleHtml = ruleHtml;
   window.SFQ_PROG.openInfo = openInfo;
   window.SFQ_PROG.closeInfo = closeInfo;
+
+  document.addEventListener('keydown', function (e) {
+    var ov = document.getElementById('sfq-prog-info'); if (!ov || !ov.classList.contains('show')) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeInfo(); return; }
+    if (e.key !== 'Tab') return;
+    var f = infoFocusable(ov); if (!f.length) { e.preventDefault(); return; }
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
 
   window.addEventListener('sfq-progress', renderGate);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGate);

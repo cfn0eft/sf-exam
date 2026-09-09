@@ -498,5 +498,23 @@ t('bindChHead: 折りたたみ見出しがマウスでもキーボードでも�
   delete sandbox.__head; delete sandbox.__wrap;
 });
 
+t('アクセシビリティ: 全資格シェルにランドマーク・名前・操作可能な絞り込みがある', () => {
+  const slugs = ['sf-admin','app-builder','developer','agentforce','sales-cloud','service-cloud','experience-cloud','sharing-visibility'];
+  slugs.forEach((slug) => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'certifications', slug, 'index.html'), 'utf8');
+    ok(html.includes('<main id="app-main"'), slug + ': main がない');
+    ok(html.includes('<h1 class="sr-only" id="app-page-title"'), slug + ': ページ見出しがない');
+    ok(html.includes('<nav class="bottom-nav" aria-label="主要メニュー">'), slug + ': ナビゲーション名がない');
+    ok(html.includes('role="tablist"'), slug + ': 教科書タブの役割がない');
+    ok(!/<input[^>]+type="checkbox"[^>]+style="display:none"/.test(html), slug + ': キーボード操作できないチェックボックスが残っている');
+  });
+});
+
+t('アクセシビリティ: ダイアログ制御と動きを減らす設定を共通処理する', () => {
+  ok(engineSrc.includes('function openA11yModal('), '共通ダイアログ開始処理がない');
+  ok(engineSrc.includes("prefers-reduced-motion: reduce"), '動きを減らす設定の判定がない');
+  ok(engineSrc.includes("e.target.closest('[role=\"button\"]')"), '操作要素でグローバルショートカットを抑止していない');
+});
+
 console.log('\n' + (fail ? '❌ 失敗 ' + fail + '件 / 成功 ' + pass + '件' : '✅ 全 ' + pass + '件成功'));
 process.exit(fail ? 1 : 0);

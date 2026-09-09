@@ -507,5 +507,14 @@ t('matchAdmin: ハッシュ一致で管理者判定・平文IDは配信ファイ
   eq(T.matchAdmin([], [], 'admin'), false, '設定が空なら誰も管理者にならない');
 });
 
+t('アクセシビリティ: 認証フォームと重ね画面に名前・通知・フォーカス制御がある', () => {
+  ok(src.includes('for="sfqc-id"'), 'ログインIDのラベルがない');
+  ok(src.includes('for="sfqc-pw"'), 'パスワードのラベルがない');
+  ok(src.includes('id="sfqc-msg" class="sfqc-msg" role="status" aria-live="polite"'), 'ログイン結果が読み上げ通知になっていない');
+  ok(src.includes('function sfqcOpenModal('), '重ね画面のフォーカス開始処理がない');
+  ok(src.includes('function sfqcCloseModal('), '重ね画面のフォーカス復帰処理がない');
+  ok(src.includes("document.documentElement.classList.add('sfqc-modal-open')"), '背景スクロール停止がない');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
