@@ -1686,6 +1686,7 @@ const GUIDE=[
   ]},
   {cat:'📖 学習する', items:[
     {ic:'📖',name:'学習モード',desc:'1問ずつ解いて、解説をその場で確認。間違いは自動で復習キューへ。',act:'study'},
+    {ic:'🎓',name:'イチから授業',desc:'スライドを順番に進め、基礎から体系的に学習。',act:'lessons',when:'lessons'},
     {ic:'💡',name:'段階的ヒント',desc:'解答前に「分野→明らかな誤りを薄く」の順にヒント。学習中の「ヒントを見る」かHキーで。'},
     {ic:'🧠',name:'自分の言葉で説明',desc:'解答後に要点を書くと間違いノートに残り、記憶に定着（Feynman 効果）。'},
     {ic:'⚡',name:'高速めくり総ざらい',desc:'問題→答えをサッと確認。試験前日のチェックに最適。',act:'quick'},
@@ -1704,7 +1705,7 @@ const GUIDE=[
   {cat:'⏱️ 実力を測る', items:[
     {ic:'⏱️',name:'試験モード',desc:'本番形式60問・時間制限つき。ナビ・フラグ・採点・弱点表示。直近2回の模試に出た問題は出にくくなります。',act:'exam'},
     {ic:'🎛️',name:'カスタム模試',desc:'分野・問題数・時間制限を選んで自分専用の模試。',act:'custom'},
-    {ic:'📋',name:'ケーススタディ',desc:'実務シナリオで関連問題を連続で解く実戦形式。',act:'cases'},
+    {ic:'📋',name:'ケーススタディ',desc:'実務シナリオで関連問題を連続で解く実戦形式。',act:'cases',when:'cases'},
     {ic:'🟢',name:'難易度（易/標準/難）',desc:'問題ごとに難易度を表示。出題設定で難易度のしぼり込みもできます。'}
   ]},
   {cat:'📊 分析する（統計）', items:[
@@ -1731,11 +1732,18 @@ const GUIDE=[
     {ic:'📲',name:'ホーム画面に追加',desc:'対応ブラウザでは、ホーム画面やアプリ一覧からすばやく起動できます。'}
   ]}
 ];
+function guideItemAvailable(it){
+  if(!it||!it.when)return true;
+  if(it.when==='lessons')return lessonsAvailable();
+  if(it.when==='cases'){try{return caseList().length>0;}catch(e){return false;}}
+  return true;
+}
 function openGuide(){
   var ov=document.getElementById('guide-ov');
   if(!ov){ov=document.createElement('div');ov.id='guide-ov';ov.className='nb-ov';ov.addEventListener('click',function(e){if(e.target===ov)closeGuide();});document.body.appendChild(ov);}
   var body=GUIDE.map(function(g){
-    return '<div class="gd-cat">'+g.cat+'</div>'+g.items.map(function(it){
+    var items=g.items.filter(guideItemAvailable);if(!items.length)return '';
+    return '<div class="gd-cat">'+g.cat+'</div>'+items.map(function(it){
       return '<div class="gd-item"><span class="gd-ic">'+it.ic+'</span><div class="gd-main"><div class="gd-name">'+escH(it.name)+'</div><div class="gd-desc">'+escH(it.desc)+'</div></div>'+(it.act?'<button class="gd-go" onclick="guideAct(\''+it.act+'\')">開く</button>':'')+'</div>';
     }).join('');
   }).join('');
@@ -1747,6 +1755,7 @@ function guideAct(a){
   closeGuide();
   try{
     if(a==='study')startStudy();
+    else if(a==='lessons')goTo('lessons');
     else if(a==='quick')startQuick('all');
     else if(a==='search'){goTo('home');setTimeout(function(){var i=document.getElementById('f-text');if(i)i.focus();},80);}
     else if(a==='textbook')goTo('textbook');
@@ -2272,54 +2281,104 @@ function renderStreakBanner(){
   const hs=document.getElementById('hh-streak');
   if(hs){ if(n>=1){hs.style.display='';hs.textContent='🔥 '+n+'日連続';} else hs.style.display='none'; return; }
 }
-const OB_VERSION='3';
-const OB_STEPS=[
-  {ic:'🎯',t:'迷ったら「今日やること」',d:'ホームの先頭が、中断した模試・SRS復習・今日の10問・間違い復習から、いま優先する1つを自動で選びます。まずはここから始めましょう。'},
-  {ic:'📖',t:'理解してから解く',d:'教科書・用語帳・対応資格の授業で全体像をつかめます。学習モードでは1問ずつ解き、ヒントと詳しい解説で理由まで確認できます。'},
-  {ic:'⏱️',t:'試験形式で実力を測る',d:'本番形式の模試に加え、分野・問題数・時間を選べるカスタム模試もあります。結果から合格可能性と弱点を確認できます。'},
-  {ic:'🔁',t:'間違いを次の得点に',d:'誤答や自信のない問題は自動で復習対象になります。SRS・重点ループ・間違いノートが、忘れやすい論点を優先して出し直します。'},
-  {ic:'🗺️',t:'記録を引き継ぎ、次の資格へ',d:'ログイン中の進捗は自動保存され、端末を変えても続けられます。取得済みにすると資格ロードマップで次の資格が開きます。詳しい機能は使い方ガイドでいつでも確認できます。'}
-];
+const OB_VERSION='4';
+let OB_STEPS=[];
+function buildObSteps(){
+  const steps=[
+    {key:'today',ic:'🎯',t:'迷ったら「今日やること」',d:'ホームの先頭が、中断した模試・SRS復習・今日の10問・間違い復習から、いま優先する1つを自動で選びます。',target:'.ff-next-best'},
+    {key:'textbook',ic:'📚',t:'教科書で理由から理解する',d:'教科書では用語集・設定マップ・比較表を横断できます。暗記だけでなく、正解になる理由を体系的に確認できます。',target:'#nb-textbook'}
+  ];
+  if(lessonsAvailable())steps.push({key:'lessons',ic:'🎓',t:'授業でイチから学ぶ',d:'この資格にはスライド授業があります。順番に進めながら、最後の理解度チェックで知識を確かめられます。',target:'#lesson-entry'});
+  try{if(caseList().length)steps.push({key:'cases',ic:'📋',t:'ケースで実務判断を練習する',d:'この資格にはケーススタディがあります。1つの実務シナリオを読み、関連する設問へ続けて取り組めます。',target:'#pg-home .quick-entry[onclick*="openCases"]'});}catch(e){}
+  steps.push(
+    {key:'stats',ic:'📊',t:'統計から弱点を見つける',d:'正答率・学習カバレッジ・分野別の弱点・模試推移を確認し、次に補強する範囲を決められます。',target:'#nb-stats'},
+    {key:'start',ic:'🚀',t:'ここから学習を始める',d:'短く始めるなら「今日の10問」、出題設定に沿って広く進めるなら「学習を始める」を選んでください。'}
+  );
+  return steps;
+}
 let _obI=0;
 let _obReturnFocus=null;
+let _obSpotTimer=null;
 function maybeOnboard(){
   try{if(localStorage.getItem('sfq_onboarded')===OB_VERSION)return;}catch(e){return;}
   _obI=0;showOnboard();
 }
 function replayOnboarding(){_obI=0;showOnboard();}
 function showOnboard(){
+  OB_STEPS=buildObSteps();if(_obI>=OB_STEPS.length)_obI=0;
   let dim=document.getElementById('ob-dim');
   if(!dim){
     _obReturnFocus=document.activeElement||null;
     dim=document.createElement('div');dim.id='ob-dim';dim.className='ob-dim';
     dim.addEventListener('click',function(e){if(e.target===dim)obClose();});
-    dim.innerHTML='<div id="ob-card" class="ob-card" role="dialog" aria-modal="true" aria-labelledby="ob-title" aria-describedby="ob-desc"></div>';
+    dim.innerHTML='<div id="ob-spot" class="ob-spot" aria-hidden="true" hidden></div><div id="ob-card" class="ob-card" role="dialog" aria-modal="true" aria-labelledby="ob-title" aria-describedby="ob-desc"></div>';
     document.body.appendChild(dim);
+    document.documentElement.classList.add('ob-open');document.body.classList.add('ob-open');
     document.addEventListener('keydown',obKeyDown);
+    window.addEventListener('resize',obResize);
   }
   obRender();
   window.setTimeout(function(){const b=document.getElementById('ob-close');if(b)b.focus();},0);
+}
+function obResize(){obUpdateSpot(false);}
+function obUpdateSpot(shouldScroll){
+  const dim=document.getElementById('ob-dim'),spot=document.getElementById('ob-spot'),s=OB_STEPS[_obI];if(!dim||!spot)return;
+  if(_obSpotTimer){clearTimeout(_obSpotTimer);_obSpotTimer=null;}
+  dim.classList.remove('ob-has-spot','ob-place-top','ob-place-right','ob-place-bottom','ob-place-left');
+  const target=s&&s.target?document.querySelector(s.target):null;
+  if(!target){spot.hidden=true;return;}
+  const fixedNav=target.closest&&target.closest('.bottom-nav');
+  const place=function(){
+    const r=target.getBoundingClientRect();if(!r.width||!r.height){spot.hidden=true;return;}
+    const vw=window.innerWidth||document.documentElement.clientWidth,vh=window.innerHeight||document.documentElement.clientHeight,pad=8,edge=fixedNav?0:8;
+    const left=Math.max(edge,r.left-pad),top=Math.max(edge,r.top-pad),right=Math.min(vw-edge,r.right+pad),bottom=Math.min(vh-edge,r.bottom+pad);
+    spot.style.left=left+'px';spot.style.top=top+'px';spot.style.width=Math.max(1,right-left)+'px';spot.style.height=Math.max(1,bottom-top)+'px';spot.hidden=false;dim.classList.add('ob-has-spot');
+    if(vw<=620)dim.classList.add(r.top>vh*.58?'ob-place-top':'ob-place-bottom');
+    else if(vw-r.right>=450)dim.classList.add('ob-place-right');
+    else if(r.left>=450)dim.classList.add('ob-place-left');
+    else dim.classList.add(r.top>vh/2?'ob-place-top':'ob-place-bottom');
+  };
+  if(shouldScroll&&!fixedNav&&target.scrollIntoView){target.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});_obSpotTimer=window.setTimeout(place,260);}
+  else place();
 }
 function obRender(){
   const c=document.getElementById('ob-card');if(!c)return;const s=OB_STEPS[_obI];
   let dots='';for(let i=0;i<OB_STEPS.length;i++){dots+='<span class="ob-dot'+(i===_obI?' on':'')+'"></span>';}
   const last=_obI===OB_STEPS.length-1;
+  const launches=last?'<div class="ob-starts"><button id="ob-start-daily" class="ob-start-daily" type="button" onclick="obLaunch(\'daily\')">🗓️ 今日の10問を始める</button><button id="ob-start-study" class="ob-start-study" type="button" onclick="obLaunch(\'study\')">📖 学習を始める</button></div>':'';
   c.innerHTML='<div class="ob-top"><span class="ob-step">ステップ '+(_obI+1)+' / '+OB_STEPS.length+'</span><button id="ob-close" class="ob-close" type="button" onclick="obClose()" aria-label="ツアーを閉じる">✕</button></div>'
     +'<div class="ob-main" aria-live="polite"><div class="ob-icon" aria-hidden="true">'+s.ic+'</div>'
     +'<h2 class="ob-title" id="ob-title">'+escH(s.t)+'</h2><p class="ob-desc" id="ob-desc">'+escH(s.d)+'</p></div>'
     +'<div class="ob-progress" aria-hidden="true">'+dots+'</div>'
+    +launches
     +(last?'<button class="ob-guide" type="button" onclick="obClose();openGuide()">📖 使い方ガイドで全機能を見る</button>':'')
-    +'<div class="ob-actions"><button class="ob-skip" type="button" onclick="obClose()">スキップ</button><div class="ob-nav">'
+    +'<div class="ob-actions"><button class="ob-skip" type="button" onclick="obClose()">'+(last?'閉じる':'スキップ')+'</button><div class="ob-nav">'
     +(_obI?'<button class="ob-back" type="button" onclick="obPrev()">← 戻る</button>':'')
-    +'<button id="ob-next" class="ob-next" type="button" onclick="obNext()">'+(last?'ツアーを終える':'次へ →')+'</button>'
+    +(last?'':'<button id="ob-next" class="ob-next" type="button" onclick="obNext()">次へ →</button>')
     +'</div></div>';
+  obUpdateSpot(true);
 }
-function obNext(){if(_obI<OB_STEPS.length-1){_obI++;obRender();}else obClose();}
-function obPrev(){if(_obI>0){_obI--;obRender();}}
-function obKeyDown(e){if(e.key==='Escape')obClose();else if(e.key==='ArrowLeft')obPrev();else if(e.key==='ArrowRight')obNext();}
+function obFocusSoon(id){window.setTimeout(function(){const b=document.getElementById(id);if(b)b.focus();},0);}
+function obNext(){if(_obI<OB_STEPS.length-1){_obI++;obRender();obFocusSoon(_obI===OB_STEPS.length-1?'ob-start-daily':'ob-next');}else obClose();}
+function obPrev(){if(_obI>0){_obI--;obRender();obFocusSoon(_obI?'ob-back':'ob-close');}}
+function obLaunch(kind){obClose();if(kind==='daily')startDaily();else startStudy();}
+function obKeyDown(e){
+  if(e.key==='Tab'){
+    const c=document.getElementById('ob-card');if(!c)return;const a=Array.from(c.querySelectorAll('button:not([disabled])')).filter(function(b){return b.offsetParent!==null;});if(!a.length)return;
+    const first=a[0],last=a[a.length-1],active=document.activeElement;
+    if(e.shiftKey&&(active===first||!c.contains(active))){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&(active===last||!c.contains(active))){e.preventDefault();first.focus();}
+    return;
+  }
+  if(e.key==='Escape'){e.preventDefault();obClose();}
+  else if(e.key==='ArrowLeft'){e.preventDefault();obPrev();}
+  else if(e.key==='ArrowRight'){e.preventDefault();obNext();}
+}
 function obClose(){
   try{localStorage.setItem('sfq_onboarded',OB_VERSION);}catch(e){}
-  const d=document.getElementById('ob-dim');if(d)d.remove();document.removeEventListener('keydown',obKeyDown);
+  if(_obSpotTimer){clearTimeout(_obSpotTimer);_obSpotTimer=null;}
+  const d=document.getElementById('ob-dim');if(d)d.remove();document.removeEventListener('keydown',obKeyDown);window.removeEventListener('resize',obResize);
+  document.documentElement.classList.remove('ob-open');document.body.classList.remove('ob-open');
   const f=_obReturnFocus;_obReturnFocus=null;try{if(f&&f.focus)f.focus();}catch(e){}
 }
 function renderWeekly(){

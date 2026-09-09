@@ -460,11 +460,22 @@ t('使い方ガイド: 終了したオフライン学習を案内しない', () 
   ok(run("JSON.stringify(GUIDE).includes('ホーム画面に追加')"), '現在の追加機能は案内する');
 });
 
-t('かんたんツアー: 現在の学習フローと資格ロードマップを案内する', () => {
-  eq(run('OB_VERSION'), '3', '内容更新時の再表示バージョン');
-  eq(run('OB_STEPS.length'), 5, '短い5ステップ構成');
-  ok(run("JSON.stringify(OB_STEPS).includes('今日やること')"), 'Focus Flowの案内がない');
-  ok(run("JSON.stringify(OB_STEPS).includes('資格ロードマップ')"), '次の資格への案内がない');
+t('かんたんツアー: 実画面スポットライトと資格別ステップを組み立てる', () => {
+  eq(run('OB_VERSION'), '4', '内容更新時の再表示バージョン');
+  const base=run("(function(){var l=LESSDATA,a=allQ,s=srcSel;LESSDATA=[];allQ=[{id:1}];srcSel=new Set();var r=buildObSteps().map(function(x){return x.key;}).join(',');LESSDATA=l;allQ=a;srcSel=s;return r;})()");
+  eq(base, 'today,textbook,stats,start', '機能なし資格のステップ');
+  const full=run("(function(){var l=LESSDATA,a=allQ,s=srcSel;LESSDATA=[{id:'l1'}];allQ=[{id:1,case:'c1',scenario:'s'}];srcSel=new Set();var r=buildObSteps().map(function(x){return x.key;}).join(',');LESSDATA=l;allQ=a;srcSel=s;return r;})()");
+  eq(full, 'today,textbook,lessons,cases,stats,start', '授業・ケースあり資格のステップ');
+  ok(run("buildObSteps().some(function(x){return x.target==='#nb-textbook';})"), '教科書のスポットライトがない');
+  ok(run("buildObSteps().some(function(x){return x.target==='#nb-stats';})"), '統計のスポットライトがない');
+  eq(run("(function(){var l=LESSDATA,a=allQ;LESSDATA=[];allQ=[{id:1}];var r=[guideItemAvailable({when:'lessons'}),guideItemAvailable({when:'cases'})];LESSDATA=l;allQ=a;return r.join(',');})()"), 'false,false', '使い方ガイドが未提供機能を隠さない');
+});
+
+t('かんたんツアー: 最終画面から今日の10問と通常学習を開始できる', () => {
+  run('OB_STEPS=buildObSteps();_obI=OB_STEPS.length-1;obRender()');
+  const h=byId('ob-card').innerHTML;
+  ok(h.includes('今日の10問を始める'), 'デイリー開始ボタンがない');
+  ok(h.includes('学習を始める'), '通常学習開始ボタンがない');
 });
 
 t('bindChHead: 折りたたみ見出しがマウスでもキーボードでも開閉できる', () => {
