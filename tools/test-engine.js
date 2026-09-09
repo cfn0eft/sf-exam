@@ -79,7 +79,7 @@ const sandbox = {
   addEventListener() {}, removeEventListener() {}, scrollTo() {},
 };
 sandbox.window = sandbox;
-sandbox.window.CERT_CONFIG = { certName: 'テスト資格', examN: 60, examMin: 105, pass: 65, storageKey: 'sfq_test' };
+sandbox.window.CERT_CONFIG = { slug: 'sf-admin', certName: 'テスト資格', examN: 60, examMin: 105, pass: 65, storageKey: 'sfq_test' };
 vm.createContext(sandbox);
 
 const engineSrc = fs.readFileSync(path.join(__dirname, '..', 'quiz-engine.js'), 'utf8');
@@ -469,6 +469,16 @@ t('かんたんツアー: 実画面スポットライトと資格別ステップ
   ok(run("buildObSteps().some(function(x){return x.target==='#nb-textbook';})"), '教科書のスポットライトがない');
   ok(run("buildObSteps().some(function(x){return x.target==='#nb-stats';})"), '統計のスポットライトがない');
   eq(run("(function(){var l=LESSDATA,a=allQ;LESSDATA=[];allQ=[{id:1}];var r=[guideItemAvailable({when:'lessons'}),guideItemAvailable({when:'cases'})];LESSDATA=l;allQ=a;return r.join(',');})()"), 'false,false', '使い方ガイドが未提供機能を隠さない');
+});
+
+t('かんたんツアー: 取得状況の読込後、現在学習できる未取得資格だけに自動表示する', () => {
+  run("window.SFQ_PROG={acquiredOf:function(slug){return slug==='sf-admin';},stateOf:function(slug){return slug==='sf-admin'?'acquired':(slug==='app-builder'?'open':'locked');}};");
+  eq(run('obPageEligible()'), false, '取得済み資格に表示している');
+  run("CFG.slug='app-builder'");
+  eq(run('obPageEligible()'), true, '現在学習中の資格に表示しない');
+  run("CFG.slug='developer'");
+  eq(run('obPageEligible()'), false, 'ロック中の資格に表示している');
+  run("CFG.slug='sf-admin';delete window.SFQ_PROG");
 });
 
 t('かんたんツアー: 最終画面から今日の10問と通常学習を開始できる', () => {

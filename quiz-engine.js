@@ -2355,8 +2355,25 @@ function buildObSteps(){
 let _obI=0;
 let _obReturnFocus=null;
 let _obSpotTimer=null;
+let _obWaitingForProgress=false;
+function obLocalMode(){
+  try{return ['localhost','127.0.0.1','::1',''].indexOf(location.hostname)>=0;}catch(e){return true;}
+}
+function obProgressReady(){return obLocalMode()||!!(window.SFQ_PROGRESS&&window.SFQ_PROGRESS.acquired);}
+function obPageEligible(){
+  const slug=CFG.slug||'',P=window.SFQ_PROG;
+  if(P&&slug){try{return !P.acquiredOf(slug)&&P.stateOf(slug)==='open';}catch(e){}}
+  return !store.acquiredDate;
+}
+function obTryAfterProgress(){window.setTimeout(maybeOnboard,0);}
 function maybeOnboard(){
   try{if(localStorage.getItem('sfq_onboarded')===OB_VERSION)return;}catch(e){return;}
+  if(!obProgressReady()){
+    if(!_obWaitingForProgress){_obWaitingForProgress=true;window.addEventListener('sfq-progress',obTryAfterProgress);}
+    return;
+  }
+  if(_obWaitingForProgress){_obWaitingForProgress=false;window.removeEventListener('sfq-progress',obTryAfterProgress);}
+  if(!obPageEligible())return;
   _obI=0;showOnboard();
 }
 function replayOnboarding(){_obI=0;showOnboard();}
