@@ -516,5 +516,10 @@ t('アクセシビリティ: 認証フォームと重ね画面に名前・通知
   ok(src.includes("document.documentElement.classList.add('sfqc-modal-open')"), '背景スクロール停止がない');
 });
 
+t('管理画面: スクロール時にヘッダー・絞り込み・メニューを固定しない', () => {
+  ok(src.includes('.sfqc-adminwrap{overflow:auto}.sfqc-adminbody{flex:0 0 auto;overflow:visible}'), '管理画面全体が同じスクロール領域になっていない');
+  ok(src.includes('.sfqc-toolbar,.sfqc-tabs,.sfqc-detail th{position:static}'), '管理画面内に固定表示の上書き解除がない');
+});
+
 console.log('\n' + (fail ? ('❌ ' + fail + ' 件失敗 / ') : '✅ ') + '全 ' + (pass + fail) + '件' + (fail ? '' : '成功'));
 process.exit(fail ? 1 : 0);
