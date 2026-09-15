@@ -1,0 +1,8 @@
+{
+  "domains": [
+    { "code": "fund",   "name": "開発者の基礎",               "weight": 23, "emoji": "🧱" },
+    { "code": "logic",  "name": "プロセスの自動化とロジック", "weight": 30, "emoji": "⚙️" },
+    { "code": "ui",     "name": "ユーザーインターフェース",   "weight": 25, "emoji": "🖥️" },
+    { "code": "deploy", "name": "テスト・デバッグ・リリース", "weight": 22, "emoji": "🚀" }
+  ]
+}

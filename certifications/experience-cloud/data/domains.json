@@ -1,0 +1,52 @@
+{
+  "domains": [
+    {
+      "code": "admin",
+      "name": "管理・セットアップ・構成",
+      "weight": 25,
+      "emoji": "⚙️"
+    },
+    {
+      "code": "share",
+      "name": "共有・表示・ライセンス",
+      "weight": 17,
+      "emoji": "🔐"
+    },
+    {
+      "code": "brand",
+      "name": "ブランディング・パーソナライズ・コンテンツ",
+      "weight": 15,
+      "emoji": "🎨"
+    },
+    {
+      "code": "auth",
+      "name": "ユーザー作成・認証",
+      "weight": 13,
+      "emoji": "👤"
+    },
+    {
+      "code": "theme",
+      "name": "テンプレートとテーマ",
+      "weight": 10,
+      "emoji": "🧩"
+    },
+    {
+      "code": "basics",
+      "name": "Experience Cloud の基礎",
+      "weight": 8,
+      "emoji": "🌐"
+    },
+    {
+      "code": "custom",
+      "name": "カスタマイズの考慮事項と制限",
+      "weight": 7,
+      "emoji": "🧱"
+    },
+    {
+      "code": "adopt",
+      "name": "活用促進と分析",
+      "weight": 5,
+      "emoji": "📈"
+    }
+  ]
+}

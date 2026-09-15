@@ -1,0 +1,15 @@
+# GitHub Pages (Jekyll) の設定。
+# 公開サイトから除外するファイル＝ブラウザから直接ダウンロードできなくする。
+# 学習サイトの動作に必要なファイル（HTML/JS/CSS/data/icons）は除外しないこと。
+exclude:
+  - CLAUDE.md
+  - PROGRESS.md
+  - BACKLOG.md
+  - LOOP.md
+  - REVIEW_NEEDED.md
+  - README.md
+  - SECURITY.md
+  - firestore.rules
+  - docs/
+  - tools/
+  - certifications/sf-admin/Firebaseセットアップ手順.md

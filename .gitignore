@@ -1,0 +1,10 @@
+.claude/
+
+# 編集前バックアップは配信・追跡しない
+*.before.json
+
+# Local migration files and development outputs
+.migration-*
+node_modules/
+*-debug.log
+_site/

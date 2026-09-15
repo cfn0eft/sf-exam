@@ -1,0 +1,1032 @@
+[
+  {
+    "chapter": "Experience Cloud の基礎",
+    "terms": [
+      {
+        "title": "Experience Cloud サイト",
+        "jaName": "デジタルエクスペリエンス",
+        "enName": "Experience Cloud Site / Digital Experience",
+        "definition": "Salesforce のデータとプロセスを社外の顧客・パートナーや社内従業員に公開する、CRM 連動の Web サイト/ポータル。かつては **Community（コミュニティ）** と呼ばれていたが、現在は **Experience Cloud サイト** が正式名称。",
+        "examPoints": [
+          "顧客セグメント（B2C／B2B／従業員）ごとに**別々のサイト**を作ると、機能・コンテンツ・ブランディング・可視性を個別に制御できる（Q1）",
+          "社内のCRM業務と外部サイトを使い分ける構成もある。ただしサイト内のChatterグループで社内外が共同作業する場合、社内担当者も同じサイトと対象グループへ参加する（Q54, Q62）。",
+          "従業員向け（HR ヘルプデスク・イントラ・オンボーディング）にも利用できる（Q58, Q77）",
+          "問題文の「Community」「ポータル」はすべて Experience Cloud サイトを指すと読み替える"
+        ]
+      },
+      {
+        "title": "サイト数の上限",
+        "enName": "Site Limit",
+        "definition": "標準では1組織に100件までの未アーカイブExperience Cloudサイトを持てる。",
+        "examPoints": [
+          "Active・Preview・Inactiveを合算する。非アクティブ化だけでは枠は空かない。",
+          "Archivedは未アーカイブサイト数から除外する。アーカイブの対象はInactiveのサイト。"
+        ],
+        "questions": [
+          8,
+          140
+        ]
+      },
+      {
+        "title": "Partner Relationship Management（PRM）",
+        "enName": "Partner Relationship Management",
+        "definition": "パートナー（再販業者・代理店）とのチャネル営業を管理・加速するための Experience Cloud のソリューション群。",
+        "examPoints": [
+          "Lead Inboxでパートナーへリードをルーティングする。Deal Registrationは案件の登録時刻や重複の確認を支援する。",
+          "公式教材はRevenue Managementを追加した見積自動化を説明している。必要な追加製品と利用権限を含めて計画する。",
+          "ティア別の価格表を使うことと、パートナーをティアへ自動分類することは別。PRM導入だけで後者まで保証しない。"
+        ],
+        "questions": [
+          15
+        ]
+      },
+      {
+        "title": "従業員向けエクスペリエンス",
+        "enName": "Employee Experience",
+        "definition": "社内ユーザーをメンバーに加えて利用する従業員向けサイト。ライセンス、サイト参加、データアクセスを分けて確認する。",
+        "examPoints": [
+          "Chatterグループは現在のサイトの範囲で表示される。公開グループも社内組織へ自動表示されない。",
+          "社内Salesforceユーザーは所有・共有などの権限に従ってCRMレコードを参照する。",
+          "Chatter Freeのユーザーにサイト参加を許可しても、CRMレコードの権限は増えない。"
+        ],
+        "questions": [
+          77,
+          131
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "管理・セットアップ・構成",
+    "terms": [
+      {
+        "title": "デジタルエクスペリエンスの有効化",
+        "enName": "Enable Digital Experiences",
+        "definition": "Experience Cloud サイトを作成する前提となる、組織レベルの機能有効化。`[設定] > [デジタルエクスペリエンス] > [設定]` で有効化する。",
+        "examPoints": [
+          "サイト作成の**最初のステップ**＝デジタルエクスペリエンスの有効化（Q42）",
+          "有効化後にドメイン名を設定し、ウィザードでサイトを作成できるようになる"
+        ]
+      },
+      {
+        "title": "サイト作成時に自動生成されるもの",
+        "enName": "Site Provisioning",
+        "definition": "サイト作成時に、未認証アクセス用のゲストユーザーと専用プロファイルが用意される。",
+        "examPoints": [
+          "公開するレコードはゲスト用共有ルールとオブジェクト・項目権限を別途設定する。",
+          "テンプレートによって事前構成のモデレーションルールや禁止語条件を利用できる。自動的に全要件を満たすわけではない。"
+        ],
+        "questions": [
+          127,
+          30
+        ]
+      },
+      {
+        "title": "ユーザーの管理 / 外部ユーザーの管理",
+        "enName": "Manage Users / Manage External Users",
+        "definition": "ユーザー管理の操作権限。内部・外部のどのユーザーを管理させるかに合わせて付与範囲を限定する。",
+        "examPoints": [
+          "Manage Usersは広範なユーザー管理権限。外部担当に不要な社内ユーザー管理を与えない。",
+          "パートナーの作成・編集・無効化にはManage External Usersなど、対象に応じた権限を確認する。",
+          "Userレコードは完全削除ではなく無効化する。所有レコードや履歴の扱いも確認する。"
+        ],
+        "fig": "user-creation-auth",
+        "questions": [
+          10
+        ]
+      },
+      {
+        "title": "Experience Builder のユーザーロール",
+        "enName": "Experience Builder Roles",
+        "definition": "サイト参加者に対する、編集・公開・共同編集者管理のアクセスロール。",
+        "examPoints": [
+          "Builderは編集できるが、公開と共同編集者管理はできない。",
+          "Publisherは編集・公開が可能。共同編集者の追加・変更はできない。",
+          "Experience Adminは共同編集者の管理と公開が可能。Viewerは閲覧のみ。",
+          "ロールで権限を制限する場合はCreate and Set Up Experiencesなど別経路の権限にも注意する。"
+        ],
+        "questions": [
+          17
+        ]
+      },
+      {
+        "title": "承認プロセスと外部ユーザー",
+        "enName": "Approvals for External Users",
+        "definition": "対応ライセンスの外部ユーザーに、サイト上で承認操作を行わせる構成。",
+        "examPoints": [
+          "Customer Community PlusとPartnerユーザーは、対応する承認プロセスの承認者やキューへ割り当てられる。承認・申請・通知はライセンス別に確認する。",
+          "従来型の承認通知で複数のActiveサイトに所属するときは、最も古いActiveサイトが使われる。"
+        ],
+        "questions": [
+          44,
+          162
+        ]
+      },
+      {
+        "title": "変更セット / Lightning Bolt / メタデータ API",
+        "enName": "Change Set / Lightning Bolt / Metadata API",
+        "definition": "サイトの移行では、接続関係だけでなくサイト形式と依存関係を確認する。",
+        "examPoints": [
+          "Networkは管理設定、CustomSiteはドメインやページの設定を表す。",
+          "非拡張LWRはExperienceBundle、拡張LWRはDigitalExperienceBundleとDigitalExperienceConfigを使う。AuraはExperienceBundleが推奨される。",
+          "拡張LWRではDigitalExperienceサブタイプで部分デプロイできる。アップグレード時は移行元と移行先の形式をそろえる。",
+          "カスタムAuraテンプレートは定義を先に移す。NavigationMenuの項目追加を伴う移行では既存翻訳の復元・検証も計画する。",
+          "Lightning Boltはテンプレート・Lightningアプリ・フローカテゴリを組み合わせる配布方式。サイトの全設定を無条件に移送するものではない。"
+        ],
+        "questions": [
+          91,
+          141,
+          155,
+          156,
+          157,
+          158,
+          165,
+          50,
+          173,
+          174
+        ]
+      },
+      {
+        "title": "CDN（コンテンツデリバリーネットワーク）",
+        "enName": "Content Delivery Network",
+        "definition": "サイトのコンテンツを分散配信して、利用者からの読み込みを高速化する仕組み。",
+        "examPoints": [
+          "Salesforce CDNはサンドボックスでも使える。カスタムドメインの有効化は、本番組織あたり同時に1つのサンドボックスドメイン。",
+          "システム管理のsandbox.my.site.comドメインはSalesforce CDNを利用する。",
+          "独自ドメインでのプロビジョニング・有効化は、トラフィックの少ない時間帯に計画する。",
+          "CDNの変更後は、同じドメイン内の各HTTPSカスタムURLについてSAML SSO設定を再確認する。"
+        ],
+        "questions": [
+          49,
+          95,
+          132,
+          109
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "ライセンスの種類",
+    "terms": [
+      {
+        "title": "Customer Community",
+        "enName": "Customer Community",
+        "definition": "B2C 向けの**大量ユーザー（高ボリュームユーザー）**用ライセンス。ケース・ナレッジ・カスタムオブジェクトを扱うセルフサービス向け。",
+        "examPoints": [
+          "**ロールを持たない**＝ロール階層・所有者ベース/条件ベースの**共有ルールの対象外**。レコード共有は**共有セット**で行う",
+          "**レポート/ダッシュボードの作成は不可**・リードへのアクセス不可（Q17, Q33）",
+          "数百万規模の匿名に近い顧客を想定（高ボリュームユーザー扱い）"
+        ],
+        "fig": "license-decision"
+      },
+      {
+        "title": "Customer Community Plus",
+        "enName": "Customer Community Plus",
+        "definition": "標準共有モデルが必要な顧客向けライセンス。ロール、レポート作成・管理、ダッシュボード参照に対応する。",
+        "examPoints": [
+          "共有ルール・手動共有に加え、共有セットも利用できる。",
+          "リードや商談を使う営業要件とは区別する。",
+          "Partnerユーザーへ同じ種別のまま付け替えるライセンスではない。種別変更時は移行手順を確認する。",
+          "Portal Super Userがあれば同一取引先の別Contactの代理でケースを作成できる。Case.Contact Nameの編集権限も確認し、別取引先のケース作成とは区別する。"
+        ],
+        "questions": [
+          7,
+          18,
+          33,
+          74,
+          145,
+          72,
+          98,
+          177
+        ]
+      },
+      {
+        "title": "Partner Community",
+        "enName": "Partner Community",
+        "definition": "パートナー（再販業者・代理店）向けで、チャネル営業に必要な営業オブジェクトを扱えるライセンス。",
+        "examPoints": [
+          "**ロール階層をサポート**。取引先・取引先責任者・**リード・商談**・ケース・キャンペーン・注文・価格表・製品にアクセス可",
+          "**取引登録（Deal Registration）**が可能＝パートナーが商談を登録して協働できる（Q11）",
+          "商談登録・営業協働の要件なら Partner Community を選ぶ（Customer 系では不可）",
+          "SKUにより独自カスタムオブジェクトの標準枠が異なる。PRM SKUは10個、External Apps SKUは100個。Partner Community Plusというユーザーライセンス名は使わない。"
+        ],
+        "fig": "license-decision",
+        "questions": [
+          11,
+          36,
+          114
+        ]
+      },
+      {
+        "title": "Channel Account",
+        "enName": "Channel Account License",
+        "definition": "取引先単位で契約するパートナー向けのChannel Accountライセンス。",
+        "examPoints": [
+          "リード、商談、レポート、ダッシュボードをサポートする。",
+          "ユーザー単位のPartner Communityとは契約単位が異なる。実際の費用は契約条件で確認する。",
+          "利用するオブジェクトや分析機能には、対応する権限と共有設定も必要。"
+        ],
+        "questions": [
+          33
+        ]
+      },
+      {
+        "title": "External Apps License",
+        "enName": "External Apps License",
+        "definition": "Commerce Portals SKUに含まれるExternal Appsユーザーライセンス。External Apps SKUとは区別する。",
+        "examPoints": [
+          "Commerce Portals SKUのExternal Appsライセンスはカスタムオブジェクト100個に対応する。",
+          "External Apps SKUにはPartner Communityライセンスが含まれ、こちらも100個に対応する。PRM SKUでは10個。",
+          "External Appsライセンスの標準Caseは参照のみ。標準Caseを作成する要件と、独自カスタムオブジェクトによる実装を分ける。"
+        ],
+        "questions": [
+          87,
+          129
+        ]
+      },
+      {
+        "title": "External Identity",
+        "enName": "External Identity",
+        "definition": "ID 管理・認証（ログイン・SSO・登録）を主目的とする軽量な外部ユーザーライセンス。",
+        "examPoints": [
+          "ID管理から始める場合に、Contactを持たないユーザーを作成できる。",
+          "Contactなし方式を使えるのはExternal Identity。通常のCommunityライセンスへのアップグレードにはContactが必要。",
+          "ContactなしユーザーへのLogin Asや委任外部ユーザー管理には対応しない。"
+        ],
+        "questions": [
+          120
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "共有・表示・レコードアクセス",
+    "terms": [
+      {
+        "title": "共有セット",
+        "enName": "Sharing Set",
+        "definition": "ユーザーと対象レコードのAccount・Contact参照を対応付けて、関連レコードへアクセスを付与する共有方式。",
+        "examPoints": [
+          "対象プロファイル・オブジェクトごとにアクセスマッピングを設定する。",
+          "Customer Communityだけでなく、Customer Community PlusやPartner Communityでも利用できる。",
+          "共有セットからのアクセスは上位ロールに拡張されず、レポートやダッシュボードにもそのまま適用されない。",
+          "ゲストへの共有はゲスト用共有ルールで扱う。",
+          "Partner Communityの商談にも利用できる。共有セットはライセンスの対象オブジェクトやCRUDを追加する機能ではない。"
+        ],
+        "fig": "external-record-access",
+        "questions": [
+          76,
+          78,
+          172
+        ]
+      },
+      {
+        "title": "共有グループ",
+        "enName": "Sharing Group",
+        "definition": "高ボリュームユーザー所有のレコードを、社内や条件を満たす外部の認証ユーザーへ共有する機能。",
+        "examPoints": [
+          "共有セットを開き、Share Group Settingsで有効化して共有先を追加する。",
+          "共有セットと無関係に作成する方式ではない。所有者となる高ボリュームユーザーと共有先を区別する。",
+          "外部の共有先には同じ親取引先などの条件がある。ゲストには利用できない。"
+        ],
+        "fig": "external-record-access",
+        "questions": [
+          117
+        ]
+      },
+      {
+        "title": "外部ユーザー向け共有ルール",
+        "enName": "Sharing Rules for External Users",
+        "definition": "ロールを持つ外部ユーザーに対して、所有者やレコードの条件に基づいてアクセスを追加する共有方式。",
+        "examPoints": [
+          "外部OWDと必要な共有先を確認し、対応するライセンス・オブジェクト権限の範囲で参照などを追加する。社内の公開設定が外部へ同じアクセスを保証するわけではない。",
+          "**ロールを持たない Customer Community は共有ルールの対象外**（共有セットを使う）",
+          "同一Salesforce組織内の外部取引先間で必要な共有を設計する。他のSalesforce組織へ自動共有する機能ではない。"
+        ]
+      },
+      {
+        "title": "スーパーユーザーアクセス",
+        "enName": "Super User Access",
+        "definition": "外部ライセンスに応じて、同じ取引先内の対象レコードへのアクセスや代理操作を広げる機能。",
+        "examPoints": [
+          "Partnerでは、同位・下位ロールのユーザーが所有するか共有された対象レコードへアクセスできる。オブジェクト権限は別途必要。",
+          "Customer Community PlusのPortal Super Userは、同一取引先の別Contactのケース作成などに対応する。",
+          "別取引先へのアクセスを自動で付与する機能ではない。ケースのContactが保存後に本人へ戻る場合はCase.Contact Nameの項目編集権限を確認する。"
+        ],
+        "questions": [
+          21,
+          72,
+          98,
+          177
+        ]
+      },
+      {
+        "title": "外部アカウント階層",
+        "enName": "External Account Hierarchy",
+        "definition": "外部の法人取引先の間に親子階層を作り、子取引先側のデータを親側へ共有する仕組み。",
+        "examPoints": [
+          "子取引先のデータは階層の各レベルの最上位ロールへ共有される。親の全ロールへの一律共有ではない。",
+          "単にCreatedByが子会社ユーザーであることだけを根拠にしない。所有、共有、オブジェクト権限も確認する。",
+          "利用中の取引先はマージできない。個人取引先は対象外で、階層にはロールが必要。"
+        ],
+        "questions": [
+          100,
+          119,
+          121
+        ]
+      },
+      {
+        "title": "ロール数とポータルロールの上限",
+        "enName": "Partner Roles / Role Limits",
+        "definition": "外部のロール階層と、その作成数・再編成を管理する設定。",
+        "examPoints": [
+          "取引先ごとのロール数は1～3。1ロール化と必要なスーパーユーザーアクセスで増加を抑える。",
+          "大規模組織では別ブランチへの配置と必要な取引先共有を併用する。",
+          "不要なパートナーロールは削除できる。既定ロール数の変更だけでは既存取引先に適用されない。",
+          "Account Role Optimizationの有無で、ロールが作られるタイミングが変わる。"
+        ],
+        "questions": [
+          6,
+          29
+        ]
+      },
+      {
+        "title": "サイトユーザー/コミュニティユーザーの表示設定",
+        "enName": "Site / Community User Visibility",
+        "definition": "Userオブジェクトの表示を、サイト単位や同一取引先単位で調整する設定。",
+        "examPoints": [
+          "Portal User Visibilityは、同じ取引先の外部ユーザー間の表示に関係する。",
+          "Site User Visibilityとサイト側のSee other members of this siteを組み合わせる。",
+          "Userの外部OWD、他の共有、検索・APIの範囲にも注意する。表示設定をオフにするだけで他の付与経路は取り消せない。",
+          "Userの外部OWDが非公開の場合に、Portal設定は同じ取引先、Site設定とサイト側の許可は同じサイトという範囲を分けて評価する。",
+          "Portal User Visibilityでは同じ取引先の外部ユーザーを表示する。Partner Communityでは取引先所有者の社内ユーザーも見える。"
+        ],
+        "questions": [
+          39,
+          80
+        ]
+      },
+      {
+        "title": "ページ/コンポーネントの表示オプション",
+        "enName": "Page Access and Audience Visibility",
+        "definition": "ページへのログイン要件と、オーディエンスによる表示の出し分けを分けて設定する。",
+        "examPoints": [
+          "通常ページのPage AccessはSite Default Setting / Public / Requires Loginの3値。",
+          "Site Default Settingはサイトの公開設定に従う。Publicは公開、Requires Loginはログインを要求する。",
+          "オーディエンスとページバリエーションは別の表示条件。Page Accessの選択肢としてAudienceやNoneを数えない。",
+          "公開ページにしても、オブジェクト・項目・レコードへの権限を自動付与するわけではない。ログイン関連などアクセス設定が固定のページもある。"
+        ],
+        "questions": [
+          9,
+          66
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "ゲストユーザーのセキュリティ",
+    "terms": [
+      {
+        "title": "ゲストユーザー",
+        "enName": "Guest User",
+        "definition": "ログインせずに公開サイトを閲覧する未認証ユーザー。サイト作成時に専用のゲストユーザープロファイルとゲストユーザーレコードが生成される。",
+        "examPoints": [
+          "1 つのサイトに 1 つのゲストユーザー（プロファイル）が紐づく",
+          "公開アクセスのため、既定で最も厳しいセキュリティが適用される",
+          "ゲストの権限・共有は「最小から必要分だけ開ける」設計が原則"
+        ],
+        "fig": "guest-security"
+      },
+      {
+        "title": "ゲストユーザーの OWD（組織の共有設定）",
+        "enName": "Guest User OWD",
+        "definition": "未認証のゲストに適用されるレコード共有の基準。非公開に固定される。",
+        "examPoints": [
+          "ゲスト用の条件ベース共有ルールで参照アクセスを付与する。",
+          "オブジェクトと項目へのアクセスも別途確認する。",
+          "認証済みユーザーの外部OWDと同じように公開へ変更することはできない。"
+        ],
+        "fig": "guest-security",
+        "questions": [
+          30,
+          32,
+          143
+        ]
+      },
+      {
+        "title": "ゲストユーザー共有ルール",
+        "enName": "Guest User Sharing Rule",
+        "definition": "ゲストへレコードの参照を許可する、専用の条件ベース共有ルール。",
+        "examPoints": [
+          "ゲストの共有ルールで付与できるのは参照のみ。",
+          "ゲストは公開グループ・キューに所属できず、手動共有ではアクセスを付与できない。",
+          "条件に一致する全訪問者へ公開されることを前提に、機密情報を除外して検証する。"
+        ],
+        "questions": [
+          30,
+          32,
+          143
+        ]
+      },
+      {
+        "title": "ゲスト作成レコードの既定の所有者",
+        "enName": "Default Owner of Guest-Created Records",
+        "definition": "ゲストが作成したレコードを引き受ける既定ユーザーのサイト設定。",
+        "examPoints": [
+          "Administration > Preferencesでゲスト以外のアクティブユーザーを選ぶ。",
+          "既定所有者にもレコードの参照権限を確認する。",
+          "適切な割り当て処理でユーザーやキューへ分散できる。ゲストのキュー所属禁止とレコードのキュー所有を混同しない。"
+        ],
+        "fig": "guest-security",
+        "questions": [
+          4
+        ]
+      },
+      {
+        "title": "ゲストユーザーのページビュー上限",
+        "enName": "Guest User Page View Limit",
+        "definition": "エディションと追加購入分によって決まる、組織内のサイトを合算したページビュー割り当て。",
+        "examPoints": [
+          "Enterpriseは月50万、Unlimited・Performanceは月100万が標準枠。",
+          "超過は12か月の遡及期間で計算する。月ごとの超過が即アクセス停止を意味するわけではない。",
+          "Company InformationやPage Views - Monthly Trendレポートで使用状況を確認する。"
+        ],
+        "questions": [
+          41
+        ]
+      },
+      {
+        "title": "ゲストユーザーの Lightning フロー有効化",
+        "enName": "Enable Lightning Flows for Guest Users",
+        "definition": "ゲストプロファイルへ、実行させるフローの個別アクセスを付与する設定。",
+        "examPoints": [
+          "フロー単位のアクセス制御を設定し、ゲストプロファイルのEnabled Flow Accessで対象を許可する。",
+          "FlowSiteや旧トグルだけで起動を許可したと判断しない。",
+          "フローの起動権限と、実行コンテキストによるデータアクセス範囲は別々に検証する。"
+        ],
+        "questions": [
+          13
+        ]
+      },
+      {
+        "title": "ゲストユーザーのアセット/CMS 表示",
+        "enName": "Guest Access to Asset Files & CMS",
+        "definition": "ゲストにサイト上の画像・CMS コンテンツを表示させる管理ワークスペース設定。",
+        "examPoints": [
+          "**「ゲストユーザーがコミュニティで利用可能なアセットファイルと CMS コンテンツを表示できるようにする」**を有効化（Q71）",
+          "ゲストに画像が出ない不具合の典型的な原因"
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "ユーザー作成・認証",
+    "terms": [
+      {
+        "title": "パートナーユーザーの有効化",
+        "enName": "Enable Partner User",
+        "definition": "パートナー取引先に紐づく取引先責任者から、パートナーユーザー（外部ユーザー）を作成する操作。",
+        "examPoints": [
+          "前提：取引先を**「パートナーとして有効化（Is Partner）」**にする（取引先ページレイアウトにこのアクションが必要）（Q36, Q52）",
+          "**取引先責任者の詳細ページ**から「外部ユーザーの管理 > パートナーユーザーの有効化」で作成（Q36）",
+          "パートナーユーザーは法人取引先から作成する。Customer Community Plusの顧客ユーザーとは種別を区別する。",
+          "Portal account owner must have a roleでは、Contact所有者ではなく、そのContactが所属する取引先の所有者にロールがあるかを確認する。",
+          "ユーザー作成・サイト参加済みでも、外部プロファイルのAPI Only Userが有効だと対話型ログインできない。"
+        ],
+        "fig": "user-creation-auth",
+        "questions": [
+          36,
+          52,
+          70,
+          73
+        ]
+      },
+      {
+        "title": "顧客ユーザーの有効化",
+        "enName": "Enable Customer User",
+        "definition": "取引先責任者や個人取引先から顧客ユーザーを作成し、必要なサイトへ参加させる操作。",
+        "examPoints": [
+          "通常の手動作成ではEnable Customer Userを使い、外部ライセンスと対応プロファイルを設定する。",
+          "サイト参加はMembersに登録したプロファイルや権限セットで決まる。取引先だけを有効にしてアクセスを自動付与するわけではない。",
+          "External IdentityにはContactを持たないユーザーの方式もある。すべての外部ユーザーにContactを必須と断定しない。"
+        ],
+        "fig": "user-creation-auth",
+        "questions": [
+          65,
+          120,
+          137
+        ]
+      },
+      {
+        "title": "セルフ登録",
+        "enName": "Self-Registration",
+        "definition": "サイト訪問者が自分で登録するための設定。標準Experience Builderの登録とカスタムハンドラーを区別する。",
+        "examPoints": [
+          "Workspaces > Administration > Login & Registrationでセルフ登録を許可する。",
+          "個人取引先が有効な組織の標準登録ではAccount欄を空にする。対応する外部プロファイルも設定する。",
+          "独自Apexハンドラーは標準設定を上書きできる。個人取引先専用という架空のプロファイルを前提にしない。"
+        ],
+        "fig": "user-creation-auth",
+        "questions": [
+          83,
+          104
+        ]
+      },
+      {
+        "title": "個人取引先",
+        "enName": "Person Account",
+        "definition": "取引先と取引先責任者の情報を合わせて個人顧客を表す取引先種別。",
+        "examPoints": [
+          "個人取引先が有効な組織で顧客ユーザーの作成に利用できる。",
+          "標準Experience Builderのセルフ登録では、共通の法人Accountを指定せずAccount欄を空にする。",
+          "パートナーユーザーの法人取引先による構成とは分ける。"
+        ],
+        "questions": [
+          74,
+          104
+        ]
+      },
+      {
+        "title": "認証プロバイダー / ソーシャルログイン",
+        "enName": "Authentication Provider",
+        "definition": "Google・Facebook・LinkedIn などの外部 ID を使ってサイトにログインさせる仕組み。",
+        "examPoints": [
+          "Google認証プロバイダーにスコープと登録ハンドラーを設定し、サイトのログイン設定へ追加する。",
+          "登録ハンドラーはApexまたはFlowで用意する。標準の認証プロバイダーを使うことと、登録処理の設計が不要であることは同義ではない。",
+          "Google側のOAuthアプリに登録する戻り先はCallback URL。テスト開始・SSO開始・既存アカウント連携の各URLとは役割が異なる。"
+        ],
+        "questions": [
+          99,
+          106
+        ]
+      },
+      {
+        "title": "SSO とフェデレーション ID",
+        "enName": "SSO / Federation ID",
+        "definition": "SAML ベースのシングルサインオンで外部 ID プロバイダー（IdP）と連携する仕組み。",
+        "examPoints": [
+          "標準SAML JITではSAML User ID TypeにFederation IDを指定する。これはUser.UserTypeの値ではなく、ユーザー識別方法の設定（Q26）。",
+          "Salesforce 組織は **IdP にも SP にもなれる**（2 組織間 SSO はサードパーティ IdP 不要）（Q40）",
+          "Entity ID は IdP/SP 自体の識別子であり、ユーザー識別ではない"
+        ]
+      },
+      {
+        "title": "委任外部ユーザー管理",
+        "enName": "Delegated External User Administration",
+        "definition": "対応する外部ユーザーへ、選択したプロファイルや権限セットの範囲でユーザー管理を委任する。",
+        "examPoints": [
+          "Partner CommunityやCustomer Community Plusなどの対応ライセンスを確認する。対象プロファイルと権限セットを委任管理者のプロファイルで選択する。",
+          "取引先へのRead以上、取引先責任者のCreate/Editなど、担当業務に必要な権限も確認する。",
+          "委任管理を無効にしても、自動付与されたPortal Super UserやView Roles and Role Hierarchyは自動解除されない。不要な付与元を棚卸しする。",
+          "許可済み権限セットの割り当て・解除は委任できるが、セットの権限定義を自由に編集できる意味ではない。別取引先を管理するには追加の認可・構成を確認する。"
+        ],
+        "questions": [
+          69,
+          107,
+          159,
+          160
+        ]
+      },
+      {
+        "title": "ウェルカムメール不達の典型原因",
+        "enName": "Welcome Email Troubleshooting",
+        "definition": "サイト状態、メンバー、配信設定、送信元アドレスと送信ドメインを分けて確認する。",
+        "examPoints": [
+          "Send welcome emailが有効なら、PreviewからActiveへの変更時などに対象メンバーへ配信される。",
+          "Fromアドレスが確認済みでも、未確認の送信ドメインからのシステムメールは配信されない。",
+          "既存の送信元から変更した新アドレスが確認待ちの間は既存アドレスを使う。アドレスの変更待ちを全配信停止と同一視しない。"
+        ],
+        "questions": [
+          89,
+          133,
+          154
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "テンプレートとテーマ",
+    "terms": [
+      {
+        "title": "Customer Service テンプレート",
+        "enName": "Customer Service (Napili)",
+        "definition": "ケース・Q&A・ナレッジ・トピックを備えたセルフサービス/コミュニティ型テンプレート（Aura 基盤）。",
+        "examPoints": [
+          "ピアツーピアの Q&A・記事閲覧で問い合わせを削減（Q60, Q123）",
+          "Chatter・フィードを使うコミュニティ機能が揃っている（Aura 基盤）",
+          "「質問投稿＋ナレッジ＋ケース」のセルフサービス要件で選ぶ",
+          "Account Managementも標準ページに含まれる。テンプレートの主用途だけで、特定ページは利用不可と判断しない。"
+        ],
+        "fig": "template-decision",
+        "questions": [
+          60,
+          123,
+          124
+        ]
+      },
+      {
+        "title": "Customer Account Portal テンプレート",
+        "enName": "Customer Account Portal",
+        "definition": "認証済みの顧客が自分の取引先情報・ケースを管理することに重点を置いたテンプレート（Aura 基盤）。",
+        "examPoints": [
+          "認証済み顧客の取引先情報の更新などを支援する。Included PagesにはAccount Managementが含まれる（Q124）。",
+          "オーディエンスターゲティングでナビゲーションメニューを出し分けられる"
+        ],
+        "questions": [
+          14,
+          124
+        ]
+      },
+      {
+        "title": "Partner Central テンプレート",
+        "enName": "Partner Central",
+        "definition": "パートナー向けのチャネル販売やリード配信を構成するAuraテンプレート。",
+        "examPoints": [
+          "Lead Inboxはキューと対応するリストビューを使う。対象パートナーへの表示設定を両方で確認する。",
+          "Acceptしたパートナーユーザーがリードの所有者になる。引き受けと取引開始は別の操作。"
+        ],
+        "fig": "template-decision",
+        "questions": [
+          45,
+          61,
+          88,
+          161
+        ]
+      },
+      {
+        "title": "Help Center テンプレート",
+        "enName": "Help Center",
+        "definition": "一般公開のナレッジやFAQを提供するためのAuraテンプレート。",
+        "examPoints": [
+          "Help CenterをBuild Your Own (LWR)と同じ基盤として扱わない。",
+          "必要なコンポーネントはAuraテンプレート別の対応表で確認する。"
+        ],
+        "fig": "template-decision",
+        "questions": [
+          43
+        ]
+      },
+      {
+        "title": "Build Your Own（LWR / Aura）",
+        "enName": "Build Your Own",
+        "definition": "白紙から自由に構築できるテンプレート。基盤に LWR（Lightning Web Runtime）と Aura の 2 種がある。",
+        "examPoints": [
+          "LWRはLWCプログラミングモデルとWeb標準を活用して、軽量な独自サイトを構築する。",
+          "テンプレートを選ぶだけではリアルタイム更新の要件は満たされない。データ取得・更新・キャッシュも別途設計する。",
+          "Auraは基本ページを備え、追加ページや対応コンポーネントを使って拡張できる。標準同梱と追加開発を区別する。"
+        ],
+        "fig": "template-decision",
+        "questions": [
+          96,
+          124
+        ]
+      },
+      {
+        "title": "Lightning Bolt（ソリューション）",
+        "enName": "Lightning Bolt Solution",
+        "definition": "カスタムテンプレート、Lightningアプリ、フローカテゴリを組み合わせ、配布・再利用するソリューション。",
+        "examPoints": [
+          "テンプレートはBuilderのSettings > Developerで書き出し、SetupのLightning Bolt Solutionsで必要な要素を選ぶ。",
+          "テンプレート書き出しでは、カスタムオブジェクトのカスタムリストビューは含まれるが、標準オブジェクトのカスタムリストビューは含まれない。ナビゲーション項目のリストビュー選択は既定に戻る。",
+          "テンプレート全体の書き出しには非既定ページバリエーションが含まれない。CMS本文や対象外設定は別途移行・再設定を計画する。"
+        ],
+        "questions": [
+          50,
+          79,
+          141,
+          173,
+          174
+        ]
+      },
+      {
+        "title": "テーマ",
+        "enName": "Theme",
+        "definition": "サイト全体の見た目の枠組み（レイアウト・色・フォントの構造）を定義する仕組み。",
+        "examPoints": [
+          "スタイルガイドに合わせたカスタムテーマを作り、複数サイトに適用してブランドを統一（Q125）",
+          "オーディエンスごとに配色を出し分けたいなら、テーマではなく**ブランドセット**を使う（Q3）",
+          "Auraの柔軟なページレイアウトでは、セクションのStyle > Imageで背景画像を指定できる。Object Managerのページレイアウトや、部品内部のスタイルとは区別する。"
+        ],
+        "fig": "builder-structure"
+      },
+      {
+        "title": "ページバリエーション",
+        "enName": "Page Variation",
+        "definition": "1 つのページについて、レイアウト・コンポーネント・コンテンツが異なる複数バージョンを作る機能。",
+        "examPoints": [
+          "オーディエンスと組み合わせ、同じページのレイアウトやコンテンツを対象者ごとに変える（Q19、Q20、Q101）。",
+          "ページとコンポーネントの両方にオーディエンスを設定すると、両条件を満たす利用者に表示される（Q20）。ページを増やさず本文の部品だけを切り替えるなら、対応するコンポーネントへ直接割り当てる（Q64）。",
+          "レコードベース条件を使えるのはレコード詳細ページとそのバリエーション。一般ページやナビゲーションへ適用できると解釈しない。"
+        ],
+        "questions": [
+          19,
+          20,
+          64,
+          147,
+          174
+        ]
+      },
+      {
+        "title": "サイト検索（Aura / LWR）",
+        "enName": "Site Search",
+        "definition": "サイトの検索入力・候補・検索結果を構成する。サイト基盤に合う部品と利用可能な機能を選ぶ。",
+        "examPoints": [
+          "AuraではGlobal Search Resultsの対象とGlobal Search BoxのObjects in Autocomplete Resultsを別々に設定する。",
+          "LWRのCRM検索はSearch BarとResults Layoutを使い、Results SourceをCRM Objectにする。",
+          "対象オブジェクトとレコード詳細ページを設定し、ライセンス・Read権限・レコード共有も確認する。",
+          "検索UIから対象を外すことは、レコードを閲覧する権限の取り消しではない。ベータの設定は利用環境も確認する。"
+        ],
+        "questions": [
+          102,
+          111,
+          181
+        ]
+      },
+      {
+        "title": "縦型ナビゲーション",
+        "enName": "Vertical Navigation",
+        "definition": "1階層のリンクを縦に並べ、セクション単位でまとめる基本コンポーネント。",
+        "examPoints": [
+          "Auraではlightning:verticalNavigationを、SectionやItemの子部品と組み合わせる。LWC用のlightning-vertical-navigationとは記法を区別する。",
+          "折りたたみ領域はverticalNavigationOverflowで明示的に定義する。画面幅だけで自動生成されるわけではない。",
+          "サイト標準メニューのPersonalizeと、独自コンポーネントで縦メニューを組み立てることは別。"
+        ],
+        "questions": [
+          23
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "ブランディング・パーソナライズ・コンテンツ",
+    "terms": [
+      {
+        "title": "ブランドセット",
+        "enName": "Branding Set",
+        "definition": "配色・フォント・画像・ロゴをまとめてサイトの外観を定義する仕組み。複数作成してオーディエンスに割り当てられる。",
+        "examPoints": [
+          "Auraで画像・書体・色をまとめ、オーディエンスへ割り当てる。ページ全体のレイアウトや内容の変更とは別。",
+          "レコードベース条件のオーディエンスはブランドセットに割り当てられない。",
+          "事前構築済みテーマではヘッダーとHeroはブランドセットの対象外。対象領域と独自部品の対応を確認する。"
+        ],
+        "fig": "builder-structure",
+        "questions": [
+          3,
+          5,
+          101,
+          185
+        ]
+      },
+      {
+        "title": "オーディエンスターゲティング",
+        "enName": "Audience Targeting",
+        "definition": "Auraサイトで対象者の条件を定義し、ページ・ブランドセット・対応部品の表示を出し分ける。機密データの認可には別のセキュリティ設定を使う。",
+        "examPoints": [
+          "Profile、Location、Domain、User Object、Permissionなどの条件を用途に応じて使う。User項目のDateは対応するがDate/Timeは非対応。",
+          "Userの部門や担当区分で表示を変えることと、閲覧中のレコード項目で表示を変えることは別。",
+          "レコードベース条件を割り当てられるのはレコード詳細ページまたはそのバリエーション。ブランドセットやメニューには一般化しない。",
+          "1サイトのオーディエンス上限は1,500。既存オーディエンスを条件に使えるが、入れ子は1階層まで。",
+          "LocationはIPアドレスに基づく。外部CDNではTrue-Client-IPヘッダーの構成を確認する。"
+        ],
+        "fig": "builder-structure",
+        "questions": [
+          14,
+          20,
+          47,
+          97,
+          101,
+          182,
+          183,
+          184
+        ]
+      },
+      {
+        "title": "ナビゲーションメニューターゲティング",
+        "enName": "Navigation Menu Targeting",
+        "definition": "AuraのNavigation MenuやTile Menuで、対象者に応じたメニューを割り当てる標準機能。",
+        "examPoints": [
+          "部品のPersonalizeでメニューとオーディエンスを対応付け、公開する。",
+          "メニューの非表示は、リンク先レコードのアクセス権の取り消しではない。",
+          "部品そのものへの割り当てと、Personalizeによる部品内部のメニューバリエーションを区別する。"
+        ],
+        "questions": [
+          5,
+          14
+        ]
+      },
+      {
+        "title": "トピック",
+        "enName": "Topics",
+        "definition": "記事・質問などを分類し、サイト内のナビゲーションや内容の発見を助ける仕組み。",
+        "examPoints": [
+          "ナビゲーショントピックはメニューやTopic Catalog、注目トピックはホームページの誘導、コンテンツトピックは内容の分類に使う。",
+          "Auraサイトでもコンテンツトピックを利用できる。公式概要には、メンバー作成のトピックも説明されている。",
+          "メンバーが質問へ独自のトピックを付けるにはCreate TopicsとAssign Topicsを確認する。",
+          "注目トピックのサムネイルはホームページ用。トピック詳細ページの既定バナーはExperience Builder側で設定する。"
+        ],
+        "questions": [
+          28,
+          84,
+          122,
+          171
+        ]
+      },
+      {
+        "title": "CMS Connect",
+        "enName": "CMS Connect",
+        "definition": "外部CMSのコンテンツを接続してAuraサイトへ表示する機能。",
+        "examPoints": [
+          "HTML配信のヘッダーやフッターはBuilderのCMS Connect設定で接続する。",
+          "外部CMSのHTTPS配信、CORS、CSPなどの前提を確認する。",
+          "Salesforce CMSのコレクションを配置する機能とは区別する。"
+        ],
+        "questions": [
+          75
+        ]
+      },
+      {
+        "title": "Salesforce CMS / CMS コレクション",
+        "enName": "Salesforce CMS / CMS Collection",
+        "definition": "CMSで記事や画像を管理し、チャネルを介してサイトなどへ公開する。コレクションはコンテンツの集合。",
+        "examPoints": [
+          "Aura用コレクションはExperience WorkspacesのContent Managementで作る。手動と条件付きがある。",
+          "条件付きコレクションは公開日などで記事を自動選定する。手動コレクションは追加・削除が必要。",
+          "拡張CMSワークスペースのコレクションをAura用としてそのまま使用することはできない。",
+          "CMSの保存と公開は別。Content Authorは作成・編集できるが公開できず、Content ManagerとContent Adminは公開できる。",
+          "拡張CMSのコレクションをGridで表示する構成は拡張LWR向け。サイトをチャネルに追加し、コレクションを公開してから表示項目を結び付ける。"
+        ],
+        "questions": [
+          103,
+          153,
+          163,
+          164,
+          166,
+          167
+        ]
+      },
+      {
+        "title": "ナレッジ記事の公開チャネル",
+        "enName": "Knowledge Article Channels",
+        "definition": "ナレッジ記事をどの読者に見せるかを決めるチャネル設定。",
+        "examPoints": [
+          "ゲスト向けの公開チャネルは「公開ナレッジベースに表示」。チェックだけで全員へのアクセスを保証しない（Q118）。",
+          "「パートナーに表示」＝Partner ユーザー向け／「顧客に表示」＝ログイン済み顧客向け",
+          "ゲストに記事を見せたいのに出ない場合はチャネル設定を確認",
+          "チャネル指定だけでアクセスが完成するわけではない。記事の公開状態、オブジェクト権限、使用中のKnowledge共有方式も確認する。"
+        ],
+        "questions": [
+          118
+        ]
+      },
+      {
+        "title": "データカテゴリの表示設定",
+        "enName": "Data Category Visibility",
+        "definition": "Knowledgeでデータカテゴリによるアクセス制御を使う場合の、カテゴリ別の表示範囲。標準共有方式とは分けて確認する。",
+        "examPoints": [
+          "親ロールの範囲が子より狭くなると、子のカテゴリ表示設定は親に合わせてリセットされる。",
+          "翻訳記事はマスタ記事のカテゴリ割り当てを引き継ぐ。",
+          "複数のカテゴリグループが付く記事は、各グループで少なくとも1カテゴリを参照できる必要がある。プロファイル単独で既定の可視性を制限できると断定しない。",
+          "Use standard Salesforce sharingを有効にした場合、カテゴリは分類・検索フィルターに使い、記事のアクセスはOWDとKnowledge共有ルールなどで管理する。"
+        ],
+        "questions": [
+          63,
+          93,
+          110
+        ]
+      },
+      {
+        "title": "Grid（LWR）",
+        "enName": "Grid",
+        "definition": "LWRサイトで、選択したデータソースの項目を繰り返し表示する部品。",
+        "examPoints": [
+          "CRMリストビュー、または拡張LWRで拡張CMSコレクションをデータソースにする。",
+          "内部のText Block、Tile、Imageなどへ項目を結び付ける。ページ送りも提供する。",
+          "CRMリストビューを使う場合、バインド候補はそのビューに選択されている項目に限られる。項目権限だけで候補が増えるわけではない。"
+        ],
+        "questions": [
+          103,
+          178
+        ]
+      }
+    ]
+  },
+  {
+    "chapter": "活用促進・モデレーション・分析",
+    "terms": [
+      {
+        "title": "モデレーション",
+        "enName": "Moderation",
+        "definition": "投稿・コメント・ファイルなどを対象に、不適切な内容を管理する機能。",
+        "examPoints": [
+          "Workspacesへの入口はAccess Experience Management。フィードやファイルなどの操作権限は別途付与する。",
+          "Manage Experiencesはワークスペースでのコンテンツ管理に使える権限。すべてのサイト作成・削除を許可するという意味ではない。",
+          "コンテンツルールはBlock・Review・Replace・Flag、レートルールはNotify・Freezeを用途に応じて使う。"
+        ],
+        "questions": [
+          16,
+          51
+        ]
+      },
+      {
+        "title": "モデレーション/レートルールの上限とメンバー条件",
+        "enName": "Moderation Rule Limits",
+        "definition": "内容や投稿頻度に応じたモデレーションルールの上限と対象条件。",
+        "examPoints": [
+          "コンテンツとレートのルールは、サイト横断で合計30件まで。",
+          "未貢献メンバーの初投稿にはMembers without site contributionsを使う。Reviewで公開前に確認する。",
+          "ユーザー作成日、サイト参加日、初投稿の有無は別の条件。過去7日以内という日付条件だけで代用しない。"
+        ],
+        "questions": [
+          25,
+          113
+        ]
+      },
+      {
+        "title": "Insights レポート",
+        "enName": "Insights Reports",
+        "definition": "Experience Workspacesでサイトの活動を確認するレポート。AppExchangeの管理パッケージには事前構成済みInsightsがある。",
+        "examPoints": [
+          "事前構成済みInsightsにはサイトでのChatter使用が必要。Chatterなし版のパッケージが存在することと混同しない。",
+          "パッケージのレポートは組織内フォルダーにインストールされる。管理者・マネージャーの操作権限とフォルダー共有も確認する。",
+          "地域だけを理由に利用不可と判断せず、サイト構成と利用する分析機能の前提を確認する。"
+        ],
+        "questions": [
+          2
+        ]
+      },
+      {
+        "title": "評判（Reputation）",
+        "enName": "Reputation",
+        "definition": "メンバーの活動に応じたポイントとレベルを表示し、サイトへの貢献を促す仕組み。",
+        "examPoints": [
+          "有効化すると既定のポイント体系と評判レベルを利用できる。全員へ一律の初期ボーナスを配るという意味ではない。",
+          "ContributionセクションからChatter influenceが取り除かれる。評判レベルの表示は管理設定で扱う。",
+          "バッジによる称賛は別の機能であり、評判の有効化だけで各メンバーへバッジを自動配布しない。"
+        ],
+        "questions": [
+          92
+        ]
+      },
+      {
+        "title": "トピックと記事の関連付け",
+        "enName": "Associating Articles with Topics",
+        "definition": "Knowledge記事とサイト固有のトピックを関連付け、内容を探しやすくする。",
+        "examPoints": [
+          "Article Managementで記事を選び、トピックを手動で追加・削除できる。",
+          "Automatic Topic Assignmentはデータカテゴリをトピックに対応付ける。既存記事への追加は任意で選択し、将来の記事にも適用する。",
+          "割り当てはサイト固有。同じ記事を使う複数サイトでも、各サイトに設定する。既存記事からのトピック削除は自動では行われない。",
+          "Navigational TopicsのAdd Articlesは実行時の記事が対象。Topic Catalogにはナビゲーショントピックとサブトピックが表示される。"
+        ],
+        "questions": [
+          24,
+          34,
+          168,
+          171,
+          175,
+          176
+        ]
+      },
+      {
+        "title": "SEO",
+        "enName": "Search Engine Optimization",
+        "definition": "本番の公開サイトを検索エンジンが取得・索引化できるように整える設定。",
+        "examPoints": [
+          "公開・有効化と、対象コンテンツへの未認証アクセスを確認する。",
+          "カスタムrobots.txtは任意。既定ファイルと自動サイトマップを利用できる。",
+          "手動サイトマップ再生成も24時間に1回まで可能。Disallowは検索結果からの除外を保証しない。"
+        ],
+        "questions": [
+          59
+        ]
+      },
+      {
+        "title": "Google アナリティクス連携",
+        "enName": "Google Analytics",
+        "definition": "サイトの閲覧・操作イベントをGoogle Analyticsへ送って利用傾向を分析する連携。",
+        "examPoints": [
+          "拡張LWRはSettings > Integrations > Google Analytics 4でMeasurement IDを設定し、公開する。",
+          "標準イベントにはページビュー、スクロール、ファイルダウンロード、外部リンククリックがある。",
+          "SalesforceのLogin Historyや全Case作成件数の自動同期ではない。旧Universal Analyticsの手順と混同しない。"
+        ],
+        "questions": [
+          85
+        ]
+      },
+      {
+        "title": "Customer Insights",
+        "enName": "Customer Insights",
+        "definition": "顧客のサイト内での閲覧行動などをService Consoleの担当者へ示し、重複案内を減らす。",
+        "examPoints": [
+          "WorkspacesのAdministration > PreferencesでGather Customer Insights dataを有効にし、担当者へView Customer Insightsを付与する。",
+          "法人取引先向け。ログイン済みメンバーをプロファイル単位で収集対象から除外できない。閲覧権限の解除は収集の停止と別。",
+          "サンドボックスでは利用できない。すべての操作を記録する監査ログや、WorkspacesのInsightsレポートとは区別する。"
+        ],
+        "questions": [
+          115,
+          179,
+          180
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,637 @@
+#!/usr/bin/env node
+/* =====================================================================
+ * test-engine.js — quiz-engine.js 純粋ロジックのスモークテスト
+ * ---------------------------------------------------------------------
+ * 使い方:  node tools/test-engine.js
+ * 終了コード: 0=全件成功 / 1=失敗あり（CI で push 毎に実行）
+ *
+ * エンジンは IIFE で包まずグローバル関数のまま（HTML の inline onclick 依存）
+ * なので、vm コンテキストに DOM/localStorage のスタブを与えて丸ごと読み込み、
+ * 同一コンテキストでテストを実行する（トップレベル let/const も参照できる）。
+ * 対象: SRS / 難易度推定 / 復習判定 / XP・レベル / 模試抽出 / store 正規化 など。
+ * ===================================================================== */
+'use strict';
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
+/* ---- DOM / ブラウザ API スタブ ---- */
+function makeElement() {
+  const attrs = {};
+  const classes = new Set();
+  const listeners = {};
+  const el = {
+    style: {}, dataset: {}, children: [], innerHTML: '', textContent: '', value: '',
+    disabled: false, attrs, listeners,
+    // クラスは実際に保持する（開閉トグルなど classList を使うロジックを検証するため）
+    classList: {
+      add(...c) { c.forEach((x) => x && classes.add(x)); },
+      remove(...c) { c.forEach((x) => classes.delete(x)); },
+      contains: (c) => classes.has(c),
+      toggle(c, force) {
+        const on = force === undefined ? !classes.has(c) : !!force;
+        if (on) classes.add(c); else classes.delete(c);
+        return on;
+      },
+    },
+    // 属性は実際に保持する（aria-pressed / data-theme などの状態伝達を検証するため）
+    setAttribute(k, v) { attrs[k] = String(v); },
+    getAttribute: (k) => (Object.prototype.hasOwnProperty.call(attrs, k) ? attrs[k] : null),
+    removeAttribute(k) { delete attrs[k]; }, hasAttribute: (k) => Object.prototype.hasOwnProperty.call(attrs, k),
+    // ハンドラを記録し、テストから fire() で発火できるようにする
+    addEventListener(type, fn) { (listeners[type] || (listeners[type] = [])).push(fn); },
+    removeEventListener(type, fn) { listeners[type] = (listeners[type] || []).filter((f) => f !== fn); },
+    fire(type, ev) { (listeners[type] || []).forEach((f) => f(Object.assign({ preventDefault() {}, stopPropagation() {}, target: el }, ev))); },
+    appendChild() {}, removeChild() {}, insertBefore() {}, remove() {}, focus() {},
+    querySelector: () => null, querySelectorAll: () => [],
+  };
+  // className は classList と同じ実体を見る（engine は両方で書き換えるため）
+  Object.defineProperty(el, 'className', {
+    get: () => [...classes].join(' '),
+    set: (v) => { classes.clear(); String(v).split(/\s+/).filter(Boolean).forEach((c) => classes.add(c)); },
+    enumerable: true,
+  });
+  el.parentNode = { insertBefore() {}, appendChild() {}, removeChild() {} };
+  return el;
+}
+// getElementById は同じ id に同じスタブ要素を返す（DOM を触る関数も丸ごとテストできるように）
+const elements = new Map();
+const byId = (id) => { if (!elements.has(id)) elements.set(id, makeElement()); return elements.get(id); };
+const storage = new Map();
+const sandbox = {
+  console,
+  localStorage: {
+    getItem: (k) => (storage.has(k) ? storage.get(k) : null),
+    setItem: (k, v) => storage.set(k, String(v)),
+    removeItem: (k) => storage.delete(k),
+  },
+  document: {
+    addEventListener() {}, getElementById: byId,
+    querySelector: () => null, querySelectorAll: () => [],
+    createElement: makeElement, documentElement: makeElement(), body: makeElement(),
+  },
+  navigator: { onLine: true, userAgent: 'test', language: 'ja' },
+  location: { href: 'http://localhost/', origin: 'http://localhost', hostname: 'localhost', pathname: '/', search: '', hash: '' },
+  history: { replaceState() {} },
+  fetch: () => Promise.reject(new Error('no network in test')),
+  setTimeout, clearTimeout, setInterval: () => 0, clearInterval() {},
+  confirm: () => true, alert() {},
+  addEventListener() {}, removeEventListener() {}, scrollTo() {},
+};
+sandbox.window = sandbox;
+sandbox.window.CERT_CONFIG = { slug: 'sf-admin', certName: 'テスト資格', examN: 60, examMin: 105, pass: 65, storageKey: 'sfq_test' };
+vm.createContext(sandbox);
+
+const engineSrc = fs.readFileSync(path.join(__dirname, '..', 'quiz-engine.js'), 'utf8');
+vm.runInContext(engineSrc, sandbox, { filename: 'quiz-engine.js' });
+
+/* ---- ミニテストランナー ---- */
+let pass = 0, fail = 0;
+function t(name, fn) {
+  try { fn(); pass++; console.log('  ✅ ' + name); }
+  catch (e) { fail++; console.error('  ❌ ' + name + ' — ' + e.message); }
+}
+function eq(a, b, msg) { if (a !== b) throw new Error((msg || '') + ' 期待=' + JSON.stringify(b) + ' 実際=' + JSON.stringify(a)); }
+function ok(v, msg) { if (!v) throw new Error(msg || 'falsy'); }
+const run = (code) => vm.runInContext(code, sandbox);
+
+console.log('== quiz-engine.js スモークテスト ==');
+
+t('shuffle: 要素を保存し並びだけ変える', () => {
+  const r = run('shuffle([1,2,3,4,5,6,7,8,9,10])');
+  eq(r.length, 10);
+  eq([...r].sort((a, b) => a - b).join(','), '1,2,3,4,5,6,7,8,9,10');
+});
+
+t('arrEq: 同一配列のみ true', () => {
+  ok(run('arrEq(["a","b"],["a","b"])'));
+  ok(!run('arrEq(["a","b"],["b","a"])'));
+  ok(!run('arrEq(["a"],["a","b"])'));
+});
+
+t('pad / fmtSec: 時間表示の整形', () => {
+  eq(run('pad(7)'), '07');
+  eq(run('fmtSec(45)'), '45秒');
+  eq(run('fmtSec(125)'), '2:05');
+});
+
+t('mdInline: HTML をエスケープし強調を変換', () => {
+  const s = run('mdInline("<script>x</scr"+"ipt> **強調**")');
+  ok(!s.includes('<script>'), 'scriptタグが素通り');
+  ok(s.includes('<strong>強調</strong>'), '強調が変換されない');
+});
+
+t('uiState: 例外状態を共通表示し、利用者文言をエスケープする', () => {
+  const h = run("uiState('error','!','<失敗>','詳細&確認','<button>再試行</button>')");
+  ok(h.includes('ui-state error') && h.includes('&lt;失敗&gt;') && h.includes('詳細&amp;確認'));
+  ok(h.includes('role="status"') && h.includes('<button>再試行</button>'));
+});
+
+t('qDiff: データの diff を最優先、無ければ正答率から推定', () => {
+  eq(run('qDiff({id:1,diff:3})'), 3);
+  eq(run('qDiff({id:1,diff:"易"})'), 1);
+  run('store.hist[900]={c:5,w:0}');     // 正答率100% → 易
+  eq(run('qDiff({id:900})'), 1);
+  run('store.hist[901]={c:1,w:4}');     // 正答率20% → 難
+  eq(run('qDiff({id:901})'), 3);
+  eq(run('qDiff({id:902})'), 2);        // 履歴なし → 標準
+});
+
+t('srsUpdate: 正解で間隔が伸び、誤答でリセット', () => {
+  run('store.srs={}; srsUpdate(10,true,false)');
+  eq(run('store.srs[10].ivl'), 1, '初回正解は翌日');
+  run('srsUpdate(10,true,false)');
+  eq(run('store.srs[10].ivl'), 3, '2回目正解は3日後');
+  run('srsUpdate(10,true,false)');
+  ok(run('store.srs[10].ivl') > 3, '3回目以降は ease 倍率で延伸');
+  run('srsUpdate(10,false,false)');
+  eq(run('store.srs[10].reps'), 0, '誤答で reps リセット');
+  eq(run('store.srs[10].due'), run('_today()'), '誤答は当日再出題');
+});
+
+t('srsUpdate: 自信なし正解は翌日に再出題', () => {
+  run('store.srs={}; srsUpdate(11,true,true)');
+  eq(run('store.srs[11].due'), run('_addDays(1)'));
+});
+
+t('isWrong / isUnseen / needsReview: 復習対象の判定', () => {
+  run('store.hist={}');
+  ok(run('isUnseen(50)'), '履歴なしは未着手');
+  run('store.hist[50]={c:0,w:1,last:"w"}');
+  ok(run('isWrong(50)') && run('needsReview(50)'), '誤答は要復習');
+  run('store.hist[50]={c:1,w:1,last:"c",lc:1}');
+  ok(!run('isWrong(50)') && run('needsReview(50)'), 'まぐれ正解も要復習');
+  run('store.hist[50]={c:1,w:1,last:"c",lc:0}');
+  ok(!run('needsReview(50)'), '自信あり正解は対象外');
+});
+
+t('levelInfo: XP 増加でレベルが単調増加', () => {
+  run('store.xp=0');
+  eq(run('levelInfo().lvl'), 1);
+  run('store.xp=200');
+  eq(run('levelInfo().lvl'), 2, '200XP で Lv.2');
+  let prev = 0;
+  for (const xp of [0, 500, 2000, 10000]) {
+    run('store.xp=' + xp);
+    const lvl = run('levelInfo().lvl');
+    ok(lvl >= prev, 'XP増でレベル低下');
+    prev = lvl;
+  }
+});
+
+t('__setStore: 欠損フィールドをすべて既定値で補完', () => {
+  run('window.__setStore({})');
+  const checks = ['Array.isArray(store.bm)', 'typeof store.hist==="object"', 'Array.isArray(store.exams)',
+    'typeof store.time.tot==="number"', 'typeof store.xp==="number"', 'Array.isArray(store.rdz)',
+    'typeof store.missions.claimed==="object"', 'store.examDate===""', 'store.acquiredDate===""'];
+  checks.forEach((c) => ok(run(c), c + ' が補完されない'));
+});
+
+/* ---- 模試抽出（合成データを注入） ---- */
+run(`
+DOMAIN_DEFS=[{code:'a',name:'A',weight:50,emoji:'🅰️'},{code:'b',name:'B',weight:30,emoji:'🅱️'},{code:'c',name:'C',weight:20,emoji:'🅾️'}];
+buildDomainIndex();
+allQ=[];QDOMAIN={};
+for(let i=1;i<=200;i++){
+  const d=i<=100?'a':(i<=160?'b':'c');
+  allQ.push({id:i,question:'Q'+i,choices:['x','y'],answers:['x'],domain:d});
+  QDOMAIN[i]=d;
+}
+srcSel=new Set();
+`);
+
+t('pickWeightedExam: 重複なく公式ウェイト比で抽出', () => {
+  const ids = run('pickWeightedExam(60).map(q=>q.id)');
+  eq(ids.length, 60);
+  eq(new Set(ids).size, 60, 'ID重複');
+  const byD = run('(function(){const c={a:0,b:0,c:0};pickWeightedExam(60).forEach(q=>c[QDOMAIN[q.id]]++);return c;})()');
+  ok(Math.abs(byD.a - 30) <= 2 && Math.abs(byD.b - 18) <= 2 && Math.abs(byD.c - 12) <= 2,
+    'ウェイト乖離: ' + JSON.stringify(byD));
+});
+
+t('模試の重複回避: 新鮮な問題で足りる分野は直近出題を選ばない', () => {
+  run('localStorage.removeItem(EXAM_RECENT_KEY)');
+  run('pushRecentExam(Array.from({length:30},(_,i)=>i+101))');   // 分野b(101-160)の前半30問を直近出題に
+  const ids = run('pickWeightedExam(60).map(q=>q.id)');
+  // b からは18問抽出され、新鮮な30問(131-160)で足りるので直近出題(101-130)は選ばれない
+  eq(ids.filter((i) => i >= 101 && i <= 130).length, 0, '直近出題が選ばれた');
+  eq(run('recentExamIds().size'), 30);
+  run('pushRecentExam([]);pushRecentExam([])');   // 直近2回ぶんを空で上書き
+  eq(run('recentExamIds().size'), 0, '直近2回のみ保持されていない');
+});
+
+/* ---- 模試の分野別配分（examQuota・純粋関数） ---- */
+t('examQuota: 最大剰余法で合計がぴったり n になる（丸め不利が末尾分野に固定されない）', () => {
+  // 8分野×12.5% で n=60 ＝ 各 7.5問。分野ごとに独立して四捨五入すると 8×8=64 問になり、
+  // 旧実装は picked.slice(0,60) で「後ろの分野」だけを機械的に切り捨てていた。
+  const defs = Array.from({ length: 8 }, (_, i) => ({ code: 'd' + i, weight: 12.5 }));
+  const stock = {}; defs.forEach((d) => { stock[d.code] = 50; });
+  sandbox.__defs = defs; sandbox.__stock = stock;
+  const q = run('examQuota(__defs,60,__stock)');
+  const vals = defs.map((d) => q[d.code]);
+  eq(vals.reduce((a, b) => a + b, 0), 60, '合計が n にならない: ' + JSON.stringify(vals));
+  ok(Math.min(...vals) === 7 && Math.max(...vals) === 8, '配分が 7/8 に収まらない: ' + JSON.stringify(vals));
+  delete sandbox.__defs; delete sandbox.__stock;
+});
+
+t('examQuota: 在庫不足のあふれ分は在庫が残る分野へウェイト比で配り直す', () => {
+  // sharing-visibility 相当（obj と model が在庫不足）
+  sandbox.__defs = [{ code: 'obj', weight: 27 }, { code: 'rec', weight: 39 },
+    { code: 'other', weight: 16 }, { code: 'model', weight: 18 }];
+  sandbox.__stock = { obj: 11, rec: 48, other: 13, model: 9 };
+  const q = run('examQuota(__defs,60,__stock)');
+  eq(Object.keys(q).reduce((a, k) => a + q[k], 0), 60, '合計が n にならない: ' + JSON.stringify(q));
+  eq(q.obj, 11, '在庫を超えて割り当てた(obj)');
+  eq(q.model, 9, '在庫を超えて割り当てた(model)');
+  ok(q.rec <= 48 && q.other <= 13, '在庫を超えて割り当てた: ' + JSON.stringify(q));
+  ok(q.rec - 23 > q.other - 10, 'あふれ分がウェイト比で配られていない: ' + JSON.stringify(q));
+  delete sandbox.__defs; delete sandbox.__stock;
+});
+
+t('examQuota: 全体の在庫が n に満たなければ配れるだけ配って止まる', () => {
+  sandbox.__defs = [{ code: 'a', weight: 50 }, { code: 'b', weight: 50 }];
+  sandbox.__stock = { a: 4, b: 6 };
+  const q = run('examQuota(__defs,60,__stock)');
+  eq(q.a + q.b, 10, '在庫の総数を超える/下回る: ' + JSON.stringify(q));
+  delete sandbox.__defs; delete sandbox.__stock;
+});
+
+t('pickWeightedExam: 在庫が薄い分野があっても n 問そろえ、在庫は超えない', () => {
+  run(`
+    __bakQ=allQ;__bakD=DOMAIN_DEFS;__bakM=QDOMAIN;
+    DOMAIN_DEFS=[{code:'x',name:'X',weight:70,emoji:'❌'},{code:'y',name:'Y',weight:30,emoji:'🇾'}];
+    buildDomainIndex();
+    allQ=[];QDOMAIN={};
+    // y は weight 上 18問必要だが在庫5問しかない
+    for(let i=1;i<=100;i++){allQ.push({id:i,question:'Q'+i,choices:['x','y'],answers:['x'],domain:'x'});QDOMAIN[i]='x';}
+    for(let i=101;i<=105;i++){allQ.push({id:i,question:'Q'+i,choices:['x','y'],answers:['x'],domain:'y'});QDOMAIN[i]='y';}
+    localStorage.removeItem(EXAM_RECENT_KEY);
+  `);
+  try {
+    const byD = run('(function(){const c={x:0,y:0};pickWeightedExam(60).forEach(q=>c[QDOMAIN[q.id]]++);return c;})()');
+    eq(byD.x + byD.y, 60, '60問そろわない: ' + JSON.stringify(byD));
+    eq(byD.y, 5, '在庫を超えて y から出題した: ' + JSON.stringify(byD));
+    eq(byD.x, 55, '不足分が x へ回っていない: ' + JSON.stringify(byD));
+  } finally {
+    run('allQ=__bakQ;DOMAIN_DEFS=__bakD;QDOMAIN=__bakM;buildDomainIndex();');
+  }
+});
+
+/* ---- 出典フィルタ（複数選択） ---- */
+t('出典フィルタ: 複数の出典をトグルで選べる', () => {
+  run(`
+    __allQbak=allQ;
+    allQ=[{id:1,source:'tyson'},{id:2,source:'gen'},{id:3,source:'jpnshiken'},{id:4,source:'tyson'},{id:5,source:'gen'}];
+    setSrcFilter('all');
+  `);
+  try {
+    eq(run('scopedQ().length'), 5, '初期はすべて対象');
+    run("setSrcFilter('tyson')");
+    eq(run('scopedQ().map(q=>q.id).join(",")'), '1,4', 'tyson のみ');
+    run("setSrcFilter('gen')");                  // 追加選択（複数同時）
+    eq(run('scopedQ().map(q=>q.id).join(",")'), '1,2,4,5', 'tyson+gen');
+    eq(run("localStorage.getItem('sfq_src')"), 'tyson,gen', 'カンマ区切りで保存');
+    run("setSrcFilter('tyson')");                // 1つだけ解除
+    eq(run('scopedQ().map(q=>q.id).join(",")'), '2,5', 'gen のみ');
+    run("setSrcFilter('gen')");                  // 全解除＝すべてに戻る
+    eq(run('scopedQ().length'), 5, '全解除はすべて扱い');
+    eq(run("localStorage.getItem('sfq_src')"), 'all', '空選択は all で保存');
+  } finally {
+    run("allQ=__allQbak; srcSel=new Set(); try{localStorage.removeItem('sfq_src');}catch(e){}");
+  }
+});
+
+t('freshFirst: 新鮮な問題が前に並ぶ', () => {
+  run('localStorage.removeItem(EXAM_RECENT_KEY);pushRecentExam([1,2,3])');
+  const arr = run('freshFirst(allQ.slice(0,6)).map(q=>q.id)');
+  eq(arr.length, 6);
+  ok(arr.slice(0, 3).every((i) => i > 3), '直近出題が前方に混入: ' + arr.join(','));
+});
+
+t('逆算ペース: 残り問題数と日数から1日ノルマを算出', () => {
+  run('store.hist={}');   // 全問未着手
+  const r = run('paceReco(10)');   // 200問÷10日
+  eq(r.remain, 200);
+  eq(r.perDay, 20);
+});
+
+t('finishExam: 採点・履歴保存・重複回避への記録', () => {
+  run(`
+    store.hist={};store.exams=[];localStorage.removeItem(EXAM_RECENT_KEY);
+    eQ=allQ.slice(0,10);eN=10;eTimed=true;eBudget=600;eSecs=300;eCur=0;eFlag={};eQTime={};eTimer=null;
+    eAns={};for(var i=0;i<10;i++){eAns[i]=i<7?[0]:[1];}   // choices=['x','y'], answers=['x'] → 7問正解
+    finishExam();
+  `);
+  const ex = run('store.exams[store.exams.length-1]');
+  eq(ex.ok, 7, '正解数');
+  eq(ex.pct, 70, '正答率');
+  eq(ex.pass, true, '合格判定（PASS=65）');
+  eq(ex.custom, true, '10問はカスタム扱い');
+  eq(run('recentExamIds().size'), 10, '出題IDが重複回避キーに記録される');
+});
+
+t('weeklyMissions / checkMissions: 週ミッションの達成とXP付与', () => {
+  run('store.daily={};store.exams=[];store.missions={wk:"",claimed:{}};store.xp=0');
+  run(`(function(){
+    var ws=_weekStart();
+    for(var i=0;i<3;i++){var d=new Date(ws);d.setDate(ws.getDate()+i);store.daily[_fmtD(d)]=14;}   // 3日×14問=42問
+    store.exams.push({ts:Date.now(),pct:80,ok:48,n:60,pass:true});
+  })()`);
+  const ms = run('weeklyMissions()');
+  ok(ms.every((m) => m.cur >= m.tgt), '全ミッション達成のはず: ' + JSON.stringify(ms));
+  run('checkMissions()');
+  eq(run('Object.keys(store.missions.claimed).length'), 3, '3件とも達成記録');
+  ok(run('store.xp') >= 150, 'ミッション報酬 50XP×3 が付与される');
+});
+
+t('PWAショートカット: 不明な ?go= は何もしない', () => {
+  run('location.search="?go=unknown"');
+  run('handleLaunchShortcut()');   // 例外にならず無視されること
+  run('location.search=""');
+  run('handleLaunchShortcut()');
+});
+
+t('gotoTerm: 用語名から学習ガイドの該当用語へジャンプ（完全・部分一致＋検索フォールバック）', () => {
+  run('CHDATA=[{chapter:"第1章: テスト",terms:[' +
+      '{title:"validation",jaName:"入力規則",enName:"Validation Rule",definition:"x"},' +
+      '{title:"layout",jaName:"ページレイアウト",definition:"y"}]}]');
+  run('gotoTerm("入力規則")');            // 完全一致（jaName）
+  eq(run('tdCi'), 0, '章index');
+  eq(run('tdTi'), 0, '入力規則の用語index');
+  run('gotoTerm("Validation Rule")');     // 完全一致（enName・空白無視）
+  eq(run('tdTi'), 0, 'enName一致でも入力規則');
+  run('gotoTerm("ページレイアウト")');
+  eq(run('tdTi'), 1, 'ページレイアウトの用語index');
+  run('gotoTerm("___存在しない用語___")'); // 未一致→検索フォールバック
+  eq(run('document.getElementById("tb-search").value'), '___存在しない用語___', '検索ボックスへフォールバック');
+});
+
+t('saveFilters/restoreFilters: 出題設定（絞り込み）が端末に保存・復元される', () => {
+  // 設定をセット（チェックボックス＋難易度）
+  byId('f-new').checked = true;
+  byId('f-wrong').checked = false;
+  byId('f-multi').checked = true;
+  run('fDiffSet={1:false,2:true,3:false}');
+  run('saveFilters()');
+  const raw = run("localStorage.getItem(SKEY+'_filters')");
+  ok(raw && raw.indexOf('"nw":true') >= 0, '保存JSONに未回答フラグ');
+  ok(raw.indexOf('"mu":true') >= 0, '保存JSONに複数選択フラグ');
+  // リセットしてから復元
+  byId('f-new').checked = false;
+  byId('f-multi').checked = false;
+  run('fDiffSet={1:false,2:false,3:false}');
+  run('restoreFilters()');
+  eq(byId('f-new').checked, true, '未回答チェックが復元');
+  eq(byId('f-multi').checked, true, '複数選択チェックが復元');
+  eq(byId('f-wrong').checked, false, '間違えたチェックは false のまま');
+  eq(run('fDiffSet[2]'), true, '難易度(標準)が復元');
+  eq(run('fDiffSet[1]'), false, '難易度(易)は false のまま');
+  run("localStorage.removeItem(SKEY+'_filters')");
+});
+
+t('levelInfo: レベルアップ境界と次レベルの必要XP', () => {
+  run('store.xp=199');
+  let r = run('levelInfo()');
+  eq(r.lvl, 1, '199XP はまだ Lv.1');
+  eq(r.cur, 199, 'レベル内の獲得XP');
+  eq(r.need, 200, 'Lv.1→2 の必要XP');
+  run('store.xp=200');
+  r = run('levelInfo()');
+  eq(r.lvl, 2, 'ちょうど 200XP で Lv.2');
+  eq(r.cur, 0, '繰り上がり直後の獲得XPは0');
+  eq(r.need, 260, 'Lv.2→3 は 200+60');
+  eq(run('levelInfo().total'), 200, 'total は素の XP');
+});
+
+t('paceReco: 端数は切り上げ／受験日が今日以前なら0', () => {
+  run('store.hist={}');           // 全200問が未着手
+  eq(run('paceReco(7).perDay'), 29, '200÷7 は切り上げて29問');
+  eq(run('paceReco(0).perDay'), 0, '残り日数0なら1日ノルマは出さない');
+  eq(run('paceReco(-3).perDay'), 0, '受験日を過ぎていても0');
+  run('store.hist={};allQ.forEach(q=>{store.hist[q.id]={c:2,w:0,last:"c",lc:0};});');
+  const done = run('paceReco(10)');
+  eq(done.remain, 0, '全問マスター済みなら残り0');
+  eq(done.perDay, 0, '残り0なら1日ノルマも0');
+  run('store.hist={}');
+});
+
+t('qDiff: データの難易度を優先し、無ければ正答率から推定', () => {
+  eq(run('qDiff({id:9001,diff:3})'), 3, '数値の diff をそのまま使う');
+  eq(run('qDiff({id:9001,diff:"易"})'), 1, '和名の diff も解釈する');
+  eq(run('qDiff({id:9001,diff:"hard"})'), 3, '英名の diff も解釈する');
+  eq(run('qDiff({id:9002})'), 2, '履歴も diff も無ければ標準');
+  run('store.hist[9003]={c:4,w:1,last:"c"}');   // 正答率80%
+  eq(run('qDiff({id:9003})'), 1, '正答率80%以上は易と推定');
+  run('store.hist[9004]={c:1,w:3,last:"w"}');   // 正答率25%
+  eq(run('qDiff({id:9004})'), 3, '正答率50%未満は難と推定');
+  run('store.hist[9005]={c:1,w:0,last:"c"}');   // 1回だけ＝母数不足
+  eq(run('qDiff({id:9005})'), 2, '解答1回だけでは推定しない');
+  run('delete store.hist[9003];delete store.hist[9004];delete store.hist[9005]');
+});
+
+t('setBmBtn: ★/☆・on クラス・aria-pressed を同時に更新', () => {
+  const btn = byId('s-bmbtn');
+  run("setBmBtn(document.getElementById('s-bmbtn'),true)");
+  eq(btn.textContent, '★', 'ON の表示');
+  eq(btn.className, 'bmbtn on', 'ON のクラス');
+  eq(btn.getAttribute('aria-pressed'), 'true', 'ON の aria-pressed');
+  run("setBmBtn(document.getElementById('s-bmbtn'),false)");
+  eq(btn.textContent, '☆', 'OFF の表示');
+  eq(btn.className, 'bmbtn', 'OFF のクラス');
+  eq(btn.getAttribute('aria-pressed'), 'false', 'OFF の aria-pressed');
+  run('setBmBtn(null,true)');   // 要素が無くても落ちない
+});
+
+t('applyDark: テーマ属性とボタンの状態（絵文字・aria-pressed）が連動', () => {
+  run('applyDark(true)');
+  eq(run("document.documentElement.getAttribute('data-theme')"), 'dark', 'ダーク時のテーマ属性');
+  ok(sandbox.document.body.classList.contains('dark'), '管理画面を含む body に dark クラスが付く');
+  eq(byId('btn-dark').textContent, '☀️', 'ダーク時は太陽アイコン');
+  eq(byId('btn-dark').getAttribute('aria-pressed'), 'true', 'ダーク時の aria-pressed');
+  run('applyDark(false)');
+  eq(run("document.documentElement.getAttribute('data-theme')"), '', 'ライト時はテーマ属性が空');
+  eq(sandbox.document.body.classList.contains('dark'), false, 'ライト時は body の dark クラスを外す');
+  eq(byId('btn-dark').textContent, '🌙', 'ライト時は月アイコン');
+  eq(byId('btn-dark').getAttribute('aria-pressed'), 'false', 'ライト時の aria-pressed');
+});
+
+t('使い方ガイド: 終了したオフライン学習を案内しない', () => {
+  eq(run("JSON.stringify(GUIDE).includes('オフライン')"), false);
+  ok(run("JSON.stringify(GUIDE).includes('ホーム画面に追加')"), '現在の追加機能は案内する');
+});
+
+t('かんたんツアー: 実画面スポットライトと資格別ステップを組み立てる', () => {
+  eq(run('OB_VERSION'), '4', '内容更新時の再表示バージョン');
+  const base=run("(function(){var l=LESSDATA,a=allQ,s=srcSel;LESSDATA=[];allQ=[{id:1}];srcSel=new Set();var r=buildObSteps().map(function(x){return x.key;}).join(',');LESSDATA=l;allQ=a;srcSel=s;return r;})()");
+  eq(base, 'today,textbook,stats,start', '機能なし資格のステップ');
+  const full=run("(function(){var l=LESSDATA,a=allQ,s=srcSel;LESSDATA=[{id:'l1'}];allQ=[{id:1,case:'c1',scenario:'s'}];srcSel=new Set();var r=buildObSteps().map(function(x){return x.key;}).join(',');LESSDATA=l;allQ=a;srcSel=s;return r;})()");
+  eq(full, 'today,textbook,lessons,cases,stats,start', '授業・ケースあり資格のステップ');
+  ok(run("buildObSteps().some(function(x){return x.target==='#nb-textbook';})"), '教科書のスポットライトがない');
+  ok(run("buildObSteps().some(function(x){return x.target==='#nb-stats';})"), '統計のスポットライトがない');
+  eq(run("(function(){var l=LESSDATA,a=allQ;LESSDATA=[];allQ=[{id:1}];var r=[guideItemAvailable({when:'lessons'}),guideItemAvailable({when:'cases'})];LESSDATA=l;allQ=a;return r.join(',');})()"), 'false,false', '使い方ガイドが未提供機能を隠さない');
+});
+
+t('かんたんツアー: 取得状況の読込後、現在学習できる未取得資格だけに自動表示する', () => {
+  run("window.SFQ_PROG={acquiredOf:function(slug){return slug==='sf-admin';},stateOf:function(slug){return slug==='sf-admin'?'acquired':(slug==='app-builder'?'open':'locked');}};");
+  eq(run('obPageEligible()'), false, '取得済み資格に表示している');
+  run("CFG.slug='app-builder'");
+  eq(run('obPageEligible()'), true, '現在学習中の資格に表示しない');
+  run("CFG.slug='developer'");
+  eq(run('obPageEligible()'), false, 'ロック中の資格に表示している');
+  run("CFG.slug='sf-admin';delete window.SFQ_PROG");
+});
+
+t('かんたんツアー: 最終画面から今日の10問と通常学習を開始できる', () => {
+  run('OB_STEPS=buildObSteps();_obI=OB_STEPS.length-1;obRender()');
+  const h=byId('ob-card').innerHTML;
+  ok(h.includes('今日の10問を始める'), 'デイリー開始ボタンがない');
+  ok(h.includes('学習を始める'), '通常学習開始ボタンがない');
+});
+
+t('bindChHead: 折りたたみ見出しがマウスでもキーボードでも開閉できる', () => {
+  const head = makeElement(), wrap = makeElement();
+  sandbox.__head = head; sandbox.__wrap = wrap;
+  run('bindChHead(__head,__wrap)');
+  eq(head.getAttribute('role'), 'button', 'ボタンとして読み上げられる');
+  eq(head.getAttribute('tabindex'), '0', 'キーボードでフォーカスできる');
+  eq(head.getAttribute('aria-expanded'), 'false', '初期は閉じている');
+  head.fire('click');
+  ok(wrap.classList.contains('open'), 'クリックで開く');
+  eq(head.getAttribute('aria-expanded'), 'true', '開いたら aria-expanded も true');
+  head.fire('keydown', { key: 'Enter' });
+  ok(!wrap.classList.contains('open'), 'Enter で閉じる');
+  eq(head.getAttribute('aria-expanded'), 'false', '閉じたら aria-expanded も false');
+  head.fire('keydown', { key: ' ' });
+  ok(wrap.classList.contains('open'), 'Space でも開く');
+  head.fire('keydown', { key: 'a' });
+  ok(wrap.classList.contains('open'), '関係ないキーでは何も起きない');
+  delete sandbox.__head; delete sandbox.__wrap;
+});
+
+t('アクセシビリティ: 全資格シェルにランドマーク・名前・操作可能な絞り込みがある', () => {
+  const slugs = ['sf-admin','app-builder','developer','agentforce','sales-cloud','service-cloud','experience-cloud','sharing-visibility'];
+  slugs.forEach((slug) => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'certifications', slug, 'index.html'), 'utf8');
+    ok(html.includes('<main id="app-main"'), slug + ': main がない');
+    ok(html.includes('<h1 class="sr-only" id="app-page-title"'), slug + ': ページ見出しがない');
+    ok(html.includes('<nav class="bottom-nav" aria-label="主要メニュー">'), slug + ': ナビゲーション名がない');
+    ok(html.includes('role="tablist"'), slug + ': 教科書タブの役割がない');
+    ok(!/<input[^>]+type="checkbox"[^>]+style="display:none"/.test(html), slug + ': キーボード操作できないチェックボックスが残っている');
+  });
+});
+
+t('アクセシビリティ: ダイアログ制御と動きを減らす設定を共通処理する', () => {
+  ok(engineSrc.includes('function openA11yModal('), '共通ダイアログ開始処理がない');
+  ok(engineSrc.includes("prefers-reduced-motion: reduce"), '動きを減らす設定の判定がない');
+  ok(engineSrc.includes("e.target.closest('[role=\"button\"]')"), '操作要素でグローバルショートカットを抑止していない');
+});
+
+for (const slug of ['sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility', 'agentforce']) {
+  t('実データ: ' + slug + ' の模試配分と出典フィルター', () => {
+    const dir = path.join(__dirname, '..', 'certifications', slug, 'data');
+    sandbox.__bank = require('./question-source').readBank(slug);
+    sandbox.__domains = JSON.parse(fs.readFileSync(path.join(dir, 'domains.json'), 'utf8')).domains;
+    sandbox.__liveBackup = run('({allQ, DOMAIN_DEFS, QDOMAIN, srcSel})');
+    try {
+      run('allQ=__bank;DOMAIN_DEFS=__domains;QDOMAIN=Object.fromEntries(allQ.map(q=>[q.id,q.domain]));buildDomainIndex();');
+      for (const sources of [[], ['tyson'], ['jpnshiken'], ['gen'], ['jpnshiken', 'gen']]) {
+        sandbox.__sources = sources;
+        run('srcSel=new Set(__sources)');
+        const pool = sandbox.__bank.filter(q => !sources.length || sources.includes(q.source));
+        eq(run('scopedQ().length'), pool.length, '出典フィルターの件数');
+        const stock = Object.fromEntries(sandbox.__domains.map(d => [d.code, pool.filter(q => q.domain === d.code).length]));
+        sandbox.__stock = stock;
+        const quota = run('examQuota(DOMAIN_DEFS,60,__stock)');
+        const poolIds = new Set(pool.map(q => q.id));
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const picked = run('pickWeightedExam(60)');
+          eq(picked.length, Math.min(60, pool.length), '出題数');
+          eq(new Set(picked.map(q => q.id)).size, picked.length, 'ID重複');
+          ok(picked.every(q => poolIds.has(q.id)), '選択していない出典の混入');
+          for (const d of sandbox.__domains) {
+            eq(picked.filter(q => q.domain === d.code).length, quota[d.code], '分野配分: ' + d.code);
+          }
+        }
+        if (slug === 'service-cloud' && !sources.length) {
+          for (const [code, expected] of Object.entries({ind:7, strat:7, design:9, know:7, channel:8, case:8, analytics:8, integ:6})) {
+            eq(quota[code], expected, '2026-09公式比率からの60問配分: ' + code);
+          }
+        }
+        if (slug === 'sales-cloud' && !sources.length) {
+          for (const [code, expected] of Object.entries({strat:15, app:14, life:12, data:11, ai:8})) {
+            eq(quota[code], expected, 'Sales公式比率からの60問配分: ' + code);
+          }
+          ok(!('change' in quota), '旧change分野は模試に含めない');
+        }
+        if (slug === 'experience-cloud' && !sources.length) {
+          for (const [code, expected] of Object.entries({admin:15, share:10, brand:9, auth:8, theme:6, basics:5, custom:4, adopt:3})) {
+            eq(quota[code], expected, 'Experience公式比率からの60問配分: ' + code);
+          }
+        }
+        if (slug === 'sharing-visibility' && !sources.length) {
+          for (const [code, expected] of Object.entries({obj:16, rec:23, other:10, model:11})) {
+            eq(quota[code], expected, 'Sharing公式比率からの60問配分: ' + code);
+          }
+        }
+      }
+    } finally {
+      run('allQ=__liveBackup.allQ;DOMAIN_DEFS=__liveBackup.DOMAIN_DEFS;QDOMAIN=__liveBackup.QDOMAIN;srcSel=__liveBackup.srcSel;buildDomainIndex();');
+      for (const key of ['__bank', '__domains', '__sources', '__stock', '__liveBackup']) delete sandbox[key];
+    }
+  });
+}
+
+t('分野改訂: 過去の学習時間を保持し、新しい分野の時間と混同しない', () => {
+  sandbox.__timeBackup=run('({store,DOMAIN_TIME_PREFIX,DOMAIN_LEGACY_TIME,DOMAIN_DEFS,DOMAIN_BY})');
+  try {
+    const dom=JSON.parse(fs.readFileSync(path.join(__dirname,'../certifications/sales-cloud/data/domains.json'),'utf8'));
+    sandbox.__timeDom=dom;
+    run("DOMAIN_DEFS=__timeDom.domains;buildDomainIndex();DOMAIN_TIME_PREFIX=__timeDom.timeKeyPrefix;DOMAIN_LEGACY_TIME=Object.fromEntries(__timeDom.legacyTimeDomains.map(d=>[d.code,d]));store={time:{tot:120,dom:{change:{sec:90,n:3},app:{sec:30,n:1}},hour:{}}};");
+    run("recStudyTime('strat',true,45);recStudyTime('app',true,15);save();");
+    eq(run('store.time.tot'),180);
+    eq(run('store.time.dom.change.sec'),90);
+    eq(run('store.time.dom.app.sec'),30);
+    eq(run("store.time.dom['sales26:strat'].sec"),45);
+    eq(run("store.time.dom['sales26:app'].sec"),15);
+    ok(run("timeHTML().includes('旧分類: 変更管理と定着化')"));
+    eq(run("timeDomainDef('sales26:ai').code"),'ai');
+    eq(run("timeDomainDef('unknown').name"),'未分類: unknown');
+    const saved=run('JSON.stringify(store)');
+    run('window.__setStore(JSON.parse(localStorage.getItem(SKEY)));');
+    eq(run('JSON.stringify(store.time)'),JSON.stringify(JSON.parse(saved).time));
+  } finally {
+    run('store=__timeBackup.store;DOMAIN_TIME_PREFIX=__timeBackup.DOMAIN_TIME_PREFIX;DOMAIN_LEGACY_TIME=__timeBackup.DOMAIN_LEGACY_TIME;DOMAIN_DEFS=__timeBackup.DOMAIN_DEFS;DOMAIN_BY=__timeBackup.DOMAIN_BY;');
+  }
+});
+
+t('分野改訂: 時間の弱点コメントも新分類と旧分類を区別する', () => {
+  sandbox.__insightBackup=run('({store,DOMAIN_TIME_PREFIX,DOMAIN_LEGACY_TIME,DOMAIN_DEFS,DOMAIN_BY})');
+  try {
+    for(const [slug,code] of [['service-cloud','analytics'],['sales-cloud','data']]){
+      sandbox.__insightDom=JSON.parse(fs.readFileSync(path.join(__dirname,'../certifications/'+slug+'/data/domains.json'),'utf8'));
+      sandbox.__insightCode=code;
+      run('DOMAIN_DEFS=__insightDom.domains;buildDomainIndex();DOMAIN_TIME_PREFIX=__insightDom.timeKeyPrefix;DOMAIN_LEGACY_TIME=Object.fromEntries(__insightDom.legacyTimeDomains.map(d=>[d.code,d]));store={hist:{},time:{tot:300,dom:{strat:{sec:90,n:3}},hour:{}}};');
+      run('recStudyTime(__insightCode,true,70);recStudyTime(__insightCode,true,70);recStudyTime(__insightCode,true,70);');
+      ok(run("rootCauseHTML().includes('<b>'+DOMAIN_BY[__insightCode].name+'</b>')"),slug+' current label');
+      const legacy=run('Object.keys(DOMAIN_LEGACY_TIME)[0]');
+      sandbox.__insightLegacy=legacy;
+      run('store.time.dom[__insightLegacy]={sec:300,n:3};');
+      ok(run("rootCauseHTML().includes('<b>'+DOMAIN_LEGACY_TIME[__insightLegacy].name+'</b>')"),slug+' legacy label');
+    }
+  } finally {
+    run('store=__insightBackup.store;DOMAIN_TIME_PREFIX=__insightBackup.DOMAIN_TIME_PREFIX;DOMAIN_LEGACY_TIME=__insightBackup.DOMAIN_LEGACY_TIME;DOMAIN_DEFS=__insightBackup.DOMAIN_DEFS;DOMAIN_BY=__insightBackup.DOMAIN_BY;');
+    for(const key of ['__insightBackup','__insightDom','__insightCode','__insightLegacy'])delete sandbox[key];
+  }
+});
+
+t('分野改訂を未設定の資格は従来の時間キーを維持する', () => {
+  const backup=run('store');
+  try {
+    run("store={time:{tot:0,dom:{},hour:{}}};recStudyTime('cfg',true,30);");
+    eq(run('store.time.dom.cfg.sec'),30);
+    eq(run("Object.keys(store.time.dom).join(',')"),'cfg');
+  } finally {sandbox.__restoreStore=backup;run('store=__restoreStore;');}
+});
+
+console.log('\n' + (fail ? '❌ 失敗 ' + fail + '件 / 成功 ' + pass + '件' : '✅ 全 ' + pass + '件成功'));
+process.exit(fail ? 1 : 0);

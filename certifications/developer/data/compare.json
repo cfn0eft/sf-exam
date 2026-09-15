@@ -1,0 +1,62 @@
+[
+  {
+    "title": "使い方",
+    "domain": "fund",
+    "content": "Developer では「どれを使うか／何が違うか」を選ぶ問題が頻出します。各表で似た概念の境界を整理してください。\n\n- セル内の ★ は試験での頻出ポイント\n- 表の下の > は「ひっかけ」と「廃止情報」の警告\n- 横スクロールできるので、スマホでも全列確認できます\n\n---"
+  },
+  {
+    "title": "主従関係 vs 参照関係",
+    "domain": "fund",
+    "content": "| 観点 | 主従関係（Master-Detail） | 参照関係（Lookup） |\n|---|---|---|\n| 親の削除 | ★ 子もカスケード削除 | クリア or 削除禁止を選択 |\n| 所有者・共有 | ★ 親から継承（子に所有者なし） | 子が独自に保持 |\n| 積み上げ集計 | ★ 親側に作成できる | 不可 |\n| 必須性 | 子に親が必須 | 任意（空可） |\n| 多対多 | 2つの主従で接合オブジェクト | — |\n\n> 参照→主従への変換は、参照が空の子が1件でもあると不可。\n> 積み上げ集計が要る／親削除で子も消したい＝主従、疎結合＝参照。"
+  },
+  {
+    "title": "List / Set / Map",
+    "domain": "fund",
+    "content": "| コレクション | 特徴 | 主な用途 |\n|---|---|---|\n| List | 順序付き・重複可・添字あり | 順序を保つ・DML/SOQL の入出力 |\n| Set | ★ 重複なし・順不同 | 重複排除・処理済みID の記録 |\n| Map | ★ キー/値のペア | IDからレコードを引く（バルク処理） |\n\n> `new Map<Id,Account>([SELECT ...])` で SOQL 結果を直接 Map 化。\n> キー存在は containsKey（get の null 判定は不正確）。独自順の並べ替えは Comparable。"
+  },
+  {
+    "title": "@future / Queueable / Batch / Schedulable",
+    "domain": "logic",
+    "content": "| 手段 | 引数/状態 | コールアウト | チェーン | 規模・用途 |\n|---|---|---|---|---|\n| @future | ★ プリミティブのみ・void | callout=true | ★ 不可 | 軽量な非同期 |\n| Queueable | ★ sObject等を保持 | AllowsCallouts | ★ 可（1段ずつ） | 状態保持・連鎖 |\n| Batch | start/execute/finish | あり | finish から起動 | ★ 大量(5,000万件) |\n| Schedulable | — | — | — | ★ 定時(CRON) |\n\n> future から future は呼べない＝チェーンは Queueable。\n> Batch の状態保持は Database.Stateful、大量対象は start で QueryLocator。"
+  },
+  {
+    "title": "DML文 vs Database メソッド",
+    "domain": "logic",
+    "content": "| 観点 | DML 文（insert records;） | Database.メソッド |\n|---|---|---|\n| 失敗時 | ★ 1件失敗で全件ロールバック | allOrNone=false で部分成功 |\n| 結果取得 | 例外のみ | ★ SaveResult で各件確認 |\n| 外部ID照合 | upsert で可 | Database.upsert(records, 外部ID) |\n| 巻き戻し | — | Savepoint＋Database.rollback |\n\n> 「一部失敗しても残りを保存」＝Database.x(records, false)。\n> 例外を catch しても成功済みDMLは残る（戻すなら Savepoint）。"
+  },
+  {
+    "title": "トリガ コンテキスト変数の早見",
+    "domain": "logic",
+    "content": "| イベント | Trigger.new | Trigger.old | 主な用途 |\n|---|---|---|---|\n| before insert | ★ あり（変更可） | null | 同一レコードの項目設定 |\n| after insert | あり（読取専用） | null | 関連レコード作成・ID 利用 |\n| before update | あり（変更可） | ★ あり | 新旧比較・項目設定 |\n| after update | あり（読取専用） | あり | 関連更新・集計 |\n| before/after delete | null | ★ あり | 削除前後の処理 |\n| after undelete | ★ あり | null | 復元時の処理 |\n\n> 同一レコードの項目設定は before で直接代入（DML 不要）。保存中止は addError()。"
+  },
+  {
+    "title": "SOQL vs SOSL",
+    "domain": "logic",
+    "content": "| 観点 | SOQL | SOSL |\n|---|---|---|\n| 目的 | ★ 1オブジェクトのレコード取得 | ★ 複数オブジェクトの横断テキスト検索 |\n| 構文 | SELECT ... FROM ... WHERE | FIND 'term' RETURNING Obj(項目) |\n| 対象 | FROM は1オブジェクト | RETURNING で複数オブジェクト |\n| 絞り込み | WHERE/ORDER BY/LIMIT | RETURNING 内に WHERE/ORDER BY/LIMIT |\n\n> 「キーワードで取引先と取引先責任者と…を検索」＝SOSL。\n> SOQL に JOIN/UNION は無い。リレーション走査で表現する。"
+  },
+  {
+    "title": "with sharing / without / inherited",
+    "domain": "fund",
+    "content": "| 指定 | レコード共有 | 用途 |\n|---|---|---|\n| with sharing | ★ 実行ユーザーの共有を適用 | ユーザー権限を尊重 |\n| without sharing | 共有を無視（システム） | 意図的に全件操作 |\n| inherited sharing | 呼び出し元の共有を継承 | 再利用クラスの安全な既定 |\n\n> with sharing が適用するのは「共有のみ」。FLS・CRUD は別途（WITH SECURITY_ENFORCED 等）。\n> 指定なしのクラスは原則 without 相当の挙動になり得るため、明示が安全。"
+  },
+  {
+    "title": "Sandbox の種類",
+    "domain": "deploy",
+    "content": "| 種別 | コピー内容 | 容量 | リフレッシュ | 用途 |\n|---|---|---|---|---|\n| Developer | メタのみ | 200MB | 1日 | 個人開発 |\n| Developer Pro | メタのみ | 1GB | 1日 | 開発・小規模テスト |\n| Partial Copy | メタ＋サンプル | 5GB | 5日 | ★ 結合/UAT |\n| Full | ★ 本番の完全コピー | 本番同等 | 29日 | ★ 性能/負荷/ステージング |\n\n> 本番同等規模のテスト＝Full、サンプルデータ付き＝Partial Copy、データ不要＝Developer。"
+  },
+  {
+    "title": "LWC / Aura / Visualforce",
+    "domain": "ui",
+    "content": "| 観点 | LWC | Aura | Visualforce |\n|---|---|---|---|\n| 位置づけ | ★ 推奨・Web標準・軽量 | 旧フレームワーク | 旧来のページ技術 |\n| 通信 | CustomEvent / LMS | コンポーネント/アプリイベント | ポストバック/Remoting |\n| データ | LDS(uiRecordApi)/@wire | force:recordData | 標準/カスタムコントローラ |\n| 得意 | 新規UI全般 | 既存資産 | ★ PDF帳票・メール・公開ページ |\n\n> Aura 内に LWC は配置可、LWC 内に Aura は不可（移行は外側から）。\n> PDF 出力（renderAs=pdf）は Visualforce の領分。"
+  },
+  {
+    "title": "パッケージ 3種",
+    "domain": "deploy",
+    "content": "| 種別 | 名前空間 | コード | アップグレード | 用途 |\n|---|---|---|---|---|\n| 管理 | ★ あり（必須） | 保護（編集不可） | ★ 可 | AppExchange/IP保護 |\n| アンロック | 任意 | 参照・編集可 | ★ 可 | ★ 社内のソース駆動 |\n| 未管理 | なし | 編集可 | ★ 不可 | テンプレート配布 |\n\n> 社内でモジュール化・バージョン管理＝アンロック、配布・IP保護＝管理、配布後に編集前提＝未管理。"
+  },
+  {
+    "title": "リリース手段の使い分け",
+    "domain": "deploy",
+    "content": "| 手段 | 操作 | 範囲 | 自動化 |\n|---|---|---|---|\n| 変更セット | ★ UI・宣言的 | 関連組織間のみ | 不向き |\n| Metadata API | package.xml＋CLI/Ant | 認証できる任意組織 | ★ CI/CD向き |\n| Salesforce DX | ソース駆動・CLI | スクラッチ/任意組織 | ★ バージョン管理 |\n\n> 手軽＝変更セット、スクリプト/CI-CD＝Metadata API・DX。\n> 本番のテストレベル: RunSpecifiedTests（個別75%必要）/ RunLocalTests / RunAllTestsInOrg。"
+  }
+]

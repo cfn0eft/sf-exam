@@ -1,0 +1,72 @@
+[
+  {
+    "title": "使い方",
+    "domain": "share",
+    "content": "### 紛らわしい用語を1枚で見分ける\n\nExperience Cloud Consultant 試験は「どのライセンス？」「共有セット？共有グループ？」「どのテンプレート？」のような**識別・使い分け**が中心です。\n\n- ★ は試験での頻出ポイント\n- 表の下の > は「ひっかけ」「方向の逆転」の警告\n- スマホでは横スクロールで全列を確認できます\n\n---"
+  },
+  {
+    "title": "外部ユーザーライセンス",
+    "domain": "share",
+    "content": "| ライセンス | ロール・共有 | 分析・営業 |\n|---|---|---|\n| Customer Community | ロールなし。共有セット | レポート・リードは非対応 |\n| Customer Community Plus | 標準共有と共有セット | レポート作成・管理、ダッシュボード参照。リードは非対応 |\n| Partner Community | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n| Channel Account | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n\nライセンスが対応していても、操作権限とレコード共有の設定は必要。Channel Accountは取引先単位の契約であり、分析機能がないライセンスではない。"
+  },
+  {
+    "title": "追加ライセンスの用途",
+    "domain": "share",
+    "content": "| SKU | 含まれるユーザーライセンス | カスタムオブジェクト数 |\n|---|---|---|\n| Commerce Portals | External Apps | 100 |\n| External Apps | Partner Community | 100 |\n| Partner Relationship Management | Partner Community | 10 |\n| Customer Community Plus | Customer Community Plus | 10 |\n| Channel Account | Channel Account | 10 |\n\nSKUとユーザーライセンスは別の名前になる場合がある。External Appsが全Communityライセンスを一律に置き換えるわけではない。管理パッケージ由来のオブジェクトは、この制限の数え方を別途確認する。\n\nExternal Identityは認証を主目的に使う。CRM利用には対応する外部ライセンスへの変更とアクセス設計が必要。\n\n商談と独自20カスタムオブジェクトを使うQ114では、External Apps SKUのPartner Communityが該当する。Commerce Portals SKUのExternal Appsユーザーライセンスとは別。"
+  },
+  {
+    "title": "共有セットと共有グループ",
+    "domain": "share",
+    "content": "| 機能 | 対象と判断 |\n|---|---|\n| 共有セット | ユーザーとレコードのAccount・Contact参照を対応付ける。PlusやPartnerでも利用可能 |\n| 共有グループ | 共有セットに関連付けて有効化し、高ボリュームユーザー所有のレコードを認証済みの共有先へ渡す |\n| 共有ルール | 標準共有モデルに対応するロール付き外部ユーザーへ追加共有する |\n\n共有グループは社内ユーザーや条件を満たす外部ユーザーへ共有できるが、ゲストへの共有には使わない。共有セットのアクセスが、そのままレポートや上位ロールへ引き継がれるとは限らない。\n\nPartner Communityの商談も共有セットの対象にできる。Customer CommunityやPlusへ変更しても、共有設定だけで商談を利用可能にはできない。参照問題: Q172。"
+  },
+  {
+    "title": "外部レコード共有の範囲",
+    "domain": "share",
+    "content": "| 機能 | 主な範囲 |\n|---|---|\n| 共有ルール | 条件や所有者に応じた追加共有 |\n| パートナーのスーパーユーザー | 同じ取引先の同位・下位ロールの対象レコード |\n| 外部取引先階層 | 子取引先のデータを各レベルの最上位ロールへ共有 |\n\n外部取引先階層は親の全ユーザーへ一律に共有する設定ではない。対象のオブジェクト権限も必要。単なる作成者と所有者を区別する。利用中の取引先はマージできない。\n\n参照問題: Q100、Q119、Q121。\n\nPlusのPortal Super Userは同一取引先の別Contactの代理ケース作成に対応する。パートナーロールの仕組みと混同せず、Case.Contact Nameの項目編集権限も確認する。参照問題: Q72、Q98、Q177。"
+  },
+  {
+    "title": "ゲストと認証ユーザー",
+    "domain": "share",
+    "content": "| 観点 | ゲスト | 認証済み外部ユーザー |\n|---|---|---|\n| 共有の基準 | 非公開固定 | ライセンスと共有設定による |\n| レコード共有 | ゲスト用ルールで参照のみ | 対応する共有セット・共有ルール等 |\n| 作成後の所有 | ゲストは所有不可。既定ユーザーや割り当て処理へ | ライセンスとオブジェクトによる |\n| フロー起動 | ゲストプロファイルへ個別アクセスを許可 | 許可されたフローを実行 |\n\nゲストはキューのメンバーになれないが、作成レコードをキューへ割り当てる設計は可能。実行コンテキストだけを変えてフロー起動権限を与えたと判断しない。"
+  },
+  {
+    "title": "外部ユーザーの作成",
+    "domain": "auth",
+    "content": "| 観点 | 顧客ユーザー | パートナーユーザー |\n|---|---|---|\n| 通常の手動作成 | Contactや個人取引先からEnable Customer User | 法人取引先をパートナーとして有効化し、Contactから作成 |\n| サイト参加 | Membersのプロファイル・権限セット | Membersのプロファイル・権限セット |\n| 個人取引先 | 対応 | パートナー用の法人取引先とは区別 |\n\n標準セルフ登録で個人取引先を使う場合、個人取引先の有効化と対応プロファイルを準備し、Account欄を空にする。カスタムハンドラーは別途確認する。External IdentityにはContactなしユーザーもある。\n\nContactなしExternal IdentityをCommunityへアップグレードするにはContactを関連付ける。パートナーユーザー作成時の所有者ロールエラーは、Contactが所属する取引先の所有者を確認する。\n\n作成・参加・認証は別の段階。作成済みのパートナーユーザーでAPI Only Userが有効なら、対話型ログインはできない。"
+  },
+  {
+    "title": "セルフ登録・手動作成・SSO",
+    "domain": "auth",
+    "content": "ユーザーがサイトに入る「入口」の使い分け。\n\n| 方法 | 仕組み | 向く場面 |\n|---|---|---|\n| **セルフ登録** ★ | 本人がサインアップ→自動作成 | 不特定多数の顧客を集めたい |\n| **管理者作成** | 取引先責任者から手動で有効化 | 少人数・厳密に管理したい |\n| **認証プロバイダ（Google等）** ★ | 外部 ID でログイン（OpenID Connect） | 既存 SNS アカウントで入らせたい |\n| **SSO（SAML）** ★ | IdP 連携＋JIT プロビジョニング | 企業 IdP で一元認証 |\n\n> ★ 標準SAML JITでは**SAML User ID Type＝Federation ID**を指定する。Salesforce 組織は IdP にも SP にもなれる。\n> ⚠️ ソーシャルログインに Visualforce/Apex のカスタムページ自作は不要（認証プロバイダで標準対応）。\n\n---\n\nGoogle認証プロバイダーの登録ハンドラーはApexまたはFlowで用意する。Google側のリダイレクト先はCallback URLで、SSOやテストを開始するURLとは区別する。"
+  },
+  {
+    "title": "テンプレート（用途別の第一候補）",
+    "domain": "theme",
+    "content": "要件のキーワードからテンプレートを引く。\n\n| 要件のキーワード | テンプレート | 基盤 |\n|---|---|---|\n| ケース・Q&A・ナレッジ・トピック（コミュニティ） | **Customer Service** ★ | Aura |\n| 認証済み顧客が自分のアカウント管理 | Customer Account Portal | Aura |\n| パートナー営業・リード配信（**Lead Inbox**）・取引登録 | **Partner Central** ★ | Aura |\n| 一般公開の**ナレッジベース/FAQ**（ゲスト向け） | **Help Center** ★ | Aura |\n| 白紙から自由・高速・SEO 重視 | **Build Your Own (LWR)** ★ | LWR |\n\n> ★ 「一般公開のナレッジ」＝Help Center／「パートナーにリード配信」＝Partner Central（Lead Inbox）。\n> ⚠️ Partner Central の標準コンポーネントは **Lead Inbox**。「Lead Distribution / Lead Selector」は実在しない。\n\n---\n\nAccount ManagementはCustomer Account PortalとCustomer Serviceの標準ページに含まれる。標準の同梱範囲、独自開発での拡張、PRM固有の要件を分けて選定する。"
+  },
+  {
+    "title": "ブランドセット vs テーマ vs CSS",
+    "domain": "brand",
+    "content": "見た目を変える3つの層。役割が違う。\n\n| 機能 | 役割 | オーディエンスで出し分け |\n|---|---|---|\n| **テーマ（Theme）** | サイト全体のレイアウト・色の**枠組み** | サイト単位 |\n| **ブランドセット（Branding Set）** ★ | 配色・フォント・ロゴ・画像を**まとめて**定義 | **◎ 複数作って出し分け可** ★ |\n| **カスタム CSS** | 細部スタイルの**上書き**（最後の微調整） | — |\n\n> ★ 「プラチナ顧客だけ別の配色/ロゴ」＝**複数ブランドセット＋オーディエンス**。テーマでもCSSでもない。\n> Auraのコンポーネントへの割り当てには、レコードベースのオーディエンスを使えない。適用先ごとの制限を確認する。\n\n---\n\nブランドセットの画像・書体・色の適用範囲に注意する。事前構築済みテーマのヘッダーとHeroは対象外。"
+  },
+  {
+    "title": "オーディエンスの適用",
+    "domain": "brand",
+    "content": "| 設定・条件 | 適用範囲 |\n|---|---|\n| User Object | 部門などの対応項目。Dateは可、Date/Timeは不可 |\n| Record-Based Criteria | レコード詳細ページとそのバリエーションのみ |\n| Navigation Menu / Tile Menu | Personalizeでオーディエンス別のメニューを割り当てる |\n| ヘッダー/フッター内の部品 | オーディエンスの直接割り当ては不可 |\n| 既存オーディエンスを条件に使う | 入れ子は1階層。さらに連鎖させない |\n| Locationと外部CDN | True-Client-IPの構成を確認する |\n\n上限は1サイトあたり1,500オーディエンス。ページと本文部品に条件を重ねると両方を満たす利用者に表示されるが、機密データの認可を保証する設定ではない。"
+  },
+  {
+    "title": "モデレーションルール",
+    "domain": "adopt",
+    "content": "| 種類 | アクション | 対象の例 |\n|---|---|---|\n| コンテンツルール | Block / Review / Replace / Flag | キーワード・メンバー条件 |\n| レートルール | Notify / Freeze | 一定期間の投稿頻度 |\n\n両種を合わせて組織全体で30件まで。未貢献メンバーの初投稿審査はMembers without site contributionsとReviewを組み合わせる。ユーザー作成から7日以内という条件だけでは初投稿に限定できない。"
+  },
+  {
+    "title": "サイト形式と移行",
+    "domain": "admin",
+    "content": "| 対象 | サイト要素の型 |\n|---|---|\n| Aura | ExperienceBundleを推奨 |\n| 非拡張LWR | ExperienceBundle |\n| 拡張LWR | DigitalExperienceBundleとDigitalExperienceConfig |\n\nNetworkはメールやメンバー設定、CustomSiteはドメインやページ設定を表す。必要な他の依存関係も含める。\n\n拡張LWRへのアップグレードは移行元と移行先でそろえる。DigitalExperienceは一部のサイト項目を選んで移行するためのサブタイプ。カスタムAuraテンプレートは定義を先に配置する。\n\n参照問題: Q91、Q155〜Q158、Q165。\n\n| Lightning Bolt向けのテンプレート書き出し | 扱い |\n|---|---|\n| カスタムオブジェクトのカスタムリストビュー | 依存関係に含まれる |\n| 標準オブジェクトのカスタムリストビュー | 自動では含まれない |\n| ナビゲーション項目で選んだリストビュー | 既定に戻る |\n| 非既定のページバリエーション | テンプレート全体の書き出しには含まれない |\n\nBoltはテンプレート・Lightningアプリ・フローカテゴリを組み合わせる配布方式。通常のメタデータ移行の対象範囲と区別する。参照問題: Q50、Q79、Q173、Q174。"
+  },
+  {
+    "title": "CMSの編集と公開",
+    "domain": "brand",
+    "content": "| 担当・操作 | 範囲 |\n|---|---|\n| Content Author | 作成・編集・参照。公開不可 |\n| Content Manager | コンテンツの作成・公開 |\n| Content Admin | コンテンツに加え、参加者や共有も管理 |\n| 保存 | 編集内容を下書きに保持 |\n| 公開 | 新しい内容をチャネルへ提供 |\n\nAuraのコレクションはサイトのContent Managementで作成する。手動は個別に選び、条件付きは公開日などで選定する。拡張CMS内のコレクションとAura用コレクションは区別する。\n\n参照問題: Q153、Q163、Q164、Q166、Q167。\n\n拡張LWRで拡張CMSコレクションを表示する場合は、サイトのチャネル追加と公開を済ませてGridへ結び付ける。GridにCRMリストビューを指定する場合は、そのビューに選択された列だけがバインド候補になる。"
+  }
+]

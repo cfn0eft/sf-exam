@@ -1,0 +1,62 @@
+{
+  "domains": [
+    {
+      "code": "strat",
+      "name": "コンサルティングと実装戦略",
+      "weight": 25,
+      "emoji": "🧭"
+    },
+    {
+      "code": "app",
+      "name": "Sales Cloud専門知識の実践",
+      "weight": 24,
+      "emoji": "💼"
+    },
+    {
+      "code": "life",
+      "name": "営業ライフサイクル",
+      "weight": 20,
+      "emoji": "🔄"
+    },
+    {
+      "code": "data",
+      "name": "データ管理",
+      "weight": 18,
+      "emoji": "🗃️"
+    },
+    {
+      "code": "ai",
+      "name": "予測AIと生成AI",
+      "weight": 13,
+      "emoji": "🤖"
+    }
+  ],
+  "timeKeyPrefix": "sales26:",
+  "legacyTimeDomains": [
+    {
+      "code": "strat",
+      "name": "旧分類: コンサルティングと実装戦略",
+      "emoji": "🧭"
+    },
+    {
+      "code": "app",
+      "name": "旧分類: 製品知識の適用",
+      "emoji": "💼"
+    },
+    {
+      "code": "life",
+      "name": "旧分類: 営業プロセス（リード〜クローズ）",
+      "emoji": "🔄"
+    },
+    {
+      "code": "data",
+      "name": "旧分類: データ管理",
+      "emoji": "🗃️"
+    },
+    {
+      "code": "change",
+      "name": "旧分類: 変更管理と定着化",
+      "emoji": "🎓"
+    }
+  ]
+}

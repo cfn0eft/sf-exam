@@ -1,0 +1,10 @@
+{
+  "domains": [
+    { "code": "agents",  "name": "AIエージェント",             "weight": 35, "emoji": "🤖" },
+    { "code": "prompt",  "name": "プロンプトエンジニアリング", "weight": 20, "emoji": "✍️" },
+    { "code": "data360", "name": "Data 360 の基礎",            "weight": 20, "emoji": "🗄️" },
+    { "code": "deploy",  "name": "テスト・デプロイ・維持",     "weight": 10, "emoji": "🚀" },
+    { "code": "gov",     "name": "ガバナンスと可観測性",       "weight": 10, "emoji": "🛡️" },
+    { "code": "orch",    "name": "マルチエージェント連携",     "weight": 5,  "emoji": "🔗" }
+  ]
+}

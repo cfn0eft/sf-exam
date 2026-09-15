@@ -1,0 +1,54 @@
+[
+  {
+    "title": "設定の範囲",
+    "content": "> **設定の範囲**\n\n> - 組織設定: Digital Experiences、共有、ユーザー管理。\n> - サイト設定: WorkspacesのAdministration。\n> - ページ構成: Experience Builder。\n> - コンテンツ運用: Content ManagementやCMSワークスペース。\n\n> Aura、LWR、旧ポータルは同一の設定画面・機能として扱わない。"
+  },
+  {
+    "title": "サイト作成と一覧",
+    "content": "`[設定] > [デジタルエクスペリエンス] > [設定]`\n\n| メニュー / 操作 | 機能 | 用語解説 |\n|---|---|---|\n| デジタルエクスペリエンスを有効化 | サイト作成の**最初のステップ**。ドメイン名を設定 | [デジタルエクスペリエンスの有効化](term:デジタルエクスペリエンスの有効化) |\n| すべてのサイト（All Sites） | サイト一覧。**ワークスペース**／**管理（Administration）**／**ビルダー**へ移動 | [Experience Cloud サイト](term:Experience Cloud サイト) |\n| 新規（ウィザード） | テンプレートを選んでサイトを新規作成 | [Customer Service テンプレート](term:Customer Service テンプレート) |\n\n> **サイト上限**：1 組織あたり最大 **100 サイト**。Active・Preview・Inactiveを合算し、Archivedは除外する。 [サイト数の上限](term:サイト数の上限)\n> **自動生成**：サイト作成時に**ゲストプロファイル・ゲストユーザー**が作られる。 [サイト作成時に自動生成されるもの](term:サイト作成時に自動生成されるもの)\n\n---"
+  },
+  {
+    "title": "テーマと外観",
+    "content": "> `All Sites > [ビルダー]`（Experience Builder）\n\n| メニュー / 操作 | 機能 | 用語解説 |\n|---|---|---|\n| テーマ（設定 > テーマ） | サイト全体のレイアウト・色・フォントの**枠組み** | [テーマ](term:テーマ) |\n| ブランドパネル / ブランドセット | 配色・フォント・ロゴ・画像を**まとめて**定義。複数作成可 | [ブランドセット](term:ブランドセット) |\n| 設定 > 高度な設定 > CSS の編集 | 細部スタイルの**上書き**（最後の微調整） | — |\n| テンプレートの変更 | Customer Service / Help Center / Partner Central / Build Your Own など | [Build Your Own（LWR / Aura）](term:Build Your Own（LWR / Aura）) |\n| Settings > Developer | テンプレートを書き出す。Boltの要素選択はSetupのLightning Bolt Solutions | [Lightning Bolt（ソリューション）](term:Lightning Bolt（ソリューション）) |\n\n> **見た目の3層**：テーマ（全体）→ ブランドセット（配色・ロゴ）→ CSS（細部）の順で整える。\n> **顧客区分で配色を変える**＝テーマではなく**複数ブランドセット＋オーディエンス**で出し分け。\n\n---\n\n> Auraの柔軟なページレイアウト: セクションを選択 > Style > Imageで背景画像を指定する。\n\n> 事前構築済みテーマのヘッダーとHeroはブランドセットの対象外。独自の縦メニューを構築する場合は[縦型ナビゲーション](term:縦型ナビゲーション)の基本部品と、標準メニューの出し分けを区別する。"
+  },
+  {
+    "title": "表示の出し分け",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Page Properties > Page Access | [ページのログイン要件](term:ページ/コンポーネントの表示オプション) |\n| Page Settings > Page Variations | [ページ全体の複数版と優先順位](term:ページバリエーション) |\n| 対応する本文コンポーネント > Assign | [部品を表示する対象者](term:オーディエンスターゲティング) |\n| Navigation Menu / Tile Menu > Personalize | [メニュー内容の出し分け](term:ナビゲーションメニューターゲティング) |\n| オーディエンスの作成 > User Object | 部門などの対応項目。Date/Timeは非対応 |\n\nページと部品の条件は両方を満たす必要がある。レコード条件はレコード詳細ページとそのバリエーションに限定。オーディエンスの入れ子は1階層。機密データの保護には標準の認可設定を使う。"
+  },
+  {
+    "title": "ゲストアクセス",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Builder > Settings > General > Guest User Profile | [ゲストのオブジェクト・項目権限](term:ゲストユーザー) |\n| Setup > Sharing Settings | [ゲスト用共有ルール](term:ゲストユーザー共有ルール) |\n| Workspaces > Administration > Preferences | [ゲスト作成レコードの既定所有者](term:ゲスト作成レコードの既定の所有者) |\n| ゲストプロファイル > Enabled Flow Access | [フローごとの起動権限](term:ゲストユーザーの Lightning フロー有効化) |\n\n> ゲストのOWDは非公開固定。既定所有者には参照権限を確認し、必要に応じて割り当て処理でキュー等へ分散する。"
+  },
+  {
+    "title": "サイトメンバー",
+    "content": "> `All Sites > [ワークスペース] > [管理] > [メンバー]`\n\n| メニュー / 操作 | 機能 | 用語解説 |\n|---|---|---|\n| メンバー > 選択したプロファイル | **プロファイル**を追加してサイトのメンバーにする | [Customer Community](term:Customer Community) |\n| メンバー > 選択した権限セット | **権限セット**でサイトのメンバーにする | — |\n| 複数サイトへの追加 | 同じプロファイルを各サイトで選択してアクセス付与 | — |\n\n> サイトに入れるのは**メンバーに追加されたプロファイル/権限セットを持つユーザーだけ**。通常の顧客ユーザー作成はContact等から行う。External IdentityにはContactなし方式もある。 [顧客ユーザーの有効化](term:顧客ユーザーの有効化)\n\n---"
+  },
+  {
+    "title": "ライセンス",
+    "content": "> `Setup > Company Information`で利用可能なライセンスを確認し、Userに割り当てる。\n\n| ライセンス | ロール・共有 | 分析・営業 |\n|---|---|---|\n| Customer Community | ロールなし。共有セット | レポート・リードは非対応 |\n| Customer Community Plus | 標準共有と共有セット | レポート作成・管理、ダッシュボード参照。リードは非対応 |\n| Partner Community | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n| Channel Account | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n\n> ライセンスが対応していても、操作権限とレコード共有の設定は必要。Channel Accountは取引先単位の契約であり、分析機能がないライセンスではない。\n\n> [External Apps LicenseとSKU](term:External Apps License) / [Channel Account](term:Channel Account)"
+  },
+  {
+    "title": "ログインと登録",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Workspaces > Administration > Login & Registration | [標準セルフ登録](term:セルフ登録) |\n| 同画面のAccount欄 | 個人取引先が有効なら、空欄で[個人取引先](term:個人取引先)による登録 |\n| Setup > Auth. Providers | [外部IDでのログイン](term:認証プロバイダー / ソーシャルログイン) |\n| Setup > Single Sign-On Settings | [SAML JITとFederation ID](term:SSO とフェデレーション ID) |\n\n> 標準登録は対応する外部プロファイルも必要。独自ハンドラーを使用する場合は実装が標準設定を上書きする点を確認する。\n\n> Google側のOAuth設定には、Auth. Providersで生成されたCallback URLを登録する。Salesforce側の登録ハンドラーとサイトのログイン設定も確認する。\n\n> 外部プロファイルのAPI Only Userも確認する。ページ固有の認証要件はBuilder > Page Properties > Page Accessで設定する。 [ページアクセスと表示条件](term:ページ/コンポーネントの表示オプション)"
+  },
+  {
+    "title": "外部レコード共有",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Setup > Digital Experiences > Settings > Sharing Sets | [Account・Contactのアクセスマッピング](term:共有セット) |\n| 対象Sharing Set > Share Group Settings | [高ボリュームユーザー所有レコードの共有](term:共有グループ) |\n| Digital Experiences > Settings | [パートナー・顧客ロール数](term:ロール数とポータルロールの上限) |\n\n> 不要なロールの抑制、同一取引先内の[スーパーユーザーアクセス](term:スーパーユーザーアクセス)、親子の[外部取引先階層](term:外部アカウント階層)を区別する。共有セットはロールなしユーザー専用ではない。\n\n> User表示はSetup > Sharing SettingsのPortal / Site User Visibilityと、Workspaces > Administration > PreferencesのSee other members of this siteを確認する。外部OWDと別経路の共有も考慮する。"
+  },
+  {
+    "title": "CMSとナレッジ",
+    "content": "> `All Sites > [ワークスペース] > [コンテンツ管理]` ／ `Experience Builder > ナビゲーションメニュー`\n\n| メニュー / 操作 | 機能 | 用語解説 |\n|---|---|---|\n| ナビゲーションメニュー | メニュー項目の追加・並べ替え・オーディエンス出し分け | [ナビゲーションメニューターゲティング](term:ナビゲーションメニューターゲティング) |\n| コンテンツ管理 > トピック | トピックの作成・マージ・データカテゴリへのマッピング | [トピック](term:トピック) |\n| Topics > Article Management | 記事のトピックを手動追加・削除 | [トピックと記事の関連付け](term:トピックと記事の関連付け) |\n| Topics > Automatic Topic Assignment | データカテゴリの対応付け。既存記事への追加も選択可能 | [トピックと記事の関連付け](term:トピックと記事の関連付け) |\n| CMS（Salesforce CMS）/ CMS コレクション | サイト内コンテンツ・動的コレクション | [Salesforce CMS / CMS コレクション](term:Salesforce CMS / CMS コレクション) |\n| CMS Connect | 外部 CMS（WordPress 等）のコンテンツを取り込み | [CMS Connect](term:CMS Connect) |\n| ナレッジ（記事のチャネル） | 公開ナレッジベース / 顧客 / パートナーに表示 | [ナレッジ記事の公開チャネル](term:ナレッジ記事の公開チャネル) |\n\n> ナレッジ記事をゲストにも見せる＝**「公開ナレッジベースに表示」**チャネル。チャネルだけでなく、記事の権限と使用中の共有方式も確認する。\n\n---\n\n> トピック割り当てはサイト固有。自動割り当ては既存記事のトピックを自動削除しない。\n\n> Knowledge Settings > Use standard Salesforce sharingを使う場合、Sharing SettingsでKnowledgeのOWDと共有ルールを設定する。データカテゴリによるアクセス制御と混同しない。\n\n> Topics > Featured Topicsのサムネイルはホームページ用。詳細ページのバナーはBuilderの既定設定を使う。\n\n> [Grid（LWR）](term:Grid（LWR）): Builderでデータソースを選び、内部の部品へ項目を結び付ける。CRMの項目不足はリストビューの列も確認する。\n\n> [サイト検索（Aura / LWR）](term:サイト検索（Aura / LWR）): Auraは結果と入力候補の対象を設定。LWRはSearch BarとResults LayoutのCRM Object構成を使う。"
+  },
+  {
+    "title": "モデレーション",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Workspaces > Moderation > Rules | コンテンツ・レートルール |\n| Setup > Moderation Criteria | キーワードやメンバーの条件 |\n| ユーザーのプロファイル・権限セット | ワークスペースへのアクセスと個別の操作権限 |\n\n> [モデレーション](term:モデレーション)のルールは組織全体で合計30件。[未貢献メンバーの条件](term:モデレーション/レートルールの上限とメンバー条件)はユーザー作成日と別。\n\n| 貢献表示の設定 | 対象 |\n|---|---|\n| Workspaces > Administration > Preferences > Enable reputation | 既定のポイント体系と評判レベル |\n\n> [評判（Reputation）](term:評判（Reputation）)を有効にするとContributionからChatter influenceが取り除かれる。一律の初期ポイントやバッジの配布ではない。"
+  },
+  {
+    "title": "ドメインとSEO",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Setup > Domains | カスタムドメインと[CDN](term:CDN（コンテンツデリバリーネットワーク）) |\n| Builder > Settings > SEO | [サイトマップ再生成等](term:SEO) |\n| Builder > Publish | ページ構成を公開 |\n| Workspaces > Administration | サイトの状態を管理 |\n\n> 公開とActive状態は別。SEOは本番の公開サイトが対象。CDNはサンドボックスにも対応し、独自ドメインの有効化数に制限がある。\n\n> 外部CDNを通すAuraサイトのLocation条件では、CDN側のTrue-Client-IPを確認する。ドメイン条件やSAML設定とは別の確認項目。"
+  },
+  {
+    "title": "分析と使用量",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| 拡張LWRのBuilder > Settings > Integrations | [Google Analytics 4](term:Google アナリティクス連携)とMeasurement ID |\n| Workspaces > Dashboards / Insights | [サイトの活動分析](term:Insights レポート) |\n| Setup > Company Information | ページビューなどの使用状況 |\n\n> GA4を追加・設定したら公開する。ページビューやダウンロードの計測は、組織全体のLogin HistoryやCase件数を同期する機能ではない。\n\n> 管理パッケージの事前構成済みInsightsは、サイトでのChatter使用が前提。インストール後のレポートフォルダー共有も確認する。\n\n> [Customer Insights](term:Customer Insights): Workspaces > Administration > PreferencesでGather Customer Insights dataを設定。担当者にはView Customer Insightsを付与し、Lightning App BuilderでCaseまたはContactページに部品を配置する。サンドボックスは非対応。"
+  }
+]

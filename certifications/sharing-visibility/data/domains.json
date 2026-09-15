@@ -1,0 +1,28 @@
+{
+  "domains": [
+    {
+      "code": "obj",
+      "name": "オブジェクト・項目への権限",
+      "weight": 27,
+      "emoji": "🔑"
+    },
+    {
+      "code": "rec",
+      "name": "レコードへのアクセス",
+      "weight": 39,
+      "emoji": "🗂️"
+    },
+    {
+      "code": "other",
+      "name": "その他データへのアクセス",
+      "weight": 16,
+      "emoji": "🧬"
+    },
+    {
+      "code": "model",
+      "name": "セキュリティモデル選択の影響",
+      "weight": 18,
+      "emoji": "🛡️"
+    }
+  ]
+}

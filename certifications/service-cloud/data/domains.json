@@ -1,0 +1,95 @@
+{
+  "domains": [
+    {
+      "code": "ind",
+      "name": "業界知識",
+      "weight": 12,
+      "emoji": "🏭"
+    },
+    {
+      "code": "strat",
+      "name": "実装戦略",
+      "weight": 12,
+      "emoji": "🧭"
+    },
+    {
+      "code": "design",
+      "name": "Service Cloud ソリューション設計",
+      "weight": 15,
+      "emoji": "🛠️"
+    },
+    {
+      "code": "know",
+      "name": "ナレッジ管理",
+      "weight": 12,
+      "emoji": "📚"
+    },
+    {
+      "code": "channel",
+      "name": "受付・インタラクションチャネル",
+      "weight": 13,
+      "emoji": "💬"
+    },
+    {
+      "code": "case",
+      "name": "ケース管理",
+      "weight": 13,
+      "emoji": "🎫"
+    },
+    {
+      "code": "analytics",
+      "name": "コンタクトセンター分析",
+      "weight": 13,
+      "emoji": "📊"
+    },
+    {
+      "code": "integ",
+      "name": "統合",
+      "weight": 10,
+      "emoji": "🔌"
+    }
+  ],
+  "timeKeyPrefix": "service26:",
+  "legacyTimeDomains": [
+    {
+      "code": "ind",
+      "name": "旧分類: 業界知識",
+      "emoji": "🏭"
+    },
+    {
+      "code": "strat",
+      "name": "旧分類: 実装戦略",
+      "emoji": "🧭"
+    },
+    {
+      "code": "design",
+      "name": "旧分類: Service Cloud ソリューション設計",
+      "emoji": "🛠️"
+    },
+    {
+      "code": "know",
+      "name": "旧分類: ナレッジ管理",
+      "emoji": "📚"
+    },
+    {
+      "code": "channel",
+      "name": "旧分類: 受付・インタラクションチャネル",
+      "emoji": "💬"
+    },
+    {
+      "code": "case",
+      "name": "旧分類: ケース管理",
+      "emoji": "🎫"
+    },
+    {
+      "code": "analytics",
+      "name": "旧分類: コンタクトセンター分析",
+      "emoji": "📊"
+    },
+    {
+      "code": "integ",
+      "name": "旧分類: 統合",
+      "emoji": "🔌"
+    }
+  ]
+}

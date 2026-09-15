@@ -1,0 +1,283 @@
+(function () {
+  'use strict';
+
+  var ORDER = ['sf-admin', 'app-builder', 'developer'];
+  var POOL = ['agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'];
+
+  var RELEASED = ['sf-admin', 'app-builder', 'developer', 'agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'];
+  function isReleased(slug) { return RELEASED.indexOf(slug) >= 0; }
+
+  var KEY = {
+    'sf-admin': 'sfq_v4',
+    'app-builder': 'sfqab_v1',
+    'developer': 'sfqdev_v1',
+    'agentforce': 'sfqaf_v1',
+    'sales-cloud': 'sfqsales_v1',
+    'service-cloud': 'sfqservice_v1',
+    'experience-cloud': 'sfqexp_v1',
+    'sharing-visibility': 'sfqsva_v1'
+  };
+
+  var NAME = {
+    'sf-admin': 'アドミニストレーター',
+    'app-builder': 'アプリケーションビルダー',
+    'developer': 'デベロッパー',
+    'agentforce': 'Agentforce Specialist',
+    'sales-cloud': 'Agentforce Sales コンサルタント',
+    'service-cloud': 'Agentforce Service コンサルタント',
+    'experience-cloud': 'Experience Cloud コンサルタント',
+    'sharing-visibility': 'Sharing and Visibility アーキテクト'
+  };
+
+  function isPool(slug) { return POOL.indexOf(slug) >= 0; }
+
+  function localProgress() {
+    var acq = {}, lk = {};
+    Object.keys(KEY).forEach(function (slug) {
+      try {
+        var raw = localStorage.getItem(KEY[slug]);
+        if (raw) { var s = JSON.parse(raw); if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; } }
+      } catch (e) {}
+    });
+    var el = '';
+    try { el = localStorage.getItem('sfq_elective') || ''; } catch (e) {}
+    return { acquired: acq, locked: lk, elective: el };
+  }
+
+  function progress() {
+    return (window.SFQ_PROGRESS && window.SFQ_PROGRESS.acquired) ? window.SFQ_PROGRESS : localProgress();
+  }
+  function isAdmin() { return !!window.SFQ_IS_ADMIN; }
+  // コア以外はクラウドの管理者専用フィールドによる許可が必要。
+  // ローカル進捗や取得済み状態から利用許可を推測しない。
+  function canUseSpecialist() { return isAdmin() || window.SFQ_SPECIALIST_ACCESS === true; }
+  function restrictedOf(slug) { return ORDER.indexOf(slug) < 0 && !canUseSpecialist(); }
+  function acquiredOf(slug, p) { p = p || progress(); return !!(p.acquired && p.acquired[slug]); }
+  function lockedOf(slug, p) { p = p || progress(); return !!(p.locked && p.locked[slug]); }
+  function electiveOf(p) { p = p || progress(); return p.elective || ''; }
+
+  function unlocked(slug, p) {
+    p = p || progress();
+    if (restrictedOf(slug)) return false;
+    if (slug === 'sf-admin') return true;
+    if (slug === 'app-builder') return acquiredOf('sf-admin', p);
+    if (slug === 'developer') return acquiredOf('app-builder', p);
+    if (isPool(slug)) return acquiredOf('developer', p) && electiveOf(p) === slug;
+    return false;
+  }
+
+  function pendingElective(p) {
+    p = p || progress();
+    var el = electiveOf(p);
+    return isPool(el) && !acquiredOf(el, p);
+  }
+
+  function stateOf(slug, p) {
+    p = p || progress();
+    if (isAdmin()) return 'open';
+    if (restrictedOf(slug)) return 'restricted';
+    if (!isReleased(slug)) return 'coming';
+    if (lockedOf(slug, p)) return 'acquired';
+    return (unlocked(slug, p) || acquiredOf(slug, p)) ? 'open' : 'locked';
+  }
+
+  function canChoose(slug, p) {
+    p = p || progress();
+    if (isAdmin()) return false;
+    if (restrictedOf(slug)) return false;
+    if (!isPool(slug) || !isReleased(slug)) return false;
+    if (!acquiredOf('developer', p)) return false;
+    if (acquiredOf(slug, p)) return false;
+    if (electiveOf(p) === slug) return false;
+    return !pendingElective(p);
+  }
+
+  function lockReason(slug, p) {
+    p = p || progress();
+    if (restrictedOf(slug)) return 'コア資格以降の学習には、管理者による利用許可が必要です。';
+    if (slug === 'app-builder') return '「' + NAME['sf-admin'] + '」を取得すると解除されます';
+    if (slug === 'developer') return '「' + NAME['app-builder'] + '」を取得すると解除されます';
+    if (isPool(slug)) {
+      if (!acquiredOf('developer', p)) return '「' + NAME['developer'] + '」を取得すると、ここから順番に1つずつ解除できます';
+      if (pendingElective(p)) return '今は「' + (NAME[electiveOf(p)] || '別の資格') + '」を学習中です（取得すると次を選べます）';
+      return '';
+    }
+    return 'まだ解除されていません';
+  }
+
+  window.SFQ_PROG = {
+    ORDER: ORDER, POOL: POOL, KEY: KEY, NAME: NAME, RELEASED: RELEASED,
+    progress: progress, isAdmin: isAdmin, isReleased: isReleased,
+    canUseSpecialist: canUseSpecialist, restrictedOf: restrictedOf,
+    acquiredOf: acquiredOf, lockedOf: lockedOf, electiveOf: electiveOf, pendingElective: pendingElective,
+    unlocked: unlocked, stateOf: stateOf, canChoose: canChoose,
+    lockReason: lockReason, renderGate: renderGate
+  };
+
+  function injectStyle() {
+    if (document.getElementById('sfq-prog-style')) return;
+    var css =
+      '#sfq-prog-lock{position:fixed;inset:0;z-index:99990;display:none;align-items:center;justify-content:center;padding:24px;' +
+      'background:rgba(15,23,42,.92);backdrop-filter:blur(4px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfq-prog-lock.show{display:flex}' +
+      '#sfq-prog-lock .pgl-card{max-width:420px;width:100%;background:#fff;border-radius:18px;padding:30px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}' +
+      '#sfq-prog-lock .pgl-ic{font-size:52px;line-height:1;margin-bottom:12px}' +
+      '#sfq-prog-lock .pgl-title{font-size:19px;font-weight:800;color:#0f172a;margin:0 0 8px}' +
+      '#sfq-prog-lock .pgl-sub{font-size:14px;line-height:1.7;color:#475569;margin:0 0 20px}' +
+      '#sfq-prog-lock .pgl-btn{display:block;width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer}' +
+      '#sfq-prog-lock .pgl-primary{background:#0176d3;color:#fff}' +
+      '#sfq-prog-lock .pgl-ghost{background:#eef2f7;color:#334155}' +
+      '@media(prefers-color-scheme:dark){#sfq-prog-lock .pgl-card{background:#1e293b}#sfq-prog-lock .pgl-title{color:#f1f5f9}#sfq-prog-lock .pgl-sub{color:#cbd5e1}#sfq-prog-lock .pgl-ghost{background:#334155;color:#e2e8f0}}' +
+      '#sfq-prog-info{position:fixed;inset:0;z-index:99995;display:none;align-items:center;justify-content:center;padding:20px;' +
+      'background:rgba(15,23,42,.6);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
+      '#sfq-prog-info.show{display:flex}' +
+      'html.sfq-prog-modal-open,body.sfq-prog-modal-open{overflow:hidden}' +
+      '#sfq-prog-info .pgi-card{width:min(96vw,520px);max-height:86vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35)}' +
+      '#sfq-prog-info .pgi-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #e2e8f0;font-weight:800;font-size:16px;color:#0f172a}' +
+      '#sfq-prog-info .pgi-x{display:grid;place-items:center;width:44px;height:44px;background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;line-height:1}' +
+      '#sfq-prog-info .pgi-body{padding:16px 18px 20px}' +
+      '#sfq-prog-info .pgi-flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}' +
+      '#sfq-prog-info .pgi-step{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700}' +
+      '#sfq-prog-info .pgi-arrow{color:#94a3b8;font-weight:800}' +
+      '#sfq-prog-info .pgi-list{margin:0 0 14px;padding-left:20px;color:#334155;font-size:14px;line-height:1.8}' +
+      '#sfq-prog-info .pgi-list b{color:#0f172a}' +
+      '#sfq-prog-info .pgi-note{color:#64748b;font-size:12px;font-weight:600;margin-left:4px}' +
+      '#sfq-prog-info .pgi-how{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:11px 13px;font-size:13px;line-height:1.7;color:#334155}' +
+      '@media(prefers-color-scheme:dark){#sfq-prog-info .pgi-card{background:#1e293b}#sfq-prog-info .pgi-head{color:#f1f5f9;border-color:#334155}#sfq-prog-info .pgi-step{background:#1e3a5f;color:#93c5fd;border-color:#1e40af}#sfq-prog-info .pgi-list{color:#cbd5e1}#sfq-prog-info .pgi-list b{color:#f1f5f9}#sfq-prog-info .pgi-how{background:#0f172a;border-color:#334155;color:#cbd5e1}}';
+    var st = document.createElement('style');
+    st.id = 'sfq-prog-style';
+    st.textContent = css;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  function homeUrl() { return window.SFQ_HOME_URL || '../../index.html'; }
+
+  function buildEl() {
+    injectStyle();
+    var el = document.getElementById('sfq-prog-lock');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'sfq-prog-lock';
+    el.innerHTML = '<div class="pgl-card">' +
+      '<div class="pgl-ic" id="pgl-ic">🔒</div>' +
+      '<p class="pgl-title" id="pgl-title"></p>' +
+      '<p class="pgl-sub" id="pgl-sub"></p>' +
+      '<div id="pgl-actions"></div></div>';
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function renderGate() {
+    var cfg = window.CERT_CONFIG;
+    if (!cfg || !cfg.slug) return;
+    var slug = cfg.slug;
+    var st = stateOf(slug);
+    var el = document.getElementById('sfq-prog-lock');
+    // ロック中にキーボード操作で学習画面へ移動できないようにする。
+    document.querySelectorAll('#app-main,.bottom-nav').forEach(function (node) { node.inert = st !== 'open'; });
+    if (st === 'open') { if (el) el.classList.remove('show'); return; }
+    el = buildEl();
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-labelledby', 'pgl-title');
+    var ic = document.getElementById('pgl-ic');
+    var title = document.getElementById('pgl-title');
+    var sub = document.getElementById('pgl-sub');
+    var actions = document.getElementById('pgl-actions');
+    var homeBtn = '<button class="pgl-btn pgl-primary" id="pgl-home">🗂️ 他の資格を選ぶ</button>';
+    var reloadBtn = '<button class="pgl-btn pgl-ghost" id="pgl-reload">🔄 再確認</button>';
+    if (st === 'restricted') {
+      ic.textContent = '🔒';
+      title.textContent = '利用できません';
+      sub.textContent = 'この資格は、管理者と許可された利用者だけが学習できます。利用をご希望の場合は管理者にお問い合わせください。';
+      actions.innerHTML = homeBtn + reloadBtn;
+    } else if (st === 'coming') {
+      ic.textContent = '🔜';
+      title.textContent = 'この資格はいずれ公開します';
+      sub.textContent = '現在準備中です。公開までもうしばらくお待ちください。';
+      actions.innerHTML = homeBtn + reloadBtn;
+    } else if (st === 'acquired') {
+      var d = (progress().acquired || {})[slug] || '';
+      var dEsc = String(d).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      ic.textContent = '🎓';
+      title.textContent = '取得済みのため学習はロック中です';
+      sub.innerHTML = (d ? '取得日: ' + dEsc + '<br>' : '') + 'この資格は取得済みです。次の資格に進みましょう。';
+      actions.innerHTML = homeBtn + reloadBtn;
+    } else {
+      ic.textContent = '🔒';
+      title.textContent = 'この資格はまだ解除されていません';
+      sub.textContent = lockReason(slug) || 'まだ解除されていません';
+      actions.innerHTML = homeBtn + reloadBtn;
+    }
+    document.getElementById('pgl-home').onclick = function () { location.href = homeUrl(); };
+    document.getElementById('pgl-reload').onclick = function () { location.reload(); };
+    el.classList.add('show');
+  }
+
+  function ruleHtml() {
+    return '' +
+      '<div class="pgi-flow">' +
+        '<span class="pgi-step">① ' + NAME['sf-admin'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">② ' + NAME['app-builder'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">③ ' + NAME['developer'] + '</span><span class="pgi-arrow">→</span>' +
+        '<span class="pgi-step">残りの資格を1つずつ</span>' +
+      '</div>' +
+      '<ul class="pgi-list">' +
+        '<li>最初は <b>' + NAME['sf-admin'] + '</b> だけが学習できます。</li>' +
+        '<li>その資格を <b>「取得済み」</b> にすると <b>次の資格が解除</b> されます（②→③の順）。</li>' +
+        '<li>取得済みにした資格は <b>学習・解答ができなくなります</b>。⚠️ <b>一度「取得済み」にすると取り消せません</b>。</li>' +
+        '<li>コア3資格以降は、<b>管理者と利用許可を受けた人だけ</b>が利用できます。許可を受けた人は <b>' + NAME['developer'] + '</b> まで取得すると、専門資格を <b>1つずつ</b> 選んで解除できます。</li>' +
+      '</ul>' +
+      '<div class="pgi-how"><b>「取得済みにする」場所：</b> 各資格ホームの「🎓 資格の取得」カード／👤マイページ／合格した模試の結果画面。</div>';
+  }
+  var infoReturn = null, infoInert = [];
+  function infoFocusable(ov) {
+    return Array.prototype.slice.call(ov.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(function (el) {
+      return !el.disabled && el.getAttribute('aria-hidden') !== 'true';
+    });
+  }
+  function openInfo() {
+    injectStyle();
+    var ov = document.getElementById('sfq-prog-info');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'sfq-prog-info';
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeInfo(); });
+      document.body.appendChild(ov);
+    }
+    ov.innerHTML = '<div class="pgi-card" role="dialog" aria-modal="true" aria-labelledby="pgi-title"><div class="pgi-head"><span id="pgi-title">🎓 資格はステップ制で解除します</span>' +
+      '<button class="pgi-x" id="pgi-x" aria-label="閉じる">✕</button></div>' +
+      '<div class="pgi-body">' + ruleHtml() + '</div></div>';
+    document.getElementById('pgi-x').onclick = closeInfo;
+    infoReturn = document.activeElement;
+    infoInert = [];
+    Array.prototype.forEach.call(document.body.children, function (el) { if (el !== ov && !el.inert) { el.inert = true; infoInert.push(el); } });
+    document.documentElement.classList.add('sfq-prog-modal-open'); document.body.classList.add('sfq-prog-modal-open');
+    ov.classList.add('show');
+    setTimeout(function () { var x = document.getElementById('pgi-x'); if (x) x.focus(); }, 0);
+  }
+  function closeInfo() {
+    var ov = document.getElementById('sfq-prog-info'); if (!ov || !ov.classList.contains('show')) return;
+    ov.classList.remove('show');
+    infoInert.forEach(function (el) { el.inert = false; }); infoInert = [];
+    document.documentElement.classList.remove('sfq-prog-modal-open'); document.body.classList.remove('sfq-prog-modal-open');
+    if (infoReturn && infoReturn.isConnected) infoReturn.focus(); infoReturn = null;
+  }
+  window.SFQ_PROG.ruleHtml = ruleHtml;
+  window.SFQ_PROG.openInfo = openInfo;
+  window.SFQ_PROG.closeInfo = closeInfo;
+
+  document.addEventListener('keydown', function (e) {
+    var ov = document.getElementById('sfq-prog-info'); if (!ov || !ov.classList.contains('show')) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeInfo(); return; }
+    if (e.key !== 'Tab') return;
+    var f = infoFocusable(ov); if (!f.length) { e.preventDefault(); return; }
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  window.addEventListener('sfq-progress', renderGate);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderGate);
+  else renderGate();
+})();

@@ -1,0 +1,16 @@
+# reference_url の死活チェック（週1・手動実行も可）
+# 公式ヘルプのURL改編によるリンク切れを検出する。404/410 のみ失敗扱い。
+name: Link Check
+on:
+  workflow_dispatch:
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 非公開データリポジトリへの移行案内
+        run: echo '公式参照URLの検証は非公開sf-exam-dataのLink Checkで実行します。'
