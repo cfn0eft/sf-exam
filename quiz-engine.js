@@ -473,8 +473,11 @@ async function initializeCertData(){
   certDataLoading=true;certDataGeneration=window.SFQ_BANK?window.SFQ_BANK.generation():-1;
   bankStatus('ログインと利用承認を確認しています。');
   try{await loadCertData();}catch(e){
-    console.error('cert data load failed',e.code||e.message);
-    bankStatus(e.code==='permission-denied'?'この資格の問題を取得する権限がありません。承認状態をご確認ください。':e.message,'error');
+    if(e.code==='bank-auth-pending')bankStatus('ログインと利用承認を確認しています。');
+    else{
+      console.error('cert data load failed',e.code||e.message);
+      bankStatus(e.code==='permission-denied'?'この資格の問題を取得する権限がありません。承認状態をご確認ください。':e.message,'error');
+    }
     certDataLoading=false;
     if(window.SFQ_BANK&&certDataGeneration!==window.SFQ_BANK.generation())initializeCertData();
     return;

@@ -43,7 +43,11 @@
   }
   async function load(slug, onAuthorized) {
     await timeout(initPromise, 15000);
-    if (!auth.currentUser || !ready) throw new Error('ログインと利用承認の確認後に問題を読み込めます。');
+    if (!auth.currentUser || !ready) {
+      var pending = new Error('ログインと利用承認を確認しています。');
+      pending.code = 'bank-auth-pending';
+      throw pending;
+    }
     if (!/^[a-z][a-z-]+$/.test(slug)) throw new Error('資格が不正です。');
     var token = generation;
     if (cache.has(slug)) return cache.get(slug);

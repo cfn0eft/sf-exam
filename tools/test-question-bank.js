@@ -22,10 +22,10 @@ function setup(){
  return {bank,events,reads:()=>reads,fail:()=>{fail=true},corrupt:()=>{corrupt=true},wait:p=>{waiter=p},onHash:f=>{hashHook=f},login(uid='user'){auth.currentUser={uid};onAuth(auth.currentUser);onOwn({exists:true,metadata:{fromCache:false,hasPendingWrites:false},data:()=>({access:'approved'})});},logout(){auth.currentUser=null;onAuth(null);},revoke(){onOwn({exists:true,metadata:{fromCache:false,hasPendingWrites:false},data:()=>({access:'blocked'})});}};
 }
 (async()=>{
- let t=setup();await assert.rejects(t.bank.load('sf-admin'));assert.equal(t.reads(),0);
- t.login();assert.equal((await t.bank.load('sf-admin')).length,rows.length);let read=t.reads();await t.bank.load('sf-admin');assert.equal(t.reads(),read);
+ let t=setup(),authorized=0;await assert.rejects(t.bank.load('sf-admin',()=>authorized++),{code:'bank-auth-pending'});assert.equal(t.reads(),0);assert.equal(authorized,0);
+ t.login();assert.equal((await t.bank.load('sf-admin',()=>authorized++)).length,rows.length);assert.equal(authorized,1);let read=t.reads();await t.bank.load('sf-admin');assert.equal(t.reads(),read);
  t.logout();await assert.rejects(t.bank.load('sf-admin'));t.login('other');await t.bank.load('sf-admin');assert.ok(t.reads()>read);
- t=setup();t.login();t.fail();await assert.rejects(t.bank.load('sf-admin'),{code:'permission-denied'});
+ t=setup();t.login();t.fail();authorized=0;await assert.rejects(t.bank.load('sf-admin',()=>authorized++),{code:'permission-denied'});assert.equal(authorized,0);
  t=setup();t.login();t.corrupt();await assert.rejects(t.bank.load('sf-admin'));
  t=setup();t.login();let release;const gate=new Promise(r=>release=r);t.wait(gate);const pending=t.bank.load('sf-admin');await tick();t.revoke();release();await assert.rejects(pending);
  t=setup();t.login();t.onHash(n=>{if(n===bundle.chunks.length+1)t.revoke();});await assert.rejects(t.bank.load('sf-admin'));
