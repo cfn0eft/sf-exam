@@ -414,13 +414,14 @@ async function loadCertData(){
   if((!DOMAIN_DEFS||!DOMAIN_DEFS.length)&&Array.isArray(CFG.domains))DOMAIN_DEFS=CFG.domains;
   buildDomainIndex();
   const qGeneration=window.SFQ_BANK.generation();
-  const qs=await window.SFQ_BANK.load(CFG.slug);
+  const qs=await window.SFQ_BANK.load(CFG.slug,()=>bankStatus('問題を読み込んでいます。','loading',1));
   QDATA=Array.isArray(qs)?qs.filter(q=>q&&q.question&&q.choices&&q.answers):[];
   QDATA.forEach(q=>{
     if(q.multi==null)q.multi=Array.isArray(q.answers)&&q.answers.length>1;
     if(!q.domain&&QDOMAIN[q.id])q.domain=QDOMAIN[q.id];
     if(q.domain&&QDOMAIN[q.id]==null)QDOMAIN[q.id]=q.domain;
   });
+  bankStatus('教科書や用語帳を準備しています。', 'loading', 2);
   CHDATA=(await gj('vocab.json'))||[];
   NAVDATA=(await gj('navmap.json'))||[];
   CRAMDATA=(await gj('cram.json'))||[];
@@ -443,32 +444,45 @@ function applyCertText(){
   const eb=document.querySelector('#pg-home .btn-exam .bsub');if(eb)eb.textContent=EXAM_N+'問・'+EXAM_MIN+'分・合格ライン'+PASS+'%';
 }
 let certDataLoaded=false, certDataLoading=false, certDataGeneration=-1;
-function bankStatus(message){
-  let el=document.getElementById('sfq-bank-status');
-  if(!el){
-    el=document.createElement('div');el.id='sfq-bank-status';
-    el.style.cssText='position:fixed;inset:0;z-index:99989;background:var(--bg,#f4f6f8);display:grid;place-items:center;padding:24px;text-align:center';
-    const card=document.createElement('div');
-    const text=document.createElement('p');text.id='sfq-bank-message';text.setAttribute('role','status');
-    const retry=document.createElement('button');retry.textContent='再読み込み';retry.className='btn';retry.onclick=()=>location.reload();
-    const home=document.createElement('a');home.href=window.SFQ_HOME_URL||'../../index.html';home.textContent='ホームへ戻る';home.style.cssText='display:block;margin-top:20px';
-    card.append(text,retry,home);el.append(card);document.body.append(el);
+let bankWaitTimer;
+function bankStatus(message,state='loading',step=0){
+  const el=document.getElementById('sfq-bank-status');if(!el)return;
+  el.dataset.state=state;
+  document.getElementById('sfq-bank-title').textContent=state==='error'?'読み込みを完了できませんでした':'今日の学習を準備しています';
+  document.getElementById('sfq-bank-message').textContent=message;
+  document.getElementById('sfq-bank-retry').hidden=state!=='error';
+  document.getElementById('sfq-bank-retry').onclick=()=>location.reload();
+  el.querySelectorAll('.bank-step').forEach((item,i)=>{
+    item.classList.toggle('is-current',i===step);item.classList.toggle('is-done',i<step);
+    if(i===step)item.setAttribute('aria-current','step');else item.removeAttribute('aria-current');
+  });
+  if(!bankWaitTimer&&state==='loading'){
+    document.getElementById('sfq-bank-hint').textContent='準備ができると、自動で学習画面に切り替わります。';
+    bankWaitTimer=setTimeout(()=>{
+      const hint=document.getElementById('sfq-bank-hint');
+      if(hint)hint.textContent='少し時間がかかっています。このまま待つか、通信状況をご確認ください。';
+    },10000);
   }
-  document.getElementById('sfq-bank-message').textContent=message;el.style.display='grid';
+  if(state==='error'){
+    clearTimeout(bankWaitTimer);bankWaitTimer=null;
+    document.getElementById('sfq-bank-hint').textContent='通信状況や利用承認を確認して、もう一度お試しください。';
+  }
 }
 async function initializeCertData(){
   if(certDataLoading||certDataLoaded)return;
   certDataLoading=true;certDataGeneration=window.SFQ_BANK?window.SFQ_BANK.generation():-1;
-  bankStatus('ログイン・利用承認を確認して問題を読み込んでいます…');
+  bankStatus('ログインと利用承認を確認しています。');
   try{await loadCertData();}catch(e){
     console.error('cert data load failed',e.code||e.message);
-    bankStatus(e.code==='permission-denied'?'この資格の問題を取得する権限がありません。承認状態をご確認ください。':e.message);
+    bankStatus(e.code==='permission-denied'?'この資格の問題を取得する権限がありません。承認状態をご確認ください。':e.message,'error');
     certDataLoading=false;
     if(window.SFQ_BANK&&certDataGeneration!==window.SFQ_BANK.generation())initializeCertData();
     return;
   }
   certDataLoaded=true;certDataLoading=false;
+  clearTimeout(bankWaitTimer);bankWaitTimer=null;
   const bankOverlay=document.getElementById('sfq-bank-status');if(bankOverlay)bankOverlay.remove();
+  document.querySelectorAll('[data-bank-inert]').forEach(el=>{el.inert=false;el.removeAttribute('data-bank-inert');});
   applyCertText();
   try{buildKwFilter();}catch(e){}
   try{restoreFilters();}catch(e){}

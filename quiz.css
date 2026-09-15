@@ -1958,3 +1958,35 @@ textarea { min-height: var(--ui-control-min); }
 .ui-state.error .ui-state-symbol { color: var(--danger); }
 .cram-empty,
 .nb-empty { padding: 0; }
+
+/* Shown in the HTML before the authentication SDK starts downloading. */
+.bank-screen{position:fixed;inset:0;z-index:99989;display:grid;place-items:center;overflow-y:auto;padding:32px 20px;background:radial-gradient(ellipse at 50% 20%,color-mix(in srgb,var(--primary) 7%,transparent),transparent 65%),var(--bg);color:var(--text)}
+.bank-wrap{width:100%;max-width:520px;margin:auto}
+.bank-brand{display:flex;align-items:center;gap:8px;margin:0 2px 18px;font-size:10px;letter-spacing:.12em;font-weight:750;color:var(--text-sub)}
+.bank-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.bank-brand-sub{margin-left:auto;font-size:11px;letter-spacing:.06em;font-weight:500}
+.bank-card{padding:30px 32px 28px;border:1px solid var(--border);border-radius:20px;background:var(--card);text-align:center;box-shadow:0 16px 48px color-mix(in srgb,var(--primary) 6%,transparent)}
+.bank-cert{display:inline-block;max-width:100%;padding:6px 12px;border:1px solid var(--border);border-radius:30px;color:var(--text-sub);font-size:12px;font-weight:650;line-height:1.6;overflow-wrap:anywhere}
+.bank-art{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:28px auto 25px;color:var(--primary);background:color-mix(in srgb,var(--primary) 8%,var(--card));border-radius:50%}
+.bank-art svg{width:70px;height:70px}
+.bank-orbit{position:absolute;inset:-7px;border:1px solid color-mix(in srgb,var(--primary) 20%,transparent);border-radius:50%}
+.bank-orbit:after{content:'';position:absolute;top:15px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 5px var(--card)}
+.bank-error-mark{display:none;position:absolute;right:0;bottom:0;width:28px;height:28px;line-height:28px;border-radius:50%;background:var(--danger);color:var(--card);font-size:18px;font-weight:800}
+#sfq-bank-title{font-size:21px;line-height:1.6;font-weight:750;letter-spacing:.015em;overflow-wrap:anywhere}
+.bank-message{min-height:46px;margin:10px 0 0;color:var(--text-sub);font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+.bank-motion{display:flex;justify-content:center;gap:6px;height:22px;margin:8px 0 23px}
+.bank-motion i{width:5px;height:5px;border-radius:50%;background:var(--primary);animation:bank-breathe 1.5s ease-in-out infinite}
+.bank-motion i:nth-child(2){animation-delay:.2s}.bank-motion i:nth-child(3){animation-delay:.4s}
+@keyframes bank-breathe{0%,70%,100%{opacity:.3;transform:translateY(0)}35%{opacity:1;transform:translateY(-4px)}}
+.bank-steps{display:flex;list-style:none;gap:6px;border-top:1px solid var(--border);padding:22px 0 0;margin:0}
+.bank-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--text-sub);font-size:11px;line-height:1.5}
+.bank-step span{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;border:1px solid var(--border);font-size:11px;font-weight:700}
+.bank-step.is-current{color:var(--primary);font-weight:750}.bank-step.is-current span{background:var(--primary);color:var(--card);border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 10%,transparent)}
+.bank-step.is-done span{background:color-mix(in srgb,var(--primary) 10%,var(--card));border-color:transparent;color:var(--primary);font-size:0}.bank-step.is-done span:after{content:'✓';font-size:12px}
+.bank-hint{margin-top:23px;color:var(--text-sub);font-size:11px;line-height:1.8}
+.bank-home{display:table;margin:20px auto 0;padding:8px 12px;color:var(--text-sub);font-size:12px;line-height:1.8;text-decoration:none}.bank-home:hover{color:var(--primary);text-decoration:underline}
+.bank-retry{width:100%;margin-top:20px;padding:12px 18px;border:0;border-radius:8px;background:var(--primary);color:var(--card);font:inherit;font-size:14px;font-weight:700;cursor:pointer}.bank-retry[hidden]{display:none}
+.bank-screen[data-state=error] .bank-error-mark{display:block}.bank-screen[data-state=error] .bank-motion,.bank-screen[data-state=error] .bank-steps{display:none}
+.bank-screen[data-state=error] .bank-message{color:var(--danger)}
+@media(max-width:480px){.bank-screen{padding:24px 16px}.bank-card{padding:24px 18px;border-radius:16px}#sfq-bank-title{font-size:19px}.bank-art{margin-top:25px}.bank-brand{font-size:9px}.bank-brand-sub{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.bank-motion i{animation:none;opacity:.65}}

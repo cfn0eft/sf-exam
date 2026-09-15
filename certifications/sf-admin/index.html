@@ -2,8 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<script src="../../analytics.js?v=201"></script>
-<script src="../../maintenance.js?v=201"></script>
+<script>try{if(localStorage.getItem("dark")==="1")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
+<script src="../../analytics.js?v=202"></script>
+<script src="../../maintenance.js?v=202"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta name="description" content="Salesforce 認定アドミニストレーター試験の無料学習クイズ。公式8分野の練習問題・本番形式の模試・分野別の弱点分析・間違いノート・用語帳・SRS復習で合格を目指せます。">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,16 +14,37 @@
 <link rel="icon" type="image/svg+xml" href="../../icons/icon.svg">
 <link rel="apple-touch-icon" href="../../icons/icon-180.png">
 <title>SF資格 学習アプリ</title>
-<link rel="stylesheet" href="../../quiz.css?v=201">
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="../../quiz.css?v=202">
 <script src="../../firebase-config.js"></script>
 </head>
 <body>
+<section id="sfq-bank-status" class="bank-screen" data-state="loading" aria-labelledby="sfq-bank-title">
+  <div class="bank-wrap">
+    <div class="bank-brand"><span class="bank-brand-dot" aria-hidden="true"></span>SF CERTIFICATION<span class="bank-brand-sub">学習の準備</span></div>
+    <div class="bank-card">
+      <p class="bank-cert">SF アドミニストレーター</p>
+      <div class="bank-art" aria-hidden="true">
+        <span class="bank-orbit"></span>
+        <svg viewBox="0 0 80 80" fill="none"><path d="M40 22c-8-5-17-6-27-3v39c10-3 19-2 27 3 8-5 17-6 27-3V19c-10-3-19-2-27 3Z" fill="var(--card)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M40 23v37M21 29c4-1 8 0 12 2m-12 7c4-1 8 0 12 2m14-9c4-2 8-3 12-2m-12 11c4-2 8-3 12-2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <span class="bank-error-mark">!</span>
+      </div>
+      <h1 id="sfq-bank-title">今日の学習を準備しています</h1>
+      <p id="sfq-bank-message" class="bank-message" role="status" aria-live="polite">ログインと利用承認を確認しています。</p>
+      <div class="bank-motion" aria-hidden="true"><i></i><i></i><i></i></div>
+      <ol class="bank-steps" aria-label="学習の準備状況">
+        <li class="bank-step is-current" aria-current="step"><span>1</span>利用の確認</li>
+        <li class="bank-step"><span>2</span>問題の読込</li>
+        <li class="bank-step"><span>3</span>教材の準備</li>
+      </ol>
+      <p id="sfq-bank-hint" class="bank-hint">準備ができると、自動で学習画面に切り替わります。</p>
+      <button id="sfq-bank-retry" class="bank-retry" type="button" hidden>もう一度読み込む</button>
+    </div>
+    <a class="bank-home" href="../../index.html">← 資格一覧に戻る</a>
+  </div>
+</section>
 <a class="skip-link" href="#app-main">メインコンテンツへ移動</a>
 
-<header class="topbar">
+<header class="topbar" inert data-bank-inert>
   <button class="topbar-btn" id="btn-back" onclick="goBack()" style="display:none" title="戻る" aria-label="戻る">&#8592;</button>
   <a class="topbar-btn" href="../../index.html" title="別の資格を選ぶ" aria-label="別の資格を選ぶ" style="text-decoration:none">🗂️</a>
   <span class="topbar-title" id="topbar-title">SF資格 学習アプリ</span>
@@ -33,7 +55,7 @@
 </header>
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-<main id="app-main" tabindex="-1">
+<main inert data-bank-inert id="app-main" tabindex="-1">
 <h1 class="sr-only" id="app-page-title" tabindex="-1">資格学習ホーム</h1>
 
 <div class="page active" id="pg-home">
@@ -481,7 +503,7 @@
 
 </main>
 
-<nav class="bottom-nav" aria-label="主要メニュー">
+<nav inert data-bank-inert class="bottom-nav" aria-label="主要メニュー">
   <button class="nav-btn active" id="nb-home" onclick="goTo('home')" aria-current="page"><span class="nav-icon">🏠</span>ホーム</button>
   <button class="nav-btn" id="nb-study" onclick="startStudy()"><span class="nav-icon">📖</span>学習</button>
   <button class="nav-btn" id="nb-textbook" onclick="goTo('textbook')"><span class="nav-icon">📚</span>教科書</button>
@@ -503,11 +525,14 @@
   window.SFQ_PAGE_ROLE = 'client';
   window.SFQ_HOME_URL  = '../../index.html';
 </script>
-<script src="../../changelog.js?v=201"></script>
-<script src="../../figures.js?v=201"></script>
-<script src="../../quiz-engine.js?v=201"></script>
-<script src="../../progression.js?v=201"></script>
-<script src="../../question-bank.js?v=201"></script>
-<script src="../../cloud-sync.js?v=201"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../changelog.js?v=202"></script>
+<script src="../../figures.js?v=202"></script>
+<script src="../../quiz-engine.js?v=202"></script>
+<script src="../../progression.js?v=202"></script>
+<script src="../../question-bank.js?v=202"></script>
+<script src="../../cloud-sync.js?v=202"></script>
 </body>
 </html>

@@ -41,7 +41,7 @@
       timer = setTimeout(function () { reject(new Error('問題の取得がタイムアウトしました。通信を確認して再試行してください。')); }, ms);
     })]).finally(function () { clearTimeout(timer); });
   }
-  async function load(slug) {
+  async function load(slug, onAuthorized) {
     await timeout(initPromise, 15000);
     if (!auth.currentUser || !ready) throw new Error('ログインと利用承認の確認後に問題を読み込めます。');
     if (!/^[a-z][a-z-]+$/.test(slug)) throw new Error('資格が不正です。');
@@ -53,6 +53,7 @@
       if (!snapshot.exists) throw new Error('問題データの準備中です。');
       var m = snapshot.data();
       if (m.schema !== 1 || !Array.isArray(m.chunks) || !m.chunks.length || m.chunks.length > 100 || !/^[a-zA-Z0-9_-]+$/.test(m.activeVersion)) throw new Error('問題データの構成が不正です。');
+      if (typeof onAuthorized === 'function') onAuthorized();
       var bank = [];
       // Sequential reads bound memory and avoid bursts of dependent rule reads.
       for (var part of m.chunks) {

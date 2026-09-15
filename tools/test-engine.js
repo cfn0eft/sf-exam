@@ -512,9 +512,9 @@ t('アクセシビリティ: 全資格シェルにランドマーク・名前・
   const slugs = ['sf-admin','app-builder','developer','agentforce','sales-cloud','service-cloud','experience-cloud','sharing-visibility'];
   slugs.forEach((slug) => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'certifications', slug, 'index.html'), 'utf8');
-    ok(html.includes('<main id="app-main"'), slug + ': main がない');
+    ok(/<main\b[^>]*\bid="app-main"/.test(html), slug + ': main がない');
     ok(html.includes('<h1 class="sr-only" id="app-page-title"'), slug + ': ページ見出しがない');
-    ok(html.includes('<nav class="bottom-nav" aria-label="主要メニュー">'), slug + ': ナビゲーション名がない');
+    ok(/<nav\b[^>]*class="bottom-nav"[^>]*aria-label="主要メニュー"/.test(html), slug + ': ナビゲーション名がない');
     ok(html.includes('role="tablist"'), slug + ': 教科書タブの役割がない');
     ok(!/<input[^>]+type="checkbox"[^>]+style="display:none"/.test(html), slug + ': キーボード操作できないチェックボックスが残っている');
   });
