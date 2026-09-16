@@ -6,7 +6,7 @@ const rows=Array.from({length:120},(_,i)=>({id:i+1,question:'架空の問題'.re
 const bundle=compile(rows);
 assert.ok(bundle.chunks.length>1);assert.ok(bundle.chunks.every(c=>Buffer.byteLength(c.json)<=240000));
 assert.deepEqual(bundle.chunks.flatMap(c=>JSON.parse(c.json)),rows);
-function setup(){
+function setup(initialize=true){
  let onAuth,onOwn,fail=false,corrupt=false,waiter=null,hashHook=null;let reads=0,hashes=0;const events=[];
  const auth={currentUser:null,onAuthStateChanged(cb){onAuth=cb;}};
  function ref(p){return {collection:s=>ref(p+'/'+s),doc:s=>ref(p+'/'+s),onSnapshot(o,cb){onOwn=cb;return ()=>{};},async get(options){
@@ -18,10 +18,14 @@ function setup(){
  const win={dispatchEvent:e=>events.push(e.type),addEventListener(){}};
  const ctx={window:win,Event,Map,Set,Promise,crypto:{subtle:{async digest(...args){hashes++;if(hashHook)hashHook(hashes);return webcrypto.subtle.digest(...args);}}},TextEncoder,Uint8Array,setTimeout,clearTimeout};
  vm.runInNewContext(fs.readFileSync('question-bank.js','utf8'),ctx);
- const bank=win.SFQ_BANK;bank.initialize(auth,{collection:s=>ref(s)});
+ const bank=win.SFQ_BANK;if(initialize)bank.initialize(auth,{collection:s=>ref(s)});
  return {bank,events,reads:()=>reads,fail:()=>{fail=true},corrupt:()=>{corrupt=true},wait:p=>{waiter=p},onHash:f=>{hashHook=f},login(uid='user'){auth.currentUser={uid};onAuth(auth.currentUser);onOwn({exists:true,metadata:{fromCache:false,hasPendingWrites:false},data:()=>({access:'approved'})});},logout(){auth.currentUser=null;onAuth(null);},revoke(){onOwn({exists:true,metadata:{fromCache:false,hasPendingWrites:false},data:()=>({access:'blocked'})});}};
 }
 (async()=>{
+ let broken=setup(false);const startup=broken.bank.load('sf-admin');
+ broken.bank.failInitialization('Configuration unavailable');
+ await assert.rejects(startup,{code:'bank-init-failed',message:'Configuration unavailable'});
+ await assert.rejects(broken.bank.load('sf-admin'),{code:'bank-init-failed'});assert.equal(broken.reads(),0);
  let t=setup(),authorized=0;await assert.rejects(t.bank.load('sf-admin',()=>authorized++),{code:'bank-auth-pending'});assert.equal(t.reads(),0);assert.equal(authorized,0);
  t.login();assert.equal((await t.bank.load('sf-admin',()=>authorized++)).length,rows.length);assert.equal(authorized,1);let read=t.reads();await t.bank.load('sf-admin');assert.equal(t.reads(),read);
  t.logout();await assert.rejects(t.bank.load('sf-admin'));t.login('other');await t.bank.load('sf-admin');assert.ok(t.reads()>read);

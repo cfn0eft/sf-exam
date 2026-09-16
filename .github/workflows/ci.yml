@@ -26,6 +26,8 @@ jobs:
         run: node tools/test-progression.js
       - name: 問題配信の認証・照合・破棄を検証
         run: node tools/test-question-bank.js
+      - name: 公開HTMLの接続設定と問題原本の除外を検証
+        run: node tools/build-site.js && node tools/test-built-site.js
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

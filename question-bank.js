@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var db, auth, generation = 0, accessKey = '', ready = false, initialized = false;
-  var cache = new Map(), ownUnsub, initResolve;
+  var cache = new Map(), ownUnsub, initResolve, initError;
   var initPromise = new Promise(function (resolve) { initResolve = resolve; });
   function notify() { window.dispatchEvent(new Event('sfq-bank-access')); }
   function invalidate(key, allowed) {
@@ -43,6 +43,7 @@
   }
   async function load(slug, onAuthorized) {
     await timeout(initPromise, 15000);
+    if (initError) throw initError;
     if (!auth.currentUser || !ready) {
       var pending = new Error('ログインと利用承認を確認しています。');
       pending.code = 'bank-auth-pending';
@@ -78,5 +79,11 @@
     cache.set(slug, task);
     try { return await task; } catch (e) { if (cache.get(slug) === task) cache.delete(slug); throw e; }
   }
-  window.SFQ_BANK = { initialize: initialize, load: load, generation: function () { return generation; } };
+  function failInitialization(message) {
+    if (initialized) return;
+    initError = new Error(message);
+    initError.code = 'bank-init-failed';
+    initResolve();
+  }
+  window.SFQ_BANK = { initialize: initialize, failInitialization: failInitialization, load: load, generation: function () { return generation; } };
 })();

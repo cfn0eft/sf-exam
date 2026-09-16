@@ -1,7 +1,7 @@
 /* firebase-config.js — 設定値だけを置くファイル。手順は docs/ を参照。 */
 
 window.SFQ_FIREBASE_CONFIG = {
-  apiKey: "",
+  apiKey: "AIzaSyCNMqhh8G6h1IEI1L5Q19G4p-CdMLrNDrA",
   authDomain: "sf-admin-7da9c.firebaseapp.com",
   projectId: "sf-admin-7da9c",
   storageBucket: "sf-admin-7da9c.firebasestorage.app",

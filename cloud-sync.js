@@ -4273,11 +4273,13 @@
     }
 
     if (!configOk()) {
+      if (window.SFQ_BANK) window.SFQ_BANK.failInitialization('ログイン接続の設定を読み込めませんでした。ページを再読み込みしてください。');
       hideOverlay();
       try { console.warn('[cloud-sync] Firebaseの設定が未完了です。「Firebaseセットアップ手順.md」を参照してください。'); } catch (e) {}
       return;
     }
     if (!window.firebase || !firebase.initializeApp) {
+      if (window.SFQ_BANK) window.SFQ_BANK.failInitialization('ログイン機能を読み込めませんでした。通信状況をご確認のうえ、再読み込みしてください。');
       hideOverlay();
       try { console.warn('[cloud-sync] Firebase SDK を読み込めませんでした。ネット接続を確認してください。'); } catch (e) {}
       return;
@@ -4294,6 +4296,7 @@
     } catch (e) {
       hideOverlay();
       try { console.warn('[cloud-sync] Firebaseの初期化に失敗しました。', e); } catch (e2) {}
+      if (window.SFQ_BANK) window.SFQ_BANK.failInitialization('ログイン接続を開始できませんでした。ページを再読み込みしてください。');
       return;
     }
 
