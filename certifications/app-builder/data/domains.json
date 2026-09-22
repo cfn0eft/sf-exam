@@ -4,19 +4,19 @@
     {
       "code": "fund",
       "name": "Salesforce基礎",
-      "weight": 23,
+      "weight": 18,
       "emoji": "🧭"
     },
     {
       "code": "data",
       "name": "データモデリングと管理",
-      "weight": 22,
+      "weight": 20,
       "emoji": "🗂️"
     },
     {
       "code": "logic",
       "name": "ビジネスロジックと自動化",
-      "weight": 28,
+      "weight": 32,
       "emoji": "⚡"
     },
     {
@@ -27,8 +27,8 @@
     },
     {
       "code": "deploy",
-      "name": "アプリのリリース",
-      "weight": 10,
+      "name": "アプリケーションのデプロイ",
+      "weight": 13,
       "emoji": "🚀"
     }
   ]

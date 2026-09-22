@@ -52,14 +52,14 @@ sf-exam/
 
 | 資格 | slug | examCode | examN | examMin | pass | storageKey | 分野 |
 |---|---|---|---|---|---|---|---|
-| Administrator | sf-admin | ADM-201 | 60 | 105 | 65 | sfq_v4 | 8 (cfg/obj/auto/data/sales/service/prod/agf) |
-| App Builder | app-builder | CRT-403 | 60 | 105 | 63 | sfqab_v1 | 5 (fund/data/logic/ui/deploy) |
-| Developer | developer | CRT-450 | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
-| Agentforce Specialist | agentforce | （なし） | 60 | 105 | 73 | sfqaf_v1 | 6 (agents/prompt/data360/deploy/gov/orch) |
-| Agentforce Sales コンサル | sales-cloud | CRT-251 | 60 | 105 | 69 | sfqsales_v1 | 5 (strat/app/life/data/ai) |
-| Agentforce Service コンサル | service-cloud | CRT-261 | 60 | 105 | 67 | sfqservice_v1 | 8 (ind/strat/design/know/channel/case/analytics/integ) |
-| Experience Cloud コンサル | experience-cloud | CRT-271 | 60 | 105 | 62 | sfqexp_v1 | 8 (admin/share/brand/auth/theme/basics/custom/adopt) |
-| Sharing & Visibility アーキテクト | sharing-visibility | （なし） | 60 | 120 | 67 | sfqsva_v1 | 4 (obj/rec/other/model) |
+| Administrator | sf-admin | Plat-Admn-201 | 60 | 105 | 65 | sfq_v4 | 8 (cfg/obj/auto/data/sales/service/prod/agf) |
+| App Builder | app-builder | Plat-Admn-202 | 60 | 105 | 73 | sfqab_v1 | 5 (fund/data/logic/ui/deploy) |
+| Developer | developer | Plat-Dev-201 | 60 | 105 | 68 | sfqdev_v1 | 4 (fund/logic/ui/deploy) |
+| Agentforce Specialist | agentforce | AI-201 | 60 | 105 | 72 | sfqaf_v1 | 6 (agents/prompt/data360/deploy/gov/orch) |
+| Agentforce Sales コンサル | sales-cloud | Sales-Con-201 | 60 | 105 | 69 | sfqsales_v1 | 5 (strat/app/life/data/ai) |
+| Agentforce Service コンサル | service-cloud | Service-Con-201 | 60 | 105 | 78 | sfqservice_v1 | 8 (ind/strat/design/know/channel/case/analytics/integ) |
+| Experience Cloud コンサル | experience-cloud | EX-Con-101 | 60 | 105 | 65 | sfqexp_v1 | 8 (admin/share/brand/auth/theme/basics/custom/adopt) |
+| Sharing & Visibility アーキテクト | sharing-visibility | Plat-Arch-205 | 60 | 120 | 58 | sfqsva_v1 | 4 (obj/rec/other/model) |
 
 Developer は公式4分野（基礎23/自動化とロジック30/UI25/テスト・リリース22）で **2026-06-13 に LP 公開済み**。問題は **499問**（生成オリジナル217＋タイソンブログ由来215＋jpnshiken由来67）。出題設定に出典フィルタあり。2026-06-21 に出典横断（tyson↔jpn 29件・gen↔tyson 1件）の重複30問を統合（同一問題は tyson を残して相手を削除）し、解答誤り3問（#414 VFのLightning風スタイル／#492 トランザクション制御／#382 ltng:require の機能）を公式仕様に合わせて修正。同日 sf-admin も出典横断の重複23問を統合（460→437問）。文字3-gram は訳ゆれ（同一英語原文の和訳違い）に弱く取りこぼすため、意味ベースで全件照合した（最終確認は人手が前提）。境界ペア（同じ正解だがシナリオ/形式が別）は別問題として残置。
 
@@ -250,9 +250,9 @@ git push origin main
 - 公式が見つからない論点は問題化を見送るか、不確実性を先に共有する
 
 ### 資格の基本情報（examCode / pass / examN / LP表示）
-- **`examCode`（資格カード／ホームの副題に表示）には、実在する公式コードまたはコミュニティで定着した認定準備コース番号 `CRT-xxx` だけを入れる。擬似コード（`Sales-Con-201` のような独自の創作）は禁止**。該当コードが無い資格（アーキテクト系・Agentforce など）は **空文字 `""`** にする（副題は `.filter(Boolean)` で自動的に省く）。
-  - 既知コード: 管理者 `ADM-201` / App Builder `CRT-403` / Developer I `CRT-450` / Sales Cloud `CRT-251` / Service Cloud `CRT-261` / Experience(Community) Cloud `CRT-271`。Agentforce・Sharing & Visibility は公式コードが無いため空。
-- **`pass`（合格ライン）・`examN`・`examMin` は公式試験ガイド準拠**。公式PDFは bot 対策で取得不可(403)のため、focusonforce / Salesforce Ben など公式ガイド転載値で裏取りする。既知の合格ライン: Admin 65 / App Builder 63 / Developer 68 / Agentforce 73 / Sales Cloud 69 / Service Cloud 67 / Experience Cloud 62 / Sharing & Visibility 67（時間はコンサル/Specialist=105分・アーキテクト=120分、採点対象は全資格60問）。
+- **`examCode`（資格カード／ホームの副題に表示）には、Salesforce公式の試験予約ページに示されたコードを入れる。** 現行コードは変更され得るため、更新時は各資格ページの「See New Experience」リンクで確認する。
+  - 既知コード: Platform Administrator `Plat-Admn-201` / Platform App Builder `Plat-Admn-202` / Platform Developer `Plat-Dev-201` / Agentforce Specialist `AI-201` / Agentforce Sales `Sales-Con-201` / Agentforce Service `Service-Con-201` / Experience Cloud `EX-Con-101` / Sharing and Visibility `Plat-Arch-205`。
+- **`pass`（合格ライン）・`examN`・`examMin` は公式試験ガイド準拠**。公式ガイドの確認結果を各資格の `CERT_CONFIG` に反映する。採点対象は全資格60問。
 - **LP（ルート `index.html`）の `CERTS[].meta` の問題数・用語数・合格%は、データ実数および shell の `pass` と一致させる**（資格を増問したら meta も更新）。
 
 ### 対策サイトの扱いと `origin` タグ（2026-08-22 追加）

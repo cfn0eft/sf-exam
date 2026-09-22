@@ -53,14 +53,14 @@
 
 | 資格 | 試験コード | 問題数 | 分野 | 用語 | 授業 | 合格ライン |
 |---|---|---:|---:|---:|---:|---:|
-| **Salesforce 認定 Platform アドミニストレーター** | ADM-201 | **437 問** | 8 分野（Agentforce 含む） | 94 語 | 14 本 | 65% |
-| **Salesforce 認定 Platform アプリケーションビルダー** | CRT-403 | **445 問** | 5 分野 | 83 語 | 10 本 | 63% |
-| **Salesforce 認定 Platform デベロッパー** | Platform Developer I | **499 問** | 4 分野 | 75 語 | 19 本 | 68% |
-| **Salesforce 認定 Agentforce Specialist** | — | **182 問** | 6 分野 | 26 語 | — | 72% |
-| **Salesforce 認定 Agentforce Sales コンサルタント**<br><sub>旧 Sales Cloud コンサルタント</sub> | CRT-251 | **213 問** | 5 分野 | 67 語 | — | 69% |
-| **Salesforce 認定 Agentforce Service コンサルタント**<br><sub>旧 Service Cloud コンサルタント</sub> | CRT-261 | **200 問** | 8 分野 | 75 語 | — | 78% |
-| **Salesforce 認定 Experience Cloud コンサルタント** | CRT-271 | **184 問** | 8 分野 | 67 語 | — | 65% |
-| **Salesforce 認定 Sharing and Visibility アーキテクト** | — | **200 問** | 4 分野 | 54 語 | — | 58% |
+| **Salesforce 認定 Platform アドミニストレーター** | Plat-Admn-201 | **437 問** | 8 分野（Agentforce 含む） | 94 語 | 14 本 | 65% |
+| **Salesforce 認定 Platform アプリケーションビルダー** | Plat-Admn-202 | **445 問** | 5 分野 | 83 語 | 10 本 | 73% |
+| **Salesforce 認定 Platform デベロッパー** | Plat-Dev-201 | **499 問** | 4 分野 | 75 語 | 19 本 | 68% |
+| **Salesforce 認定 Agentforce Specialist** | AI-201 | **182 問** | 6 分野 | 26 語 | — | 72% |
+| **Salesforce 認定 Agentforce Sales コンサルタント**<br><sub>旧 Sales Cloud コンサルタント</sub> | Sales-Con-201 | **213 問** | 5 分野 | 67 語 | — | 69% |
+| **Salesforce 認定 Agentforce Service コンサルタント**<br><sub>旧 Service Cloud コンサルタント</sub> | Service-Con-201 | **200 問** | 8 分野 | 75 語 | — | 78% |
+| **Salesforce 認定 Experience Cloud コンサルタント** | EX-Con-101 | **184 問** | 8 分野 | 67 語 | — | 65% |
+| **Salesforce 認定 Sharing and Visibility アーキテクト** | Plat-Arch-205 | **200 問** | 4 分野 | 54 語 | — | 58% |
 
 **全 8 資格・計 2,360 問**を収録。専門5資格の内容と公式出題範囲を再監査中です。Service の出題比率、および Agentforce・Service・Experience・Sharing and Visibility の合格ラインは、2026-09-13 に日本語の公式受験ガイドを確認して更新しました。Experience は同日、Jpnshiken由来7問と公式資料ベースの12問を追加し、既存16問を修正しました。Sharing and VisibilityもJpnshiken由来7問と公式資料ベースの11問を追加し、既存11問を修正しました。Serviceは公開103問から未収録5論点、日本語版131問から累計34論点、Tysonの一般記事から1論点を追加しています。直近の15問追加で200問となり、既存Q121の指標の誤りと10問の分野を見直しました。旧分類の学習時間は保持し、新しい集計と区別します。131問の全件監査は未完了で、7件を保留し、既存対応分も継続監査します。同日のSharing監査では、Tysonの一般共有記事から2論点、Jpnshiken公開75問から累計2論点を追加し、既存29問の共有・Apexアクセス制御等を修正しました。その後の第15弾ではJpnshiken由来5問・Tyson由来2問・公式資料からの補完19問を追加して180問へ更新し、既存4問も見直しました。[第15弾の取得・検証範囲](docs/sharing-content-wave15-2026-09-14.json)では、Designer版の171リンクと取得済みの本文5問を区別しています。第16弾では本文取得を19/171問まで進め、Jpnshiken由来12問と公式補完8問を追加して200問とし、既存5問と関連教材も修正しました。[第16弾の照合記録](docs/sharing-content-wave16-2026-09-14.json)で取得元の不備・重複・再構成の範囲を確認できます。[75問の照合記録](docs/sharing-jpn75-source-intake-2026-09-14.json)には未検証の対応候補と保留も区別して記録しています。第17弾ではExperienceの129問版から12本文を取得し、3論点と公式補完17問を追加して170問へ更新しました。既存6問と関連教材を見直し、取得元の無関係な解説や未検証の唯一解は採用していません。[第17弾の取得・検証範囲](docs/experience-content-wave17-2026-09-14.json)では残り117本文と全問監査を未完了として区別しています。優先サイトの取得範囲は [公開ソース一覧](docs/noncore-source-inventory-2026-09-14.json)、分野バランス補正を含む残作業は [専門資格コンテンツ監査](docs/noncore-content-audit-2026-09-13.md) に記録しています。
 

@@ -1,5 +1,5 @@
 {
-  "_note": "ADM-201 公式7分野への自動分類（heuristic・編集可）。code は固定、name/weight/emoji は変更可。map は 問題ID→分野code。本体 index.html には同じ内容が QDOMAIN/DOMAIN_DEFS としてインライン埋め込みされているため、ここを編集したら本体側も合わせて更新してください。",
+  "_note": "Platform Administrator 公式8分野への自動分類（heuristic・編集可）。code は固定、name/weight/emoji は変更可。map は 問題ID→分野code。本体 index.html には同じ内容が QDOMAIN/DOMAIN_DEFS としてインライン埋め込みされているため、ここを編集したら本体側も合わせて更新してください。",
   "domains": [
     {
       "code": "cfg",
