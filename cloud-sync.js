@@ -535,7 +535,7 @@
         '</div>' +
         '<div id="sfqc-msg" class="sfqc-msg" role="status" aria-live="polite" aria-atomic="true"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
-        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、マスク済みIP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用し、生のIPは保存しません。</span>' +
+        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、接続元IP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。</span>' +
         '<p class="sfqc-legal-line"><a class="sfqc-legal-link" href="' + esc(legalUrl()) + '">利用規約・運営情報</a></p>' +
       '</div>';
   }
@@ -3269,7 +3269,7 @@
       '<div class="sfqc-kpis">' + kpi(tracked, '接続情報あり') + kpi(corporate, '登録企業回線') +
         kpi(secure, 'VPN/クラウド候補') + kpi(alerts, '接続確認') + '</div>' +
       (unseen ? '<div class="sfqc-toolbar"><span class="sfqc-count">未確認の通知 ' + unseen + '件</span><button class="sfqc-net-seen" id="sfqc-net-seen-all">通知をすべて消す</button></div>' : '') +
-      '<div class="sfqc-itnote">マスク済みIP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
+      '<div class="sfqc-itnote">接続元IP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
       '<div class="sfqc-toolbar">' +
         '<input id="sfqc-net-q" class="sfqc-search" type="search" aria-label="申請名・メール・UID・IP・回線で絞り込み" placeholder="🔍 申請名・メール・UID・IP・回線で絞り込み" value="' + esc(adminNetworkFilter) + '">' +
         '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
@@ -4269,7 +4269,7 @@
       '用語習得', '用語学習中', '用語総数',
       '教科書読了', '教科書しおり', 'メモ数',
       '学習日数', '学習時間(分)', '最終学習日', '受験予定日', '日次目標',
-      '接続判定', '判定信頼度', 'マスク済みIP', '回線組織', 'ASN', '接続国', '接続地域', '接続都市',
+      '接続判定', '判定信頼度', '接続元IP', '回線組織', 'ASN', '接続国', '接続地域', '接続都市',
       '端末数', 'オンライン端末数', '接続注意'
     ];
     var lines = [head.join(',')];
