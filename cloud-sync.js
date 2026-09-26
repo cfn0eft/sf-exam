@@ -80,6 +80,7 @@
   var auth = null, db = null, currentUser = null, saveTimer = null, cloudDirty = false;
   var currentName = '', currentEmail = '', isAdmin = false;
   var elOverlay, elBadge, elMsg, elId, elPw, elLogin, elSignup, elStatus, elAdminBtn, elAdmin, elLock, elDelete;
+  var elAuthWait, authWaitTimer;
   var accountDeleteBusy = false, accountDeleteDocRemoved = false;
 
   var BROADCAST_COL = 'broadcast';
@@ -149,6 +150,9 @@
       'html.sfqc-modal-open,body.sfqc-modal-open{overflow:hidden}' +
       '#sfqc-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.72);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '#sfqc-overlay.show{display:flex}' +
+      '#sfqc-auth-wait{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg,#f5f4ef);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif}' +
+      '#sfqc-auth-wait.show{display:flex}#sfqc-auth-wait .sfqc-card{background:var(--card,#fffefa);color:var(--text,#17211f);border:1px solid var(--border,#d9ddd7);box-shadow:none}#sfqc-auth-wait .sfqc-sub{color:var(--text-sub,#64706d);margin-top:12px}' +
+      '.sfqc-auth-spinner{width:32px;height:32px;margin:0 auto 20px;border:3px solid var(--border,#d9ddd7);border-top-color:var(--accent,#167565);border-radius:50%;animation:sfqc-turn 1s linear infinite}#sfqc-auth-retry[hidden]{display:none}@media(prefers-reduced-motion:reduce){.sfqc-auth-spinner{animation:none}}' +
       '.sfqc-card{width:min(92vw,360px);background:#fff;color:#1e293b;border-radius:16px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}' +
       '.sfqc-title{font-size:19px;font-weight:700;margin:0 0 4px}' +
       '.sfqc-sub{font-size:12.5px;color:#64748b;margin:0 0 18px;line-height:1.6}' +
@@ -561,6 +565,16 @@
     elOverlay.innerHTML = (ROLE === 'client') ? guideCardHTML() : loginCardHTML();
     document.body.appendChild(elOverlay);
 
+    elAuthWait = document.createElement('div');
+    elAuthWait.id = 'sfqc-auth-wait';
+    elAuthWait.innerHTML = '<div class="sfqc-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-auth-title" tabindex="-1">' +
+      '<div class="sfqc-auth-spinner" aria-hidden="true"></div>' +
+      '<p class="sfqc-title" id="sfqc-auth-title">学習の準備をしています</p>' +
+      '<p class="sfqc-sub" id="sfqc-auth-message" role="status">ログイン状態を確認しています。そのままお待ちください。</p>' +
+      '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-auth-retry" hidden>再読み込み</button></div>';
+    document.body.appendChild(elAuthWait);
+    document.getElementById('sfqc-auth-retry').onclick = function () { location.reload(); };
+
     elBadge = document.createElement('div');
     elBadge.id = 'sfqc-badge';
     elBadge.innerHTML =
@@ -699,11 +713,28 @@
     elDelete.addEventListener('click', function (e) { if (e.target === elDelete) closeDeleteAccount(); });
   }
 
+  function hideAuthWait() {
+    clearTimeout(authWaitTimer);authWaitTimer=null;
+    if (elAuthWait) { elAuthWait.classList.remove('show');sfqcCloseModal(elAuthWait); }
+  }
+  function authWaitNotice(message) {
+    document.getElementById('sfqc-auth-message').textContent = message;
+    document.getElementById('sfqc-auth-retry').hidden = false;
+  }
+  function showAuthWait() {
+    if (!elAuthWait || ROLE === 'client') return;
+    elAuthWait.classList.add('show');
+    sfqcOpenModal(elAuthWait, null, '[role="dialog"]');
+    authWaitTimer = setTimeout(function () {
+      authWaitNotice('確認に時間がかかっています。通信状況をご確認のうえ、必要に応じて再読み込みしてください。');
+    },15000);
+  }
   function showOverlay() {
+    hideAuthWait();
     if (!elOverlay) return; elOverlay.classList.add('show');
     sfqcOpenModal(elOverlay, null, ROLE === 'client' ? '#sfqc-gohome' : '#sfqc-id');
   }
-  function hideOverlay() { if (!elOverlay) return; elOverlay.classList.remove('show'); sfqcCloseModal(elOverlay); }
+  function hideOverlay() { hideAuthWait();if (!elOverlay) return; elOverlay.classList.remove('show'); sfqcCloseModal(elOverlay); }
   function showLock(state, info) {
     if (!elLock) return;
     info = info || {};
@@ -4303,7 +4334,7 @@
       return;
     }
 
-    if (ROLE !== 'client') showOverlay();
+    showAuthWait();
 
     auth.onAuthStateChanged(function (user) {
       if (user) {
@@ -4331,6 +4362,8 @@
           setMsg(INACTIVE_DAYS + '日以上ご利用がなかったため、自動的にログアウトしました。ログインのうえ、もう一度利用を申請してください。', 'err');
         }
       }
+    }, function () {
+      if (ROLE !== 'client') authWaitNotice('ログイン状態を確認できませんでした。通信状況をご確認のうえ、再読み込みしてください。');
     });
   }
 

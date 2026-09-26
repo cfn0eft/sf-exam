@@ -74,6 +74,42 @@ function ok(v, msg) { if (!v) throw new Error(msg || 'falsy'); }
 
 console.log('== cloud-sync.js 集計ロジック スモークテスト ==');
 
+t('起動時の認証: 復元中は準備画面、未ログイン確定時だけログインフォームを表示する', () => {
+  function boot() {
+    const els=new Map(),timers=new Map();let callback,errorCallback,nextTimer=0;
+    function element(){
+      const el=makeElement(),classes=new Set();let id='';
+      el.classList={add:c=>classes.add(c),remove:c=>classes.delete(c),contains:c=>classes.has(c),toggle:c=>classes.has(c)?classes.delete(c):classes.add(c)};
+      Object.defineProperty(el,'id',{get:()=>id,set:v=>{id=v;els.set(v,el);}});
+      return el;
+    }
+    function get(id){if(!els.has(id)){const el=element();el.id=id;}return els.get(id);}
+    const ref={doc(){return this;},collection(){return this;},onSnapshot(){return ()=>{};},get(){return new Promise(()=>{});}};
+    const ctx={...sandbox, SFQ_PAGE_ROLE:'gateway',SFQ_FIREBASE_CONFIG:{apiKey:'test',projectId:'test',authDomain:'test.local'},
+      document:{...sandbox.document,body:element(),head:element(),documentElement:element(),createElement:element,getElementById:get,readyState:'complete'},
+      location:{...sandbox.location,hostname:'example.test'},
+      setTimeout(fn,ms){const id=++nextTimer;timers.set(id,{fn,ms});return id;},clearTimeout(id){timers.delete(id);},
+      firebase:{initializeApp(){},auth(){return {onAuthStateChanged(fn,err){callback=fn;errorCallback=err;}};},firestore(){return ref;}}};
+    ctx.window=ctx;delete ctx.SFQ_BANK;
+    vm.runInNewContext(src,ctx);
+    return {get,notify:user=>callback(user),error:()=>errorCallback(),slow:()=>[...timers.values()].find(t=>t.ms===15000).fn()};
+  }
+  let app=boot();
+  ok(app.get('sfqc-auth-wait').classList.contains('show'));
+  ok(!app.get('sfqc-overlay').classList.contains('show'));
+  app.notify({uid:'test-user',email:'test@sfquiz.local'});
+  ok(!app.get('sfqc-overlay').classList.contains('show'),'復元済みユーザーの承認確認中にフォームを出さない');
+  app=boot();app.notify(null);
+  ok(!app.get('sfqc-auth-wait').classList.contains('show'));
+  ok(app.get('sfqc-overlay').classList.contains('show'),'未ログインの人にはフォームを出す');
+  app=boot();app.slow();
+  eq(app.get('sfqc-auth-retry').hidden,false);
+  ok(!app.get('sfqc-overlay').classList.contains('show'),'時間経過を未ログイン判定に使わない');
+  app.error();
+  ok(app.get('sfqc-auth-message').textContent.includes('確認できません'));
+  ok(!app.get('sfqc-overlay').classList.contains('show'));
+});
+
 t('専門資格の利用許可: 明示的な許可と利用承認の両方が必要で、解除・ログアウト時に失効する', () => {
   T.publishSpecialistAccess({ access: 'approved', specialistAccess: true });
   eq(sandbox.SFQ_SPECIALIST_ACCESS, true);
