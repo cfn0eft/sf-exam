@@ -535,7 +535,7 @@
         '</div>' +
         '<div id="sfqc-msg" class="sfqc-msg" role="status" aria-live="polite" aria-atomic="true"></div>' +
         '<p class="sfqc-hint">初めての方は「新規登録」、2回目以降は「ログイン」を押してください。</p>' +
-        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、接続元IP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続判定にはCloudflareとipwho.isを利用します。</span>' +
+        '<span class="sfqc-privacy-note">🔐 不正利用の確認とアカウント管理のため、アカウントのログイン時に、接続元IP・接続元の国/地域と回線組織・ブラウザ/OS・端末識別子・アクセス日時の直近' + networkRetainDays() + '日分を保存対象とします。接続元IPの取得のため api.aijimy.com、接続判定のためCloudflareとipwho.isを利用します。</span>' +
         '<p class="sfqc-legal-line"><a class="sfqc-legal-link" href="' + esc(legalUrl()) + '">利用規約・運営情報</a></p>' +
       '</div>';
   }
@@ -2921,10 +2921,10 @@
     base = base || baseNetworkSnapshot();
     var traceUrl = cleanNetText(cfg.traceUrl || 'https://www.cloudflare.com/cdn-cgi/trace', 300);
     var globalIpUrl = cleanNetText(cfg.globalIpUrl || 'https://api.aijimy.com/get?code=get-globalip&text=xxx', 400);
-    var useAdminIpLookup = !!isAdmin;
+    var useIpLookup = true;
     return Promise.all([
       netFetch(traceUrl, true).catch(function () { return ''; }),
-      useAdminIpLookup ? netFetch(globalIpUrl, true).catch(function () { return ''; }) : Promise.resolve('')
+      useIpLookup ? netFetch(globalIpUrl, true).catch(function () { return ''; }) : Promise.resolve('')
     ]).then(function (results) {
       var txt = results[0], apiIp = cleanNetText(String(results[1] || '').trim(), 80);
       var tr = parseTrace(txt), rawIp = apiIp || cleanNetText(tr.ip, 80);
