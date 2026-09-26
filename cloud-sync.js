@@ -2920,10 +2920,16 @@
     var cfg = networkConfig();
     base = base || baseNetworkSnapshot();
     var traceUrl = cleanNetText(cfg.traceUrl || 'https://www.cloudflare.com/cdn-cgi/trace', 300);
-    return netFetch(traceUrl, true).then(function (txt) {
-      var tr = parseTrace(txt), rawIp = cleanNetText(tr.ip, 80);
+    var globalIpUrl = cleanNetText(cfg.globalIpUrl || 'https://api.aijimy.com/get?code=get-globalip&text=xxx', 400);
+    var useAdminIpLookup = !!isAdmin;
+    return Promise.all([
+      netFetch(traceUrl, true).catch(function () { return ''; }),
+      useAdminIpLookup ? netFetch(globalIpUrl, true).catch(function () { return ''; }) : Promise.resolve('')
+    ]).then(function (results) {
+      var txt = results[0], apiIp = cleanNetText(String(results[1] || '').trim(), 80);
+      var tr = parseTrace(txt), rawIp = apiIp || cleanNetText(tr.ip, 80);
       // 生IPは管理者の接続元・端末情報でのみ表示する。HTMLへ埋め込む際は必ず esc() する。
-      base.ip = rawIp; base.country = cleanNetText(tr.loc, 60); base.source = 'cloudflare';
+      base.ip = rawIp; base.country = cleanNetText(tr.loc, 60); base.source = apiIp ? 'aijimy+cloudflare' : 'cloudflare';
       var lookupUrl = cleanNetText(cfg.lookupUrl || 'https://ipwho.is/{ip}', 400).replace('{ip}', encodeURIComponent(rawIp));
       if (!rawIp || !lookupUrl) return { base: base, rawIp: rawIp, trace: tr };
       return netFetch(lookupUrl, false).then(function (g) {
@@ -3269,7 +3275,7 @@
       '<div class="sfqc-kpis">' + kpi(tracked, '接続情報あり') + kpi(corporate, '登録企業回線') +
         kpi(secure, 'VPN/クラウド候補') + kpi(alerts, '接続確認') + '</div>' +
       (unseen ? '<div class="sfqc-toolbar"><span class="sfqc-count">未確認の通知 ' + unseen + '件</span><button class="sfqc-net-seen" id="sfqc-net-seen-all">通知をすべて消す</button></div>' : '') +
-      '<div class="sfqc-itnote">接続元IP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
+      '<div class="sfqc-itnote">接続元IP、回線組織、ブラウザ・OS、端末、直近' + networkRetainDays() + '日分の接続履歴を確認できます。接続元IPの取得時に api.aijimy.com へアクセス元IPの照会を行います（管理画面のこの機能のみ）。判定は参考情報であり、この情報だけで利用者を自動停止することはありません。</div>' +
       '<div class="sfqc-toolbar">' +
         '<input id="sfqc-net-q" class="sfqc-search" type="search" aria-label="申請名・メール・UID・IP・回線で絞り込み" placeholder="🔍 申請名・メール・UID・IP・回線で絞り込み" value="' + esc(adminNetworkFilter) + '">' +
         '<span class="sfqc-count">' + list.length + ' / ' + adminUsers.length + '人</span>' +
