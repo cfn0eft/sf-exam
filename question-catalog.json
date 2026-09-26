@@ -5793,8 +5793,8 @@
     ]
   },
   "experience-cloud": {
-    "count": 188,
-    "sha256": "0f5bc2a190a416559b03adc398f94966654e482722fd74f020b869bc717c1ce3",
+    "count": 200,
+    "sha256": "4cc03608adf6685d25416d33a25e4809495b7f256a8de555dcf672a02f626dea",
     "items": [
       {
         "id": 1,
@@ -6734,6 +6734,66 @@
       {
         "id": 189,
         "domain": "admin",
+        "source": "gen"
+      },
+      {
+        "id": 190,
+        "domain": "auth",
+        "source": "gen"
+      },
+      {
+        "id": 191,
+        "domain": "auth",
+        "source": "gen"
+      },
+      {
+        "id": 192,
+        "domain": "auth",
+        "source": "gen"
+      },
+      {
+        "id": 193,
+        "domain": "auth",
+        "source": "gen"
+      },
+      {
+        "id": 194,
+        "domain": "auth",
+        "source": "gen"
+      },
+      {
+        "id": 195,
+        "domain": "theme",
+        "source": "gen"
+      },
+      {
+        "id": 196,
+        "domain": "theme",
+        "source": "gen"
+      },
+      {
+        "id": 197,
+        "domain": "theme",
+        "source": "gen"
+      },
+      {
+        "id": 198,
+        "domain": "basics",
+        "source": "gen"
+      },
+      {
+        "id": 199,
+        "domain": "basics",
+        "source": "gen"
+      },
+      {
+        "id": 200,
+        "domain": "admin",
+        "source": "gen"
+      },
+      {
+        "id": 201,
+        "domain": "theme",
         "source": "gen"
       }
     ]
