@@ -66,6 +66,8 @@
 
 Sharing品質監査第17弾では既存Q1・Q7・Q8・Q24・Q26〜Q28・Q30・Q31・Q33〜Q35を公式資料で再確認し、12問を4択化して4択未満を20問から8問へ減らしました。Field Accessibility、ロール階層、Account Team、Lightning Data Service、ownership skew、共有計算延期、Controlled by Parent、Apex Sharing Reason、FLSを現行仕様へ更新しています。[第17弾の監査記録](docs/sharing-quality-wave17-2026-09-26.json)。ローカル更新で、公開は行っていません。
 
+Sharing品質監査第18弾では残る既存8問を公式資料で再確認して4択化し、4択未満を8問から0問へ減らしました。条件ベース共有、親の暗黙共有、Permission Set Groupのmuting、2GPのPackageProtectedカスタムメタデータ、Partner User Role、ロール階層とオブジェクト権限を現行仕様へ更新しています。[第18弾の監査記録](docs/sharing-quality-wave18-2026-09-26.json)。ローカル更新で、公開は行っていません。
+
 Salesは2026-09-14に213問へ更新しました。先の[公開128問との照合](docs/sales-jpn128-source-intake-2026-09-14.json)に続き、[CRT-251-JPNの公開86問](docs/sales-jpn86-source-intake-2026-09-14.json)を既存203問の設問・正解と比較し、優先ソース由来2問と公式資料による補完8問を追加、既存AI関連4問を修正しました。[公式5分野への再分類](docs/sales-blueprint-audit-2026-09-14.json)で比率を25/24/20/18/13に更新し、AIは14問になりました。既存ID・出典・履歴キーを維持し、過去の分野別学習時間は旧分類のまま表示します。全問の正誤監査、意味重複の整理、別名・別版の照合と分野バランスの補正は未完了です。
 
 同日の追加監査でSalesの既存8問と関連教材を修正し、予測カテゴリの集計図、所有者の偏り、Chatterの要約メール、経過24時間、最小権限、ダッシュボードの実行ユーザー、クォータの編集方法を見直しました。[別名79問版の照合](docs/sales-jpn79-source-intake-2026-09-14.json)は公開HTMLの6問までです。7問目のHTTP 429で停止し、8〜79問目は未試行です。213問版とこの追加修正はローカル検証中で、公開反映の確認とは区別します。
