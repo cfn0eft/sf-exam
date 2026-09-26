@@ -5648,8 +5648,8 @@
     ]
   },
   "experience-cloud": {
-    "count": 184,
-    "sha256": "182ad626b2ad87624e90c45d59d7b389f56c1d3fd2d5a381ca6bda1edd8df026",
+    "count": 188,
+    "sha256": "0f5bc2a190a416559b03adc398f94966654e482722fd74f020b869bc717c1ce3",
     "items": [
       {
         "id": 1,
@@ -5838,7 +5838,7 @@
       },
       {
         "id": 38,
-        "domain": "adopt",
+        "domain": "admin",
         "source": "jpnshiken"
       },
       {
@@ -6298,7 +6298,7 @@
       },
       {
         "id": 131,
-        "domain": "auth",
+        "domain": "basics",
         "source": "jpnshiken"
       },
       {
@@ -6569,6 +6569,26 @@
       {
         "id": 185,
         "domain": "brand",
+        "source": "gen"
+      },
+      {
+        "id": 186,
+        "domain": "basics",
+        "source": "gen"
+      },
+      {
+        "id": 187,
+        "domain": "admin",
+        "source": "gen"
+      },
+      {
+        "id": 188,
+        "domain": "share",
+        "source": "gen"
+      },
+      {
+        "id": 189,
+        "domain": "admin",
         "source": "gen"
       }
     ]

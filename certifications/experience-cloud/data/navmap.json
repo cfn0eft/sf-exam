@@ -25,7 +25,7 @@
   },
   {
     "title": "ライセンス",
-    "content": "> `Setup > Company Information`で利用可能なライセンスを確認し、Userに割り当てる。\n\n| ライセンス | ロール・共有 | 分析・営業 |\n|---|---|---|\n| Customer Community | ロールなし。共有セット | レポート・リードは非対応 |\n| Customer Community Plus | 標準共有と共有セット | レポート作成・管理、ダッシュボード参照。リードは非対応 |\n| Partner Community | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n| Channel Account | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n\n> ライセンスが対応していても、操作権限とレコード共有の設定は必要。Channel Accountは取引先単位の契約であり、分析機能がないライセンスではない。\n\n> [External Apps LicenseとSKU](term:External Apps License) / [Channel Account](term:Channel Account)"
+    "content": "> `Setup > Company Information`で利用可能なライセンスを確認し、Userに割り当てる。\n\n| ライセンス | ロール・共有 | 分析・営業 |\n|---|---|---|\n| Customer Community | ロールなし。共有セット | レポート・リードは非対応 |\n| Customer Community Plus | 標準共有と共有セット | レポート作成・管理、ダッシュボード参照。リードは非対応 |\n| Partner Community | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n| Channel Account | 標準共有と共有セット | レポート・ダッシュボード・リード・商談 |\n\n> ライセンスが対応していても、操作権限とレコード共有の設定は必要。Channel Accountは取引先単位の契約であり、分析機能がないライセンスではない。\n\n> [External Apps LicenseとSKU](term:External Apps License) / [Channel Account](term:Channel Account)\n\n> ロールベース外部ユーザーのレポート作成権限はカスタムプロファイル/権限セットで付与する。表示データは共有と項目レベルセキュリティに従う。"
   },
   {
     "title": "ログインと登録",
@@ -33,7 +33,7 @@
   },
   {
     "title": "外部レコード共有",
-    "content": "| 設定場所 | 対象 |\n|---|---|\n| Setup > Digital Experiences > Settings > Sharing Sets | [Account・Contactのアクセスマッピング](term:共有セット) |\n| 対象Sharing Set > Share Group Settings | [高ボリュームユーザー所有レコードの共有](term:共有グループ) |\n| Digital Experiences > Settings | [パートナー・顧客ロール数](term:ロール数とポータルロールの上限) |\n\n> 不要なロールの抑制、同一取引先内の[スーパーユーザーアクセス](term:スーパーユーザーアクセス)、親子の[外部取引先階層](term:外部アカウント階層)を区別する。共有セットはロールなしユーザー専用ではない。\n\n> User表示はSetup > Sharing SettingsのPortal / Site User Visibilityと、Workspaces > Administration > PreferencesのSee other members of this siteを確認する。外部OWDと別経路の共有も考慮する。"
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Setup > Digital Experiences > Settings > Sharing Sets | [Account・Contactのアクセスマッピング](term:共有セット) |\n| 対象Sharing Set > Share Group Settings | [高ボリュームユーザー所有レコードの共有](term:共有グループ) |\n| Digital Experiences > Settings | [パートナー・顧客ロール数](term:ロール数とポータルロールの上限) |\n\n> 不要なロールの抑制、同一取引先内の[スーパーユーザーアクセス](term:スーパーユーザーアクセス)、親子の[外部取引先階層](term:外部アカウント階層)を区別する。共有セットはロールなしユーザー専用ではない。\n\n> User表示はSetup > Sharing SettingsのPortal / Site User Visibilityと、Workspaces > Administration > PreferencesのSee other members of this siteを確認する。外部OWDと別経路の共有も考慮する。\n\n> レポート作成権限とフォルダー共有は、レコード共有や項目レベルセキュリティを上書きしない。"
   },
   {
     "title": "CMSとナレッジ",
@@ -41,7 +41,7 @@
   },
   {
     "title": "モデレーション",
-    "content": "| 設定場所 | 対象 |\n|---|---|\n| Workspaces > Moderation > Rules | コンテンツ・レートルール |\n| Setup > Moderation Criteria | キーワードやメンバーの条件 |\n| ユーザーのプロファイル・権限セット | ワークスペースへのアクセスと個別の操作権限 |\n\n> [モデレーション](term:モデレーション)のルールは組織全体で合計30件。[未貢献メンバーの条件](term:モデレーション/レートルールの上限とメンバー条件)はユーザー作成日と別。\n\n| 貢献表示の設定 | 対象 |\n|---|---|\n| Workspaces > Administration > Preferences > Enable reputation | 既定のポイント体系と評判レベル |\n\n> [評判（Reputation）](term:評判（Reputation）)を有効にするとContributionからChatter influenceが取り除かれる。一律の初期ポイントやバッジの配布ではない。"
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Workspaces > Moderation > Rules | コンテンツ・レートルール |\n| Setup > Moderation Criteria | キーワードやメンバーの条件 |\n| ユーザーのプロファイル・権限セット | ワークスペースへのアクセスと個別の操作権限 |\n\n> [モデレーション](term:モデレーション)のルールは組織全体で合計30件。[未貢献メンバーの条件](term:モデレーション/レートルールの上限とメンバー条件)はユーザー作成日と別。\n\n| 貢献表示の設定 | 対象 |\n|---|---|\n| Workspaces > Administration > Preferences > Enable reputation | 既定のポイント体系と評判レベル |\n\n> [評判（Reputation）](term:評判（Reputation）)を有効にするとContributionからChatter influenceが取り除かれる。一律の初期ポイントやバッジの配布ではない。\n\n| Insightsの操作 | 対象 |\n|---|---|\n| Delete Post | 選択した投稿 |\n| カスタムアクション | 選択したメンバーの投稿とコメントをまとめて削除 |"
   },
   {
     "title": "ドメインとSEO",
@@ -50,5 +50,9 @@
   {
     "title": "分析と使用量",
     "content": "| 設定場所 | 対象 |\n|---|---|\n| 拡張LWRのBuilder > Settings > Integrations | [Google Analytics 4](term:Google アナリティクス連携)とMeasurement ID |\n| Workspaces > Dashboards / Insights | [サイトの活動分析](term:Insights レポート) |\n| Setup > Company Information | ページビューなどの使用状況 |\n\n> GA4を追加・設定したら公開する。ページビューやダウンロードの計測は、組織全体のLogin HistoryやCase件数を同期する機能ではない。\n\n> 管理パッケージの事前構成済みInsightsは、サイトでのChatter使用が前提。インストール後のレポートフォルダー共有も確認する。\n\n> [Customer Insights](term:Customer Insights): Workspaces > Administration > PreferencesでGather Customer Insights dataを設定。担当者にはView Customer Insightsを付与し、Lightning App BuilderでCaseまたはContactページに部品を配置する。サンドボックスは非対応。"
+  },
+  {
+    "title": "Question-to-Case と外部承認",
+    "content": "| 設定場所 | 対象 |\n|---|---|\n| Setup > Digital Experiences > Settings | Question-to-Caseの有効化 |\n| 質問ページのアクション | Escalate to Caseによる手動ケース化 |\n| Flow Builder | FeedItem作成を起点にした自動ケース化 |\n| 承認プロセス / Queue | Plus・Partnerユーザーを承認者またはキューへ割り当て |\n\n> [Question-to-Case](term:Question-to-Case)はAura/Visualforce向け。外部承認ではレコードアクセス、サイトメンバーシップ、承認操作の導線も確認する。"
   }
 ]

@@ -30,26 +30,33 @@
       {
         "title": "Partner Relationship Management（PRM）",
         "enName": "Partner Relationship Management",
-        "definition": "パートナー（再販業者・代理店）とのチャネル営業を管理・加速するための Experience Cloud のソリューション群。",
+        "definition": "パートナー（再販業者・代理店）の募集・オンボーディングからリード配信、案件登録、共同販売、成果分析までを管理・加速する Experience Cloud のソリューション群。",
         "examPoints": [
-          "Lead Inboxでパートナーへリードをルーティングする。Deal Registrationは案件の登録時刻や重複の確認を支援する。",
-          "公式教材はRevenue Managementを追加した見積自動化を説明している。必要な追加製品と利用権限を含めて計画する。",
-          "ティア別の価格表を使うことと、パートナーをティアへ自動分類することは別。PRM導入だけで後者まで保証しない。"
+          "Lead Inboxでパートナーへリードをルーティングする。Deal Registrationは案件の登録時刻や重複を確認し、チャネル競合を抑える。",
+          "Market Development Fundsは、BudgetとAllocationを基に活動前のFund Requestを承認し、活動後のClaimで精算する（Q186）。",
+          "募集・オンボーディングの自動化、リード・商談の共同管理、レポートとダッシュボードによる成果追跡をライフサイクルとして捉える（Q68）。",
+          "Revenue Managementを追加した見積自動化は別製品・権限も含めて計画する。PRM導入だけで給与・税務や全社内データ公開は行われない。"
         ],
         "questions": [
-          15
+          15,
+          56,
+          68,
+          186
         ]
       },
       {
         "title": "従業員向けエクスペリエンス",
         "enName": "Employee Experience",
-        "definition": "社内ユーザーをメンバーに加えて利用する従業員向けサイト。ライセンス、サイト参加、データアクセスを分けて確認する。",
+        "definition": "社内ユーザーをメンバーに加えて利用する従業員向けサイト。従業員の社内ライセンス、外部関係者の外部ライセンス、サイト参加、データアクセスを分けて設計する。",
         "examPoints": [
-          "Chatterグループは現在のサイトの範囲で表示される。公開グループも社内組織へ自動表示されない。",
-          "社内Salesforceユーザーは所有・共有などの権限に従ってCRMレコードを参照する。",
-          "Chatter Freeのユーザーにサイト参加を許可しても、CRMレコードの権限は増えない。"
+          "従業員はSales CloudやService Cloudに必要な社内ユーザーライセンスを維持し、サイトメンバーとして追加する（Q131）。",
+          "代理店など組織外の関係者には要件に合う外部ユーザーライセンスとExperience Cloudサイトを使う。External IdentityだけでCRM業務を代替しない（Q54）。",
+          "AppExchangeのBolt Solutionは、テーマ付きページ、コンポーネント、業務ロジック、ワークフローをまとめたポータルを提供できる（Q58）。",
+          "社内Salesforceユーザーも所有・共有・オブジェクト権限・項目権限に従ってCRMレコードを参照する。"
         ],
         "questions": [
+          54,
+          58,
           77,
           131
         ]
@@ -112,14 +119,16 @@
       {
         "title": "承認プロセスと外部ユーザー",
         "enName": "Approvals for External Users",
-        "definition": "対応ライセンスの外部ユーザーに、サイト上で承認操作を行わせる構成。",
+        "definition": "Customer Community PlusまたはPartner Communityユーザーに、アクセス可能なレコードの承認をサイト上で行わせる構成。",
         "examPoints": [
-          "Customer Community PlusとPartnerユーザーは、対応する承認プロセスの承認者やキューへ割り当てられる。承認・申請・通知はライセンス別に確認する。",
-          "従来型の承認通知で複数のActiveサイトに所属するときは、最も古いActiveサイトが使われる。"
+          "外部ユーザーを承認者として直接割り当てるか、承認キューへ直接追加できる。レコードアクセスとサイトメンバーシップも別途必要（Q44）。",
+          "My Approvals、Approval History、フィードなど、利用するサイトに承認操作の導線を用意する。",
+          "複数の有効なサイトに所属する場合、従来型の承認通知ではメンバーである最も古い有効なサイトが使われる（Q189）。"
         ],
         "questions": [
           44,
-          162
+          162,
+          189
         ]
       },
       {
@@ -162,6 +171,20 @@
           132,
           109
         ]
+      },
+      {
+        "title": "Question-to-Case",
+        "enName": "Question-to-Case",
+        "definition": "AuraまたはVisualforceサイトの質問をサポートケースへエスカレーションし、社内担当者が追跡できるようにする機能。",
+        "examPoints": [
+          "手動運用はQuestion-to-Caseを有効にし、質問へEscalate to Caseアクションを追加する（Q38）。LWRとHelp Centerは対象外。",
+          "自動化はFeedItemの作成を起点にFlowを実行する。必要なら待機して未解決か再評価する（Q187）。コメントや「いいね」による更新は起点にできない。",
+          "既定のケース所有者はモデレーター。キューを関連付けるかFlow等で割り当てる。ケース割り当てルールはサポートされない。"
+        ],
+        "questions": [
+          38,
+          187
+        ]
       }
     ]
   },
@@ -185,9 +208,9 @@
         "definition": "標準共有モデルが必要な顧客向けライセンス。ロール、レポート作成・管理、ダッシュボード参照に対応する。",
         "examPoints": [
           "共有ルール・手動共有に加え、共有セットも利用できる。",
-          "リードや商談を使う営業要件とは区別する。",
-          "Partnerユーザーへ同じ種別のまま付け替えるライセンスではない。種別変更時は移行手順を確認する。",
-          "Portal Super Userがあれば同一取引先の別Contactの代理でケースを作成できる。Case.Contact Nameの編集権限も確認し、別取引先のケース作成とは区別する。"
+          "レポート作成・編集にはCreate and Customize Reports、Report Builder、Edit My Reportsを付与する。レポートデータは共有と項目レベルセキュリティに従う（Q7, Q188）。",
+          "レポートの購読はサポートされない。リードや商談を使う営業要件はPartner Communityと区別する。",
+          "Portal Super Userがあれば同一取引先の別Contactの代理でケースを作成できる。Case.Contact Nameの編集権限も確認する。"
         ],
         "questions": [
           7,
@@ -197,7 +220,8 @@
           145,
           72,
           98,
-          177
+          177,
+          188
         ]
       },
       {
@@ -309,9 +333,9 @@
         "enName": "Super User Access",
         "definition": "外部ライセンスに応じて、同じ取引先内の対象レコードへのアクセスや代理操作を広げる機能。",
         "examPoints": [
-          "Partnerでは、同位・下位ロールのユーザーが所有するか共有された対象レコードへアクセスできる。オブジェクト権限は別途必要。",
+          "Partner Super User Accessは、同じパートナー取引先の同一ロールと下位ロールを基準に、ケース・リード・カスタムオブジェクト・商談へのアクセスを拡張する（Q21）。",
           "Customer Community PlusのPortal Super Userは、同一取引先の別Contactのケース作成などに対応する。",
-          "別取引先へのアクセスを自動で付与する機能ではない。ケースのContactが保存後に本人へ戻る場合はCase.Contact Nameの項目編集権限を確認する。"
+          "対応オブジェクト、オブジェクト権限、項目権限は別途必要。別取引先や全オブジェクトへ自動でアクセスを付与しない。"
         ],
         "questions": [
           21,
@@ -916,13 +940,15 @@
       {
         "title": "モデレーション",
         "enName": "Moderation",
-        "definition": "投稿・コメント・ファイルなどを対象に、不適切な内容を管理する機能。",
+        "definition": "投稿・コメント・ファイルなどを対象に、メンバーのフラグ、モデレーターの確認・削除・フラグ解除、活動追跡を行う機能。",
         "examPoints": [
-          "Workspacesへの入口はAccess Experience Management。フィードやファイルなどの操作権限は別途付与する。",
-          "Manage Experiencesはワークスペースでのコンテンツ管理に使える権限。すべてのサイト作成・削除を許可するという意味ではない。",
-          "コンテンツルールはBlock・Review・Replace・Flag、レートルールはNotify・Freezeを用途に応じて使う。"
+          "メンバーは不適切な投稿・コメント・ファイルへフラグを付け、モデレーターはフラグ済み項目を確認して削除またはフラグ解除できる（Q16）。",
+          "Workspacesへの入口と、フィードやファイルを操作する個別権限を分ける。モデレーター権限はCRMレコード共有を拡大しない。",
+          "コンテンツルールはBlock・Review・Replace・Flag、レートルールはNotify・Freezeを用途に応じて使う。",
+          "1人のスパマーの投稿・コメントをまとめて削除する場合は、Insightsのカスタムアクションを検討する（Q12）。"
         ],
         "questions": [
+          12,
           16,
           51
         ]
@@ -944,14 +970,15 @@
       {
         "title": "Insights レポート",
         "enName": "Insights Reports",
-        "definition": "Experience Workspacesでサイトの活動を確認するレポート。AppExchangeの管理パッケージには事前構成済みInsightsがある。",
+        "definition": "Experience Workspacesでサイトの活動を確認し、対象を選択して管理アクションを実行できるレポート。AppExchangeには事前構成済みInsightsもある。",
         "examPoints": [
-          "事前構成済みInsightsにはサイトでのChatter使用が必要。Chatterなし版のパッケージが存在することと混同しない。",
-          "パッケージのレポートは組織内フォルダーにインストールされる。管理者・マネージャーの操作権限とフォルダー共有も確認する。",
-          "地域だけを理由に利用不可と判断せず、サイト構成と利用する分析機能の前提を確認する。"
+          "事前構成済みInsightsにはサイトでのChatter使用が必要。レポートフォルダーの共有と管理者・マネージャーの操作権限も確認する。",
+          "標準のDelete Postは選択した投稿を削除する。Visualforceページとカスタム拡張によるアクションでは、選択したメンバーの投稿とコメントをまとめて削除できる（Q12）。",
+          "Customer InsightsはService Consoleで顧客のサイト行動を担当者へ示す別機能。"
         ],
         "questions": [
-          2
+          2,
+          12
         ]
       },
       {

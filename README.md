@@ -10,7 +10,7 @@
 ![Authentication](https://img.shields.io/badge/問題配信-認証必須-5A0FC8)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_+_Firestore-FFCA28?logo=firebase&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-deployed-222?logo=github)
-![Questions](https://img.shields.io/badge/総問題数-2360-1f6feb)
+![Questions](https://img.shields.io/badge/総問題数-2364-1f6feb)
 ![Static Site](https://img.shields.io/badge/site-static-success)
 
 </div>
@@ -59,10 +59,10 @@
 | **Salesforce 認定 Agentforce Specialist** | AI-201 | **182 問** | 6 分野 | 26 語 | — | 72% |
 | **Salesforce 認定 Agentforce Sales コンサルタント**<br><sub>旧 Sales Cloud コンサルタント</sub> | Sales-Con-201 | **213 問** | 5 分野 | 67 語 | — | 69% |
 | **Salesforce 認定 Agentforce Service コンサルタント**<br><sub>旧 Service Cloud コンサルタント</sub> | Service-Con-201 | **200 問** | 8 分野 | 75 語 | — | 78% |
-| **Salesforce 認定 Experience Cloud コンサルタント** | EX-Con-101 | **184 問** | 8 分野 | 67 語 | — | 65% |
+| **Salesforce 認定 Experience Cloud コンサルタント** | EX-Con-101 | **188 問** | 8 分野 | 68 語 | — | 65% |
 | **Salesforce 認定 Sharing and Visibility アーキテクト** | Plat-Arch-205 | **200 問** | 4 分野 | 54 語 | — | 58% |
 
-**全 8 資格・計 2,360 問**を収録。専門5資格の内容と公式出題範囲を再監査中です。Service の出題比率、および Agentforce・Service・Experience・Sharing and Visibility の合格ラインは、2026-09-13 に日本語の公式受験ガイドを確認して更新しました。Experience は同日、Jpnshiken由来7問と公式資料ベースの12問を追加し、既存16問を修正しました。Sharing and VisibilityもJpnshiken由来7問と公式資料ベースの11問を追加し、既存11問を修正しました。Serviceは公開103問から未収録5論点、日本語版131問から累計34論点、Tysonの一般記事から1論点を追加しています。直近の15問追加で200問となり、既存Q121の指標の誤りと10問の分野を見直しました。旧分類の学習時間は保持し、新しい集計と区別します。131問の全件監査は未完了で、7件を保留し、既存対応分も継続監査します。同日のSharing監査では、Tysonの一般共有記事から2論点、Jpnshiken公開75問から累計2論点を追加し、既存29問の共有・Apexアクセス制御等を修正しました。その後の第15弾ではJpnshiken由来5問・Tyson由来2問・公式資料からの補完19問を追加して180問へ更新し、既存4問も見直しました。[第15弾の取得・検証範囲](docs/sharing-content-wave15-2026-09-14.json)では、Designer版の171リンクと取得済みの本文5問を区別しています。第16弾では本文取得を19/171問まで進め、Jpnshiken由来12問と公式補完8問を追加して200問とし、既存5問と関連教材も修正しました。[第16弾の照合記録](docs/sharing-content-wave16-2026-09-14.json)で取得元の不備・重複・再構成の範囲を確認できます。[75問の照合記録](docs/sharing-jpn75-source-intake-2026-09-14.json)には未検証の対応候補と保留も区別して記録しています。第17弾ではExperienceの129問版から12本文を取得し、3論点と公式補完17問を追加して170問へ更新しました。既存6問と関連教材を見直し、取得元の無関係な解説や未検証の唯一解は採用していません。[第17弾の取得・検証範囲](docs/experience-content-wave17-2026-09-14.json)では残り117本文と全問監査を未完了として区別しています。優先サイトの取得範囲は [公開ソース一覧](docs/noncore-source-inventory-2026-09-14.json)、分野バランス補正を含む残作業は [専門資格コンテンツ監査](docs/noncore-content-audit-2026-09-13.md) に記録しています。
+**全 8 資格・計 2,364 問**を収録。専門5資格の内容と公式出題範囲を再監査中です。Service の出題比率、および Agentforce・Service・Experience・Sharing and Visibility の合格ラインは、2026-09-13 に日本語の公式受験ガイドを確認して更新しました。Experience は同日、Jpnshiken由来7問と公式資料ベースの12問を追加し、既存16問を修正しました。Sharing and VisibilityもJpnshiken由来7問と公式資料ベースの11問を追加し、既存11問を修正しました。Serviceは公開103問から未収録5論点、日本語版131問から累計34論点、Tysonの一般記事から1論点を追加しています。直近の15問追加で200問となり、既存Q121の指標の誤りと10問の分野を見直しました。旧分類の学習時間は保持し、新しい集計と区別します。131問の全件監査は未完了で、7件を保留し、既存対応分も継続監査します。同日のSharing監査では、Tysonの一般共有記事から2論点、Jpnshiken公開75問から累計2論点を追加し、既存29問の共有・Apexアクセス制御等を修正しました。その後の第15弾ではJpnshiken由来5問・Tyson由来2問・公式資料からの補完19問を追加して180問へ更新し、既存4問も見直しました。[第15弾の取得・検証範囲](docs/sharing-content-wave15-2026-09-14.json)では、Designer版の171リンクと取得済みの本文5問を区別しています。第16弾では本文取得を19/171問まで進め、Jpnshiken由来12問と公式補完8問を追加して200問とし、既存5問と関連教材も修正しました。[第16弾の照合記録](docs/sharing-content-wave16-2026-09-14.json)で取得元の不備・重複・再構成の範囲を確認できます。[75問の照合記録](docs/sharing-jpn75-source-intake-2026-09-14.json)には未検証の対応候補と保留も区別して記録しています。第17弾ではExperienceの129問版から12本文を取得し、3論点と公式補完17問を追加して170問へ更新しました。既存6問と関連教材を見直し、取得元の無関係な解説や未検証の唯一解は採用していません。[第17弾の取得・検証範囲](docs/experience-content-wave17-2026-09-14.json)では残り117本文と全問監査を未完了として区別しています。優先サイトの取得範囲は [公開ソース一覧](docs/noncore-source-inventory-2026-09-14.json)、分野バランス補正を含む残作業は [専門資格コンテンツ監査](docs/noncore-content-audit-2026-09-13.md) に記録しています。
 
 Salesは2026-09-14に213問へ更新しました。先の[公開128問との照合](docs/sales-jpn128-source-intake-2026-09-14.json)に続き、[CRT-251-JPNの公開86問](docs/sales-jpn86-source-intake-2026-09-14.json)を既存203問の設問・正解と比較し、優先ソース由来2問と公式資料による補完8問を追加、既存AI関連4問を修正しました。[公式5分野への再分類](docs/sales-blueprint-audit-2026-09-14.json)で比率を25/24/20/18/13に更新し、AIは14問になりました。既存ID・出典・履歴キーを維持し、過去の分野別学習時間は旧分類のまま表示します。全問の正誤監査、意味重複の整理、別名・別版の照合と分野バランスの補正は未完了です。
 
@@ -76,6 +76,8 @@ Experienceの第19弾では176問へ更新し、既存14問と関連教材も修
 Experienceの第20弾は176問を維持し、既存14問と関連教材を修正しました。ライセンス・Knowledge共有などの誤説明と重複3組を整理し、IDと出典情報は保っています。[第20弾の修正記録](docs/experience-content-wave20-2026-09-14.json)。新規取得・増問・公開は行っていません。
 
 Experienceの第21弾では180問・66用語へ更新。既存12問を修正し、公式資料に基づく不足論点4問を追加しました。検索UIと閲覧権限、Grid、Customer Insightsの制約を関連教材にも反映しています。[第21弾の修正記録](docs/experience-content-wave21-2026-09-14.json)。取得済み本文を再利用したローカル更新で、公開は行っていません。
+
+Experienceの第23弾では188問・68用語へ更新し、既存12問を修正しました。Jpnshiken由来のライセンス・モデレーション・PRM・承認問題を公式資料へ合わせ、MDF、Question-to-Case、外部レポート、承認メールの不足4論点を追加しました。既存ID・出典・学習履歴キーは維持し、非公開監査記録に根拠と残作業を保存しています。ローカル更新で、公開は行っていません。
 
 Experienceの第22弾では184問・67用語へ更新し、既存11問を修正しました。オーディエンスの制約など4問を公式資料から追加し、表示と認可を混同する説明を教材・図解でも修正。1問をブランディング分野へ移し、履歴のキーは維持しています。[第22弾の修正記録](docs/experience-content-wave22-2026-09-14.json)。ローカル更新で、公開は行っていません。
 
