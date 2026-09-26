@@ -107,6 +107,7 @@ t('起動時の認証: 復元中は準備画面、未ログイン確定時だけ
   ok(!app.get('sfqc-overlay').classList.contains('show'),'時間経過を未ログイン判定に使わない');
   app.error();
   ok(app.get('sfqc-auth-message').textContent.includes('確認できません'));
+  ok(app.get('sfqc-auth-title').textContent.includes('確認できません'));
   ok(!app.get('sfqc-overlay').classList.contains('show'));
 });
 

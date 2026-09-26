@@ -150,9 +150,6 @@
       'html.sfqc-modal-open,body.sfqc-modal-open{overflow:hidden}' +
       '#sfqc-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.72);backdrop-filter:blur(3px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif}' +
       '#sfqc-overlay.show{display:flex}' +
-      '#sfqc-auth-wait{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg,#f5f4ef);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif}' +
-      '#sfqc-auth-wait.show{display:flex}#sfqc-auth-wait .sfqc-card{background:var(--card,#fffefa);color:var(--text,#17211f);border:1px solid var(--border,#d9ddd7);box-shadow:none}#sfqc-auth-wait .sfqc-sub{color:var(--text-sub,#64706d);margin-top:12px}' +
-      '.sfqc-auth-spinner{width:32px;height:32px;margin:0 auto 20px;border:3px solid var(--border,#d9ddd7);border-top-color:var(--accent,#167565);border-radius:50%;animation:sfqc-turn 1s linear infinite}#sfqc-auth-retry[hidden]{display:none}@media(prefers-reduced-motion:reduce){.sfqc-auth-spinner{animation:none}}' +
       '.sfqc-card{width:min(92vw,360px);background:#fff;color:#1e293b;border-radius:16px;padding:26px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}' +
       '.sfqc-title{font-size:19px;font-weight:700;margin:0 0 4px}' +
       '.sfqc-sub{font-size:12.5px;color:#64748b;margin:0 0 18px;line-height:1.6}' +
@@ -567,11 +564,49 @@
 
     elAuthWait = document.createElement('div');
     elAuthWait.id = 'sfqc-auth-wait';
-    elAuthWait.innerHTML = '<div class="sfqc-card" role="dialog" aria-modal="true" aria-labelledby="sfqc-auth-title" tabindex="-1">' +
-      '<div class="sfqc-auth-spinner" aria-hidden="true"></div>' +
-      '<p class="sfqc-title" id="sfqc-auth-title">学習の準備をしています</p>' +
-      '<p class="sfqc-sub" id="sfqc-auth-message" role="status">ログイン状態を確認しています。そのままお待ちください。</p>' +
-      '<button class="sfqc-btn sfqc-btn-primary" id="sfqc-auth-retry" hidden>再読み込み</button></div>';
+    elAuthWait.className = 'bank-screen';
+    elAuthWait.innerHTML = "<div class=\"bank-wrap\">" +
+      "<div class=\"bank-brand\">" +
+      "<span class=\"bank-brand-dot\" aria-hidden=\"true\">" +
+      "</span>SF CERTIFICATION" +
+      "<span class=\"bank-brand-sub\">学習の準備" +
+      "</span>" +
+      "</div>" +
+      "<div class=\"bank-card\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"sfqc-auth-title\" tabindex=\"-1\">" +
+      "<p class=\"bank-cert\">あなたの学習スペース" +
+      "</p>" +
+      "<div class=\"bank-art\" aria-hidden=\"true\">" +
+      "<span class=\"bank-orbit\">" +
+      "</span>" +
+      "<span class=\"bank-spark bank-spark-left\">" +
+      "</span>" +
+      "<span class=\"bank-spark bank-spark-right\">" +
+      "</span>" +
+      "<svg viewBox=\"0 0 80 80\" fill=\"none\">" +
+      "<path d=\"M40 22c-8-5-17-6-27-3v39c10-3 19-2 27 3 8-5 17-6 27-3V19c-10-3-19-2-27 3Z\" fill=\"var(--card)\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/>" +
+      "<path d=\"M40 23v37M21 29c4-1 8 0 12 2m-12 7c4-1 8 0 12 2m14-9c4-2 8-3 12-2m-12 11c4-2 8-3 12-2\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>" +
+      "</svg>" +
+      "<span class=\"bank-error-mark\">!" +
+      "</span>" +
+      "</div>" +
+      "<h2 id=\"sfqc-auth-title\">学習の準備をしています" +
+      "</h2>" +
+      "<p class=\"bank-message\" id=\"sfqc-auth-message\" role=\"status\">ログイン状態を確認しています。そのままお待ちください。" +
+      "</p>" +
+      "<div class=\"bank-motion\" aria-hidden=\"true\">" +
+      "<i>" +
+      "</i>" +
+      "<i>" +
+      "</i>" +
+      "<i>" +
+      "</i>" +
+      "</div>" +
+      "<p class=\"bank-hint\">確認が終わると、自動で画面が切り替わります。" +
+      "</p>" +
+      "<button class=\"bank-retry\" id=\"sfqc-auth-retry\" hidden>再読み込み" +
+      "</button>" +
+      "</div>" +
+      "</div>";
     document.body.appendChild(elAuthWait);
     document.getElementById('sfqc-auth-retry').onclick = function () { location.reload(); };
 
@@ -717,9 +752,14 @@
     clearTimeout(authWaitTimer);authWaitTimer=null;
     if (elAuthWait) { elAuthWait.classList.remove('show');sfqcCloseModal(elAuthWait); }
   }
-  function authWaitNotice(message) {
+  function authWaitNotice(message, failed) {
     document.getElementById('sfqc-auth-message').textContent = message;
     document.getElementById('sfqc-auth-retry').hidden = false;
+    if (failed && elAuthWait) {
+      clearTimeout(authWaitTimer);authWaitTimer=null;
+      elAuthWait.setAttribute('data-state', 'error');
+      document.getElementById('sfqc-auth-title').textContent = 'ログイン状態を確認できませんでした';
+    }
   }
   function showAuthWait() {
     if (!elAuthWait || ROLE === 'client') return;
@@ -2360,7 +2400,7 @@
       }).join('');
       if(legacyRows)html+='<div class="sfqc-sec">過去の分類で記録された学習時間</div><div class="sfqc-dash-card">'+legacyRows+'</div>';
     } else {
-      html += '<div class="sfqc-sec">分野別 平均正答率＋学習時間（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card"><div class="sfqc-itnote">分野データを読み込み中…</div></div>';
+      html += '<div class="sfqc-sec">分野別 平均正答率＋学習時間（全ユーザー・' + esc(dcert) + '）</div><div class="sfqc-dash-card">' + adminStateHTML('loading', '分野データを読み込み中', '集計が終わると、自動で表示されます。') + '</div>';
     }
 
     var items = perQuestionStats(dcert);
@@ -4363,7 +4403,7 @@
         }
       }
     }, function () {
-      if (ROLE !== 'client') authWaitNotice('ログイン状態を確認できませんでした。通信状況をご確認のうえ、再読み込みしてください。');
+      if (ROLE !== 'client') authWaitNotice('ログイン状態を確認できませんでした。通信状況をご確認のうえ、再読み込みしてください。', true);
     });
   }
 
