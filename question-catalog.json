@@ -6800,7 +6800,7 @@
   },
   "sales-cloud": {
     "count": 213,
-    "sha256": "b8cc48bc0fe3633f5725707094fa8b1c7c91ea32b9ec27acbc72d01de3b8fe78",
+    "sha256": "50d91ea43bba1f2ee1a61003fe44cc430a327a8507bade5b48261c9fe562a35d",
     "items": [
       {
         "id": 1,
@@ -7795,7 +7795,7 @@
       {
         "id": 199,
         "domain": "app",
-        "source": "jpnshiken"
+        "source": "gen"
       },
       {
         "id": 200,
