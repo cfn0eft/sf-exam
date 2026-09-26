@@ -85,6 +85,21 @@ t('専門資格の利用許可: 明示的な許可と利用承認の両方が必
   }
 });
 
+t('進捗の通知: 取得済み情報と利用許可がそろってから準備完了を通知する', () => {
+  const seen = [];
+  sandbox.Event = class { constructor(type) { this.type = type; } };
+  sandbox.dispatchEvent = () => seen.push({ ready: sandbox.SFQ_PROGRESS_READY, acquired: sandbox.SFQ_PROGRESS.acquired['app-builder'], specialist: sandbox.SFQ_SPECIALIST_ACCESS });
+  sandbox.SFQ_SPECIALIST_ACCESS = false;
+  T.publishProgress({ access: 'approved', specialistAccess: true, stores: { 'app-builder': { acquiredDate: '2026-09-01' } } });
+  ok(seen.length > 0);
+  seen.forEach(s => { eq(s.ready, true); eq(s.acquired, '2026-09-01'); eq(s.specialist, true); });
+  seen.length = 0;
+  T.publishProgress(null);
+  ok(seen.length > 0);
+  seen.forEach(s => { eq(s.ready, false); eq(s.acquired, undefined); eq(s.specialist, false); });
+  delete sandbox.dispatchEvent;
+});
+
 t('Firestoreルール: 専門資格の利用許可を本人が作成・変更できない', () => {
   const keys = rulesSrc.match(/function selfKeys\(\)\s*\{([\s\S]*?)\n\s*\}/)[1];
   ok(!keys.includes("'specialistAccess'"), '管理者専用の許可を本人に開放しない');

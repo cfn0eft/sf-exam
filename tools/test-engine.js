@@ -97,6 +97,20 @@ const run = (code) => vm.runInContext(code, sandbox);
 
 console.log('== quiz-engine.js スモークテスト ==');
 
+t('読み込み完了: 問題とクラウド進捗が両方そろうまで準備画面を維持する', () => {
+  let ready=false, removed=0, gated=0;
+  const overlay=byId('sfq-bank-status'), originalRemove=overlay.remove;
+  overlay.remove=()=>removed++;
+  sandbox.SFQ_PROG={isReady:()=>ready,renderGate:()=>gated++};
+  run('certDataLoaded=true;finishCertLoading()');
+  eq(removed,0);eq(gated,0);
+  ready=true;run('finishCertLoading()');
+  eq(removed,1);eq(gated,1,'準備画面を閉じたら実際の資格制限を再判定する');
+  run('certDataLoaded=false;finishCertLoading()');
+  eq(removed,1,'進捗だけ届いても問題の読込中は閉じない');
+  overlay.remove=originalRemove;delete sandbox.SFQ_PROG;
+});
+
 t('shuffle: 要素を保存し並びだけ変える', () => {
   const r = run('shuffle([1,2,3,4,5,6,7,8,9,10])');
   eq(r.length, 10);

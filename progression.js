@@ -48,6 +48,12 @@
     return (window.SFQ_PROGRESS && window.SFQ_PROGRESS.acquired) ? window.SFQ_PROGRESS : localProgress();
   }
   function isAdmin() { return !!window.SFQ_IS_ADMIN; }
+  function isReady() {
+    var h = location.hostname;
+    var local = h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '';
+    if (local && window.SFQ_EMULATOR !== true) return true;
+    return window.SFQ_PROGRESS_READY === true;
+  }
   // コア以外はクラウドの管理者専用フィールドによる許可が必要。
   // ローカル進捗や取得済み状態から利用許可を推測しない。
   function canUseSpecialist() { return isAdmin() || window.SFQ_SPECIALIST_ACCESS === true; }
@@ -111,7 +117,7 @@
     canUseSpecialist: canUseSpecialist, restrictedOf: restrictedOf,
     acquiredOf: acquiredOf, lockedOf: lockedOf, electiveOf: electiveOf, pendingElective: pendingElective,
     unlocked: unlocked, stateOf: stateOf, canChoose: canChoose,
-    lockReason: lockReason, renderGate: renderGate
+    lockReason: lockReason, renderGate: renderGate, isReady: isReady
   };
 
   function injectStyle() {
@@ -170,11 +176,17 @@
   function renderGate() {
     var cfg = window.CERT_CONFIG;
     if (!cfg || !cfg.slug) return;
+    var el = document.getElementById('sfq-prog-lock');
+    // Cloud progress and administrator status must arrive before deciding a lock.
+    if (!isReady()) {
+      if (el) el.classList.remove('show');
+      document.querySelectorAll('#app-main,.bottom-nav').forEach(function (node) { node.inert = true; });
+      return;
+    }
     var slug = cfg.slug;
     var st = stateOf(slug);
-    var el = document.getElementById('sfq-prog-lock');
     // ロック中にキーボード操作で学習画面へ移動できないようにする。
-    document.querySelectorAll('#app-main,.bottom-nav').forEach(function (node) { node.inert = st !== 'open'; });
+    document.querySelectorAll('#app-main,.bottom-nav').forEach(function (node) { node.inert = st !== 'open' || !!document.getElementById('sfq-bank-status'); });
     if (st === 'open') { if (el) el.classList.remove('show'); return; }
     el = buildEl();
     el.setAttribute('role', 'dialog');

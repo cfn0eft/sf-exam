@@ -8,15 +8,16 @@ const storage = new Map();
 const listeners = {};
 const nodes = new Map();
 function node(id) {
+  const classes = new Set();
   if (!nodes.has(id)) nodes.set(id, { textContent: '', innerHTML: '', inert: false,
-    classList: { add() {}, remove() {} }, setAttribute() {}, appendChild() {} });
+    classList: { add(c) { classes.add(c); }, remove(c) { classes.delete(c); }, contains(c) { return classes.has(c); } }, setAttribute() {}, appendChild() {} });
   return nodes.get(id);
 }
 const ctx = {
   localStorage: { getItem: k => storage.get(k) || null },
-  document: { readyState: 'loading', addEventListener() {}, getElementById: node,
+  document: { readyState: 'loading', addEventListener() {}, getElementById: id => id === 'sfq-bank-status' ? nodes.get(id) || null : node(id),
     querySelectorAll: () => [node('app-main'), node('bottom-nav')], createElement: () => node('new'), body: node('body') },
-  addEventListener: (name, fn) => { listeners[name] = fn; }, location: {},
+  addEventListener: (name, fn) => { listeners[name] = fn; }, location: { hostname: 'localhost' },
 };
 ctx.window = ctx;
 vm.createContext(ctx);
@@ -58,4 +59,39 @@ listeners['sfq-progress']();
 assert.equal(node('app-main').inert, false);
 ctx.SFQ_IS_ADMIN = false;
 assert.equal(P.stateOf('agentforce'), 'restricted');
+// A stale local store must never flash a lock before cloud progress is ready.
+ctx.location.hostname = 'cfn0eft.github.io';
+ctx.CERT_CONFIG = { slug: 'developer' };
+ctx.SFQ_PROGRESS = { acquired: {}, locked: {}, elective: '' };
+delete ctx.SFQ_PROGRESS_READY;
+P.renderGate();
+assert.equal(P.isReady(), false);
+assert.equal(node('sfq-prog-lock').classList.contains('show'), false);
+assert.equal(node('app-main').inert, true);
+ctx.SFQ_PROGRESS = { acquired: { 'app-builder': '2026-01-01' }, locked: {}, elective: '' };
+ctx.SFQ_PROGRESS_READY = true;
+node('sfq-bank-status');
+listeners['sfq-progress']();
+assert.equal(node('sfq-prog-lock').classList.contains('show'), false);
+assert.equal(node('app-main').inert, true, '問題の取得中も画面を操作できない');
+nodes.delete('sfq-bank-status');
+P.renderGate();
+assert.equal(node('app-main').inert, false);
+ctx.SFQ_PROGRESS = { acquired: {}, locked: {}, elective: '' };
+P.renderGate();
+assert.equal(node('sfq-prog-lock').classList.contains('show'), true, '取得順による実際のロックは維持');
+assert.equal(node('app-main').inert, true);
+ctx.SFQ_PROGRESS_READY = false;
+listeners['sfq-progress']();
+assert.equal(node('sfq-prog-lock').classList.contains('show'), false, '再ログイン確認中は前アカウントのロックを隠す');
+ctx.SFQ_IS_ADMIN = true;
+ctx.SFQ_PROGRESS_READY = true;
+listeners['sfq-progress']();
+assert.equal(node('sfq-prog-lock').classList.contains('show'), false);
+assert.equal(node('app-main').inert, false);
+ctx.location.hostname = 'localhost';
+ctx.SFQ_PROGRESS_READY = false;
+assert.equal(P.isReady(), true);
+ctx.SFQ_EMULATOR = true;
+assert.equal(P.isReady(), false, 'エミュレータではクラウド同様に確認を待つ');
 console.log('✅ コア資格・専門資格の許可・取得順・直接URL・許可解除・管理者の回帰テスト成功');

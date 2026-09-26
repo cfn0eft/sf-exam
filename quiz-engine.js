@@ -445,6 +445,15 @@ function applyCertText(){
 }
 let certDataLoaded=false, certDataLoading=false, certDataGeneration=-1;
 let bankWaitTimer;
+function finishCertLoading(){
+  if(!certDataLoaded)return;
+  if(window.SFQ_PROG&&!window.SFQ_PROG.isReady())return;
+  clearTimeout(bankWaitTimer);bankWaitTimer=null;
+  const bankOverlay=document.getElementById('sfq-bank-status');if(bankOverlay)bankOverlay.remove();
+  document.querySelectorAll('[data-bank-inert]').forEach(el=>{el.inert=false;el.removeAttribute('data-bank-inert');});
+  if(window.SFQ_PROG)window.SFQ_PROG.renderGate();
+}
+window.addEventListener('sfq-progress',finishCertLoading);
 function bankStatus(message,state='loading',step=0){
   const el=document.getElementById('sfq-bank-status');if(!el)return;
   el.dataset.state=state;
@@ -483,9 +492,7 @@ async function initializeCertData(){
     return;
   }
   certDataLoaded=true;certDataLoading=false;
-  clearTimeout(bankWaitTimer);bankWaitTimer=null;
-  const bankOverlay=document.getElementById('sfq-bank-status');if(bankOverlay)bankOverlay.remove();
-  document.querySelectorAll('[data-bank-inert]').forEach(el=>{el.inert=false;el.removeAttribute('data-bank-inert');});
+  finishCertLoading();
   applyCertText();
   try{buildKwFilter();}catch(e){}
   try{restoreFilters();}catch(e){}

@@ -1295,6 +1295,7 @@
   }
 
   function onLogin(user) {
+    window.SFQ_PROGRESS_READY = false;
     window.SFQ_IS_ADMIN = false;
     publishSpecialistAccess(null);
     currentUser = user;
@@ -1398,8 +1399,10 @@
         if (s && s.acquiredDate) { acq[slug] = s.acquiredDate; if (s.acqLock) lk[slug] = 1; }
       });
       window.SFQ_IS_ADMIN = !!isAdmin;
-      publishSpecialistAccess(data);
       window.SFQ_PROGRESS = { acquired: acq, locked: lk, elective: (data && data.elective) || '' };
+      window.SFQ_PROGRESS_READY = !!data;
+      // Specialist-access listeners must see the same complete progress snapshot.
+      publishSpecialistAccess(data);
       window.dispatchEvent(new Event('sfq-progress'));
     } catch (e) {}
   }
@@ -4226,7 +4229,7 @@
   }
 
   window.__sfqcTest = { statsOf: statsOf, aggregateUser: aggregateUser, perQuestionStats: perQuestionStats, emptyStore: emptyStore,
-    publishSpecialistAccess: publishSpecialistAccess,
+    publishSpecialistAccess: publishSpecialistAccess, publishProgress: publishProgress,
     aggregateDomainTime: aggregateDomainTime, getDashDom: getDashDom,
     adminStateHTML: adminStateHTML, showLock: showLock,
     maintStatus: maintStatus, maintShouldBlock: maintShouldBlock,
@@ -4310,6 +4313,7 @@
         if (currentUser && currentUser.uid) clearNetworkSessionMark(currentUser.uid);
         currentDeviceId = '';
         currentUser = null; isAdmin = false;
+        window.SFQ_PROGRESS_READY = false;
         window.SFQ_IS_ADMIN = false;
         publishSpecialistAccess(null);
         publishProgress(null);
