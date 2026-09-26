@@ -2922,7 +2922,8 @@
     var traceUrl = cleanNetText(cfg.traceUrl || 'https://www.cloudflare.com/cdn-cgi/trace', 300);
     return netFetch(traceUrl, true).then(function (txt) {
       var tr = parseTrace(txt), rawIp = cleanNetText(tr.ip, 80);
-      base.ip = maskIp(rawIp); base.country = cleanNetText(tr.loc, 60); base.source = 'cloudflare';
+      // 生IPは管理者の接続元・端末情報でのみ表示する。HTMLへ埋め込む際は必ず esc() する。
+      base.ip = rawIp; base.country = cleanNetText(tr.loc, 60); base.source = 'cloudflare';
       var lookupUrl = cleanNetText(cfg.lookupUrl || 'https://ipwho.is/{ip}', 400).replace('{ip}', encodeURIComponent(rawIp));
       if (!rawIp || !lookupUrl) return { base: base, rawIp: rawIp, trace: tr };
       return netFetch(lookupUrl, false).then(function (g) {
@@ -3648,7 +3649,7 @@
     if (alerts.length) html += '<div class="sfqc-net-alert">⚠️ ' + esc(alerts.join(' ／ ')) + '</div>';
     html += '<div class="sfqc-kv-grid">' +
       kv('最新の接続判定', latest ? (latest.label || '判定なし') : '—') +
-      kv('マスク済みIP', latest && latest.ip ? latest.ip : '—') +
+      kv('接続元IP', latest && latest.ip ? latest.ip : '—') +
       kv('回線組織 / ASN', latest ? ([latest.org, latest.asn].filter(Boolean).join(' / ') || '—') : '—') +
       kv('国・地域', latest ? ([latest.country, latest.region, latest.city].filter(Boolean).join(' / ') || '—') : '—') +
       kv('登録端末', devices.length + ' 台') +
@@ -3672,7 +3673,7 @@
             (idx === 0 ? '<span class="sfqc-login-latest">最新</span>' : '') + '</div>';
         }).join('') + '</div></details>';
     }
-    html += '<div class="sfqc-itnote">IP・VPN・企業回線の判定は参考情報です。携帯回線、共有回線、VPN、スプリットトンネル等で変わるため、この情報だけで本人性や不正利用を断定しないでください。生のIPは保存していません。</div>';
+    html += '<div class="sfqc-itnote">IP・VPN・企業回線の判定は参考情報です。携帯回線、共有回線、VPN、スプリットトンネル等で変わるため、この情報だけで本人性や不正利用を断定しないでください。接続元IPは管理者向け接続情報として保存されます。</div>';
     return html;
   }
 

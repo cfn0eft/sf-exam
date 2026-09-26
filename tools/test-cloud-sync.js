@@ -348,7 +348,7 @@ t('reqChipHTML: 固定文言でなく申請時に入力された名前を表示�
   ok(escaped.indexOf('&lt;img') >= 0 && escaped.indexOf('<img src=x>') < 0, '申請名をエスケープ');
 });
 
-/* ---- 接続元・端末情報（IP はマスクし、判定は参考表示） ---- */
+/* ---- 接続元・端末情報（IP は管理者向けに完全表示、判定は参考表示） ---- */
 t('shouldRecordNetwork: 管理者・承認済み・申請待ち・停止中のログインを記録する', () => {
   eq(T.shouldRecordNetwork(true, {}), true, '管理者');
   eq(T.shouldRecordNetwork(false, { access: 'approved' }), true, '承認済み');
