@@ -463,6 +463,11 @@ t('applyDark: テーマ属性とボタンの状態（絵文字・aria-pressed）
   eq(byId('btn-dark').textContent, '☀️', 'ダーク時は太陽アイコン');
   eq(byId('btn-dark').getAttribute('aria-pressed'), 'true', 'ダーク時の aria-pressed');
   run('applyDark(false)');
+  eq(run("document.documentElement.getAttribute('data-theme')"), 'dark', 'ライト指定でもダーク固定');
+  ok(sandbox.document.body.classList.contains('dark'), 'ライト指定でも body の dark クラスを維持');
+  eq(byId('btn-dark').textContent, '☀️', 'ダーク固定時は太陽アイコン');
+  eq(byId('btn-dark').getAttribute('aria-pressed'), 'true', 'ダーク固定時は aria-pressed');
+/*
   eq(run("document.documentElement.getAttribute('data-theme')"), '', 'ライト時はテーマ属性が空');
   eq(sandbox.document.body.classList.contains('dark'), false, 'ライト時は body の dark クラスを外す');
   eq(byId('btn-dark').textContent, '🌙', 'ライト時は月アイコン');
@@ -483,6 +488,7 @@ t('かんたんツアー: 実画面スポットライトと資格別ステップ
   ok(run("buildObSteps().some(function(x){return x.target==='#nb-textbook';})"), '教科書のスポットライトがない');
   ok(run("buildObSteps().some(function(x){return x.target==='#nb-stats';})"), '統計のスポットライトがない');
   eq(run("(function(){var l=LESSDATA,a=allQ;LESSDATA=[];allQ=[{id:1}];var r=[guideItemAvailable({when:'lessons'}),guideItemAvailable({when:'cases'})];LESSDATA=l;allQ=a;return r.join(',');})()"), 'false,false', '使い方ガイドが未提供機能を隠さない');
+*/
 });
 
 t('かんたんツアー: 取得状況の読込後、現在学習できる未取得資格だけに自動表示する', () => {

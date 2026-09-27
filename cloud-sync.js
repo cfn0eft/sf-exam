@@ -2914,7 +2914,7 @@
   function baseNetworkSnapshot() {
     var dev = deviceInfo();
     return { deviceId: currentDeviceId || deviceId(currentUser && currentUser.uid), browser: dev.browser, os: dev.os, language: dev.language, timezone: dev.timezone, screen: dev.screen, ua: dev.ua,
-      ip: '', org: '', asn: '', country: '', countryCode: '', region: '', regionCode: '', city: '', postal: '', ipTimezone: '', lat: '', lon: '', kind: 'unknown', label: '❔ 回線判定なし', confidence: 'low', source: 'device-only' };
+      ip: '', org: '', asn: '', country: '', countryCode: '', region: '', regionCode: '', city: '', postal: '', ipTimezone: '', lat: '', lon: '', connectionType: '', domain: '', isVpn: '', isProxy: '', isTor: '', isHosting: '', kind: 'unknown', label: '❔ 回線判定なし', confidence: 'low', source: 'device-only' };
   }
   function collectNetworkSnapshot(base) {
     var cfg = networkConfig();
@@ -2944,6 +2944,13 @@
         base.ipTimezone = cleanNetText(g.timezone && (g.timezone.id || g.timezone.utc || g.timezone) || '', 80);
         base.lat = isFinite(Number(g.latitude)) ? String(g.latitude) : '';
         base.lon = isFinite(Number(g.longitude)) ? String(g.longitude) : '';
+        base.connectionType = cleanNetText(c.type || '', 40);
+        base.domain = cleanNetText(c.domain || g.hostname || '', 160);
+        var sec = g.security || {};
+        base.isVpn = sec.vpn == null ? '' : String(!!sec.vpn);
+        base.isProxy = sec.proxy == null ? '' : String(!!sec.proxy);
+        base.isTor = sec.tor == null ? '' : String(!!sec.tor);
+        base.isHosting = sec.hosting == null ? '' : String(!!sec.hosting);
         base.source = 'cloudflare+ipwhois';
         return { base: base, rawIp: rawIp, trace: tr };
       }).catch(function () { return { base: base, rawIp: rawIp, trace: tr }; });
@@ -3665,6 +3672,8 @@
       kv('国・地域', latest ? ([latest.country, latest.countryCode, latest.region, latest.regionCode, latest.city, latest.postal].filter(Boolean).join(' / ') || '—') : '—') +
       kv('IPタイムゾーン', latest && latest.ipTimezone ? latest.ipTimezone : '—') +
       kv('座標', latest && (latest.lat || latest.lon) ? [latest.lat, latest.lon].filter(Boolean).join(', ') : '—') +
+      kv('接続種別 / ドメイン', latest ? ([latest.connectionType, latest.domain].filter(Boolean).join(' / ') || '—') : '—') +
+      kv('VPN / Proxy / Tor / Hosting', latest ? [latest.isVpn, latest.isProxy, latest.isTor, latest.isHosting].map(function (x) { return x === 'true' ? '該当' : x === 'false' ? 'なし' : '—'; }).join(' / ') : '—') +
       kv('登録端末', devices.length + ' 台') +
       kv('現在オンライン端末', active.length + ' 台') +
       '</div>';
@@ -3674,7 +3683,7 @@
       return '<div class="sfqc-net-card"><strong>' + (on ? '🟢 ' : '💻 ') + esc((d.os || '不明') + ' / ' + (d.browser || '不明')) + '</strong><br>' +
         '<span class="sfqc-net-chip ' + netChipClass(d) + '">' + esc(d.label || '判定なし') + '</span><br>' +
         'IP: ' + esc(d.ip || '—') + '<br>回線: ' + esc([d.org, d.asn].filter(Boolean).join(' / ') || '—') + '<br>' +
-        '地域: ' + esc(loc || '—') + '<br>IPタイムゾーン: ' + esc(d.ipTimezone || '—') + '<br>座標: ' + esc([d.lat, d.lon].filter(Boolean).join(', ') || '—') + '<br>言語/時差: ' + esc([d.language, d.timezone].filter(Boolean).join(' / ') || '—') + '<br>' +
+        '地域: ' + esc(loc || '—') + '<br>IPタイムゾーン: ' + esc(d.ipTimezone || '—') + '<br>座標: ' + esc([d.lat, d.lon].filter(Boolean).join(', ') || '—') + (d.lat && d.lon ? ' <a href="https://www.google.com/maps?q=' + encodeURIComponent(d.lat + ',' + d.lon) + '" target="_blank" rel="noopener noreferrer">Google Maps</a>' : '') + '<br>接続種別/ドメイン: ' + esc([d.connectionType, d.domain].filter(Boolean).join(' / ') || '—') + '<br>VPN/Proxy/Tor/Hosting: ' + esc([d.isVpn, d.isProxy, d.isTor, d.isHosting].map(function (x) { return x === 'true' ? '該当' : x === 'false' ? 'なし' : '—'; }).join(' / ')) + '<br>言語/時差: ' + esc([d.language, d.timezone].filter(Boolean).join(' / ') || '—') + '<br>' +
         '画面: ' + esc(d.screen || '—') + '　記録: ' + (d.loginCount || 0) + '回<br>' +
         '<span class="muted">端末ID ' + esc(String(d._id || '').slice(0, 12)) + '… ／ 初回 ' + esc(fmtDateTime(d.firstSeen)) + ' ／ 最終 ' + esc(fmtDateTime(d.lastSeen)) + '</span></div>';
     }).join('') + '</div>';
@@ -4282,7 +4291,7 @@
       '用語習得', '用語学習中', '用語総数',
       '教科書読了', '教科書しおり', 'メモ数',
       '学習日数', '学習時間(分)', '最終学習日', '受験予定日', '日次目標',
-      '接続判定', '判定信頼度', '接続元IP', '回線組織', 'ASN', '接続国', '国コード', '接続地域', '地域コード', '接続都市', '郵便番号', 'IPタイムゾーン', '緯度', '経度',
+      '接続判定', '判定信頼度', '接続元IP', '回線組織', 'ASN', '接続国', '国コード', '接続地域', '地域コード', '接続都市', '郵便番号', 'IPタイムゾーン', '緯度', '経度', '接続種別', 'ドメイン', 'VPN', 'Proxy', 'Tor', 'Hosting',
       '端末数', 'オンライン端末数', '接続注意'
     ];
     var lines = [head.join(',')];
@@ -4300,7 +4309,7 @@
           s.tbmDone, s.tbmBm, s.notes,
           s.daysActive, Math.round((s.studySec || 0) / 60), s.lastStudyDate, s.examDate, s.goal,
           n ? n.label : '', n ? n.confidence : '', n ? n.ip : '', n ? n.org : '', n ? n.asn : '',
-          n ? n.country : '', n ? n.countryCode : '', n ? n.region : '', n ? n.regionCode : '', n ? n.city : '', n ? n.postal : '', n ? n.ipTimezone : '', n ? n.lat : '', n ? n.lon : '', ds.length, active.length, alerts.join(' / ')
+          n ? n.country : '', n ? n.countryCode : '', n ? n.region : '', n ? n.regionCode : '', n ? n.city : '', n ? n.postal : '', n ? n.ipTimezone : '', n ? n.lat : '', n ? n.lon : '', n ? n.connectionType : '', n ? n.domain : '', n ? n.isVpn : '', n ? n.isProxy : '', n ? n.isTor : '', n ? n.isHosting : '', ds.length, active.length, alerts.join(' / ')
         ];
         lines.push(row.map(csvCell).join(','));
       });

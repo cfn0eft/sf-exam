@@ -503,7 +503,7 @@ async function initializeCertData(){
   try{renderChapNav();}catch(e){}
   try{renderCram();}catch(e){}
   if(typeof updateSrsBtn==='function')updateSrsBtn();
-  if(localStorage.getItem('dark')==='1')applyDark(true);
+  applyDark(true);
   try{applyFontSize(localStorage.getItem('sfq_fontsize')||'normal');}catch(e){}
   try{renderOnlineState();}catch(e){}
   try{maybeOnboard();}catch(e){}
@@ -749,15 +749,13 @@ function setBmBtn(btn,on){
 }
 
 function applyDark(on){
-  document.documentElement.setAttribute('data-theme',on?'dark':'');
-  if(document.body)document.body.classList.toggle('dark',!!on);
+  document.documentElement.setAttribute('data-theme','dark');
+  if(document.body)document.body.classList.add('dark');
   const b=document.getElementById('btn-dark');
-  if(b){b.textContent=on?'☀️':'🌙';b.setAttribute('aria-pressed',on?'true':'false');}
+  if(b){b.textContent='☀️';b.setAttribute('aria-pressed','true');}
 }
 function toggleDark(){
-  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  applyDark(!isDark);
-  localStorage.setItem('dark',isDark?'0':'1');
+  applyDark(true);
 }
 
 function toast(msg){
@@ -2661,7 +2659,7 @@ function renderMypage(){
   }else{
     accHtml='<div class="acct"><div class="mp-avatar">👤</div><div><div class="mp-name">未ログイン</div><div class="mp-asub">ホームからログインすると進捗が同期されます</div></div></div>';
   }
-  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  const dark=true;
   const seg=(on,label,fn)=>'<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+label+'</button>';
   const fs=(function(){try{return localStorage.getItem('sfq_fontsize')||'normal';}catch(e){return 'normal';}})();
   const legalUrl=String(window.SFQ_HOME_URL||'../../index.html').replace(/index\.html(?:[?#].*)?$/,'legal.html');
@@ -2705,7 +2703,6 @@ function renderMypage(){
     +(acc.loggedIn&&!acc.isAdmin?'<div class="sec-label">アカウント管理</div><div class="card"><div class="mp-opt"><span class="mp-ic">⚠️</span><span class="mp-main">アカウントを削除<div class="mp-osub">全資格の進捗・接続履歴・フィードバック・ログイン用アカウントを完全に削除</div></span><button class="mp-danger" onclick="window.__sfqOpenDeleteAccount&&window.__sfqOpenDeleteAccount()">削除手続き</button></div></div>':'')
     +'<div class="sec-label">表示・データ</div>'
     +'<div class="card">'
-    +'<div class="mp-opt"><span class="mp-ic">🌓</span><span class="mp-main">テーマ<div class="mp-osub">画面の配色</div></span><span class="mp-seg">'+seg(!dark,'ライト','setDarkMode(false)')+seg(dark,'ダーク','setDarkMode(true)')+'</span></div>'
     +'<div class="mp-opt"><span class="mp-ic">🔠</span><span class="mp-main">文字サイズ<div class="mp-osub">問題・選択肢・解説などの本文</div></span><span class="mp-seg">'+seg(fs==='small','小',"applyFontSize('small');renderMypage()")+seg(fs==='normal','標準',"applyFontSize('normal');renderMypage()")+seg(fs==='large','大',"applyFontSize('large');renderMypage()")+'</span></div>'
     +((function(){const avail=SRC_KEYS.filter(s=>allQ.some(q=>q&&q.source===s));if(avail.length<2)return '';return '<div class="mp-opt"><span class="mp-ic">📚</span><span class="mp-main">既定の出典<div class="mp-osub">学習・試験で出す問題（複数選べます）</div></span><span class="mp-seg">'+seg(srcSel.size===0,"すべて","setSrcFilter('all');renderMypage()")+avail.map(s=>seg(srcSel.has(s),SRC_LABEL[s],"setSrcFilter('"+s+"');renderMypage()")).join('')+'</span></div>';})())
     +'<div class="mp-opt"><span class="mp-ic">⌨️</span><span class="mp-main">キーボード操作<div class="mp-osub">PCショートカット一覧（<b>?</b> キーでも開く）</div></span><span class="mp-seg"><button onclick="toggleShortcutHelp(true)">表示</button></span></div>'
@@ -2723,7 +2720,7 @@ function saveMyPlan(){
   renderPlan();renderMypage();toast('✅ 学習計画を保存');
 }
 function clearMyPlan(){store.examDate='';store.goal=0;save();renderPlan();renderMypage();toast('学習計画をクリア');}
-function setDarkMode(on){applyDark(on);try{localStorage.setItem('dark',on?'1':'0');}catch(e){}renderMypage();}
+function setDarkMode(){applyDark(true);renderMypage();}
 window.__sfqOnAccount=function(){var p=document.getElementById('pg-mypage');if(p&&p.classList.contains('active'))renderMypage();};
 
 function __notifyProgress(){
