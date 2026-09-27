@@ -5,7 +5,11 @@
  * cache-first worker, so this final worker exists only to remove those caches
  * and unregister itself. It does not intercept fetch requests.
  */
+<<<<<<< ours
 const RELEASE = 'sf-exam-v209';
+=======
+const RELEASE = 'sf-exam-v210';
+>>>>>>> theirs
 
 self.addEventListener('install', () => {
   self.skipWaiting();
