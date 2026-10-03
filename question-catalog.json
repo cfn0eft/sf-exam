@@ -3293,7 +3293,7 @@
   },
   "developer": {
     "count": 499,
-    "sha256": "d04165db1ba0cc79b1e371600e5d74d55b33466e9b8ef9318a88eb2386559d42",
+    "sha256": "3fc2f37871e684c5d8f30f3f89275d06d3f5fe522c4bb37eb2c233172f8b31b6",
     "items": [
       {
         "id": 1,
@@ -7871,7 +7871,7 @@
   },
   "service-cloud": {
     "count": 200,
-    "sha256": "edfee7de5e658954bf86f3b4c0bd0ad5392e52dacae1154375039d05ffab2671",
+    "sha256": "ddcf4730b8d848cc6367919a0db524cf5a21eac91e331b94ce2ed92a4b5af076",
     "items": [
       {
         "id": 1,
@@ -11068,7 +11068,7 @@
   },
   "sharing-visibility": {
     "count": 200,
-    "sha256": "55b7cf5ebdffeaf6cf3da7ca2ee62c56160a77b8ea9d24cbef037de8a734d655",
+    "sha256": "c66b2b8b81edefeecda30f560c0e0d7581df8f8a1851004ee7d7085aed55f9ce",
     "items": [
       {
         "id": 1,
