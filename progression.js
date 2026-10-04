@@ -15,7 +15,15 @@
     'sales-cloud': 'sfqsales_v1',
     'service-cloud': 'sfqservice_v1',
     'experience-cloud': 'sfqexp_v1',
-    'sharing-visibility': 'sfqsva_v1'
+    'sharing-visibility': 'sfqsva_v1',
+    'platform-administrator-ii': 'sfqpa2_v1',
+    'agentforce-field-service-operations': 'sfqafso_v1',
+    'platform-developer-ii': 'sfqpd2_v1',
+    'javascript-developer': 'sfqjs_v1',
+    'platform-data-architect': 'sfqpda_v1',
+    'platform-integration-architect': 'sfqpia_v1',
+    'platform-identity-access-management-architect': 'sfqpiam_v1',
+    'platform-development-lifecycle-deployment-architect': 'sfqpdl_v1'
   };
 
   var NAME = {

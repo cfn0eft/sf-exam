@@ -1060,6 +1060,268 @@
       }
     ]
   },
+  "agentforce-field-service-operations": {
+    "count": 64,
+    "sha256": "24bbf0300f77957bb9863c547993084f66fcb68cbbfb1502be48a775f4cebd6a",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
+      },
+      {
+        "id": 17,
+        "domain": ""
+      },
+      {
+        "id": 18,
+        "domain": ""
+      },
+      {
+        "id": 19,
+        "domain": ""
+      },
+      {
+        "id": 20,
+        "domain": ""
+      },
+      {
+        "id": 21,
+        "domain": ""
+      },
+      {
+        "id": 22,
+        "domain": ""
+      },
+      {
+        "id": 23,
+        "domain": ""
+      },
+      {
+        "id": 24,
+        "domain": ""
+      },
+      {
+        "id": 25,
+        "domain": ""
+      },
+      {
+        "id": 26,
+        "domain": ""
+      },
+      {
+        "id": 27,
+        "domain": ""
+      },
+      {
+        "id": 28,
+        "domain": ""
+      },
+      {
+        "id": 29,
+        "domain": ""
+      },
+      {
+        "id": 30,
+        "domain": ""
+      },
+      {
+        "id": 31,
+        "domain": ""
+      },
+      {
+        "id": 32,
+        "domain": ""
+      },
+      {
+        "id": 33,
+        "domain": ""
+      },
+      {
+        "id": 34,
+        "domain": ""
+      },
+      {
+        "id": 35,
+        "domain": ""
+      },
+      {
+        "id": 36,
+        "domain": ""
+      },
+      {
+        "id": 37,
+        "domain": ""
+      },
+      {
+        "id": 38,
+        "domain": ""
+      },
+      {
+        "id": 39,
+        "domain": ""
+      },
+      {
+        "id": 40,
+        "domain": ""
+      },
+      {
+        "id": 41,
+        "domain": ""
+      },
+      {
+        "id": 42,
+        "domain": ""
+      },
+      {
+        "id": 43,
+        "domain": ""
+      },
+      {
+        "id": 44,
+        "domain": ""
+      },
+      {
+        "id": 45,
+        "domain": ""
+      },
+      {
+        "id": 46,
+        "domain": ""
+      },
+      {
+        "id": 47,
+        "domain": ""
+      },
+      {
+        "id": 48,
+        "domain": ""
+      },
+      {
+        "id": 49,
+        "domain": ""
+      },
+      {
+        "id": 50,
+        "domain": ""
+      },
+      {
+        "id": 51,
+        "domain": ""
+      },
+      {
+        "id": 52,
+        "domain": ""
+      },
+      {
+        "id": 53,
+        "domain": ""
+      },
+      {
+        "id": 54,
+        "domain": ""
+      },
+      {
+        "id": 55,
+        "domain": ""
+      },
+      {
+        "id": 56,
+        "domain": ""
+      },
+      {
+        "id": 57,
+        "domain": ""
+      },
+      {
+        "id": 58,
+        "domain": ""
+      },
+      {
+        "id": 59,
+        "domain": ""
+      },
+      {
+        "id": 60,
+        "domain": ""
+      },
+      {
+        "id": 61,
+        "domain": ""
+      },
+      {
+        "id": 62,
+        "domain": ""
+      },
+      {
+        "id": 63,
+        "domain": ""
+      },
+      {
+        "id": 64,
+        "domain": ""
+      }
+    ]
+  },
   "app-builder": {
     "count": 445,
     "sha256": "5f3f074de8919157f121172086130111ebce371e40cc1e838dcc634acda9a583",
@@ -6795,6 +7057,876 @@
         "id": 201,
         "domain": "theme",
         "source": "gen"
+      }
+    ]
+  },
+  "javascript-developer": {
+    "count": 2,
+    "sha256": "1f5baed0727fcf96813cccf41e223283a1518ecc52d6e4010814bd29c7b60ee5",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      }
+    ]
+  },
+  "platform-administrator-ii": {
+    "count": 59,
+    "sha256": "31e7e4caa6a86e34339e6c2bf72ff4c3a8a04cbdbc38a9aa9fc55f385a3c274b",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
+      },
+      {
+        "id": 17,
+        "domain": ""
+      },
+      {
+        "id": 18,
+        "domain": ""
+      },
+      {
+        "id": 19,
+        "domain": ""
+      },
+      {
+        "id": 20,
+        "domain": ""
+      },
+      {
+        "id": 21,
+        "domain": ""
+      },
+      {
+        "id": 22,
+        "domain": ""
+      },
+      {
+        "id": 23,
+        "domain": ""
+      },
+      {
+        "id": 24,
+        "domain": ""
+      },
+      {
+        "id": 25,
+        "domain": ""
+      },
+      {
+        "id": 26,
+        "domain": ""
+      },
+      {
+        "id": 27,
+        "domain": ""
+      },
+      {
+        "id": 28,
+        "domain": ""
+      },
+      {
+        "id": 29,
+        "domain": ""
+      },
+      {
+        "id": 30,
+        "domain": ""
+      },
+      {
+        "id": 31,
+        "domain": ""
+      },
+      {
+        "id": 32,
+        "domain": ""
+      },
+      {
+        "id": 33,
+        "domain": ""
+      },
+      {
+        "id": 34,
+        "domain": ""
+      },
+      {
+        "id": 35,
+        "domain": ""
+      },
+      {
+        "id": 36,
+        "domain": ""
+      },
+      {
+        "id": 37,
+        "domain": ""
+      },
+      {
+        "id": 38,
+        "domain": ""
+      },
+      {
+        "id": 39,
+        "domain": ""
+      },
+      {
+        "id": 40,
+        "domain": ""
+      },
+      {
+        "id": 41,
+        "domain": ""
+      },
+      {
+        "id": 42,
+        "domain": ""
+      },
+      {
+        "id": 43,
+        "domain": ""
+      },
+      {
+        "id": 44,
+        "domain": ""
+      },
+      {
+        "id": 45,
+        "domain": ""
+      },
+      {
+        "id": 46,
+        "domain": ""
+      },
+      {
+        "id": 47,
+        "domain": ""
+      },
+      {
+        "id": 48,
+        "domain": ""
+      },
+      {
+        "id": 49,
+        "domain": ""
+      },
+      {
+        "id": 50,
+        "domain": ""
+      },
+      {
+        "id": 51,
+        "domain": ""
+      },
+      {
+        "id": 52,
+        "domain": ""
+      },
+      {
+        "id": 53,
+        "domain": ""
+      },
+      {
+        "id": 54,
+        "domain": ""
+      },
+      {
+        "id": 55,
+        "domain": ""
+      },
+      {
+        "id": 56,
+        "domain": ""
+      },
+      {
+        "id": 57,
+        "domain": ""
+      },
+      {
+        "id": 58,
+        "domain": ""
+      },
+      {
+        "id": 59,
+        "domain": ""
+      }
+    ]
+  },
+  "platform-data-architect": {
+    "count": 30,
+    "sha256": "eee6a48d9bbcf5b65d4ec87b1fbdab8ce8e59fbe131403e0cf121ce701d94631",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
+      },
+      {
+        "id": 17,
+        "domain": ""
+      },
+      {
+        "id": 18,
+        "domain": ""
+      },
+      {
+        "id": 19,
+        "domain": ""
+      },
+      {
+        "id": 20,
+        "domain": ""
+      },
+      {
+        "id": 21,
+        "domain": ""
+      },
+      {
+        "id": 22,
+        "domain": ""
+      },
+      {
+        "id": 23,
+        "domain": ""
+      },
+      {
+        "id": 24,
+        "domain": ""
+      },
+      {
+        "id": 25,
+        "domain": ""
+      },
+      {
+        "id": 26,
+        "domain": ""
+      },
+      {
+        "id": 27,
+        "domain": ""
+      },
+      {
+        "id": 28,
+        "domain": ""
+      },
+      {
+        "id": 29,
+        "domain": ""
+      },
+      {
+        "id": 30,
+        "domain": ""
+      }
+    ]
+  },
+  "platform-developer-ii": {
+    "count": 41,
+    "sha256": "7b25dd0603a6ee8badba8bb32651d82849710ad690e7aed86579db54dbae513f",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
+      },
+      {
+        "id": 17,
+        "domain": ""
+      },
+      {
+        "id": 18,
+        "domain": ""
+      },
+      {
+        "id": 19,
+        "domain": ""
+      },
+      {
+        "id": 20,
+        "domain": ""
+      },
+      {
+        "id": 21,
+        "domain": ""
+      },
+      {
+        "id": 22,
+        "domain": ""
+      },
+      {
+        "id": 23,
+        "domain": ""
+      },
+      {
+        "id": 24,
+        "domain": ""
+      },
+      {
+        "id": 25,
+        "domain": ""
+      },
+      {
+        "id": 26,
+        "domain": ""
+      },
+      {
+        "id": 27,
+        "domain": ""
+      },
+      {
+        "id": 28,
+        "domain": ""
+      },
+      {
+        "id": 29,
+        "domain": ""
+      },
+      {
+        "id": 30,
+        "domain": ""
+      },
+      {
+        "id": 31,
+        "domain": ""
+      },
+      {
+        "id": 32,
+        "domain": ""
+      },
+      {
+        "id": 33,
+        "domain": ""
+      },
+      {
+        "id": 34,
+        "domain": ""
+      },
+      {
+        "id": 35,
+        "domain": ""
+      },
+      {
+        "id": 36,
+        "domain": ""
+      },
+      {
+        "id": 37,
+        "domain": ""
+      },
+      {
+        "id": 38,
+        "domain": ""
+      },
+      {
+        "id": 39,
+        "domain": ""
+      },
+      {
+        "id": 40,
+        "domain": ""
+      },
+      {
+        "id": 41,
+        "domain": ""
+      }
+    ]
+  },
+  "platform-development-lifecycle-deployment-architect": {
+    "count": 33,
+    "sha256": "b007307b540f71b0eb0996520b745c93505a131dae24baf01021f2bde6995297",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
+      },
+      {
+        "id": 17,
+        "domain": ""
+      },
+      {
+        "id": 18,
+        "domain": ""
+      },
+      {
+        "id": 19,
+        "domain": ""
+      },
+      {
+        "id": 20,
+        "domain": ""
+      },
+      {
+        "id": 21,
+        "domain": ""
+      },
+      {
+        "id": 22,
+        "domain": ""
+      },
+      {
+        "id": 23,
+        "domain": ""
+      },
+      {
+        "id": 24,
+        "domain": ""
+      },
+      {
+        "id": 25,
+        "domain": ""
+      },
+      {
+        "id": 26,
+        "domain": ""
+      },
+      {
+        "id": 27,
+        "domain": ""
+      },
+      {
+        "id": 28,
+        "domain": ""
+      },
+      {
+        "id": 29,
+        "domain": ""
+      },
+      {
+        "id": 30,
+        "domain": ""
+      },
+      {
+        "id": 31,
+        "domain": ""
+      },
+      {
+        "id": 32,
+        "domain": ""
+      },
+      {
+        "id": 33,
+        "domain": ""
+      }
+    ]
+  },
+  "platform-identity-access-management-architect": {
+    "count": 26,
+    "sha256": "0f06d1efa2869db874f057e1a982f9f56b94c8010b24c9a9254eea28c01cc746",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
+      },
+      {
+        "id": 17,
+        "domain": ""
+      },
+      {
+        "id": 18,
+        "domain": ""
+      },
+      {
+        "id": 19,
+        "domain": ""
+      },
+      {
+        "id": 20,
+        "domain": ""
+      },
+      {
+        "id": 21,
+        "domain": ""
+      },
+      {
+        "id": 22,
+        "domain": ""
+      },
+      {
+        "id": 23,
+        "domain": ""
+      },
+      {
+        "id": 24,
+        "domain": ""
+      },
+      {
+        "id": 25,
+        "domain": ""
+      },
+      {
+        "id": 26,
+        "domain": ""
+      }
+    ]
+  },
+  "platform-integration-architect": {
+    "count": 16,
+    "sha256": "d53669436472e359ae35717d0880bfe1c27a8f063729305de87eabc79f51e44b",
+    "items": [
+      {
+        "id": 1,
+        "domain": ""
+      },
+      {
+        "id": 2,
+        "domain": ""
+      },
+      {
+        "id": 3,
+        "domain": ""
+      },
+      {
+        "id": 4,
+        "domain": ""
+      },
+      {
+        "id": 5,
+        "domain": ""
+      },
+      {
+        "id": 6,
+        "domain": ""
+      },
+      {
+        "id": 7,
+        "domain": ""
+      },
+      {
+        "id": 8,
+        "domain": ""
+      },
+      {
+        "id": 9,
+        "domain": ""
+      },
+      {
+        "id": 10,
+        "domain": ""
+      },
+      {
+        "id": 11,
+        "domain": ""
+      },
+      {
+        "id": 12,
+        "domain": ""
+      },
+      {
+        "id": 13,
+        "domain": ""
+      },
+      {
+        "id": 14,
+        "domain": ""
+      },
+      {
+        "id": 15,
+        "domain": ""
+      },
+      {
+        "id": 16,
+        "domain": ""
       }
     ]
   },
