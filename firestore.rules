@@ -102,7 +102,11 @@ service cloud.firestore {
       let p = get(/databases/$(database)/documents/progress/$(request.auth.uid)).data;
       return p.get('access', '') == 'approved' &&
         (slug in ['sf-admin', 'app-builder', 'developer'] ||
-          (slug in ['agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility'] && p.get('specialistAccess', false) == true));
+        (slug in ['agentforce', 'sales-cloud', 'service-cloud', 'experience-cloud', 'sharing-visibility',
+          'platform-administrator-ii', 'agentforce-field-service-operations', 'platform-developer-ii',
+          'javascript-developer', 'platform-data-architect', 'platform-integration-architect',
+          'platform-identity-access-management-architect', 'platform-development-lifecycle-deployment-architect'] &&
+          p.get('specialistAccess', false) == true));
     }
     function bankReader(slug) {
       return request.auth != null && (isAdmin() || mayReadBank(slug));

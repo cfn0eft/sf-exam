@@ -10,13 +10,15 @@ const assert=require('node:assert/strict');
   await env.withSecurityRulesDisabled(async ctx=>{
    const db=ctx.firestore();
    for(const [uid,data] of Object.entries({approved:{access:'approved'},special:{access:'approved',specialistAccess:true},pending:{access:'pending'},blocked:{access:'blocked'},missing:{}}))await setDoc(doc(db,'progress',uid),data);
-   for(const slug of ['sf-admin','agentforce']){
+   const banks=['sf-admin','agentforce','platform-administrator-ii','agentforce-field-service-operations','platform-developer-ii','javascript-developer','platform-data-architect','platform-integration-architect','platform-identity-access-management-architect','platform-development-lifecycle-deployment-architect'];
+   for(const slug of banks){
     await setDoc(doc(db,'questionBanks',slug),{activeVersion:'v-test'});
     for(const version of ['v-test','v-old'])await setDoc(doc(db,`questionBanks/${slug}/versions/${version}/chunks/part-000`),{json:'[]'});
    }
   });
   const dbFor=uid=>uid?env.authenticatedContext(uid,{email:uid+'@sfquiz.local'}).firestore():env.unauthenticatedContext().firestore();
-  for(const uid of [null,'pending','blocked','missing','absent'])for(const slug of ['sf-admin','agentforce']){
+  const specialistBanks=['agentforce','platform-administrator-ii','agentforce-field-service-operations','platform-developer-ii','javascript-developer','platform-data-architect','platform-integration-architect','platform-identity-access-management-architect','platform-development-lifecycle-deployment-architect'];
+  for(const uid of [null,'pending','blocked','missing','absent'])for(const slug of ['sf-admin',...specialistBanks]){
    const db=dbFor(uid);await assertFails(getDoc(doc(db,'questionBanks',slug)));checks++;
    await assertFails(getDoc(doc(db,`questionBanks/${slug}/versions/v-test/chunks/part-000`)));checks++;
   }
@@ -24,10 +26,12 @@ const assert=require('node:assert/strict');
    const db=dbFor(uid);await assertSucceeds(getDoc(doc(db,'questionBanks','sf-admin')));checks++;
    await assertSucceeds(getDoc(doc(db,'questionBanks/sf-admin/versions/v-test/chunks/part-000')));checks++;
   }
-  await assertFails(getDoc(doc(dbFor('approved'),'questionBanks','agentforce')));checks++;
-  await assertFails(getDoc(doc(dbFor('approved'),'questionBanks/agentforce/versions/v-test/chunks/part-000')));checks++;
-  await assertSucceeds(getDoc(doc(dbFor('special'),'questionBanks/agentforce/versions/v-test/chunks/part-000')));checks++;
-  await assertFails(getDoc(doc(dbFor('special'),'questionBanks/agentforce/versions/v-old/chunks/part-000')));checks++;
+  for(const slug of specialistBanks){
+   await assertFails(getDoc(doc(dbFor('approved'),'questionBanks',slug)));checks++;
+   await assertFails(getDoc(doc(dbFor('approved'),`questionBanks/${slug}/versions/v-test/chunks/part-000`)));checks++;
+   await assertSucceeds(getDoc(doc(dbFor('special'),`questionBanks/${slug}/versions/v-test/chunks/part-000`)));checks++;
+   await assertFails(getDoc(doc(dbFor('special'),`questionBanks/${slug}/versions/v-old/chunks/part-000`)));checks++;
+  }
   for(const uid of ['approved','pending','blocked']){
    const db=dbFor(uid);
    await assertFails(updateDoc(doc(db,'progress',uid),{specialistAccess:true}));checks++;
